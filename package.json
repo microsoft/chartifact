@@ -6,6 +6,7 @@
     "clean": "npm run clean --workspaces --if-present",
     "build": "npm run build:00 --workspaces --if-present && npm run build:01 --workspaces --if-present && npm run build:02 --workspaces --if-present && npm run build:03 --workspaces --if-present && npm run build:04 --workspaces --if-present && npm run build:05 --workspaces --if-present && npm run build:06 --workspaces --if-present",
     "start": "concurrently \"npm run dev -w common\" \"npm run dev -w @microsoft/interactive-document-markdown\" \"npm run dev -w schema\" \"npm run dev -w @microsoft/interactive-document-compiler\" \"npm run dev -w editor\"",
+    "test": "npm run test --workspaces --if-present",
     "package": "npm run package --workspaces --if-present"
   },
   "repository": {
