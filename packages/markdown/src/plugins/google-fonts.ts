@@ -11,9 +11,9 @@ export interface GoogleFontsSpec {
     mapping?: {
         body?: string;      // Base font - applies to everything if others not specified
         hero?: string;      // H1 only - the main hero title
-        headings?: string;  // H2, H3, H4, H5, H6 - all other headings
+        headings?: string;  // all headings
         code?: string;      // Code blocks and inline code
-        table?: string;     // Table cells - overrides body
+        table?: string;     // Tables and tabulator
     };
 }
 
@@ -98,7 +98,7 @@ function generateSemanticCSS(spec: GoogleFontsSpec, families: FontFamily[], scop
             const family = families.find(f => f.name === spec.mapping.code);
             console.log('Code font lookup:', { requested: spec.mapping.code, found: family });
             if (family) {
-                cssRules.push(`code, pre, kbd, samp, tt, .hljs, table {
+                cssRules.push(`code, pre, kbd, samp, tt, .hljs {
   font-family: '${family.name}';
 }`);
             }
@@ -109,7 +109,7 @@ function generateSemanticCSS(spec: GoogleFontsSpec, families: FontFamily[], scop
             const family = families.find(f => f.name === spec.mapping.table);
             console.log('Table font lookup:', { requested: spec.mapping.table, found: family });
             if (family) {
-                cssRules.push(`table {
+                cssRules.push(`table, .tabulator {
   font-family: '${family.name}';
 }`);
             }
