@@ -29,11 +29,36 @@ interface FontFamily {
     fallback: string;
 }
 
+// Helper function to validate Google Fonts URL
+function isValidGoogleFontsUrl(url: string): boolean {
+    try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'https:' &&
+               parsed.hostname === 'fonts.googleapis.com' && 
+               parsed.pathname === '/css2';
+    } catch {
+        return false;
+    }
+}
+
+// Helper function to sanitize font family names for CSS safety
+function sanitizeFontFamily(fontName: string): string {
+    // Remove any characters that could be used for CSS injection
+    // Allow only letters, numbers, spaces, hyphens, and basic punctuation
+    return fontName.replace(/[^a-zA-Z0-9\s\-_]/g, '').trim();
+}
+
 // Helper function to extract font families from Google Fonts URL
 function extractFontFamilies(googleFontsUrl: string): FontFamily[] {
     const families: FontFamily[] = [];
     
     try {
+        // Security: Validate this is a Google Fonts URL
+        if (!isValidGoogleFontsUrl(googleFontsUrl)) {
+            console.error('Invalid Google Fonts URL - only https://fonts.googleapis.com/css2 URLs are allowed');
+            return families;
+        }
+        
         const url = new URL(googleFontsUrl);
         const params = url.searchParams;
         
@@ -41,7 +66,15 @@ function extractFontFamilies(googleFontsUrl: string): FontFamily[] {
         const familyParams = params.getAll('family');
         for (const value of familyParams) {
             // Parse: family=Cascadia+Code:ital,wght@0,200..700;1,200..700
-            const familyName = value.split(':')[0].replace(/\+/g, ' ');
+            const rawFamilyName = value.split(':')[0].replace(/\+/g, ' ');
+            
+            // Security: Sanitize font family name to prevent CSS injection
+            const familyName = sanitizeFontFamily(rawFamilyName);
+            
+            if (!familyName) {
+                console.warn('Skipped invalid font family name:', rawFamilyName);
+                continue;
+            }
             
             // Determine fallback based on font name patterns
             let fallback = 'sans-serif';
@@ -65,16 +98,11 @@ function extractFontFamilies(googleFontsUrl: string): FontFamily[] {
 function generateSemanticCSS(spec: GoogleFontsSpec, families: FontFamily[], scopeId: string): string {
     const cssRules: string[] = [];
     
-    console.log('CSS Generation Debug:', {
-        families,
-        mapping: spec.mapping
-    });
-    
     if (spec.mapping) {
         // Base/Body font - applies to everything first (cascading base)
         if (spec.mapping.body) {
-            const family = families.find(f => f.name === spec.mapping.body);
-            console.log('Body font lookup:', { requested: spec.mapping.body, found: family });
+            const sanitizedName = sanitizeFontFamily(spec.mapping.body);
+            const family = families.find(f => f.name === sanitizedName);
             if (family) {
                 cssRules.push(`body {
   font-family: '${family.name}';
@@ -84,8 +112,8 @@ function generateSemanticCSS(spec: GoogleFontsSpec, families: FontFamily[], scop
         
         // Headings font (h1, h2, h3, h4, h5, h6) - overrides body
         if (spec.mapping.headings) {
-            const family = families.find(f => f.name === spec.mapping.headings);
-            console.log('Headings font lookup:', { requested: spec.mapping.headings, found: family });
+            const sanitizedName = sanitizeFontFamily(spec.mapping.headings);
+            const family = families.find(f => f.name === sanitizedName);
             if (family) {
                 cssRules.push(`h1, h2, h3, h4, h5, h6 {
   font-family: '${family.name}';
@@ -95,8 +123,8 @@ function generateSemanticCSS(spec: GoogleFontsSpec, families: FontFamily[], scop
         
         // Code font - applies to code blocks and inline code
         if (spec.mapping.code) {
-            const family = families.find(f => f.name === spec.mapping.code);
-            console.log('Code font lookup:', { requested: spec.mapping.code, found: family });
+            const sanitizedName = sanitizeFontFamily(spec.mapping.code);
+            const family = families.find(f => f.name === sanitizedName);
             if (family) {
                 cssRules.push(`code, pre, kbd, samp, tt, .hljs {
   font-family: '${family.name}';
@@ -106,8 +134,8 @@ function generateSemanticCSS(spec: GoogleFontsSpec, families: FontFamily[], scop
         
         // Table font - overrides code for table cells (if you want different from code)
         if (spec.mapping.table) {
-            const family = families.find(f => f.name === spec.mapping.table);
-            console.log('Table font lookup:', { requested: spec.mapping.table, found: family });
+            const sanitizedName = sanitizeFontFamily(spec.mapping.table);
+            const family = families.find(f => f.name === sanitizedName);
             if (family) {
                 cssRules.push(`table, .tabulator {
   font-family: '${family.name}';
@@ -117,8 +145,8 @@ function generateSemanticCSS(spec: GoogleFontsSpec, families: FontFamily[], scop
         
         // Hero font (h1 only) - overrides headings (most specific, goes last)
         if (spec.mapping.hero) {
-            const family = families.find(f => f.name === spec.mapping.hero);
-            console.log('Hero font lookup:', { requested: spec.mapping.hero, found: family });
+            const sanitizedName = sanitizeFontFamily(spec.mapping.hero);
+            const family = families.find(f => f.name === sanitizedName);
             if (family) {
                 cssRules.push(`h1 {
   font-family: '${family.name}';
@@ -127,9 +155,7 @@ function generateSemanticCSS(spec: GoogleFontsSpec, families: FontFamily[], scop
         }
     }
     
-    const finalCSS = cssRules.join('\n\n');
-    console.log('Generated CSS:', finalCSS);
-    return finalCSS;
+    return cssRules.join('\n\n');
 }
 
 // Helper function to generate unique document ID
@@ -169,14 +195,14 @@ export const googleFontsPlugin: Plugin = {
                 return [];
             }
             
+            // Security: Validate Google Fonts URL before processing
+            if (!isValidGoogleFontsUrl(spec.googleFontsUrl)) {
+                container.innerHTML = '<!-- Google Fonts Error: Only HTTPS Google Fonts URLs (https://fonts.googleapis.com/css2) are allowed -->';
+                return [];
+            }
+            
             // Extract font families from the URL
             const families = extractFontFamilies(spec.googleFontsUrl);
-            
-            console.log('Google Fonts Debug:', {
-                url: spec.googleFontsUrl,
-                extractedFamilies: families,
-                mapping: spec.mapping
-            });
             
             if (families.length === 0) {
                 container.innerHTML = '<!-- Google Fonts Error: No font families found in URL -->';
