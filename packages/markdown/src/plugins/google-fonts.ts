@@ -15,6 +15,13 @@ export interface GoogleFontsSpec {
         code?: string;      // Code blocks and inline code
         table?: string;     // Tables and tabulator
     };
+    sizing?: {
+        body?: number;      // 1.0 = normal, 1.1 = 10% larger, 0.9 = 10% smaller
+        hero?: number;      // Relative size multiplier for H1
+        headings?: number;  // Relative size multiplier for all headings
+        code?: number;      // Relative size multiplier for code elements
+        table?: number;     // Relative size multiplier for tables
+    };
 }
 
 interface GoogleFontsInstance {
@@ -46,6 +53,24 @@ function sanitizeFontFamily(fontName: string): string {
     // Remove any characters that could be used for CSS injection
     // Allow only letters, numbers, spaces, hyphens, and basic punctuation
     return fontName.replace(/[^a-zA-Z0-9\s\-_]/g, '').trim();
+}
+
+// Helper function to sanitize sizing values for CSS safety
+function sanitizeSizing(sizeValue: number): number | null {
+    // Ensure it's a valid number
+    if (typeof sizeValue !== 'number' || isNaN(sizeValue) || !isFinite(sizeValue)) {
+        console.warn('Invalid sizing value - must be a finite number:', sizeValue);
+        return null;
+    }
+    
+    // Reasonable bounds: 0.1 (10%) to 9.999... (just under 1000%)
+    if (sizeValue < 0.1 || sizeValue >= 10) {
+        console.warn('Sizing value out of safe range (0.1 to 9.999):', sizeValue);
+        return null;
+    }
+    
+    // Round to 3 decimal places to prevent excessive precision
+    return Math.round(sizeValue * 1000) / 1000;
 }
 
 // Helper function to extract font families from Google Fonts URL
@@ -98,62 +123,43 @@ function extractFontFamilies(googleFontsUrl: string): FontFamily[] {
 function generateSemanticCSS(spec: GoogleFontsSpec, families: FontFamily[], scopeId: string): string {
     const cssRules: string[] = [];
     
-    if (spec.mapping) {
-        // Base/Body font - applies to everything first (cascading base)
-        if (spec.mapping.body) {
-            const sanitizedName = sanitizeFontFamily(spec.mapping.body);
+    // Helper to generate CSS rule for a specific element type
+    const generateRule = (elementType: keyof NonNullable<GoogleFontsSpec['mapping']>, selectors: string) => {
+        const fontFamily = spec.mapping?.[elementType];
+        const sizeValue = spec.sizing?.[elementType];
+        
+        // Skip if neither font nor sizing is specified
+        if (!fontFamily && !sizeValue) return;
+        
+        let css = `${selectors} {`;
+        
+        // Add font-family if mapping exists
+        if (fontFamily) {
+            const sanitizedName = sanitizeFontFamily(fontFamily);
             const family = families.find(f => f.name === sanitizedName);
             if (family) {
-                cssRules.push(`body {
-  font-family: '${family.name}';
-}`);
+                css += `\n  font-family: '${family.name}';`;
             }
         }
         
-        // Headings font (h1, h2, h3, h4, h5, h6) - overrides body
-        if (spec.mapping.headings) {
-            const sanitizedName = sanitizeFontFamily(spec.mapping.headings);
-            const family = families.find(f => f.name === sanitizedName);
-            if (family) {
-                cssRules.push(`h1, h2, h3, h4, h5, h6 {
-  font-family: '${family.name}';
-}`);
+        // Add font-size if sizing exists
+        if (sizeValue) {
+            const sanitizedSize = sanitizeSizing(sizeValue);
+            if (sanitizedSize !== null) {
+                css += `\n  font-size: ${sanitizedSize}em;`;
             }
         }
         
-        // Code font - applies to code blocks and inline code
-        if (spec.mapping.code) {
-            const sanitizedName = sanitizeFontFamily(spec.mapping.code);
-            const family = families.find(f => f.name === sanitizedName);
-            if (family) {
-                cssRules.push(`code, pre, kbd, samp, tt, .hljs {
-  font-family: '${family.name}';
-}`);
-            }
-        }
-        
-        // Table font - overrides code for table cells (if you want different from code)
-        if (spec.mapping.table) {
-            const sanitizedName = sanitizeFontFamily(spec.mapping.table);
-            const family = families.find(f => f.name === sanitizedName);
-            if (family) {
-                cssRules.push(`table, .tabulator {
-  font-family: '${family.name}';
-}`);
-            }
-        }
-        
-        // Hero font (h1 only) - overrides headings (most specific, goes last)
-        if (spec.mapping.hero) {
-            const sanitizedName = sanitizeFontFamily(spec.mapping.hero);
-            const family = families.find(f => f.name === sanitizedName);
-            if (family) {
-                cssRules.push(`h1 {
-  font-family: '${family.name}';
-}`);
-            }
-        }
-    }
+        css += '\n}';
+        cssRules.push(css);
+    };
+    
+    // Generate rules in cascading order (most general to most specific)
+    generateRule('body', 'body');
+    generateRule('headings', 'h1, h2, h3, h4, h5, h6');
+    generateRule('code', 'code, pre, kbd, samp, tt, .hljs');
+    generateRule('table', 'table, .tabulator');
+    generateRule('hero', 'h1'); // Most specific, goes last
     
     return cssRules.join('\n\n');
 }
