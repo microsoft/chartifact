@@ -8,11 +8,11 @@ Chartifact is a low-code document format for creating interactive, data-driven p
 
 * A **library of components** — charts, inputs, tables, images, text, and layout elements — defined declaratively and wired together with reactive variables:
 
+  * **Markdown** – With dynamic {{variable}} placeholders
   * **Inputs** – Textboxes, checkboxes, sliders, dropdowns
   * **Charts** – Vega and Vega-Lite visualizations
   * **Tables** – Sortable, filterable, and selectable data grids
   * **Images** – Dynamic image URLs based on variables
-  * **Text** – Markdown with dynamic placeholders
   * **Presets** – Named sets of variable values for quick scenario switching
 
 * A **VS Code extension** for editing, previewing, and exporting documents, with optional AI assistance.
@@ -40,8 +40,6 @@ The format is designed with AI assistance in mind:
 * In-editor tools like Ctrl+I and agent mode available in VS Code
 * HTML exports retain semantic structure for downstream AI tools
 
-This enables both authoring and remixing workflows with language models and agent-based tooling.
-
 ## Data Flow
 
 The document runtime is reactive. Components stay in sync through a shared set of variables:
@@ -52,17 +50,10 @@ The document runtime is reactive. Components stay in sync through a shared set o
 * **Vega transforms** provide built-in tools for reshaping data
 * **Signal bus** coordinates state across all components
 
-Chartifact documents behave like small reactive systems — without custom JavaScript.
-
 ## Styling
 
-Styling is done using scoped CSS blocks embedded in the document. This allows flexible layout and visual design without global side effects:
-
-* Style documents as articles, dashboards, or slides
-* Use CSS to control layout and theming
-* No raw HTML injection or global styles
-
-The predictable, declarative nature of the styling model makes it easy for both humans and LLMs to work with.
+* Use CSS to style documents as articles, dashboards, or slides
+* Load and apply Google Fonts with semantic font mapping
 
 ## Security
 
@@ -71,6 +62,5 @@ Chartifact is designed to be safe by default:
 * No custom JavaScript execution
 * CSP-compliant via Vega expression language
 * No raw HTML in Markdown
+* Sanitized CSS
 * Rendered in sandboxed iframes to isolate execution
-
-These constraints help ensure portability and safe embedding in various environments.
