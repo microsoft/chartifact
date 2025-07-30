@@ -8,8 +8,9 @@ import { registerNativePlugins } from './plugins/index.js';
 registerNativePlugins();
 
 export { sanitizedHTML } from './sanitize.js';
-export { definePlugin, plugins, registerMarkdownPlugin } from './factory.js';
+export { definePlugin, plugins, registerMarkdownPlugin, setMarkdownIt, setCssTree } from './factory.js';
 export { Renderer } from './renderer.js';
+export { setDomDocument } from './sanitize.js';
 
 export type { RendererOptions } from './renderer.js';
 export type { Plugin } from './factory.js';
