@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive Document Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .header {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .test-links {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .test-links a {
+            padding: 10px 20px;
+            background: #007acc;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .test-links a:hover {
+            background: #005a9e;
+        }
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Chartifact Chrome Extension Test Page</h1>
+        <p>This page helps you test the Chartifact Chrome extension with sample Interactive Document files.</p>
+    </div>
+
+    <div class="instructions">
+        <h3>📋 Instructions</h3>
+        <ol>
+            <li>Install the Chrome extension by loading the <code>packages/chrome-extension/dist</code> folder as an unpacked extension</li>
+            <li>Click one of the test files below</li>
+            <li>Look for the "📊 View as Interactive Document" button in the top-right corner</li>
+            <li>Click the button to open the Chartifact viewer</li>
+        </ol>
+    </div>
+
+    <h2>Test Files</h2>
+    <div class="test-links">
+        <a href="test.idoc.json" target="_blank">📊 Test JSON File</a>
+        <a href="../examples/json/seattle-weather/6.idoc.json" target="_blank">🌦️ Seattle Weather Example</a>
+    </div>
+
+    <h2>Extension Status</h2>
+    <p>If the extension is properly installed and enabled, it will:</p>
+    <ul>
+        <li>Automatically detect .idoc.md and .idoc.json files</li>
+        <li>Show a floating "View as Interactive Document" button</li>
+        <li>Allow you to open an overlay viewer with rich visualizations</li>
+    </ul>
+
+    <h2>Troubleshooting</h2>
+    <ul>
+        <li><strong>Button not appearing?</strong> Make sure the extension is enabled and has permissions</li>
+        <li><strong>Viewer not loading?</strong> Check the browser console for errors</li>
+        <li><strong>Charts not rendering?</strong> Ensure the file content is valid Interactive Document format</li>
+    </ul>
+
+    <div style="margin-top: 40px; font-size: 14px; color: #666;">
+        <p><strong>Note:</strong> This is a development test page. In production, the extension would work with any .idoc files hosted on the web or viewed locally via file:// URLs.</p>
+    </div>
+</body>
+</html>
