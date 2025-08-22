@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chartifact Viewer</title>
+  <style>
+    body {
+      width: 350px;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .title {
+      margin: 0;
+      font-size: 18px;
+      color: #333;
+    }
+    .subtitle {
+      margin: 4px 0 0 0;
+      font-size: 12px;
+      color: #666;
+    }
+    .content {
+      margin-bottom: 20px;
+    }
+    .status {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .status.detected {
+      background: #e8f5e8;
+      color: #2d5a2d;
+      border: 1px solid #b3d9b3;
+    }
+    .status.not-detected {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    .btn-primary {
+      background: #007acc;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #005a9e;
+    }
+    .btn-secondary {
+      background: #f5f5f5;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    .btn-secondary:hover {
+      background: #e8e8e8;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .info {
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+      margin-top: 16px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">📊</div>
+    <h1 class="title">Chartifact</h1>
+    <p class="subtitle">Interactive Document Viewer</p>
+  </div>
+
+  <div class="content">
+    <div id="status" class="status not-detected">
+      Checking current page...
+    </div>
+
+    <div class="actions">
+      <button id="openViewer" class="btn btn-primary" disabled>
+        Open Viewer
+      </button>
+      <button id="refreshStatus" class="btn btn-secondary">
+        Refresh Status
+      </button>
+    </div>
+  </div>
+
+  <div class="info">
+    This extension works with .idoc.md and .idoc.json files. Navigate to an Interactive Document file to view it with rich visualizations.
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

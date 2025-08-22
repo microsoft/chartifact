@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "Chartifact Interactive Document Viewer",
+  "version": "1.0.0",
+  "description": "View Interactive Document files (*.idoc.md and *.idoc.json) with rich visualizations",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "file://*/*.idoc.md",
+    "file://*/*.idoc.json",
+    "https://*/*.idoc.md",
+    "https://*/*.idoc.json",
+    "http://*/*.idoc.md",
+    "http://*/*.idoc.json"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "file://*/*.idoc.md",
+        "file://*/*.idoc.json",
+        "https://*/*.idoc.md",
+        "https://*/*.idoc.json",
+        "http://*/*.idoc.md",
+        "http://*/*.idoc.json"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Chartifact Viewer"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "chartifact.compiler.js",
+        "chartifact.sandbox.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "@microsoft/chartifact-chrome-extension",
+  "version": "1.0.0",
+  "description": "Chrome extension for viewing Interactive Document files (*.idoc.md and *.idoc.json)",
+  "type": "module",
+  "private": true,
+  "main": "dist/background.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "resources": "node scripts/resources.mjs",
+    "prebuild": "npm run resources",
+    "tsc": "tsc -p .",
+    "build": "npm run tsc && npm run bundle",
+    "bundle": "vite build",
+    "build:08": "npm run build",
+    "package": "cd dist && zip -r ../chartifact-chrome-extension.zip .",
+    "dev": "vite build --watch"
+  },
+  "dependencies": {
+    "@microsoft/chartifact-sandbox": "1.0.0",
+    "@microsoft/chartifact-compiler": "1.0.0",
+    "@microsoft/chartifact-schema": "1.0.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.280"
+  },
+  "author": "Dan Marshall",
+  "license": "MIT"
+}

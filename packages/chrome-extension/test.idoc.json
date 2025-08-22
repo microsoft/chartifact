@@ -1,0 +1,37 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/chartifact/main/docs/schema/idoc_v1.json",
+  "title": "Chrome Extension Test",
+  "dataLoaders": [
+    {
+      "type": "data",
+      "data": [
+        { "category": "A", "value": 28 },
+        { "category": "B", "value": 55 },
+        { "category": "C", "value": 43 }
+      ],
+      "dataSourceName": "testData"
+    }
+  ],
+  "groups": [
+    {
+      "groupId": "main",
+      "elements": [
+        "# Chrome Extension Test",
+        "This is a test Interactive Document for the Chrome extension.",
+        {
+          "elementId": "chart1",
+          "type": "chart",
+          "dataSource": "testData",
+          "spec": {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "mark": "bar",
+            "encoding": {
+              "x": { "field": "category", "type": "nominal" },
+              "y": { "field": "value", "type": "quantitative" }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
