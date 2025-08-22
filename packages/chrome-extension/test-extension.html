@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Chrome Extension - test-simple.idoc.md</title>
+</head>
+<body>
+    <pre># Simple Test Document
+
+This is a test Interactive Document.
+
+```echarts
+{
+  "title": { "text": "Simple Chart" },
+  "xAxis": { "type": "category", "data": ["A", "B", "C"] },
+  "yAxis": { "type": "value" },
+  "series": [{ "data": [10, 20, 30], "type": "bar" }]
+}
+```</pre>
+    
+    <script>
+        // Simulate chrome extension runtime
+        window.chrome = {
+            runtime: {
+                getURL: function(path) {
+                    return '/dist/' + path;
+                },
+                sendMessage: function(message) {
+                    console.log('Message sent:', message);
+                },
+                onMessage: {
+                    addListener: function(callback) {
+                        console.log('Message listener added');
+                    }
+                }
+            }
+        };
+        
+        // Change URL to simulate .idoc.md file
+        Object.defineProperty(window, 'location', {
+            value: {
+                href: 'file:///test-simple.idoc.md'
+            }
+        });
+    </script>
+    
+    <!-- Load the content script -->
+    <script src="dist/content.js"></script>
+</body>
+</html>
