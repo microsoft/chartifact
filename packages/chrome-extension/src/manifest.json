@@ -40,7 +40,9 @@
     {
       "resources": [
         "chartifact.compiler.js",
-        "chartifact.sandbox.js"
+        "chartifact.sandbox.js",
+        "chartifact.host.js",
+        "chartifact-toolbar.css"
       ],
       "matches": ["<all_urls>"]
     }

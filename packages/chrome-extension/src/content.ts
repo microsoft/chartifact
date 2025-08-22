@@ -25,76 +25,6 @@
     return document.body.textContent || '';
   }
 
-  // Inject the viewer interface
-  function injectViewer(): void {
-    const content = getFileContent();
-    if (!content) {
-      console.warn('Could not extract file content');
-      return;
-    }
-
-    // Create overlay container
-    const overlay = document.createElement('div');
-    overlay.id = 'chartifact-viewer-overlay';
-    overlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: white;
-      z-index: 10000;
-      display: flex;
-      flex-direction: column;
-    `;
-
-    // Create header with close button
-    const header = document.createElement('div');
-    header.style.cssText = `
-      background: #f5f5f5;
-      padding: 10px 20px;
-      border-bottom: 1px solid #ddd;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    `;
-
-    const title = document.createElement('h2');
-    title.textContent = 'Chartifact Interactive Document Viewer';
-    title.style.margin = '0';
-
-    const closeButton = document.createElement('button');
-    closeButton.textContent = '✕ Close';
-    closeButton.style.cssText = `
-      background: #007acc;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      cursor: pointer;
-      border-radius: 4px;
-    `;
-    closeButton.onclick = () => overlay.remove();
-
-    header.appendChild(title);
-    header.appendChild(closeButton);
-
-    // Create content container
-    const contentContainer = document.createElement('div');
-    contentContainer.id = 'chartifact-viewer-content';
-    contentContainer.style.cssText = `
-      flex: 1;
-      padding: 20px;
-      overflow: auto;
-    `;
-
-    overlay.appendChild(header);
-    overlay.appendChild(contentContainer);
-    document.body.appendChild(overlay);
-
-    // Load and render the content
-    renderContent(content, contentContainer);
-  }
-
   // Load external scripts
   function loadScript(src: string): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -106,59 +36,214 @@
     });
   }
 
-  // Render the Interactive Document content using the sandbox
-  async function renderContent(content: string, container: HTMLElement): Promise<void> {
-    try {
-      // Show loading message
-      container.innerHTML = '<div style="text-align: center; padding: 40px;">Loading Interactive Document...</div>';
+  // Load CSS file
+  function loadCSS(href: string): void {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = chrome.runtime.getURL(href);
+    document.head.appendChild(link);
+  }
 
-      // Load required scripts
-      await loadScript('chartifact.compiler.js');
-      await loadScript('chartifact.sandbox.js');
+  // Inject the viewer interface using host/toolbar architecture
+  async function injectViewer(): Promise<void> {
+    const content = getFileContent();
+    if (!content) {
+      console.warn('Could not extract file content');
+      return;
+    }
+
+    try {
+      // Load required scripts and CSS
+      await Promise.all([
+        loadScript('chartifact.sandbox.js'),
+        loadScript('chartifact.host.js'),
+        loadScript('chartifact.compiler.js')
+      ]);
+      loadCSS('chartifact-toolbar.css');
+
+      // Create overlay container with proper structure
+      const overlay = document.createElement('div');
+      overlay.id = 'chartifact-viewer-overlay';
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+      `;
+
+      // Create toolbar container
+      const toolbarContainer = document.createElement('div');
+      toolbarContainer.className = 'chartifact-toolbar';
+      toolbarContainer.style.cssText = `
+        background: #f5f5f5;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 20px;
+      `;
+
+      // Create close button in toolbar
+      const closeButton = document.createElement('button');
+      closeButton.textContent = '✕ Close Viewer';
+      closeButton.style.cssText = `
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        cursor: pointer;
+        border-radius: 4px;
+        float: right;
+        margin-left: 10px;
+      `;
+      closeButton.onclick = () => overlay.remove();
+
+      // Create source textarea (hidden by default)
+      const textarea = document.createElement('textarea');
+      textarea.id = 'source';
+      textarea.style.cssText = `
+        width: 100%;
+        height: 200px;
+        font-family: monospace;
+        display: none;
+        resize: vertical;
+        border: 1px solid #ddd;
+        padding: 10px;
+      `;
+      textarea.value = content;
+
+      // Create main content containers
+      const mainContainer = document.createElement('div');
+      mainContainer.style.cssText = `
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      `;
+
+      const loadingDiv = document.createElement('div');
+      loadingDiv.id = 'loading';
+      loadingDiv.style.cssText = `
+        text-align: center;
+        padding: 40px;
+        font-size: 18px;
+      `;
+      loadingDiv.textContent = 'Loading Interactive Document...';
+
+      const helpDiv = document.createElement('div');
+      helpDiv.id = 'help';
+      helpDiv.style.cssText = `
+        text-align: center;
+        padding: 40px;
+        display: none;
+      `;
+      helpDiv.textContent = 'Help information would go here';
+
+      const previewDiv = document.createElement('div');
+      previewDiv.id = 'preview';
+      previewDiv.style.cssText = `
+        flex: 1;
+        overflow: auto;
+        padding: 20px;
+      `;
+
+      // Assemble the UI
+      toolbarContainer.appendChild(closeButton);
+      mainContainer.appendChild(textarea);
+      mainContainer.appendChild(loadingDiv);
+      mainContainer.appendChild(helpDiv);
+      mainContainer.appendChild(previewDiv);
+      overlay.appendChild(toolbarContainer);
+      overlay.appendChild(mainContainer);
+      document.body.appendChild(overlay);
+
+      // Wait a moment for scripts to be available
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       // Access the global objects created by the UMD bundles
-      const { targetMarkdown } = (window as any).Chartifact.compiler;
-      const { Sandbox } = (window as any).Chartifact.sandbox;
-
-      let markdown: string;
-      const url = window.location.href;
-
-      if (url.endsWith('.idoc.json')) {
-        // Parse JSON and convert to markdown
-        try {
-          const interactiveDocument = JSON.parse(content);
-          markdown = targetMarkdown(interactiveDocument);
-        } catch (error) {
-          throw new Error(`Failed to parse JSON: ${error}`);
-        }
-      } else {
-        // Direct markdown content
-        markdown = content;
+      const Chartifact = (window as any).Chartifact;
+      if (!Chartifact || !Chartifact.host || !Chartifact.toolbar) {
+        throw new Error('Chartifact libraries not loaded properly');
       }
 
-      // Clear loading message
-      container.innerHTML = '';
+      // Initialize toolbar
+      const toolbar = new Chartifact.toolbar.Toolbar(toolbarContainer, {
+        textarea: textarea,
+        tweakButton: true,
+        downloadButton: true,
+        restartButton: false,
+        mode: window.location.href.endsWith('.idoc.json') ? 'json' : 'markdown',
+        filename: extractFilename(window.location.href)
+      });
 
-      // Create sandbox for secure rendering
-      const sandbox = new Sandbox(container, markdown, {
-        onReady: () => {
-          console.log('Chartifact viewer ready');
-        },
-        onError: (error: Error) => {
-          console.error('Chartifact viewer error:', error);
-          container.innerHTML = `<div style="color: red; text-align: center; padding: 40px;">Error rendering document: ${error.message}</div>`;
+      // Initialize host listener
+      const host = new Chartifact.host.Listener({
+        preview: previewDiv,
+        loading: loadingDiv,
+        help: helpDiv,
+        toolbar: toolbar,
+        options: {
+          clipboard: false,
+          dragDrop: false,
+          fileUpload: false,
+          postMessage: false,
+          url: false
         },
         onApprove: (message: any) => {
           // Approve all specs for viewing (no editing capabilities)
           const { specs } = message;
           return specs;
-        },
+        }
       });
 
+      // Render the content
+      const url = window.location.href;
+      const filename = extractFilename(url);
+      
+      if (url.endsWith('.idoc.json')) {
+        // Parse JSON and render as interactive document
+        try {
+          const interactiveDocument = JSON.parse(content);
+          host.render(filename, null, interactiveDocument, false);
+        } catch (error) {
+          host.errorHandler(error, 'Failed to parse JSON content');
+        }
+      } else {
+        // Render markdown directly
+        host.render(filename, content, null, false);
+      }
+
     } catch (error) {
-      console.error('Failed to render Interactive Document:', error);
-      container.innerHTML = `<div style="color: red; text-align: center; padding: 40px;">Failed to load viewer: ${error}</div>`;
+      console.error('Failed to inject viewer:', error);
+      // Show error message
+      const errorDiv = document.createElement('div');
+      errorDiv.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border: 2px solid red;
+        padding: 20px;
+        border-radius: 8px;
+        z-index: 10001;
+        max-width: 400px;
+      `;
+      errorDiv.innerHTML = `
+        <h3>Error Loading Viewer</h3>
+        <p>${error.message}</p>
+        <button onclick="this.parentElement.remove()">Close</button>
+      `;
+      document.body.appendChild(errorDiv);
     }
+  }
+
+  // Extract filename from URL
+  function extractFilename(url: string): string {
+    const path = url.split('/').pop() || 'document';
+    return path.replace(/\?.*$/, ''); // Remove query parameters
   }
 
   // Add button to view the file
@@ -190,7 +275,7 @@
       return;
     }
 
-    // Notify background script
+    // Notify background script (using common message structure)
     chrome.runtime.sendMessage({
       type: 'IDOC_FILE_DETECTED',
       url: window.location.href

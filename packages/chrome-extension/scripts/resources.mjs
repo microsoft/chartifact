@@ -34,11 +34,20 @@ for (const file of staticFiles) {
   }
 }
 
+// Copy toolbar CSS
+const toolbarCssSource = path.join(__dirname, '..', '..', 'toolbar', 'chartifact-toolbar.css');
+const toolbarCssDest = path.join(distDir, 'chartifact-toolbar.css');
+if (fs.existsSync(toolbarCssSource)) {
+  fs.copyFileSync(toolbarCssSource, toolbarCssDest);
+  console.log('Copied chartifact-toolbar.css');
+}
+
 // Copy UMD bundles for use in content script
 const docsDir = path.join(__dirname, '..', '..', '..', 'docs', 'dist', 'v1');
 const bundleFiles = [
   'chartifact.sandbox.umd.js',
-  'chartifact.compiler.umd.js'
+  'chartifact.compiler.umd.js',
+  'chartifact.host.umd.js'
 ];
 
 for (const file of bundleFiles) {

@@ -22,7 +22,8 @@
     "@microsoft/chartifact-schema": "1.0.0"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.280"
+    "@types/chrome": "^0.0.280",
+    "vite": "^5.0.0"
   },
   "author": "Dan Marshall",
   "license": "MIT"
