@@ -63,9 +63,13 @@ if (!fs.existsSync(iconsDir)) {
 const iconSizes = [16, 32, 48, 128];
 for (const size of iconSizes) {
   const iconFile = path.join(iconsDir, `icon-${size}.png`);
-  // Create a minimal placeholder - in production this should be a proper PNG
-  const placeholder = Buffer.from('placeholder icon');
-  fs.writeFileSync(iconFile, placeholder);
+  
+  // Create a minimal fake PNG-like file to make Chrome happy
+  // In production, these should be proper PNG icon files
+  const header = `PNG ICON ${size}x${size}`;
+  const padding = Buffer.alloc(Math.max(0, 100 - header.length), 0);
+  const iconBuffer = Buffer.concat([Buffer.from(header), padding]);
+  fs.writeFileSync(iconFile, iconBuffer);
 }
 
 console.log('Resources copied successfully');
