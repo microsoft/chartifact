@@ -15,7 +15,9 @@
             "#data { grid-area: data; }",
             "h1 { margin: 0; padding: 10px 0; font-size: 1.5em; font-weight: 400; }",
             "h2 { margin: 10px 0; font-size: 2em; color: #333; }",
-            "h3 { margin: 0 0 10px 0; font-size: 1em; color: #666; text-transform: uppercase; }"
+            "h3 { margin: 0 0 10px 0; font-size: 1em; color: #666; text-transform: uppercase; }",
+            "@media (max-width: 768px) { body { grid-template-areas: 'header header' 'revenue orders' 'avg avg' 'category trend' 'data data'; grid-template-columns: 1fr 1fr; gap: 15px; } }",
+            "@media (max-width: 480px) { body { grid-template-areas: 'header' 'revenue' 'orders' 'avg' 'category' 'trend' 'data'; grid-template-columns: 1fr; gap: 10px; } }"
         ]
     },
     "dataLoaders": [
