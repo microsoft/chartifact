@@ -159,6 +159,8 @@ body { display: grid; grid-template-areas: 'header header header' 'revenue order
 h1 { margin: 0; padding: 10px 0; font-size: 1.5em; font-weight: 400; }
 h2 { margin: 10px 0; font-size: 2em; color: #333; }
 h3 { margin: 0 0 10px 0; font-size: 1em; color: #666; text-transform: uppercase; }
+@media (max-width: 768px) { body { grid-template-areas: 'header header' 'revenue orders' 'avg avg' 'category trend' 'data data'; grid-template-columns: 1fr 1fr; padding: 15px; gap: 15px; } .group { padding: 15px; } h1 { font-size: 1.3em; } h2 { font-size: 1.6em; } h3 { font-size: 0.9em; } }
+@media (max-width: 480px) { body { grid-template-areas: 'header' 'revenue' 'orders' 'avg' 'category' 'trend' 'data'; grid-template-columns: 1fr; padding: 10px; gap: 10px; } .group { padding: 12px; } h1 { font-size: 1.2em; padding: 8px 0; } h2 { font-size: 1.4em; margin: 8px 0; } h3 { font-size: 0.8em; margin: 0 0 8px 0; } }
 ```
 
 
