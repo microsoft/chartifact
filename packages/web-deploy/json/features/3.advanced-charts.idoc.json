@@ -1,0 +1,494 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "Feature: Advanced Charts",
+    "dataLoaders": [
+        {
+            "dataSourceName": "salesData",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"month": "Jan", "product": "Laptops", "sales": 120, "profit": 24000, "region": "North", "category": "Electronics"},
+                {"month": "Jan", "product": "Tablets", "sales": 80, "profit": 16000, "region": "North", "category": "Electronics"},
+                {"month": "Jan", "product": "Phones", "sales": 200, "profit": 30000, "region": "North", "category": "Electronics"},
+                {"month": "Feb", "product": "Laptops", "sales": 140, "profit": 28000, "region": "North", "category": "Electronics"},
+                {"month": "Feb", "product": "Tablets", "sales": 95, "profit": 19000, "region": "North", "category": "Electronics"},
+                {"month": "Feb", "product": "Phones", "sales": 180, "profit": 27000, "region": "North", "category": "Electronics"},
+                {"month": "Mar", "product": "Laptops", "sales": 160, "profit": 32000, "region": "North", "category": "Electronics"},
+                {"month": "Mar", "product": "Tablets", "sales": 110, "profit": 22000, "region": "North", "category": "Electronics"},
+                {"month": "Mar", "product": "Phones", "sales": 220, "profit": 33000, "region": "North", "category": "Electronics"},
+                {"month": "Jan", "product": "Laptops", "sales": 100, "profit": 20000, "region": "South", "category": "Electronics"},
+                {"month": "Jan", "product": "Tablets", "sales": 70, "profit": 14000, "region": "South", "category": "Electronics"},
+                {"month": "Jan", "product": "Phones", "sales": 190, "profit": 28500, "region": "South", "category": "Electronics"},
+                {"month": "Feb", "product": "Laptops", "sales": 110, "profit": 22000, "region": "South", "category": "Electronics"},
+                {"month": "Feb", "product": "Tablets", "sales": 85, "profit": 17000, "region": "South", "category": "Electronics"},
+                {"month": "Feb", "product": "Phones", "sales": 170, "profit": 25500, "region": "South", "category": "Electronics"},
+                {"month": "Mar", "product": "Laptops", "sales": 130, "profit": 26000, "region": "South", "category": "Electronics"},
+                {"month": "Mar", "product": "Tablets", "sales": 90, "profit": 18000, "region": "South", "category": "Electronics"},
+                {"month": "Mar", "product": "Phones", "sales": 210, "profit": 31500, "region": "South", "category": "Electronics"}
+            ]
+        },
+        {
+            "dataSourceName": "stockData",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"date": "2024-01-01", "price": 100, "volume": 1000, "company": "TechCorp"},
+                {"date": "2024-01-02", "price": 102, "volume": 1200, "company": "TechCorp"},
+                {"date": "2024-01-03", "price": 98, "volume": 800, "company": "TechCorp"},
+                {"date": "2024-01-04", "price": 105, "volume": 1500, "company": "TechCorp"},
+                {"date": "2024-01-05", "price": 108, "volume": 1800, "company": "TechCorp"},
+                {"date": "2024-01-06", "price": 106, "volume": 1300, "company": "TechCorp"},
+                {"date": "2024-01-07", "price": 110, "volume": 2000, "company": "TechCorp"},
+                {"date": "2024-01-08", "price": 107, "volume": 1100, "company": "TechCorp"},
+                {"date": "2024-01-09", "price": 112, "volume": 1700, "company": "TechCorp"},
+                {"date": "2024-01-10", "price": 115, "volume": 2200, "company": "TechCorp"},
+                {"date": "2024-01-01", "price": 85, "volume": 900, "company": "RetailPlus"},
+                {"date": "2024-01-02", "price": 87, "volume": 1100, "company": "RetailPlus"},
+                {"date": "2024-01-03", "price": 84, "volume": 700, "company": "RetailPlus"},
+                {"date": "2024-01-04", "price": 89, "volume": 1400, "company": "RetailPlus"},
+                {"date": "2024-01-05", "price": 91, "volume": 1600, "company": "RetailPlus"},
+                {"date": "2024-01-06", "price": 88, "volume": 1000, "company": "RetailPlus"},
+                {"date": "2024-01-07", "price": 93, "volume": 1900, "company": "RetailPlus"},
+                {"date": "2024-01-08", "price": 90, "volume": 950, "company": "RetailPlus"},
+                {"date": "2024-01-09", "price": 95, "volume": 1550, "company": "RetailPlus"},
+                {"date": "2024-01-10", "price": 97, "volume": 2100, "company": "RetailPlus"}
+            ]
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "main",
+            "elements": [
+                "## Advanced Charts Showcase\n\nThis page demonstrates the powerful capabilities of Chartifact using both Vega and Vega-Lite. These examples showcase:\n\n- **Interactive selections and brushing**\n- **Multiple linked visualizations**\n- **Data transformations and aggregations**\n- **Complex encoding schemes**\n- **Real-time filtering and highlighting**\n- **Professional styling and layouts**\n\n---",
+                "### 1. Interactive Sales Dashboard\n\nClick and drag to select regions in the scatter plot. The selection will highlight corresponding data points in both charts.",
+                {
+                    "type": "chart",
+                    "chartKey": "scatterPlot"
+                },
+                {
+                    "type": "chart",
+                    "chartKey": "salesTrend"
+                },
+                "---",
+                "### 2. Multi-Series Stock Chart with Brushing\n\nThis chart shows stock prices for multiple companies with interactive brushing. Drag to zoom into specific time periods.",
+                {
+                    "type": "chart",
+                    "chartKey": "stockChart"
+                },
+                "---",
+                "### 3. Regional Sales Heatmap\n\nA sophisticated heatmap showing sales performance across different dimensions with custom color scales.",
+                {
+                    "type": "chart",
+                    "chartKey": "heatmap"
+                },
+                "---",
+                "### 4. Advanced Vega Visualization\n\nThis demonstrates Vega's power with custom data transformations, calculated fields, and complex interactions.",
+                {
+                    "type": "chart",
+                    "chartKey": "vegaAdvanced"
+                }
+            ]
+        }
+    ],
+    "resources": {
+        "charts": {
+            "scatterPlot": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "title": {
+                    "text": "Sales vs Profit Analysis",
+                    "fontSize": 16,
+                    "anchor": "start"
+                },
+                "data": {
+                    "name": "salesData"
+                },
+                "width": 400,
+                "height": 300,
+                "selection": {
+                    "brush": {
+                        "type": "interval",
+                        "encodings": ["x", "y"]
+                    }
+                },
+                "mark": {
+                    "type": "circle",
+                    "size": 100,
+                    "opacity": 0.7
+                },
+                "encoding": {
+                    "x": {
+                        "field": "sales",
+                        "type": "quantitative",
+                        "title": "Units Sold",
+                        "scale": {"domain": [0, 250]}
+                    },
+                    "y": {
+                        "field": "profit",
+                        "type": "quantitative",
+                        "title": "Profit ($)",
+                        "scale": {"domain": [0, 35000]}
+                    },
+                    "color": {
+                        "field": "region",
+                        "type": "nominal",
+                        "scale": {
+                            "range": ["#1f77b4", "#ff7f0e"]
+                        },
+                        "title": "Region"
+                    },
+                    "shape": {
+                        "field": "product",
+                        "type": "nominal",
+                        "title": "Product"
+                    },
+                    "stroke": {
+                        "condition": {
+                            "selection": "brush",
+                            "value": "black"
+                        },
+                        "value": "transparent"
+                    },
+                    "strokeWidth": {
+                        "condition": {
+                            "selection": "brush",
+                            "value": 2
+                        },
+                        "value": 0
+                    }
+                }
+            },
+            "salesTrend": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "title": {
+                    "text": "Monthly Sales Trend",
+                    "fontSize": 16,
+                    "anchor": "start"
+                },
+                "data": {
+                    "name": "salesData"
+                },
+                "width": 400,
+                "height": 200,
+                "transform": [
+                    {
+                        "aggregate": [
+                            {"op": "sum", "field": "sales", "as": "totalSales"}
+                        ],
+                        "groupby": ["month", "region"]
+                    }
+                ],
+                "mark": {
+                    "type": "line",
+                    "point": true,
+                    "strokeWidth": 3
+                },
+                "encoding": {
+                    "x": {
+                        "field": "month",
+                        "type": "ordinal",
+                        "title": "Month",
+                        "sort": ["Jan", "Feb", "Mar"]
+                    },
+                    "y": {
+                        "field": "totalSales",
+                        "type": "quantitative",
+                        "title": "Total Sales"
+                    },
+                    "color": {
+                        "field": "region",
+                        "type": "nominal",
+                        "scale": {
+                            "range": ["#1f77b4", "#ff7f0e"]
+                        },
+                        "title": "Region"
+                    },
+                    "opacity": {
+                        "condition": {
+                            "selection": "brush",
+                            "value": 1.0
+                        },
+                        "value": 0.3
+                    }
+                },
+                "selection": {
+                    "brush": {
+                        "type": "interval",
+                        "encodings": ["x", "y"]
+                    }
+                }
+            },
+            "stockChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "title": {
+                    "text": "Stock Price Comparison with Interactive Brushing",
+                    "fontSize": 16,
+                    "anchor": "start"
+                },
+                "data": {
+                    "name": "stockData"
+                },
+                "width": 600,
+                "height": 300,
+                "selection": {
+                    "brush": {
+                        "type": "interval",
+                        "encodings": ["x"]
+                    }
+                },
+                "mark": {
+                    "type": "line",
+                    "strokeWidth": 2,
+                    "point": {
+                        "size": 60,
+                        "filled": true
+                    }
+                },
+                "encoding": {
+                    "x": {
+                        "field": "date",
+                        "type": "temporal",
+                        "title": "Date",
+                        "axis": {
+                            "format": "%m/%d",
+                            "labelAngle": -45
+                        }
+                    },
+                    "y": {
+                        "field": "price",
+                        "type": "quantitative",
+                        "title": "Stock Price ($)",
+                        "scale": {"domain": [80, 120]}
+                    },
+                    "color": {
+                        "field": "company",
+                        "type": "nominal",
+                        "scale": {
+                            "range": ["#e41a1c", "#377eb8"]
+                        },
+                        "title": "Company"
+                    },
+                    "opacity": {
+                        "condition": {
+                            "selection": "brush",
+                            "value": 1.0
+                        },
+                        "value": 0.4
+                    }
+                }
+            },
+            "heatmap": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "title": {
+                    "text": "Sales Performance Heatmap",
+                    "fontSize": 16,
+                    "anchor": "start"
+                },
+                "data": {
+                    "name": "salesData"
+                },
+                "width": 300,
+                "height": 200,
+                "transform": [
+                    {
+                        "aggregate": [
+                            {"op": "sum", "field": "sales", "as": "totalSales"}
+                        ],
+                        "groupby": ["month", "product"]
+                    }
+                ],
+                "mark": {
+                    "type": "rect",
+                    "stroke": "white",
+                    "strokeWidth": 2
+                },
+                "encoding": {
+                    "x": {
+                        "field": "month",
+                        "type": "ordinal",
+                        "title": "Month",
+                        "sort": ["Jan", "Feb", "Mar"]
+                    },
+                    "y": {
+                        "field": "product",
+                        "type": "nominal",
+                        "title": "Product"
+                    },
+                    "color": {
+                        "field": "totalSales",
+                        "type": "quantitative",
+                        "title": "Total Sales",
+                        "scale": {
+                            "scheme": "viridis",
+                            "type": "sequential"
+                        }
+                    },
+                    "tooltip": [
+                        {"field": "month", "type": "ordinal"},
+                        {"field": "product", "type": "nominal"},
+                        {"field": "totalSales", "type": "quantitative", "title": "Total Sales"}
+                    ]
+                }
+            },
+            "vegaAdvanced": {
+                "$schema": "https://vega.github.io/schema/vega/v5.json",
+                "title": {
+                    "text": "Advanced Vega: Interactive Profit Margin Analysis",
+                    "fontSize": 16,
+                    "anchor": "start"
+                },
+                "width": 500,
+                "height": 300,
+                "padding": 5,
+                "signals": [
+                    {
+                        "name": "minProfit",
+                        "value": 0,
+                        "bind": {
+                            "input": "range",
+                            "min": 0,
+                            "max": 35000,
+                            "step": 1000
+                        }
+                    },
+                    {
+                        "name": "selectedRegion",
+                        "value": "All",
+                        "bind": {
+                            "input": "select",
+                            "options": ["All", "North", "South"]
+                        }
+                    },
+                    {
+                        "name": "hoverPoint",
+                        "value": null,
+                        "on": [
+                            {"events": "symbol:mouseover", "update": "datum"},
+                            {"events": "symbol:mouseout", "update": "null"}
+                        ]
+                    }
+                ],
+                "data": [
+                    {
+                        "name": "source",
+                        "values": {
+                            "name": "salesData"
+                        }
+                    },
+                    {
+                        "name": "filtered",
+                        "source": "source",
+                        "transform": [
+                            {
+                                "type": "filter",
+                                "expr": "datum.profit >= minProfit"
+                            },
+                            {
+                                "type": "filter",
+                                "expr": "selectedRegion === 'All' || datum.region === selectedRegion"
+                            },
+                            {
+                                "type": "formula",
+                                "expr": "datum.profit / datum.sales",
+                                "as": "profitPerUnit"
+                            }
+                        ]
+                    }
+                ],
+                "scales": [
+                    {
+                        "name": "xscale",
+                        "type": "linear",
+                        "domain": {"data": "filtered", "field": "sales"},
+                        "range": "width",
+                        "nice": true
+                    },
+                    {
+                        "name": "yscale",
+                        "type": "linear",
+                        "domain": {"data": "filtered", "field": "profitPerUnit"},
+                        "range": "height",
+                        "nice": true
+                    },
+                    {
+                        "name": "colorscale",
+                        "type": "ordinal",
+                        "domain": {"data": "filtered", "field": "product"},
+                        "range": ["#1f77b4", "#ff7f0e", "#2ca02c"]
+                    },
+                    {
+                        "name": "sizescale",
+                        "type": "linear",
+                        "domain": {"data": "filtered", "field": "profit"},
+                        "range": [50, 400]
+                    }
+                ],
+                "axes": [
+                    {
+                        "orient": "bottom",
+                        "scale": "xscale",
+                        "title": "Units Sold",
+                        "titleFontSize": 12
+                    },
+                    {
+                        "orient": "left",
+                        "scale": "yscale",
+                        "title": "Profit per Unit ($)",
+                        "titleFontSize": 12
+                    }
+                ],
+                "legends": [
+                    {
+                        "fill": "colorscale",
+                        "title": "Product",
+                        "titleFontSize": 12,
+                        "orient": "top-right"
+                    }
+                ],
+                "marks": [
+                    {
+                        "type": "symbol",
+                        "from": {"data": "filtered"},
+                        "encode": {
+                            "enter": {
+                                "x": {"scale": "xscale", "field": "sales"},
+                                "y": {"scale": "yscale", "field": "profitPerUnit"},
+                                "size": {"scale": "sizescale", "field": "profit"},
+                                "fill": {"scale": "colorscale", "field": "product"},
+                                "fillOpacity": {"value": 0.7},
+                                "stroke": {"value": "white"},
+                                "strokeWidth": {"value": 1}
+                            },
+                            "update": {
+                                "stroke": [
+                                    {"test": "hoverPoint && hoverPoint.month === datum.month && hoverPoint.product === datum.product", "value": "black"},
+                                    {"value": "white"}
+                                ],
+                                "strokeWidth": [
+                                    {"test": "hoverPoint && hoverPoint.month === datum.month && hoverPoint.product === datum.product", "value": 3},
+                                    {"value": 1}
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "type": "text",
+                        "encode": {
+                            "enter": {
+                                "x": {"value": 10},
+                                "y": {"value": 10},
+                                "fontSize": {"value": 11},
+                                "fill": {"value": "gray"}
+                            },
+                            "update": {
+                                "text": [
+                                    {"test": "hoverPoint", "signal": "hoverPoint.month + ' - ' + hoverPoint.product + ': $' + round(hoverPoint.profitPerUnit) + ' per unit'"},
+                                    {"value": "Hover over points for details"}
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

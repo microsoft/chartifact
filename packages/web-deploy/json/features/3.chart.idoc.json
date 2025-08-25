@@ -34,7 +34,7 @@
         {
             "groupId": "main",
             "elements": [
-                "## Chart\nUse charts for data visualizations with Vega-Lite specifications.",
+                "## Simple Chart Example\n\nThis example is intentionally kept simple to help new users learn the basics of Chartifact without being overwhelmed. It demonstrates:\n\n- Basic Vega-Lite chart syntax\n- Simple data structure\n- Standard bar chart visualization\n\nFor more advanced examples showcasing the full power of Vega and Vega-Lite with interactive features, see the **Advanced Charts** example.",
                 {
                     "type": "chart",
                     "chartKey": "1"
