@@ -4,17 +4,20 @@
     "style": {
         "css": [
             "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f5f7fa; }",
-            "body { display: grid; grid-template-areas: 'header header header' 'revenue orders avg'; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+            "body { display: grid; grid-template-areas: 'header header header' 'revenue orders avg' 'category trend trend' 'data data data'; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
             ".group { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }",
             "#header { grid-area: header; background: #667eea; color: white; text-align: center; }",
             "#revenue { grid-area: revenue; text-align: center; }",
             "#orders { grid-area: orders; text-align: center; }",
             "#avg { grid-area: avg; text-align: center; }",
+            "#category { grid-area: category; }",
+            "#trend { grid-area: trend; }",
+            "#data { grid-area: data; }",
             "h1 { margin: 0; padding: 10px 0; font-size: 1.5em; font-weight: 400; }",
             "h2 { margin: 10px 0; font-size: 2em; color: #333; }",
             "h3 { margin: 0 0 10px 0; font-size: 1em; color: #666; text-transform: uppercase; }",
-            "@media (max-width: 768px) { body { grid-template-areas: 'header header' 'revenue orders' 'avg avg'; grid-template-columns: 1fr 1fr; gap: 15px; } }",
-            "@media (max-width: 480px) { body { grid-template-areas: 'header' 'revenue' 'orders' 'avg'; grid-template-columns: 1fr; gap: 10px; } }"
+            "@media (max-width: 768px) { body { grid-template-areas: 'header header' 'revenue orders' 'avg avg' 'category trend' 'data data'; grid-template-columns: 1fr 1fr; gap: 15px; } }",
+            "@media (max-width: 480px) { body { grid-template-areas: 'header' 'revenue' 'orders' 'avg' 'category' 'trend' 'data'; grid-template-columns: 1fr; gap: 10px; } }"
         ]
     },
     "dataLoaders": [
@@ -105,6 +108,28 @@
             "elements": [
                 "### Average Order Value", 
                 "## {{averageOrderValue}}"
+            ]
+        },
+        {
+            "groupId": "category",
+            "elements": [
+                "### Sales by Category"
+            ]
+        },
+        {
+            "groupId": "trend",
+            "elements": [
+                "### Sales Trend"
+            ]
+        },
+        {
+            "groupId": "data",
+            "elements": [
+                "### Sales Data",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "salesData"
+                }
             ]
         }
     ]
