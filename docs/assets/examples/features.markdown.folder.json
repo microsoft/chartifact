@@ -15,6 +15,10 @@
             "href": "markdown/features/3.chart.idoc.md"
         },
         {
+            "title": "Advanced Charts",
+            "href": "markdown/features/3.advanced-charts.idoc.md"
+        },
+        {
             "title": "Table",
             "href": "markdown/features/4.table.idoc.md"
         },
