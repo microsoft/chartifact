@@ -1,0 +1,111 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Sales Performance Dashboard (No Charts)",
+    "style": {
+        "css": [
+            "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f5f7fa; }",
+            "body { display: grid; grid-template-areas: 'header header header' 'revenue orders avg'; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+            ".group { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }",
+            "#header { grid-area: header; background: #667eea; color: white; text-align: center; }",
+            "#revenue { grid-area: revenue; text-align: center; }",
+            "#orders { grid-area: orders; text-align: center; }",
+            "#avg { grid-area: avg; text-align: center; }",
+            "h1 { margin: 0; padding: 10px 0; font-size: 1.5em; font-weight: 400; }",
+            "h2 { margin: 10px 0; font-size: 2em; color: #333; }",
+            "h3 { margin: 0 0 10px 0; font-size: 1em; color: #666; text-transform: uppercase; }",
+            "@media (max-width: 768px) { body { grid-template-areas: 'header header' 'revenue orders' 'avg avg'; grid-template-columns: 1fr 1fr; gap: 15px; } }",
+            "@media (max-width: 480px) { body { grid-template-areas: 'header' 'revenue' 'orders' 'avg'; grid-template-columns: 1fr; gap: 10px; } }"
+        ]
+    },
+    "dataLoaders": [
+        {
+            "dataSourceName": "salesData",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"timestamp": "2025-08-01", "order_id": "ORD-1001", "product": "Wireless Mouse", "category": "Electronics", "region": "West", "salesperson": "Jane Smith", "units": 3, "unit_price": 25.00},
+                {"timestamp": "2025-08-02", "order_id": "ORD-1002", "product": "Office Chair", "category": "Furniture", "region": "East", "salesperson": "Bob Johnson", "units": 1, "unit_price": 199.99},
+                {"timestamp": "2025-08-03", "order_id": "ORD-1003", "product": "Laptop Stand", "category": "Electronics", "region": "North", "salesperson": "Alice Chen", "units": 2, "unit_price": 45.50},
+                {"timestamp": "2025-08-05", "order_id": "ORD-1004", "product": "Desk Lamp", "category": "Furniture", "region": "South", "salesperson": "Charlie Brown", "units": 1, "unit_price": 89.00},
+                {"timestamp": "2025-08-06", "order_id": "ORD-1005", "product": "Bluetooth Headphones", "category": "Electronics", "region": "West", "salesperson": "Jane Smith", "units": 4, "unit_price": 79.99}
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "variableId": "revenueCalculation",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["salesData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "expr": "datum.units * datum.unit_price",
+                        "as": "revenue"
+                    },
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["revenue"],
+                        "as": ["total"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "totalRevenueFormatted",
+            "type": "string",
+            "initialValue": "$0",
+            "calculation": {
+                "vegaExpression": "'$' + format(data('revenueCalculation')[0] ? data('revenueCalculation')[0].total : 0, ',.2f')"
+            }
+        },
+        {
+            "variableId": "totalOrders",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "length(data('salesData'))"
+            }
+        },
+        {
+            "variableId": "averageOrderValue",
+            "type": "string",
+            "initialValue": "$0.00",
+            "calculation": {
+                "vegaExpression": "'$' + format((data('revenueCalculation')[0] ? data('revenueCalculation')[0].total : 0) / (totalOrders > 0 ? totalOrders : 1), ',.2f')"
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "header",
+            "elements": [
+                "# Sales Performance Dashboard"
+            ]
+        },
+        {
+            "groupId": "revenue",
+            "elements": [
+                "### Total Revenue",
+                "## {{totalRevenueFormatted}}"
+            ]
+        },
+        {
+            "groupId": "orders", 
+            "elements": [
+                "### Total Orders",
+                "## {{totalOrders}}"
+            ]
+        },
+        {
+            "groupId": "avg",
+            "elements": [
+                "### Average Order Value", 
+                "## {{averageOrderValue}}"
+            ]
+        }
+    ]
+}
