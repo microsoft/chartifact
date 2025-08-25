@@ -150,7 +150,6 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     return $schema.includes("vega-lite") ? "vega-lite" : "vega";
   }
   function topologicalSort(list) {
-    var _a;
     const nameToObject = /* @__PURE__ */ new Map();
     const inDegree = /* @__PURE__ */ new Map();
     const graph = /* @__PURE__ */ new Map();
@@ -160,7 +159,14 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       graph.set(obj.variableId, []);
     }
     for (const obj of list) {
-      const sources = ((_a = obj.calculation) == null ? void 0 : _a.dependsOn) || [];
+      let sources = [];
+      const calculation = calculationType(obj);
+      if (calculation == null ? void 0 : calculation.dfCalc) {
+        sources = calculation.dfCalc.dataSourceNames || [];
+      } else if (calculation == null ? void 0 : calculation.scalarCalc) {
+        const ast = vega.parseExpression(calculation.scalarCalc.vegaExpression);
+        sources = [...collectIdentifiers(ast)];
+      }
       for (const dep of sources) {
         if (!graph.has(dep)) {
           continue;
@@ -209,28 +215,35 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       });
     });
     topologicalSort(variables).forEach((v) => {
-      if (isDataframePipeline(v)) {
-        const { dataFrameTransformations } = v.calculation;
+      const calculation = calculationType(v);
+      if (calculation == null ? void 0 : calculation.dfCalc) {
+        const { dataFrameTransformations } = calculation.dfCalc;
         const data = {
           name: v.variableId,
-          source: v.calculation.dependsOn || [],
+          source: calculation.dfCalc.dataSourceNames || [],
           transform: dataFrameTransformations
         };
         spec.data.push(data);
         spec.signals.push(dataAsSignal(v.variableId));
       } else {
         const signal = { name: v.variableId, value: v.initialValue };
-        if (v.calculation) {
-          signal.update = v.calculation.vegaExpression;
+        if (calculation == null ? void 0 : calculation.scalarCalc) {
+          signal.update = calculation.scalarCalc.vegaExpression;
         }
         spec.signals.push(signal);
       }
     });
     return spec;
   }
-  function isDataframePipeline(variable) {
-    var _a, _b;
-    return variable.type === "object" && !!variable.isArray && (((_a = variable.calculation) == null ? void 0 : _a.dependsOn) !== void 0 && variable.calculation.dependsOn.length > 0 || ((_b = variable.calculation) == null ? void 0 : _b.dataFrameTransformations) !== void 0 && variable.calculation.dataFrameTransformations.length > 0);
+  function calculationType(variable) {
+    const dfCalc = variable.calculation;
+    if (dfCalc && variable.type === "object" && !!variable.isArray && (dfCalc.dataSourceNames !== void 0 && dfCalc.dataSourceNames.length > 0 || dfCalc.dataFrameTransformations !== void 0 && dfCalc.dataFrameTransformations.length > 0)) {
+      return { dfCalc };
+    }
+    const scalarCalc = variable.calculation;
+    if (scalarCalc && !(variable.type === "object" && variable.isArray) && (scalarCalc.vegaExpression !== void 0 && scalarCalc.vegaExpression.length > 0)) {
+      return { scalarCalc };
+    }
   }
   function ensureDataAndSignalsArray(spec) {
     if (!spec.data) {
@@ -2128,16 +2141,18 @@ document.addEventListener('DOMContentLoaded', () => {
       (_a = this.iframe.contentWindow) == null ? void 0 : _a.postMessage(message, "*");
     }
     getDependencies() {
+      const { hostname, origin } = window.location;
+      const url = hostname === "localhost" ? origin : "https://microsoft.github.io/chartifact";
       return `
 <link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet" />
-<link href="https://microsoft.github.io/chartifact/dist/v1/chartifact-reset.css" rel="stylesheet" />
+<link href="${url}/dist/v1/chartifact-reset.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"><\/script>
 <script src="https://unpkg.com/css-tree/dist/csstree.js"><\/script>
 <script src="https://unpkg.com/js-yaml/dist/js-yaml.min.js"><\/script>
 <script src="https://cdn.jsdelivr.net/npm/vega@5.29.0"><\/script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.20.1"><\/script>
 <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"><\/script>
-<script src="https://microsoft.github.io/chartifact/dist/v1/chartifact.markdown.umd.js"><\/script>
+<script src="${url}/dist/v1/chartifact.markdown.umd.js"><\/script>
 `;
     }
   }

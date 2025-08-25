@@ -167,7 +167,6 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     return $schema.includes("vega-lite") ? "vega-lite" : "vega";
   }
   function topologicalSort(list) {
-    var _a;
     const nameToObject = /* @__PURE__ */ new Map();
     const inDegree = /* @__PURE__ */ new Map();
     const graph = /* @__PURE__ */ new Map();
@@ -177,7 +176,14 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       graph.set(obj.variableId, []);
     }
     for (const obj of list) {
-      const sources = ((_a = obj.calculation) == null ? void 0 : _a.dependsOn) || [];
+      let sources = [];
+      const calculation = calculationType(obj);
+      if (calculation == null ? void 0 : calculation.dfCalc) {
+        sources = calculation.dfCalc.dataSourceNames || [];
+      } else if (calculation == null ? void 0 : calculation.scalarCalc) {
+        const ast = vega.parseExpression(calculation.scalarCalc.vegaExpression);
+        sources = [...collectIdentifiers(ast)];
+      }
       for (const dep of sources) {
         if (!graph.has(dep)) {
           continue;
@@ -225,28 +231,35 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       });
     });
     topologicalSort(variables).forEach((v) => {
-      if (isDataframePipeline(v)) {
-        const { dataFrameTransformations } = v.calculation;
+      const calculation = calculationType(v);
+      if (calculation == null ? void 0 : calculation.dfCalc) {
+        const { dataFrameTransformations } = calculation.dfCalc;
         const data = {
           name: v.variableId,
-          source: v.calculation.dependsOn || [],
+          source: calculation.dfCalc.dataSourceNames || [],
           transform: dataFrameTransformations
         };
         spec.data.push(data);
         spec.signals.push(dataAsSignal(v.variableId));
       } else {
         const signal = { name: v.variableId, value: v.initialValue };
-        if (v.calculation) {
-          signal.update = v.calculation.vegaExpression;
+        if (calculation == null ? void 0 : calculation.scalarCalc) {
+          signal.update = calculation.scalarCalc.vegaExpression;
         }
         spec.signals.push(signal);
       }
     });
     return spec;
   }
-  function isDataframePipeline(variable) {
-    var _a, _b;
-    return variable.type === "object" && !!variable.isArray && (((_a = variable.calculation) == null ? void 0 : _a.dependsOn) !== void 0 && variable.calculation.dependsOn.length > 0 || ((_b = variable.calculation) == null ? void 0 : _b.dataFrameTransformations) !== void 0 && variable.calculation.dataFrameTransformations.length > 0);
+  function calculationType(variable) {
+    const dfCalc = variable.calculation;
+    if (dfCalc && variable.type === "object" && !!variable.isArray && (dfCalc.dataSourceNames !== void 0 && dfCalc.dataSourceNames.length > 0 || dfCalc.dataFrameTransformations !== void 0 && dfCalc.dataFrameTransformations.length > 0)) {
+      return { dfCalc };
+    }
+    const scalarCalc = variable.calculation;
+    if (scalarCalc && !(variable.type === "object" && variable.isArray) && (scalarCalc.vegaExpression !== void 0 && scalarCalc.vegaExpression.length > 0)) {
+      return { scalarCalc };
+    }
   }
   function ensureDataAndSignalsArray(spec) {
     if (!spec.data) {

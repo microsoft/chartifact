@@ -2264,6 +2264,9 @@ ${reconstitutedRules.join("\n\n")}
           });
         }
         const outputData = () => {
+          if (!spec.variableId) {
+            return;
+          }
           let data;
           if (selectableRows) {
             data = table.getSelectedData();

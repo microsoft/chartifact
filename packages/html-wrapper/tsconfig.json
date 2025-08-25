@@ -1,14 +1,14 @@
 {
     "compilerOptions": {
-        "module": "node16",
-        "moduleResolution": "node16",
+        "declaration": true,
+        "outDir": "js",
+        "module": "commonjs",
         "skipLibCheck": true,
         "target": "esnext",
-        "allowSyntheticDefaultImports": true,
         "lib": [
+            "dom",
             "esnext"
-        ],
-        "outDir": "dist",
+        ]
     },
     "include": [
         "src"

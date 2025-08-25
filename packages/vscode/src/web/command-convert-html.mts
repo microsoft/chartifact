@@ -3,9 +3,8 @@
 * Licensed under the MIT License.
 */
 import * as vscode from 'vscode';
-import { getResourceContent } from './resources';
-import { escapeTextareaContent } from './html';
 import { findAvailableFileName } from './file.js';
+import hw from 'html-wrapper';
 
 /**
  * Handles the conversion of .idoc.md and .idoc.json files to HTML
@@ -21,13 +20,15 @@ export async function convertToHtml(fileUri: vscode.Uri) {
 		let htmlContent: string;
 		let originalExtension: string;
 
+		const title = getFileNameWithoutExtension(fileUri);
+
 		if (fileName.endsWith('.json')) {
 			// Handle JSON files
-			htmlContent = htmlJsonWrapper(fileText, fileUri);
+			htmlContent = hw.htmlJsonWrapper(title, fileText);
 			originalExtension = '.idoc.json';
 		} else if (fileName.endsWith('.md')) {
 			// Handle Markdown files
-			htmlContent = htmlMarkdownWrapper(fileText, fileUri);
+			htmlContent = hw.htmlMarkdownWrapper(title, fileText);
 			originalExtension = '.idoc.md';
 		} else {
 			throw new Error(`Unsupported file type. Expected .idoc.md or .idoc.json, got: ${fileName}`);
@@ -56,30 +57,6 @@ export async function convertToHtml(fileUri: vscode.Uri) {
 	}
 }
 
-function htmlMarkdownWrapper(markdown: string, fileUri: vscode.Uri) {
-	const template = getResourceContent('html-markdown.html');
-
-	const result = template
-		.replace('{{TITLE}}', () => escapeHtml(getFileNameWithoutExtension(fileUri)))
-
-		.replace('{{HTML_MARKDOWN_JS}}', () => `<script>\n${getResourceContent('html-markdown.js')}\n</script>`)
-		.replace('{{TEXTAREA_CONTENT}}', () => escapeTextareaContent(markdown));
-
-	return result;
-}
-
-function htmlJsonWrapper(json: string, fileUri: vscode.Uri) {
-	const template = getResourceContent('html-json.html');
-
-	const result = template
-		.replace('{{TITLE}}', () => escapeHtml(getFileNameWithoutExtension(fileUri)))
-
-		.replace('{{HTML_JSON_JS}}', () => `<script>\n${getResourceContent('html-json.js')}\n</script>`)
-		.replace('{{TEXTAREA_CONTENT}}', () => escapeTextareaContent(json));
-
-	return result;
-}
-
 function getFileNameWithoutExtension(fileUri: any): any {
 	const path = fileUri.path;
 	const lastSlashIndex = path.lastIndexOf('/');
@@ -88,17 +65,4 @@ function getFileNameWithoutExtension(fileUri: any): any {
 		return path.substring(lastSlashIndex + 1, lastDotIndex);
 	}
 	return path.substring(lastSlashIndex + 1);
-}
-
-function escapeHtml(text: string): string {
-	return text.replace(/[&<>"']/g, (char) => {
-		switch (char) {
-			case '&': return '&amp;';
-			case '<': return '&lt;';
-			case '>': return '&gt;';
-			case '"': return '&quot;';
-			case "'": return '&#39;';
-			default: return char;
-		}
-	});
 }

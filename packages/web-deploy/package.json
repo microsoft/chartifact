@@ -4,10 +4,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "convert": "node ./dist/convert.mjs",
     "readme": "node ./dist/index.mjs",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist && rimraf ../../docs/assets/examples/json && rimraf ../../docs/assets/examples/markdown",
     "build": "tsc -p .",
-    "deploy": "npm run build && npm run readme"
+    "deploy": "npm run clean && npm run build && npm run readme && npm run convert"
+
   },
   "author": "Dan Marshall",
   "license": "MIT",

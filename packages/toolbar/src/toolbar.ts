@@ -3,6 +3,8 @@
 * Licensed under the MIT License.
 */
 
+import * as hw from 'html-wrapper';
+
 export interface ToolbarOptions {
     tweakButton?: boolean;
     downloadButton?: boolean;
@@ -20,6 +22,7 @@ export class Toolbar {
     public downloadButton: HTMLButtonElement;
     public mode: 'markdown' | 'json';
     public filename: string;
+    private downloadPopup: HTMLDivElement;
 
     constructor(toolbarElementOrSelector: HTMLElement | string, public options: ToolbarOptions = {}) {
         this.filename = options.filename || 'sample';
@@ -30,15 +33,32 @@ export class Toolbar {
             throw new Error('Toolbar element not found');
         }
 
+        const { home, target } = (window.location.hostname === 'localhost')
+            ? { home: '/', target: '_self' }
+            : { home: 'https://microsoft.github.io/chartifact', target: '_blank' };
+
         const html = `
 <div>
-    <a href="https://microsoft.github.io/chartifact" target="_blank">Chartifact</a> viewer
+    <a href="${home}" target="${target}">Chartifact</a> viewer
 </div>
 <div id="folderSpan" style="display: none;"></div>
 <div>
     <button type="button" id="restart" style="display: none;">start over</button>
     <button type="button" id="tweak" style="display: none;">view source</button>
     <button type="button" id="download" style="display: none;">download</button>
+</div>
+<div id="downloadPopup" style="position: absolute; display: none; padding: 12px 16px; z-index: 1; background-color: inherit;">
+    <div style="margin-bottom: 8px;">Download as:</div>
+    <ul>
+        <li>
+            Source markdown (just the content)<br/>
+            <button type="button" id="download-md" style="margin-right: 8px;">Source markdown</button>
+        </li>
+        <li>
+            HTML wrapper (content plus a shareable viewer)<br/>
+            <button type="button" id="download-html">HTML wrapper</button>
+        </li>
+    </ul>
 </div>
         `;
 
@@ -48,6 +68,7 @@ export class Toolbar {
         this.tweakButton = this.toolbarElement.querySelector('#tweak') as HTMLButtonElement;
         this.restartButton = this.toolbarElement.querySelector('#restart') as HTMLButtonElement;
         this.downloadButton = this.toolbarElement.querySelector('#download') as HTMLButtonElement;
+        this.downloadPopup = this.toolbarElement.querySelector('#downloadPopup') as HTMLDivElement;
 
         if (this.options.tweakButton) {
             this.showTweakButton();
@@ -69,26 +90,79 @@ export class Toolbar {
             window.location.reload();
         });
 
-        this.downloadButton?.addEventListener('click', () => {
+        this.downloadButton?.addEventListener('click', (e) => {
+            // Position popup near the button
+            const rect = this.downloadButton.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+            const buttonCenter = rect.left + rect.width / 2;
+            const isLeftOfCenter = buttonCenter < viewportWidth / 2;
+
+            if (isLeftOfCenter) {
+                // Align popup to the left of the button
+                this.downloadPopup.style.left = `${rect.left + window.scrollX}px`;
+                this.downloadPopup.style.right = ''; // Clear right alignment
+            } else {
+                // Align popup to the right of the button
+                const popupWidth = this.downloadPopup.offsetWidth;
+                this.downloadPopup.style.right = `${viewportWidth - rect.right - window.scrollX}px`;
+                this.downloadPopup.style.left = ''; // Clear left alignment
+            }
+
+            this.downloadPopup.style.top = `${rect.bottom + window.scrollY + 4}px`;
+            this.downloadPopup.style.display = 'block';
+
+            // Hide popup on outside click
+            const hidePopup = (evt: MouseEvent) => {
+                if (!this.downloadPopup.contains(evt.target as Node) && evt.target !== this.downloadButton) {
+                    this.downloadPopup.style.display = 'none';
+                    document.removeEventListener('mousedown', hidePopup);
+                }
+            };
+            setTimeout(() => document.addEventListener('mousedown', hidePopup), 0);
+        });
+
+        // Download as markdown
+        this.downloadPopup.querySelector('#download-md')?.addEventListener('click', () => {
+            this.downloadPopup.style.display = 'none';
             const textarea = this.options.textarea;
             if (!textarea) return;
             const content = textarea.value;
-            const ext = this.mode === 'markdown' ? 'idoc.md' : 'idoc.json';
-            const filename = `${filenameWithoutPathOrExtension(this.filename)}.${ext}`;
-            const blob = new Blob([content], {
-                type: this.mode === 'markdown' ? 'text/markdown' : 'application/json'
-            });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(() => {
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }, 0);
+            const filename = `${filenameWithoutPathOrExtension(this.filename)}.idoc.md`;
+            this.triggerDownload(content, filename, 'text/markdown');
         });
+
+        // Download as HTML wrapper
+        this.downloadPopup.querySelector('#download-html')?.addEventListener('click', () => {
+            this.downloadPopup.style.display = 'none';
+            const textarea = this.options.textarea;
+            if (!textarea) return;
+            const filename = `${filenameWithoutPathOrExtension(this.filename)}.idoc.html`;
+            const html = this.htmlWrapper();
+            this.triggerDownload(html, filename, 'text/html');
+        });
+    }
+
+    public htmlWrapper() {
+        if (this.mode === 'markdown') {
+            return hw.default.htmlMarkdownWrapper(this.filename, this.options.textarea.value);
+        } else if (this.mode === 'json') {
+            return hw.default.htmlJsonWrapper(this.filename, this.options.textarea.value);
+        }
+    }
+
+    // Helper method to trigger a download
+    private triggerDownload(content: string, filename: string, mimeType: string) {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 0);
     }
 
     showTweakButton() {

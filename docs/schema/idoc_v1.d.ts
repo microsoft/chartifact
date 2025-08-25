@@ -25,13 +25,18 @@ interface Variable {
     initialValue: VariableValue;
     calculation?: Calculation;
 }
-interface Calculation {
-    dependsOn?: VariableID[];
-    /** Vega expression language, used to calculate the value based on other variables. Not for object arrays. */
-    vegaExpression?: string;
-    /** If a variable type is object and isArray is true, the calculation must be a DataFrameTransformation */
-    dataFrameTransformations?: Transforms[];
+/** Scalar calculation for primitive values. Not for object arrays. */
+interface ScalarCalculation {
+    /** Vega expression language, used to calculate the value based on other variables. */
+    vegaExpression: string;
 }
+/** DataFrame calculation for object arrays. Not for primitive/scalar values. */
+interface DataFrameCalculation {
+    /** The upstream object array source dataSourceName(s) the dataFrameTransformations depends on. */
+    dataSourceNames: VariableID[];
+    dataFrameTransformations: Transforms[];
+}
+type Calculation = ScalarCalculation | DataFrameCalculation;
 /** A url, it may contain template variables, e.g. https://example.com/{{category}}/{{item}} */
 type TemplatedUrl = string;
 interface DataSourceBase {
@@ -281,4 +286,4 @@ interface GoogleFontsSpec {
 type InteractiveDocumentWithSchema = InteractiveDocument & {
     $schema?: string;
 };
-export type { Calculation, ChartElement, CheckboxElement, CheckboxProps, DataLoader, DataLoaderBySpec, DataSource, DataSourceBase, DataSourceBaseFormat, DataSourceByDynamicURL, DataSourceByFile, DataSourceInline, DropdownElement, DropdownElementProps, DynamicDropdownOptions, ElementBase, ElementGroup, GoogleFontsSpec, ImageElement, ImageElementProps, InteractiveDocument, InteractiveDocumentWithSchema, InteractiveElement, MarkdownElement, MermaidElement, MermaidElementProps, MermaidTemplate, OptionalVariableControl, PageElement, PageStyle, Preset, PresetsElement, PresetsElementProps, ReturnType, SliderElement, SliderElementProps, TabulatorElement, TabulatorElementProps, TemplatedUrl, TextboxElement, TextboxElementProps, Variable, VariableControl, VariableID, VariableType, VariableValue, VariableValueArray, VariableValuePrimitive, Vega_or_VegaLite_spec };
+export type { Calculation, ChartElement, CheckboxElement, CheckboxProps, DataFrameCalculation, DataLoader, DataLoaderBySpec, DataSource, DataSourceBase, DataSourceBaseFormat, DataSourceByDynamicURL, DataSourceByFile, DataSourceInline, DropdownElement, DropdownElementProps, DynamicDropdownOptions, ElementBase, ElementGroup, GoogleFontsSpec, ImageElement, ImageElementProps, InteractiveDocument, InteractiveDocumentWithSchema, InteractiveElement, MarkdownElement, MermaidElement, MermaidElementProps, MermaidTemplate, OptionalVariableControl, PageElement, PageStyle, Preset, PresetsElement, PresetsElementProps, ReturnType, ScalarCalculation, SliderElement, SliderElementProps, TabulatorElement, TabulatorElementProps, TemplatedUrl, TextboxElement, TextboxElementProps, Variable, VariableControl, VariableID, VariableType, VariableValue, VariableValueArray, VariableValuePrimitive, Vega_or_VegaLite_spec };

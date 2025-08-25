@@ -29,17 +29,25 @@ export interface Variable {
   calculation?: Calculation;
 }
 
-export interface Calculation {
-  dependsOn?: VariableID[];
+/** Scalar calculation for primitive values. Not for object arrays. */
+export interface ScalarCalculation {
 
-  /** Vega expression language, used to calculate the value based on other variables. Not for object arrays. */
-  vegaExpression?: string;
-
-  /** If a variable type is object and isArray is true, the calculation must be a DataFrameTransformation */
-  dataFrameTransformations?: Transforms[];
+  /** Vega expression language, used to calculate the value based on other variables. */
+  vegaExpression: string;
 }
 
-  /** A url, it may contain template variables, e.g. https://example.com/{{category}}/{{item}} */
+/** DataFrame calculation for object arrays. Not for primitive/scalar values. */
+export interface DataFrameCalculation {
+
+  /** The upstream object array source dataSourceName(s) the dataFrameTransformations depends on. */
+  dataSourceNames: VariableID[];
+
+  dataFrameTransformations: Transforms[];
+}
+
+export type Calculation = ScalarCalculation | DataFrameCalculation;
+
+/** A url, it may contain template variables, e.g. https://example.com/{{category}}/{{item}} */
 export type TemplatedUrl = string;
 
 export interface DataSourceBase {

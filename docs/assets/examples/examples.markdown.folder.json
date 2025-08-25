@@ -1,0 +1,26 @@
+{
+    "$schema": "../../schema/folder_v1.json",
+    "title": "Capabilities",
+    "docs": [
+        {
+            "title": "Why Chartifact",
+            "href": "markdown/why-chartifact.idoc.md"
+        },
+        {
+            "title": "Sales Dashboard",
+            "href": "markdown/sales-dashboard.idoc.md"
+        },
+        {
+            "title": "Sales Report",
+            "href": "markdown/sales-report.idoc.md"
+        },
+        {
+            "title": "Grocery List",
+            "href": "markdown/grocery-list.idoc.md"
+        },
+        {
+            "title": "Mermaid Org Chart",
+            "href": "markdown/mermaid-org-chart.idoc.md"
+        }
+    ]
+}

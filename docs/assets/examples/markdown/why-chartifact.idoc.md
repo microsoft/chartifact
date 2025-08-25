@@ -56,26 +56,26 @@ li { margin: 0.3em 0; }
 ### We're living in the age of AI-assisted knowledge work
 - Large Language Models transform how we create and consume information
 - Knowledge workers expect **interactive**, **dynamic** content
-- Traditional document formats feel static and outdated
 - **But we're still using document formats from the pre-AI era**
 :::
 ::: group {#slide3}
 
-## 📄 The Current Landscape is Broken
+## 📄 The Current Landscape
 ### PDF: Made for **paper**
-❌ Not human-editable
-❌ Not interactive
-❌ Static forever
+- ✅ Single self-contained file
+- ❌ Not human-editable
+- ❌ Not interactive nor responsive
+- ❌ Static
 
 ### HTML:
-✅ Powerful & interactive
-❌ Security nightmare
-❌ Corporate systems won't serve it
+- ✅ Powerful & interactive
+- ❌ Security nightmare
+- ❌ Corporate systems block it
 
 ### Markdown: **Clear winner** so far
-✅ Human-readable
-✅ Version controllable
-❌ Limited interactivity
+- ✅ Human-readable
+- ✅ Version controllable
+- ❌ Limited interactivity
 :::
 ::: group {#slide4}
 
@@ -93,10 +93,9 @@ li { margin: 0.3em 0; }
 
 ## 🔒 Proprietary Solutions Miss the Point
 ### Most LLMs build apps, not documents
-- Proprietary and platform-locked 🔐
 - Force information workers to become developers 👩‍💻
 - **All they wanted to do was remix a presentation!**
-- Sometimes trapped in vendor ecosystem
+- Sometimes platform-locked in vendor ecosystem
 - Require hosting and maintenance
 
 ### What we actually need:

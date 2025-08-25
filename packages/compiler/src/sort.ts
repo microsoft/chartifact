@@ -3,6 +3,9 @@
 * Licensed under the MIT License.
 */
 import { Variable } from '@microsoft/chartifact-schema';
+import { calculationType } from './spec.js';
+import { parseExpression } from 'vega';
+import { collectIdentifiers } from 'common';
 
 export function topologicalSort(list: Variable[]) {
     const nameToObject = new Map<string, Variable>();
@@ -16,7 +19,16 @@ export function topologicalSort(list: Variable[]) {
     }
 
     for (const obj of list) {
-        const sources = obj.calculation?.dependsOn || [];
+        let sources: string[] = [];
+
+        const calculation = calculationType(obj);
+
+        if (calculation?.dfCalc) {
+            sources = calculation.dfCalc.dataSourceNames || [];
+        } else if (calculation?.scalarCalc) {
+            const ast = parseExpression(calculation.scalarCalc.vegaExpression);
+            sources = [...collectIdentifiers(ast)];
+        }
 
         for (const dep of sources) {
             if (!graph.has(dep)) {

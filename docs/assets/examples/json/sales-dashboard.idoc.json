@@ -84,10 +84,9 @@
       "isArray": true,
       "initialValue": [],
       "calculation": {
-        "dependsOn": [
+        "dataSourceNames": [
           "salesData"
         ],
-        "vegaExpression": "data('salesData')",
         "dataFrameTransformations": [
           {
             "type": "formula",
@@ -114,9 +113,6 @@
       "type": "string",
       "initialValue": "$0",
       "calculation": {
-        "dependsOn": [
-          "revenueCalculation"
-        ],
         "vegaExpression": "'$' + format(data('revenueCalculation')[0] ? data('revenueCalculation')[0].total : 0, ',.2f')"
       }
     },
@@ -125,9 +121,6 @@
       "type": "number",
       "initialValue": 0,
       "calculation": {
-        "dependsOn": [
-          "salesData"
-        ],
         "vegaExpression": "length(data('salesData'))"
       }
     },
@@ -136,10 +129,6 @@
       "type": "string",
       "initialValue": "$0.00",
       "calculation": {
-        "dependsOn": [
-          "revenueCalculation",
-          "totalOrders"
-        ],
         "vegaExpression": "'$' + format((data('revenueCalculation')[0] ? data('revenueCalculation')[0].total : 0) / (totalOrders > 0 ? totalOrders : 1), ',.2f')"
       }
     },
@@ -149,10 +138,9 @@
       "isArray": true,
       "initialValue": [],
       "calculation": {
-        "dependsOn": [
+        "dataSourceNames": [
           "salesData"
         ],
-        "vegaExpression": "data('salesData')",
         "dataFrameTransformations": [
           {
             "type": "formula",

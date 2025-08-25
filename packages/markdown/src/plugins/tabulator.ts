@@ -134,6 +134,9 @@ export const tabulatorPlugin: Plugin<TabulatorSpec> = {
             }
 
             const outputData = () => {
+                if (!spec.variableId) {
+                    return;
+                }
                 let data: object[];
                 if (selectableRows) {
                     data = table.getSelectedData();

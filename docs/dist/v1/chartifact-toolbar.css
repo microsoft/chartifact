@@ -46,6 +46,15 @@
 .chartifact-toolbar button {
   background-color: inherit;
   color: inherit;
+  cursor: pointer;
+}
+
+.chartifact-toolbar li {
+  margin-top: 1em;
+}
+
+.chartifact-toolbar li:first-child {
+  margin-top: 0;
 }
 
 /* Default: stack toolbar sections vertically */

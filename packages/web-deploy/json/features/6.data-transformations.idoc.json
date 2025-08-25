@@ -33,7 +33,7 @@
             "isArray": true,
             "initialValue": [],
             "calculation": {
-                "dependsOn": ["rawData"],
+                "dataSourceNames": ["rawData"],
                 "dataFrameTransformations": [
                     {
                         "type": "aggregate",

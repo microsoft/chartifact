@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "serve-jekyll": "npx http-server ./docs/_site -p 4000 --cors",
     "clean": "npm run clean --workspaces --if-present",
     "build": "npm run build:00 --workspaces --if-present && npm run build:01 --workspaces --if-present && npm run build:02 --workspaces --if-present && npm run build:03 --workspaces --if-present && npm run build:04 --workspaces --if-present && npm run build:05 --workspaces --if-present && npm run build:06 --workspaces --if-present && npm run build:07 --workspaces --if-present && npm run build:08 --workspaces --if-present",
     "build-host": "npm run build -w @microsoft/chartifact-markdown && npm run build -w @microsoft/chartifact-sandbox && npm run build -w @microsoft/chartifact-host",

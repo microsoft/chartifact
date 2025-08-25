@@ -1,17 +1,6 @@
 {
     "$schema": "../../../docs/schema/idoc_v1.json",
     "title": "Select Items to Buy",
-    "style": {
-        "css": [
-            "html, body { height: 100%; margin: 0; padding: 0; scroll-behavior: smooth; overflow-y: auto; }",
-            "body { scroll-snap-type: y mandatory; }",
-            ".group { color: white; scroll-snap-align: start; height: 100vh; margin: 0; padding: 1em; box-sizing: border-box; }",
-            "#slide1 { background: #1abc9c; }",
-            "#slide2 { background: #3498db; }",
-            "#slide3 { background: #9b59b6; }",
-            "#slide4 { background: #e74c3c; }"
-        ]
-    },
     "dataLoaders": [
         {
             "dataSourceName": "itemsData",
@@ -148,7 +137,7 @@
             "isArray": true,
             "initialValue": [],
             "calculation": {
-                "dependsOn": [
+                "dataSourceNames": [
                     "itemsData_selected"
                 ],
                 "dataFrameTransformations": [
@@ -178,34 +167,13 @@
     ],
     "groups": [
         {
-            "groupId": "slide1",
-            "elements": [
-                "## Welcome to the Shopping List App\n"
-            ]
-        },
-        {
-            "groupId": "slide2",
-            "elements": [
-                "## Here you can select items to buy from a variety of categories.\n",
-                "### Categories include Fruits, Bakery, Dairy, Meat, Vegetables, and Pantry items.\n",
-                "### You can select multiple items and see the total price calculated automatically."
-            ]
-        },
-        {
-            "groupId": "slide3",
-            "elements": [
-                "## Let's start by selecting some items from the list below.\n",
-                "### Click on the checkboxes next to the items you want to add to your shopping list."
-            ]
-        },
-        {
-            "groupId": "slide4",
+            "groupId": "main",
             "elements": [
                 "## Select the items you want to buy\n",
                 {
                     "type": "tabulator",
-                    "dataSourceName": "itemsData",
                     "variableId": "itemsData_selected",
+                    "dataSourceName": "itemsData",
                     "tabulatorOptions": {
                         "autoColumns": true,
                         "layout": "fitColumns",

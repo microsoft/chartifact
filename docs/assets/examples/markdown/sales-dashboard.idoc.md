@@ -8,6 +8,11 @@
       "update": "data('revenueCalculation')"
     },
     {
+      "name": "totalRevenueFormatted",
+      "value": "$0",
+      "update": "'$' + format(data('revenueCalculation')[0] ? data('revenueCalculation')[0].total : 0, ',.2f')"
+    },
+    {
       "name": "totalOrders",
       "value": 0,
       "update": "length(data('salesData'))"
@@ -15,11 +20,6 @@
     {
       "name": "categoryRevenue",
       "update": "data('categoryRevenue')"
-    },
-    {
-      "name": "totalRevenueFormatted",
-      "value": "$0",
-      "update": "'$' + format(data('revenueCalculation')[0] ? data('revenueCalculation')[0].total : 0, ',.2f')"
     },
     {
       "name": "averageOrderValue",

@@ -186,27 +186,14 @@
       "type": "object"
     },
     "Calculation": {
-      "additionalProperties": false,
-      "properties": {
-        "dataFrameTransformations": {
-          "description": "If a variable type is object and isArray is true, the calculation must be a DataFrameTransformation",
-          "items": {
-            "$ref": "#/definitions/Transforms"
-          },
-          "type": "array"
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ScalarCalculation"
         },
-        "dependsOn": {
-          "items": {
-            "$ref": "#/definitions/VariableID"
-          },
-          "type": "array"
-        },
-        "vegaExpression": {
-          "description": "Vega expression language, used to calculate the value based on other variables. Not for object arrays.",
-          "type": "string"
+        {
+          "$ref": "#/definitions/DataFrameCalculation"
         }
-      },
-      "type": "object"
+      ]
     },
     "ChartElement": {
       "additionalProperties": false,
@@ -500,6 +487,30 @@
       },
       "required": [
         "type"
+      ],
+      "type": "object"
+    },
+    "DataFrameCalculation": {
+      "additionalProperties": false,
+      "description": "DataFrame calculation for object arrays. Not for primitive/scalar values.",
+      "properties": {
+        "dataFrameTransformations": {
+          "items": {
+            "$ref": "#/definitions/Transforms"
+          },
+          "type": "array"
+        },
+        "dataSourceNames": {
+          "description": "The upstream object array source dataSourceName(s) the dataFrameTransformations depends on.",
+          "items": {
+            "$ref": "#/definitions/VariableID"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "dataSourceNames",
+        "dataFrameTransformations"
       ],
       "type": "object"
     },
@@ -2718,6 +2729,20 @@
       "required": [
         "type",
         "size"
+      ],
+      "type": "object"
+    },
+    "ScalarCalculation": {
+      "additionalProperties": false,
+      "description": "Scalar calculation for primitive values. Not for object arrays.",
+      "properties": {
+        "vegaExpression": {
+          "description": "Vega expression language, used to calculate the value based on other variables.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "vegaExpression"
       ],
       "type": "object"
     },

@@ -3,7 +3,7 @@
 * Licensed under the MIT License.
 */
 import { Spec as VegaSpec } from 'vega-typings';
-import { Variable, DataLoader, TabulatorElement } from '@microsoft/chartifact-schema';
+import { Variable, DataLoader, TabulatorElement, DataFrameCalculation, ScalarCalculation } from '@microsoft/chartifact-schema';
 import { SourceData, ValuesData, Signal, NewSignal } from "vega";
 import { topologicalSort } from "./sort.js";
 
@@ -45,19 +45,20 @@ export function createSpecWithVariables(variables: Variable[], tabulatorElements
     }
 
     topologicalSort(variables).forEach((v) => {
-        if (isDataframePipeline(v)) {
-            const { dataFrameTransformations } = v.calculation!;
+        const calculation = calculationType(v);
+        if (calculation?.dfCalc) {
+            const { dataFrameTransformations } = calculation.dfCalc;
             const data: SourceData & Partial<ValuesData> = {
                 name: v.variableId,
-                source: v.calculation!.dependsOn || [],
+                source: calculation.dfCalc.dataSourceNames || [],
                 transform: dataFrameTransformations,
             };
             spec.data.push(data);
             spec.signals.push(dataAsSignal(v.variableId));
         } else {
             const signal: Signal = { name: v.variableId, value: v.initialValue };
-            if (v.calculation) {
-                signal.update = v.calculation!.vegaExpression;
+            if (calculation?.scalarCalc) {
+                signal.update = calculation.scalarCalc.vegaExpression;
             }
             spec.signals.push(signal);
         }
@@ -66,13 +67,23 @@ export function createSpecWithVariables(variables: Variable[], tabulatorElements
     return spec;
 }
 
-function isDataframePipeline(variable: Variable): boolean {
-    return variable.type === 'object'
+export function calculationType(variable: Variable) {
+    const dfCalc = variable.calculation as DataFrameCalculation;
+    if (dfCalc
+        && variable.type === 'object'
         && !!variable.isArray
         && (
-            (variable.calculation?.dependsOn !== undefined && variable.calculation.dependsOn.length > 0)
-            || (variable.calculation?.dataFrameTransformations !== undefined && variable.calculation.dataFrameTransformations.length > 0)
-        );
+            (dfCalc.dataSourceNames !== undefined && dfCalc.dataSourceNames.length > 0)
+            || (dfCalc.dataFrameTransformations !== undefined && dfCalc.dataFrameTransformations.length > 0)
+        )) {
+        return { dfCalc };
+    }
+    const scalarCalc = variable.calculation as ScalarCalculation;
+    if (scalarCalc
+        && (!(variable.type === 'object' && variable.isArray))
+        && (scalarCalc.vegaExpression !== undefined && scalarCalc.vegaExpression.length > 0)) {
+        return { scalarCalc };
+    }
 }
 
 export function ensureDataAndSignalsArray(spec: VegaSpec) {

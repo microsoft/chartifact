@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const json = textarea.value;
         let markdown: string;
         try {
-            const interactiveDocument = JSON.parse(json);
+            const interactiveDocument = JSON.parse(json) as Chartifact.schema.InteractiveDocument;
             if (typeof interactiveDocument !== 'object') {
                 markdown = 'Invalid Interactive Document JSON';
             } else {

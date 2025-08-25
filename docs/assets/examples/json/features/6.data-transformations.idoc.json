@@ -58,7 +58,7 @@
       "isArray": true,
       "initialValue": [],
       "calculation": {
-        "dependsOn": [
+        "dataSourceNames": [
           "rawData"
         ],
         "dataFrameTransformations": [
