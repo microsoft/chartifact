@@ -79,29 +79,6 @@
             "calculation": {
                 "vegaExpression": "'$' + format((data('revenueCalculation')[0] ? data('revenueCalculation')[0].total : 0) / (totalOrders > 0 ? totalOrders : 1), ',.2f')"
             }
-        },
-        {
-            "variableId": "categoryRevenue",
-            "type": "object",
-            "isArray": true,
-            "initialValue": [],
-            "calculation": {
-                "dataSourceNames": ["salesData"],
-                "dataFrameTransformations": [
-                    {
-                        "type": "formula",
-                        "expr": "datum.units * datum.unit_price",
-                        "as": "revenue"
-                    },
-                    {
-                        "type": "aggregate",
-                        "groupby": ["category"],
-                        "ops": ["sum"],
-                        "fields": ["revenue"],
-                        "as": ["total_revenue"]
-                    }
-                ]
-            }
         }
     ],
     "groups": [
@@ -135,55 +112,15 @@
         {
             "groupId": "category",
             "elements": [
-                "### Sales by Category",
-                {
-                    "type": "chart",
-                    "chartKey": "categoryChart"
-                }
+                "### Sales by Category"
             ]
         },
         {
             "groupId": "trend",
             "elements": [
-                "### Sales Trend",
-                {
-                    "type": "chart",
-                    "chartKey": "trendChart"
-                }
+                "### Sales Trend"
             ]
         }
-    ],
-    "resources": {
-        "charts": {
-            "categoryChart": {
-                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
-                "width": "container",
-                "data": {
-                    "name": "categoryRevenue"
-                },
-                "mark": "bar",
-                "encoding": {
-                    "x": {"field": "category", "type": "nominal", "title": "Category"},
-                    "y": {"field": "total_revenue", "type": "quantitative", "title": "Revenue ($)"},
-                    "color": {"field": "category", "type": "nominal", "scale": {"range": ["#667eea", "#764ba2"]}}
-                }
-            },
-            "trendChart": {
-                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
-                "width": "container",
-                "data": {
-                    "name": "salesData"
-                },
-                "transform": [
-                    {"calculate": "datum.units * datum.unit_price", "as": "revenue"}
-                ],
-                "mark": {"type": "line", "point": true, "strokeWidth": 3},
-                "encoding": {
-                    "x": {"field": "timestamp", "type": "temporal", "title": "Date"},
-                    "y": {"field": "revenue", "type": "quantitative", "title": "Revenue ($)"},
-                    "color": {"value": "#667eea"}
-                }
-            }
-        }
-    }
+    ]
+}
 }
