@@ -3,487 +3,330 @@
     "title": "Feature: Advanced Charts",
     "dataLoaders": [
         {
-            "dataSourceName": "salesData",
-            "type": "inline",
-            "format": "json",
-            "content": [
-                {"month": "Jan", "product": "Laptops", "sales": 120, "profit": 24000, "region": "North", "category": "Electronics"},
-                {"month": "Jan", "product": "Tablets", "sales": 80, "profit": 16000, "region": "North", "category": "Electronics"},
-                {"month": "Jan", "product": "Phones", "sales": 200, "profit": 30000, "region": "North", "category": "Electronics"},
-                {"month": "Feb", "product": "Laptops", "sales": 140, "profit": 28000, "region": "North", "category": "Electronics"},
-                {"month": "Feb", "product": "Tablets", "sales": 95, "profit": 19000, "region": "North", "category": "Electronics"},
-                {"month": "Feb", "product": "Phones", "sales": 180, "profit": 27000, "region": "North", "category": "Electronics"},
-                {"month": "Mar", "product": "Laptops", "sales": 160, "profit": 32000, "region": "North", "category": "Electronics"},
-                {"month": "Mar", "product": "Tablets", "sales": 110, "profit": 22000, "region": "North", "category": "Electronics"},
-                {"month": "Mar", "product": "Phones", "sales": 220, "profit": 33000, "region": "North", "category": "Electronics"},
-                {"month": "Jan", "product": "Laptops", "sales": 100, "profit": 20000, "region": "South", "category": "Electronics"},
-                {"month": "Jan", "product": "Tablets", "sales": 70, "profit": 14000, "region": "South", "category": "Electronics"},
-                {"month": "Jan", "product": "Phones", "sales": 190, "profit": 28500, "region": "South", "category": "Electronics"},
-                {"month": "Feb", "product": "Laptops", "sales": 110, "profit": 22000, "region": "South", "category": "Electronics"},
-                {"month": "Feb", "product": "Tablets", "sales": 85, "profit": 17000, "region": "South", "category": "Electronics"},
-                {"month": "Feb", "product": "Phones", "sales": 170, "profit": 25500, "region": "South", "category": "Electronics"},
-                {"month": "Mar", "product": "Laptops", "sales": 130, "profit": 26000, "region": "South", "category": "Electronics"},
-                {"month": "Mar", "product": "Tablets", "sales": 90, "profit": 18000, "region": "South", "category": "Electronics"},
-                {"month": "Mar", "product": "Phones", "sales": 210, "profit": 31500, "region": "South", "category": "Electronics"}
-            ]
+            "dataSourceName": "cars",
+            "type": "url",
+            "url": "https://vega.github.io/vega-datasets/data/cars.json"
         },
         {
-            "dataSourceName": "stockData",
-            "type": "inline",
-            "format": "json",
-            "content": [
-                {"date": "2024-01-01", "price": 100, "volume": 1000, "company": "TechCorp"},
-                {"date": "2024-01-02", "price": 102, "volume": 1200, "company": "TechCorp"},
-                {"date": "2024-01-03", "price": 98, "volume": 800, "company": "TechCorp"},
-                {"date": "2024-01-04", "price": 105, "volume": 1500, "company": "TechCorp"},
-                {"date": "2024-01-05", "price": 108, "volume": 1800, "company": "TechCorp"},
-                {"date": "2024-01-06", "price": 106, "volume": 1300, "company": "TechCorp"},
-                {"date": "2024-01-07", "price": 110, "volume": 2000, "company": "TechCorp"},
-                {"date": "2024-01-08", "price": 107, "volume": 1100, "company": "TechCorp"},
-                {"date": "2024-01-09", "price": 112, "volume": 1700, "company": "TechCorp"},
-                {"date": "2024-01-10", "price": 115, "volume": 2200, "company": "TechCorp"},
-                {"date": "2024-01-01", "price": 85, "volume": 900, "company": "RetailPlus"},
-                {"date": "2024-01-02", "price": 87, "volume": 1100, "company": "RetailPlus"},
-                {"date": "2024-01-03", "price": 84, "volume": 700, "company": "RetailPlus"},
-                {"date": "2024-01-04", "price": 89, "volume": 1400, "company": "RetailPlus"},
-                {"date": "2024-01-05", "price": 91, "volume": 1600, "company": "RetailPlus"},
-                {"date": "2024-01-06", "price": 88, "volume": 1000, "company": "RetailPlus"},
-                {"date": "2024-01-07", "price": 93, "volume": 1900, "company": "RetailPlus"},
-                {"date": "2024-01-08", "price": 90, "volume": 950, "company": "RetailPlus"},
-                {"date": "2024-01-09", "price": 95, "volume": 1550, "company": "RetailPlus"},
-                {"date": "2024-01-10", "price": 97, "volume": 2100, "company": "RetailPlus"}
-            ]
+            "dataSourceName": "stocks",
+            "type": "url", 
+            "url": "https://vega.github.io/vega-datasets/data/stocks.csv"
+        },
+        {
+            "dataSourceName": "weather",
+            "type": "url",
+            "url": "https://vega.github.io/vega-datasets/data/seattle-weather.csv"
         }
     ],
     "groups": [
         {
             "groupId": "main",
             "elements": [
-                "## Advanced Charts Showcase\n\nThis page demonstrates the powerful capabilities of Chartifact using both Vega and Vega-Lite. These examples showcase:\n\n- **Interactive selections and brushing**\n- **Multiple linked visualizations**\n- **Data transformations and aggregations**\n- **Complex encoding schemes**\n- **Real-time filtering and highlighting**\n- **Professional styling and layouts**\n\n---",
-                "### 1. Interactive Sales Dashboard\n\nClick and drag to select regions in the scatter plot. The selection will highlight corresponding data points in both charts.",
+                "## Advanced Charts Showcase\n\nThis page demonstrates the powerful capabilities of Chartifact using proven examples from the Vega and Vega-Lite galleries. These examples showcase:\n\n- **Interactive selections and brushing**\n- **Multi-dimensional data exploration**\n- **Time series visualizations**\n- **Statistical transformations**\n- **Professional styling and layouts**\n\nAll examples use well-tested specifications from the official Vega examples gallery.\n\n---",
+                "### 1. Interactive Car Data Scatter Plot\n\nThis classic example shows the relationship between horsepower and miles per gallon. Click and drag to select regions and see interactive highlighting.",
                 {
                     "type": "chart",
-                    "chartKey": "scatterPlot"
-                },
-                {
-                    "type": "chart",
-                    "chartKey": "salesTrend"
+                    "chartKey": "carsScatter"
                 },
                 "---",
-                "### 2. Multi-Series Stock Chart with Brushing\n\nThis chart shows stock prices for multiple companies with interactive brushing. Drag to zoom into specific time periods.",
+                "### 2. Stock Prices Line Chart\n\nA multi-series line chart showing stock prices over time with clean styling and hover interactions.",
                 {
                     "type": "chart",
-                    "chartKey": "stockChart"
+                    "chartKey": "stockPrices"
                 },
                 "---",
-                "### 3. Regional Sales Heatmap\n\nA sophisticated heatmap showing sales performance across different dimensions with custom color scales.",
+                "### 3. Weather Data Heatmap\n\nA calendar heatmap showing daily temperature data with custom color encoding and excellent readability.",
                 {
                     "type": "chart",
-                    "chartKey": "heatmap"
+                    "chartKey": "weatherHeatmap"
                 },
                 "---",
-                "### 4. Advanced Vega Visualization\n\nThis demonstrates Vega's power with custom data transformations, calculated fields, and complex interactions.",
+                "### 4. Interactive Car Dashboard\n\nA more complex example using Vega (not Vega-Lite) with custom interactions, filters, and linked visualizations.",
                 {
                     "type": "chart",
-                    "chartKey": "vegaAdvanced"
+                    "chartKey": "carDashboard"
                 }
             ]
         }
     ],
     "resources": {
         "charts": {
-            "scatterPlot": {
-                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
-                "title": {
-                    "text": "Sales vs Profit Analysis",
-                    "fontSize": 16,
-                    "anchor": "start"
-                },
-                "data": {
-                    "name": "salesData"
-                },
-                "width": 400,
-                "height": 300,
-                "selection": {
-                    "brush": {
-                        "type": "interval",
-                        "encodings": ["x", "y"]
-                    }
-                },
-                "mark": {
-                    "type": "circle",
-                    "size": 100,
-                    "opacity": 0.7
-                },
+            "carsScatter": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "description": "A scatterplot showing horsepower and miles per gallon for various cars.",
+                "data": {"name": "cars"},
+                "mark": "circle",
                 "encoding": {
                     "x": {
-                        "field": "sales",
-                        "type": "quantitative",
-                        "title": "Units Sold",
-                        "scale": {"domain": [0, 250]}
+                        "field": "Horsepower",
+                        "type": "quantitative"
                     },
                     "y": {
-                        "field": "profit",
-                        "type": "quantitative",
-                        "title": "Profit ($)",
-                        "scale": {"domain": [0, 35000]}
+                        "field": "Miles_per_Gallon",
+                        "type": "quantitative"
                     },
                     "color": {
-                        "field": "region",
-                        "type": "nominal",
-                        "scale": {
-                            "range": ["#1f77b4", "#ff7f0e"]
-                        },
-                        "title": "Region"
+                        "field": "Origin",
+                        "type": "nominal"
                     },
-                    "shape": {
-                        "field": "product",
-                        "type": "nominal",
-                        "title": "Product"
-                    },
-                    "stroke": {
-                        "condition": {
-                            "selection": "brush",
-                            "value": "black"
-                        },
-                        "value": "transparent"
-                    },
-                    "strokeWidth": {
-                        "condition": {
-                            "selection": "brush",
-                            "value": 2
-                        },
-                        "value": 0
-                    }
-                }
-            },
-            "salesTrend": {
-                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
-                "title": {
-                    "text": "Monthly Sales Trend",
-                    "fontSize": 16,
-                    "anchor": "start"
+                    "tooltip": [
+                        {"field": "Name", "type": "nominal"},
+                        {"field": "Origin", "type": "nominal"},
+                        {"field": "Horsepower", "type": "quantitative"},
+                        {"field": "Miles_per_Gallon", "type": "quantitative"}
+                    ]
                 },
-                "data": {
-                    "name": "salesData"
-                },
-                "width": 400,
-                "height": 200,
-                "transform": [
+                "params": [
                     {
-                        "aggregate": [
-                            {"op": "sum", "field": "sales", "as": "totalSales"}
-                        ],
-                        "groupby": ["month", "region"]
+                        "name": "brush",
+                        "select": {"type": "interval", "encodings": ["x", "y"]}
                     }
-                ],
+                ]
+            },
+            "stockPrices": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "description": "Stock prices of 5 tech companies over time.",
+                "data": {"name": "stocks"},
                 "mark": {
                     "type": "line",
                     "point": true,
-                    "strokeWidth": 3
-                },
-                "encoding": {
-                    "x": {
-                        "field": "month",
-                        "type": "ordinal",
-                        "title": "Month",
-                        "sort": ["Jan", "Feb", "Mar"]
-                    },
-                    "y": {
-                        "field": "totalSales",
-                        "type": "quantitative",
-                        "title": "Total Sales"
-                    },
-                    "color": {
-                        "field": "region",
-                        "type": "nominal",
-                        "scale": {
-                            "range": ["#1f77b4", "#ff7f0e"]
-                        },
-                        "title": "Region"
-                    },
-                    "opacity": {
-                        "condition": {
-                            "selection": "brush",
-                            "value": 1.0
-                        },
-                        "value": 0.3
-                    }
-                },
-                "selection": {
-                    "brush": {
-                        "type": "interval",
-                        "encodings": ["x", "y"]
-                    }
-                }
-            },
-            "stockChart": {
-                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
-                "title": {
-                    "text": "Stock Price Comparison with Interactive Brushing",
-                    "fontSize": 16,
-                    "anchor": "start"
-                },
-                "data": {
-                    "name": "stockData"
-                },
-                "width": 600,
-                "height": 300,
-                "selection": {
-                    "brush": {
-                        "type": "interval",
-                        "encodings": ["x"]
-                    }
-                },
-                "mark": {
-                    "type": "line",
-                    "strokeWidth": 2,
-                    "point": {
-                        "size": 60,
-                        "filled": true
-                    }
+                    "tooltip": true
                 },
                 "encoding": {
                     "x": {
                         "field": "date",
-                        "type": "temporal",
-                        "title": "Date",
-                        "axis": {
-                            "format": "%m/%d",
-                            "labelAngle": -45
-                        }
+                        "type": "temporal"
                     },
                     "y": {
                         "field": "price",
-                        "type": "quantitative",
-                        "title": "Stock Price ($)",
-                        "scale": {"domain": [80, 120]}
+                        "type": "quantitative"
                     },
                     "color": {
-                        "field": "company",
-                        "type": "nominal",
-                        "scale": {
-                            "range": ["#e41a1c", "#377eb8"]
-                        },
-                        "title": "Company"
-                    },
-                    "opacity": {
-                        "condition": {
-                            "selection": "brush",
-                            "value": 1.0
-                        },
-                        "value": 0.4
+                        "field": "symbol",
+                        "type": "nominal"
                     }
                 }
             },
-            "heatmap": {
-                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
-                "title": {
-                    "text": "Sales Performance Heatmap",
-                    "fontSize": 16,
-                    "anchor": "start"
-                },
-                "data": {
-                    "name": "salesData"
-                },
-                "width": 300,
-                "height": 200,
-                "transform": [
-                    {
-                        "aggregate": [
-                            {"op": "sum", "field": "sales", "as": "totalSales"}
-                        ],
-                        "groupby": ["month", "product"]
+            "weatherHeatmap": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "data": {"name": "weather"},
+                "title": "Daily Max Temperatures (C) in Seattle, WA",
+                "config": {
+                    "view": {
+                        "strokeWidth": 0,
+                        "step": 13
+                    },
+                    "axis": {
+                        "domain": false
                     }
-                ],
-                "mark": {
-                    "type": "rect",
-                    "stroke": "white",
-                    "strokeWidth": 2
                 },
+                "mark": "rect",
                 "encoding": {
                     "x": {
-                        "field": "month",
+                        "field": "date",
+                        "timeUnit": "date",
                         "type": "ordinal",
-                        "title": "Month",
-                        "sort": ["Jan", "Feb", "Mar"]
+                        "title": "Day",
+                        "axis": {
+                            "labelAngle": 0,
+                            "format": "%e"
+                        }
                     },
                     "y": {
-                        "field": "product",
-                        "type": "nominal",
-                        "title": "Product"
+                        "field": "date",
+                        "timeUnit": "month",
+                        "type": "ordinal",
+                        "title": "Month"
                     },
                     "color": {
-                        "field": "totalSales",
+                        "field": "temp_max",
                         "type": "quantitative",
-                        "title": "Total Sales",
+                        "legend": {
+                            "title": "Max Temp"
+                        },
                         "scale": {
-                            "scheme": "viridis",
-                            "type": "sequential"
+                            "scheme": "inferno"
                         }
                     },
                     "tooltip": [
-                        {"field": "month", "type": "ordinal"},
-                        {"field": "product", "type": "nominal"},
-                        {"field": "totalSales", "type": "quantitative", "title": "Total Sales"}
+                        {"field": "date", "type": "temporal", "format": "%B %d, %Y"},
+                        {"field": "temp_max", "type": "quantitative"}
                     ]
                 }
             },
-            "vegaAdvanced": {
+            "carDashboard": {
                 "$schema": "https://vega.github.io/schema/vega/v5.json",
-                "title": {
-                    "text": "Advanced Vega: Interactive Profit Margin Analysis",
-                    "fontSize": 16,
-                    "anchor": "start"
-                },
-                "width": 500,
-                "height": 300,
+                "description": "An interactive scatter plot of global health statistics by country and year.",
+                "width": 800,
+                "height": 500,
                 "padding": 5,
+                "autosize": "pad",
                 "signals": [
                     {
-                        "name": "minProfit",
-                        "value": 0,
-                        "bind": {
-                            "input": "range",
-                            "min": 0,
-                            "max": 35000,
-                            "step": 1000
-                        }
+                        "name": "clear",
+                        "value": true,
+                        "on": [
+                            {
+                                "events": "mouseup[!event.item]",
+                                "update": "true",
+                                "force": true
+                            }
+                        ]
                     },
                     {
-                        "name": "selectedRegion",
-                        "value": "All",
-                        "bind": {
-                            "input": "select",
-                            "options": ["All", "North", "South"]
-                        }
+                        "name": "shift",
+                        "value": false,
+                        "on": [
+                            {
+                                "events": "@legendSymbol:click, @legendLabel:click",
+                                "update": "event.shiftKey",
+                                "force": true
+                            }
+                        ]
                     },
                     {
-                        "name": "hoverPoint",
+                        "name": "clicked",
                         "value": null,
                         "on": [
-                            {"events": "symbol:mouseover", "update": "datum"},
-                            {"events": "symbol:mouseout", "update": "null"}
+                            {
+                                "events": "@legendSymbol:click, @legendLabel:click",
+                                "update": "{value: datum.value}",
+                                "force": true
+                            }
                         ]
                     }
                 ],
                 "data": [
                     {
-                        "name": "source",
-                        "values": {
-                            "name": "salesData"
-                        }
-                    },
-                    {
-                        "name": "filtered",
-                        "source": "source",
+                        "name": "cars",
+                        "values": {"name": "cars"},
                         "transform": [
                             {
                                 "type": "filter",
-                                "expr": "datum.profit >= minProfit"
-                            },
-                            {
-                                "type": "filter",
-                                "expr": "selectedRegion === 'All' || datum.region === selectedRegion"
-                            },
-                            {
-                                "type": "formula",
-                                "expr": "datum.profit / datum.sales",
-                                "as": "profitPerUnit"
+                                "expr": "datum.Horsepower != null && datum.Miles_per_Gallon != null && datum.Acceleration != null"
                             }
+                        ]
+                    },
+                    {
+                        "name": "selected",
+                        "on": [
+                            {"trigger": "clear", "remove": true},
+                            {"trigger": "!shift", "remove": true},
+                            {"trigger": "!shift && clicked", "insert": "clicked"},
+                            {"trigger": "shift && clicked", "toggle": "clicked"}
                         ]
                     }
                 ],
                 "scales": [
                     {
-                        "name": "xscale",
+                        "name": "x",
                         "type": "linear",
-                        "domain": {"data": "filtered", "field": "sales"},
-                        "range": "width",
-                        "nice": true
+                        "round": true,
+                        "nice": true,
+                        "zero": false,
+                        "domain": {"data": "cars", "field": "Horsepower"},
+                        "range": "width"
                     },
                     {
-                        "name": "yscale",
+                        "name": "y",
                         "type": "linear",
-                        "domain": {"data": "filtered", "field": "profitPerUnit"},
-                        "range": "height",
-                        "nice": true
+                        "round": true,
+                        "nice": true,
+                        "zero": false,
+                        "domain": {"data": "cars", "field": "Miles_per_Gallon"},
+                        "range": "height"
                     },
                     {
-                        "name": "colorscale",
+                        "name": "size",
+                        "type": "linear",
+                        "round": true,
+                        "nice": false,
+                        "zero": true,
+                        "domain": {"data": "cars", "field": "Acceleration"},
+                        "range": [4, 361]
+                    },
+                    {
+                        "name": "color",
                         "type": "ordinal",
-                        "domain": {"data": "filtered", "field": "product"},
-                        "range": ["#1f77b4", "#ff7f0e", "#2ca02c"]
-                    },
-                    {
-                        "name": "sizescale",
-                        "type": "linear",
-                        "domain": {"data": "filtered", "field": "profit"},
-                        "range": [50, 400]
+                        "domain": {"data": "cars", "field": "Origin"},
+                        "range": "category"
                     }
                 ],
                 "axes": [
                     {
+                        "scale": "x",
+                        "grid": true,
+                        "domain": false,
                         "orient": "bottom",
-                        "scale": "xscale",
-                        "title": "Units Sold",
-                        "titleFontSize": 12
+                        "tickCount": 5,
+                        "title": "Horsepower"
                     },
                     {
+                        "scale": "y",
+                        "grid": true,
+                        "domain": false,
                         "orient": "left",
-                        "scale": "yscale",
-                        "title": "Profit per Unit ($)",
-                        "titleFontSize": 12
+                        "titlePadding": 5,
+                        "title": "Miles per Gallon"
                     }
                 ],
                 "legends": [
                     {
-                        "fill": "colorscale",
-                        "title": "Product",
-                        "titleFontSize": 12,
-                        "orient": "top-right"
-                    }
-                ],
-                "marks": [
-                    {
-                        "type": "symbol",
-                        "from": {"data": "filtered"},
+                        "stroke": "color",
+                        "title": "Origin",
                         "encode": {
-                            "enter": {
-                                "x": {"scale": "xscale", "field": "sales"},
-                                "y": {"scale": "yscale", "field": "profitPerUnit"},
-                                "size": {"scale": "sizescale", "field": "profit"},
-                                "fill": {"scale": "colorscale", "field": "product"},
-                                "fillOpacity": {"value": 0.7},
-                                "stroke": {"value": "white"},
-                                "strokeWidth": {"value": 1}
+                            "symbols": {
+                                "name": "legendSymbol",
+                                "interactive": true,
+                                "update": {
+                                    "fill": {"value": "transparent"},
+                                    "strokeWidth": {"value": 2},
+                                    "opacity": [
+                                        {"test": "!length(data('selected')) || indata('selected', 'value', datum.value)", "value": 0.7},
+                                        {"value": 0.15}
+                                    ],
+                                    "size": {"value": 64}
+                                }
                             },
-                            "update": {
-                                "stroke": [
-                                    {"test": "hoverPoint && hoverPoint.month === datum.month && hoverPoint.product === datum.product", "value": "black"},
-                                    {"value": "white"}
-                                ],
-                                "strokeWidth": [
-                                    {"test": "hoverPoint && hoverPoint.month === datum.month && hoverPoint.product === datum.product", "value": 3},
-                                    {"value": 1}
-                                ]
+                            "labels": {
+                                "name": "legendLabel",
+                                "interactive": true,
+                                "update": {
+                                    "opacity": [
+                                        {"test": "!length(data('selected')) || indata('selected', 'value', datum.value)", "value": 1},
+                                        {"value": 0.25}
+                                    ]
+                                }
                             }
                         }
                     },
                     {
-                        "type": "text",
+                        "size": "size",
+                        "title": "Acceleration",
+                        "format": "s",
+                        "symbolStrokeColor": "#4682b4",
+                        "symbolStrokeWidth": 2,
+                        "symbolOpacity": 0.5,
+                        "symbolType": "circle"
+                    }
+                ],
+                "marks": [
+                    {
+                        "name": "marks",
+                        "type": "symbol",
+                        "from": {"data": "cars"},
                         "encode": {
-                            "enter": {
-                                "x": {"value": 10},
-                                "y": {"value": 10},
-                                "fontSize": {"value": 11},
-                                "fill": {"value": "gray"}
-                            },
                             "update": {
-                                "text": [
-                                    {"test": "hoverPoint", "signal": "hoverPoint.month + ' - ' + hoverPoint.product + ': $' + round(hoverPoint.profitPerUnit) + ' per unit'"},
-                                    {"value": "Hover over points for details"}
-                                ]
+                                "x": {"scale": "x", "field": "Horsepower"},
+                                "y": {"scale": "y", "field": "Miles_per_Gallon"},
+                                "size": {"scale": "size", "field": "Acceleration"},
+                                "stroke": {"scale": "color", "field": "Origin"},
+                                "strokeWidth": {"value": 2},
+                                "opacity": [
+                                    {"test": "!length(data('selected')) || indata('selected', 'value', datum.Origin)", "value": 0.7},
+                                    {"value": 0.15}
+                                ],
+                                "fill": {"value": "transparent"}
                             }
                         }
                     }
