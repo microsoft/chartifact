@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "convert": "node ./dist/convert.mjs",
-    "readme": "node ./dist/index.mjs",
+    "readme": "node ./dist/readme.mjs",
     "clean": "rimraf dist && rimraf ../../docs/assets/examples/json && rimraf ../../docs/assets/examples/markdown",
     "build": "tsc -p .",
     "deploy": "npm run clean && npm run build && npm run readme && npm run convert"

@@ -3,15 +3,11 @@
 * Licensed under the MIT License.
 */
 
-import { IInstance, Plugin, RawFlaggableSpec } from '../factory.js';
+import { IInstance, Plugin, RawFlaggableSpec, csstree } from '../factory.js';
 import { sanitizedHTML } from '../sanitize.js';
-import * as Csstree from 'css-tree';
 import { pluginClassName } from './util.js';
 import { flaggablePlugin } from './config.js';
 import { PluginNames } from './interfaces.js';
-
-// CSS Tree is expected to be available as a global variable
-declare const csstree: typeof Csstree;
 
 interface Declaration {
     css: string;        // Safe CSS

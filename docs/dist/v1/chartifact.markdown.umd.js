@@ -528,13 +528,20 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     return `chartifact-plugin-${pluginName2}`;
   }
   const newId = () => [...Date.now().toString(36) + Math.random().toString(36).slice(2)].sort(() => 0.5 - Math.random()).join("");
+  let domDocument = typeof document !== "undefined" ? document : void 0;
+  function setDomDocument(doc) {
+    domDocument = doc;
+  }
   function sanitizedHTML(tagName, attributes, content, precedeWithScriptTag) {
-    const element = document.createElement(tagName);
+    if (!domDocument) {
+      throw new Error("No DOM Document available. Please set domDocument using setDomDocument.");
+    }
+    const element = domDocument.createElement(tagName);
     Object.keys(attributes).forEach((key) => {
       element.setAttribute(key, attributes[key]);
     });
     if (precedeWithScriptTag) {
-      const scriptElement = document.createElement("script");
+      const scriptElement = domDocument.createElement("script");
       scriptElement.setAttribute("type", "application/json");
       const safeContent = content.replace(/<\/script>/gi, "<\\/script>");
       scriptElement.innerHTML = safeContent;
@@ -1009,6 +1016,20 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       }
     }
     return true;
+  }
+  let markdownit;
+  if (typeof globalThis.markdownit === "function") {
+    markdownit = globalThis.markdownit;
+  }
+  function setMarkdownIt(md) {
+    markdownit = md;
+  }
+  let csstree;
+  if (typeof globalThis.csstree === "object") {
+    csstree = globalThis.csstree;
+  }
+  function setCssTree(tree) {
+    csstree = tree;
   }
   const plugins = [];
   function registerMarkdownPlugin(plugin) {
@@ -3144,7 +3165,10 @@ ${reconstitutedRules.join("\n\n")}
     Renderer,
     plugins,
     registerMarkdownPlugin,
-    sanitizedHTML
+    sanitizedHTML,
+    setCssTree,
+    setDomDocument,
+    setMarkdownIt
   }, Symbol.toStringTag, { value: "Module" }));
   exports2.common = index$1;
   exports2.markdown = index;

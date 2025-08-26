@@ -1,0 +1,85 @@
+---
+layout: default
+title: "Chartifact Home"
+---
+<a id="github-repo" href="https://github.com/microsoft/chartifact">GitHub Repository</a>
+<div id="content">
+<pre><code>    A     I
+C H A   T
+C H A R T
+    A R T I F A C T
+C H A R T I F A C T
+</code></pre>
+<h1>Chartifact</h1>
+<p><strong>Declarative, interactive data documents</strong></p>
+<p>Chartifact is a low-code document format for creating interactive, data-driven pages such as reports, dashboards, and presentations. It travels like a document and works like a mini app. Designed for use with your LLM to produce a shareable artifact of your analytic conversations.</p>
+<p>• <a href="./view?load=../assets/examples/examples.markdown.folder.json">Examples</a> • <a href="./view?load=../assets/examples/features.markdown.folder.json">Take a tour of the capabilities</a> • <a href="./llm">Try now with your LLM</a></p>
+<h2>Ecosystem</h2>
+<p>The Chartifact GitHub repo has source code for these interoperating modules:</p>
+<ul>
+<li>
+<p>A <strong>document schema</strong> that defines plugins and components that communicate together with reactive variables:</p>
+<ul>
+<li><strong>Text</strong> – Markdown with dynamic placeholders</li>
+<li><strong>Inputs</strong> – Textboxes, checkboxes, sliders, dropdowns</li>
+<li><strong>Tables</strong> – Sortable, selectable, and editable data grids</li>
+<li><strong>Charts</strong> – <a href="https://vega.github.io/vega/">Vega</a> and <a href="https://vega.github.io/vega-lite/">Vega-Lite</a> visualizations</li>
+<li><strong>Diagrams</strong> – <a href="https://mermaid-js.github.io/mermaid/">Mermaid</a> diagrams (flowcharts, networks, and more) via the mermaid plugin, including tabular data-driven diagram generation</li>
+<li><strong>Images</strong> – Dynamic image URLs based on variables</li>
+<li><strong>Presets</strong> – Named sets of variable values for quick scenario switching</li>
+</ul>
+</li>
+<li>
+<p>A <strong>sandboxed runtime</strong> that securely renders documents.</p>
+</li>
+<li>
+<p>A <strong>set of examples</strong> that your LLM can understand and remix for your scenario.</p>
+</li>
+<li>
+<p>A <strong>VS Code extension</strong> for editing, previewing, and exporting documents.</p>
+</li>
+<li>
+<p>A <strong>web-based viewer and editor</strong> for viewing, quick edits and sharing.</p>
+</li>
+<li>
+<p>Tools to <strong>export standalone HTML</strong> documents you can share or embed anywhere.</p>
+</li>
+</ul>
+<h2>Authoring Formats</h2>
+<p>Chartifact documents can be written in two formats:</p>
+<ul>
+<li><strong>Markdown</strong> – Human-readable, easy to write and review. Interactive elements are embedded as fenced JSON blocks.</li>
+<li><strong>JSON</strong> – Structured and precise. Ideal for programmatic generation or when working directly with the document schema.</li>
+</ul>
+<p>Both formats are functionally equivalent and supported across all tooling.</p>
+<h2>AI Support</h2>
+<p>The format is designed with AI assistance in mind:</p>
+<ul>
+<li>Structured syntax makes documents easy to edit and generate with LLMs</li>
+<li>In-editor tools like Ctrl+I and agent mode available in VS Code</li>
+<li>HTML exports retain semantic structure for downstream AI tools</li>
+</ul>
+<p>This enables both authoring and remixing workflows with language models and agent-based tooling.</p>
+<h2>Data Flow</h2>
+<p>The document runtime is reactive. Components stay in sync through a shared set of variables:</p>
+<ul>
+<li><strong>Reactive variables</strong> update elements and data sources automatically</li>
+<li><strong>Dynamic bindings</strong> let variables appear in chart specs, text, URLs, and API calls</li>
+<li><strong>REST integration</strong> supports fetching data from external sources</li>
+<li><strong>Vega transforms</strong> provide built-in tools for reshaping data</li>
+<li><strong>Signal bus</strong> coordinates state across all components</li>
+</ul>
+<h2>Styling</h2>
+<p>Styling is done using standard CSS. Examples provided to style documents as articles, dashboards, or slides.</p>
+<h2>Security</h2>
+<p>Chartifact is designed to be safe by default:</p>
+<ul>
+<li>Rendered in sandboxed iframes to isolate execution</li>
+<li>No custom JavaScript execution</li>
+<li>No raw HTML in Markdown</li>
+<li>XSS-Defensive CSS parsing</li>
+</ul>
+
+</div>
+<script src="./dist/v1/chartifact.markdown.umd.js"></script>
+<script src="./assets/js/home.js"></script>

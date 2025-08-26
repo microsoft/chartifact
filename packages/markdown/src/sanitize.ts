@@ -3,10 +3,21 @@
 * Licensed under the MIT License.
 */
 
+// Exported domDocument, defaults to browser document if available
+let domDocument: Document | undefined = (typeof document !== 'undefined') ? document : undefined;
+
+export function setDomDocument(doc: Document) {
+    domDocument = doc;
+}
+
 export function sanitizedHTML(tagName: string, attributes: { [key: string]: string }, content: string, precedeWithScriptTag?: boolean) {
 
+    if (!domDocument) {
+        throw new Error('No DOM Document available. Please set domDocument using setDomDocument.');
+    }
+
     // Create a temp element with the specified tag name
-    const element = document.createElement(tagName);
+    const element = domDocument.createElement(tagName);
 
     // Iterate over the attribute list and set each attribute
     Object.keys(attributes).forEach(key => {
@@ -15,7 +26,7 @@ export function sanitizedHTML(tagName: string, attributes: { [key: string]: stri
 
     if (precedeWithScriptTag) {
         // Create a script tag that precedes the main element
-        const scriptElement = document.createElement('script');
+        const scriptElement = domDocument.createElement('script');
         scriptElement.setAttribute('type', 'application/json');
         // Only escape the dangerous sequence that could break out of script tag
         const safeContent = content.replace(/<\/script>/gi, '<\\/script>');

@@ -22,10 +22,12 @@ The Chartifact GitHub repo has source code for these interoperating modules:
   * **Text** – Markdown with dynamic placeholders
   * **Inputs** – Textboxes, checkboxes, sliders, dropdowns
   * **Tables** – Sortable, selectable, and editable data grids
-  * **Charts** – Vega and Vega-Lite visualizations
-  * **Diagrams** – Mermaid diagrams (flowcharts, networks, and more) via the mermaid plugin, including tabular data-driven diagram generation
+  * **Charts** – [Vega](https://vega.github.io/vega/) and [Vega-Lite](https://vega.github.io/vega-lite/) visualizations
+  * **Diagrams** – [Mermaid](https://mermaid-js.github.io/mermaid/) diagrams (flowcharts, networks, and more) via the mermaid plugin, including tabular data-driven diagram generation
   * **Images** – Dynamic image URLs based on variables
   * **Presets** – Named sets of variable values for quick scenario switching
+
+* A **sandboxed runtime** that securely renders documents.
 
 * A **set of examples** that your LLM can understand and remix for your scenario.
 
@@ -63,8 +65,6 @@ The document runtime is reactive. Components stay in sync through a shared set o
 * **REST integration** supports fetching data from external sources
 * **Vega transforms** provide built-in tools for reshaping data
 * **Signal bus** coordinates state across all components
-
-Chartifact documents behave like small reactive systems — without custom JavaScript.
 
 ## Styling
 

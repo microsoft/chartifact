@@ -10,8 +10,30 @@ import { ErrorHandler, Renderer } from './renderer.js';
 import { defaultCommonOptions, SpecReview } from 'common';
 import { PluginNames } from './plugins/interfaces.js';
 import { decorateFenceWithPlaceholders } from './plugins/placeholders.js';
+import * as Csstree from 'css-tree';
 
-declare const markdownit: typeof MarkdownIt;
+let markdownit: typeof MarkdownIt;
+
+//see if markdownit exists in global scope (not just window)
+if (typeof globalThis.markdownit === 'function') {
+    markdownit = globalThis.markdownit;
+}
+
+export function setMarkdownIt(md: typeof MarkdownIt) {
+    markdownit = md;
+}
+
+// CSS Tree is expected to be available as a global variable
+export let csstree: typeof Csstree;
+
+//see if css-tree exists in global scope (not just window)
+if (typeof globalThis.csstree === 'object') {
+    csstree = globalThis.csstree;
+}
+
+export function setCssTree(tree: typeof Csstree) {
+    csstree = tree;
+}
 
 export interface PrioritizedSignal {
     name: string;

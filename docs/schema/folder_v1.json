@@ -6,6 +6,9 @@
       "additionalProperties": false,
       "description": "Copyright (c) Microsoft Corporation. Licensed under the MIT License.",
       "properties": {
+        "description": {
+          "type": "string"
+        },
         "href": {
           "description": "URL to the document, either absolute or relative to the folder location.",
           "type": "string"

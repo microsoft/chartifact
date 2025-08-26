@@ -4,6 +4,7 @@
 */
 interface DocRef {
     title: string;
+    description?: string;
     /** URL to the document, either absolute or relative to the folder location. */
     href: string;
 }
