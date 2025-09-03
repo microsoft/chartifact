@@ -130,7 +130,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     const tokens = tokenizeTemplate(input);
     return renderVegaExpression(tokens);
   }
-  const index$2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  const index$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
     VEGA_BUILTIN_FUNCTIONS,
     collectIdentifiers,
@@ -302,142 +302,26 @@ document.addEventListener('DOMContentLoaded', () => {
       (_a = this.iframe.contentWindow) == null ? void 0 : _a.postMessage(message, "*");
     }
     getDependencies() {
+      const { hostname, origin } = window.location;
+      const url = hostname === "localhost" ? origin : "https://microsoft.github.io";
       return `
 <link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet" />
-<link href="https://microsoft.github.io/chartifact/dist/v1/chartifact-reset.css" rel="stylesheet" />
+<link href="${url}/chartifact/dist/v1/chartifact-reset.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"><\/script>
 <script src="https://unpkg.com/css-tree/dist/csstree.js"><\/script>
+<script src="https://unpkg.com/js-yaml/dist/js-yaml.min.js"><\/script>
 <script src="https://cdn.jsdelivr.net/npm/vega@5.29.0"><\/script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.20.1"><\/script>
 <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"><\/script>
-<script src="https://microsoft.github.io/chartifact/dist/v1/chartifact.markdown.umd.js"><\/script>
+<script src="${url}/chartifact/dist/v1/chartifact.markdown.umd.js"><\/script>
 `;
     }
   }
-  const index$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  const index = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
     Sandbox
   }, Symbol.toStringTag, { value: "Module" }));
-  class Toolbar {
-    constructor(toolbarElementOrSelector, options = {}) {
-      __publicField(this, "options");
-      __publicField(this, "toolbarElement");
-      __publicField(this, "folderSpan");
-      __publicField(this, "tweakButton");
-      __publicField(this, "restartButton");
-      __publicField(this, "downloadButton");
-      __publicField(this, "mode");
-      __publicField(this, "filename");
-      var _a, _b, _c;
-      this.options = options;
-      this.filename = options.filename || "sample";
-      this.mode = options.mode || "markdown";
-      this.toolbarElement = typeof toolbarElementOrSelector === "string" ? document.querySelector(toolbarElementOrSelector) : toolbarElementOrSelector;
-      if (!this.toolbarElement) {
-        throw new Error("Toolbar element not found");
-      }
-      const html = `
-<div>
-    <a href="https://microsoft.github.io/chartifact" target="_blank">Chartifact</a> viewer
-</div>
-<div id="folderSpan" style="display: none;"></div>
-<div>
-    <button type="button" id="restart" style="display: none;">start over</button>
-    <button type="button" id="tweak" style="display: none;">view source</button>
-    <button type="button" id="download" style="display: none;">download</button>
-</div>
-        `;
-      this.toolbarElement.innerHTML = html;
-      this.folderSpan = this.toolbarElement.querySelector("#folderSpan");
-      this.tweakButton = this.toolbarElement.querySelector("#tweak");
-      this.restartButton = this.toolbarElement.querySelector("#restart");
-      this.downloadButton = this.toolbarElement.querySelector("#download");
-      if (this.options.tweakButton) {
-        this.showTweakButton();
-      }
-      if (this.options.restartButton) {
-        this.showRestartButton();
-      }
-      if (this.options.downloadButton) {
-        this.showDownloadButton();
-      }
-      (_a = this.tweakButton) == null ? void 0 : _a.addEventListener("click", () => {
-        this.options.textarea.style.display = this.options.textarea.style.display === "none" ? "" : "none";
-      });
-      (_b = this.restartButton) == null ? void 0 : _b.addEventListener("click", () => {
-        window.location.reload();
-      });
-      (_c = this.downloadButton) == null ? void 0 : _c.addEventListener("click", () => {
-        const textarea = this.options.textarea;
-        if (!textarea)
-          return;
-        const content = textarea.value;
-        const ext = this.mode === "markdown" ? "idoc.md" : "idoc.json";
-        const filename = `${filenameWithoutPathOrExtension(this.filename)}.${ext}`;
-        const blob = new Blob([content], {
-          type: this.mode === "markdown" ? "text/markdown" : "application/json"
-        });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }, 0);
-      });
-    }
-    showTweakButton() {
-      this.tweakButton.style.display = "";
-    }
-    showRestartButton() {
-      this.restartButton.style.display = "";
-    }
-    showDownloadButton() {
-      this.downloadButton.style.display = "";
-    }
-    manageTextareaVisibilityForAgents() {
-      const { textarea } = this.options;
-      if (!textarea) {
-        throw new Error("Textarea element not found");
-      }
-      textarea.style.flex = "0";
-      textarea.style.padding = "0";
-      textarea.style.border = "0";
-      setTimeout(() => {
-        textarea.style.flex = "";
-        textarea.style.padding = "";
-        textarea.style.border = "";
-        textarea.style.display = "none";
-      }, 300);
-    }
-  }
-  function filenameWithoutPathOrExtension(filename) {
-    const base = filename.split(/[\\/]/).pop() || filename;
-    const idocIdx = base.indexOf(".idoc");
-    if (idocIdx !== -1) {
-      return base.substring(0, idocIdx);
-    }
-    const lastDot = base.lastIndexOf(".");
-    if (lastDot > 0) {
-      return base.substring(0, lastDot);
-    }
-    return base;
-  }
-  function create(toolbarElementOrSelector, options = {}) {
-    const toolbar = new Toolbar(toolbarElementOrSelector, options);
-    toolbar.manageTextareaVisibilityForAgents();
-    return toolbar;
-  }
-  const index = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    Toolbar,
-    create
-  }, Symbol.toStringTag, { value: "Module" }));
-  exports2.common = index$2;
-  exports2.sandbox = index$1;
-  exports2.toolbar = index;
+  exports2.common = index$1;
+  exports2.sandbox = index;
   Object.defineProperty(exports2, Symbol.toStringTag, { value: "Module" });
 }));

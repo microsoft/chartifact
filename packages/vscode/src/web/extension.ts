@@ -6,7 +6,6 @@ import * as vscode from 'vscode';
 import { createNewDocument } from './command-new';
 import { PreviewManager } from './command-preview';
 import { EditManager } from './command-edit';
-import { convertToHtml } from './command-convert-html';
 import { initializeResources } from './resources';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -65,6 +64,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Register the convert to HTML command for .idoc.md files
 	const convertToHtmlDisposable = vscode.commands.registerCommand('chartifact.convertToHtml', async (fileUri: vscode.Uri) => {
 		try {
+			const { convertToHtml } = await import('./command-convert-html.mjs');
 			await convertToHtml(fileUri);
 		} catch (error) {
 			vscode.window.showErrorMessage(`Failed to convert to HTML: ${error}`);
@@ -84,6 +84,18 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(convertToMarkdownDisposable);
+
+	// Register the create examples folder command
+	const createExamplesFolderDisposable = vscode.commands.registerCommand('chartifact.createExamplesFolder', async (uri?: vscode.Uri) => {
+		try {
+			const { createExamplesFolder } = await import('./command-create-examples.js');
+			await createExamplesFolder(uri);
+		} catch (error) {
+			vscode.window.showErrorMessage(`Failed to create examples folder: ${error}`);
+		}
+	});
+
+	context.subscriptions.push(createExamplesFolderDisposable);
 
 	// Ensure preview manager is disposed when extension deactivates
 	context.subscriptions.push({

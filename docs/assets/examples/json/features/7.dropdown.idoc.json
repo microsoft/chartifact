@@ -66,14 +66,8 @@
         "Selected: **{{selectedProduct}}**",
         "### Product Data",
         {
-          "type": "table",
-          "dataSourceName": "productData",
-          "variableId": "productTable",
-          "tabulatorOptions": {
-            "autoColumns": true,
-            "layout": "fitColumns",
-            "maxHeight": "200px"
-          }
+          "type": "tabulator",
+          "dataSourceName": "productData"
         }
       ]
     }

@@ -1,14 +1,26 @@
 {
     "$schema": "../../schema/folder_v1.json",
-    "title": "Capabilities",
+    "title": "Core capabilities",
     "docs": [
         {
             "title": "Primer",
             "href": "./markdown/features/1.primer.idoc.md"
         },
         {
-            "title": "Data Sources",
-            "href": "markdown/features/2.data-sources.idoc.md"
+            "title": "Data Source: Inline JSON Data",
+            "href": "markdown/features/2.1.inline-json-data.idoc.md"
+        },
+        {
+            "title": "Data Source: CSV from URL", 
+            "href": "markdown/features/2.2.csv-from-url.idoc.md"
+        },
+        {
+            "title": "Data Source: Dynamic URL Variables",
+            "href": "markdown/features/2.3.dynamic-url-variables.idoc.md"
+        },
+        {
+            "title": "Data Source: Inline CSV Data",
+            "href": "markdown/features/2.4.inline-csv-data.idoc.md"
         },
         {
             "title": "Chart",
@@ -39,16 +51,8 @@
             "href": "markdown/features/9.mermaid.idoc.md"
         },
         {
-            "title": "Data URL",
-            "href": "markdown/features/data-url.idoc.md"
-        },
-        {
-            "title": "Image",
-            "href": "markdown/features/image.idoc.md"
-        },
-        {
-            "title": "URLs",
-            "href": "markdown/features/urls.idoc.md"
+            "title": "Images",
+            "href": "markdown/features/10.images.idoc.md"
         }
     ]
 }

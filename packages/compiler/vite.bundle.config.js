@@ -9,6 +9,7 @@ const commonOutputConfig = {
   globals: {
     'vega': 'vega',
     'vega-lite': 'vegaLite',
+    'js-yaml': 'jsyaml',
   },
   entryFileNames: 'chartifact.compiler.umd.js',
 };
@@ -22,7 +23,7 @@ export default defineConfig({
     emptyOutDir: false,
     rollupOptions: {
       // External dependencies that the library expects consumers to provide
-      external: ['vega', 'vega-lite'],
+      external: ['vega', 'vega-lite', 'js-yaml'],
       output: [
         {
           ...commonOutputConfig,

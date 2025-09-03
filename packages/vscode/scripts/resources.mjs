@@ -10,6 +10,7 @@ const resources = [
     '../../node_modules/vega-lite/build/vega-lite.min.js',
     '../../node_modules/markdown-it/dist/markdown-it.min.js',
     '../../node_modules/css-tree/dist/csstree.js',
+    '../../node_modules/js-yaml/dist/js-yaml.min.js',
     '../../node_modules/tabulator-tables/dist/js/tabulator.min.js',
     '../../node_modules/tabulator-tables/dist/css/tabulator.min.css',
     '../../node_modules/mermaid/dist/mermaid.min.js',
@@ -24,17 +25,14 @@ const resources = [
 
     //webview resources
     '../../packages/vscode-resources/dist/edit.js',
-    '../../packages/vscode-resources/dist/html-json.js',
-    '../../packages/vscode-resources/dist/html-markdown.js',
     '../../packages/vscode-resources/dist/preview.js',
     '../../packages/vscode-resources/html/preview.html',
     '../../packages/vscode-resources/html/edit.html',
-    '../../packages/vscode-resources/html/html-json.html',
-    '../../packages/vscode-resources/html/html-markdown.html',
 
     //sample docs
     '../../docs/assets/examples/json/grocery-list.idoc.json',
     '../../docs/assets/examples/markdown/seattle-weather/1.idoc.md',
+    '../../docs/assets/chartifact-examples.zip',
 ];
 
 const errors = [];

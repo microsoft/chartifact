@@ -176,9 +176,8 @@ const initialPage: InteractiveDocument = {
       "elements": [
         "# Seattle Weather\n\nData table:",
         {
-          "type": "table",
-          "dataSourceName": "seattle_weather",
-          "variableId": "seattle_weather_selected"
+          "type": "tabulator",
+          "dataSourceName": "seattle_weather"
         },
         "Here is a stacked bar chart of Seattle weather:\nEach bar represents the count of weather types for each month.\nThe colors distinguish between different weather conditions such as sun, fog, drizzle, rain, and snow.",
         {

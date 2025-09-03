@@ -17,10 +17,3 @@ export function script(src: vscode.Uri | string) {
         return `<script src="${src.toString()}"></script>`;
     }
 }
-
-export function escapeTextareaContent(text: string): string {
-    return text
-        .replace(/<\/textarea>/gi, '&lt;/textarea&gt;') // Prevent textarea breakage
-        .replace(/<script/gi, '&lt;script')            // Block script tags
-        .replace(/<\/script>/gi, '&lt;/script&gt;');   // Close script tag
-}

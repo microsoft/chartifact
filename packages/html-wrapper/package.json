@@ -1,0 +1,18 @@
+{
+  "name": "html-wrapper",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.mjs",
+  "scripts": {
+    "resources": "node ./scripts/resources.mjs",
+    "clean": "rimraf dist && rimraf js",
+    "tsc-client": "tsc -p ./tsconfig.json",
+    "tsc-server": "tsc -p ./tsconfig-server.json",
+    "build": "npm run clean && npm run tsc-server && npm run tsc-client && npm run resources",
+    "build:05": "npm run build"
+  },
+  "author": "Dan Marshall",
+  "license": "MIT",
+  "description": ""
+}

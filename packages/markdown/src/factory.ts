@@ -10,8 +10,30 @@ import { ErrorHandler, Renderer } from './renderer.js';
 import { defaultCommonOptions, SpecReview } from 'common';
 import { PluginNames } from './plugins/interfaces.js';
 import { decorateFenceWithPlaceholders } from './plugins/placeholders.js';
+import * as Csstree from 'css-tree';
 
-declare const markdownit: typeof MarkdownIt;
+let markdownit: typeof MarkdownIt;
+
+//see if markdownit exists in global scope (not just window)
+if (typeof globalThis.markdownit === 'function') {
+    markdownit = globalThis.markdownit;
+}
+
+export function setMarkdownIt(md: typeof MarkdownIt) {
+    markdownit = md;
+}
+
+// CSS Tree is expected to be available as a global variable
+export let csstree: typeof Csstree;
+
+//see if css-tree exists in global scope (not just window)
+if (typeof globalThis.csstree === 'object') {
+    csstree = globalThis.csstree;
+}
+
+export function setCssTree(tree: typeof Csstree) {
+    csstree = tree;
+}
 
 export interface PrioritizedSignal {
     name: string;
@@ -113,6 +135,13 @@ export function create() {
             }
         };
 
+        const findPluginByPrefix = (prefix: string) => {
+            const plugin = plugins.find(p => p.name === prefix);
+            if (plugin && plugin.fence) {
+                return plugin.fence(token, idx);
+            }
+        };
+
         // First priority: Check if it starts with "#" for comment plugin
         if (info.startsWith('#')) {
             return findPlugin('#');
@@ -123,12 +152,30 @@ export function create() {
             if (directPlugin) {
                 return directPlugin;
             }
-            // Third priority: Check if it starts with "json " and extract the plugin name
-            else if (info.startsWith('json ')) {
+            // Third priority: Check for plugin names with additional parameters (like "csv variableId")
+            else {
+                const infoWords = info.split(/\s+/);
+                if (infoWords.length > 0) {
+                    const pluginPrefix = findPluginByPrefix(infoWords[0]);
+                    if (pluginPrefix) {
+                        return pluginPrefix;
+                    }
+                }
+            }
+            // Fourth priority: Check if it starts with "json " and extract the plugin name
+            if (info.startsWith('json ')) {
                 const jsonPluginName = info.slice(5).trim();
                 const jsonPlugin = findPlugin(jsonPluginName);
                 if (jsonPlugin) {
                     return jsonPlugin;
+                }
+            }
+            // Fifth priority: Check if it starts with "yaml " and extract the plugin name
+            else if (info.startsWith('yaml ')) {
+                const yamlPluginName = info.slice(5).trim();
+                const yamlPlugin = findPlugin(yamlPluginName);
+                if (yamlPlugin) {
+                    return yamlPlugin;
                 }
             }
         }

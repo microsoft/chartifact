@@ -2,7 +2,13 @@
   "$schema": "https://microsoft.github.io/chartifact/schema/idoc_v1.json",
   "title": "Feature: Styling",
   "style": {
-    "css": ".group { padding: 20px; background-color: #f8f9fa; border: 2px solid #3498db; border-radius: 8px; margin-bottom: 20px; } .group h2 { color: #3498db; } .group h3 { color: #2c3e50; } #demo { background-color: #e8f5e8; border-color: #28a745; } #demo h2 { color: #28a745; }",
+    "css": [
+      ".group { padding: 20px; background-color: #f8f9fa; border: 2px solid #3498db; border-radius: 8px; margin-bottom: 20px; }",
+      ".group h2 { color: #3498db; }",
+      ".group h3 { color: #2c3e50; }",
+      "#demo { background-color: #e8f5e8; border-color: #28a745; }",
+      "#demo h2 { color: #28a745; }"
+    ],
     "googleFonts": {
       "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Code+Pro:wght@400;600&family=Inter:wght@300;400;500&family=Roboto+Slab:wght@400;700&display=swap",
       "mapping": {

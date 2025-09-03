@@ -186,27 +186,14 @@
       "type": "object"
     },
     "Calculation": {
-      "additionalProperties": false,
-      "properties": {
-        "dataFrameTransformations": {
-          "description": "If a variable type is object and isArray is true, the calculation must be a DataFrameTransformation",
-          "items": {
-            "$ref": "#/definitions/Transforms"
-          },
-          "type": "array"
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ScalarCalculation"
         },
-        "dependsOn": {
-          "items": {
-            "$ref": "#/definitions/VariableID"
-          },
-          "type": "array"
-        },
-        "vegaExpression": {
-          "description": "Vega expression language, used to calculate the value based on other variables. Not for object arrays.",
-          "type": "string"
+        {
+          "$ref": "#/definitions/DataFrameCalculation"
         }
-      },
-      "type": "object"
+      ]
     },
     "ChartElement": {
       "additionalProperties": false,
@@ -503,6 +490,30 @@
       ],
       "type": "object"
     },
+    "DataFrameCalculation": {
+      "additionalProperties": false,
+      "description": "DataFrame calculation for object arrays. Not for primitive/scalar values.",
+      "properties": {
+        "dataFrameTransformations": {
+          "items": {
+            "$ref": "#/definitions/Transforms"
+          },
+          "type": "array"
+        },
+        "dataSourceNames": {
+          "description": "The upstream object array source dataSourceName(s) the dataFrameTransformations depends on.",
+          "items": {
+            "$ref": "#/definitions/VariableID"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "dataSourceNames",
+        "dataFrameTransformations"
+      ],
+      "type": "object"
+    },
     "DataLoader": {
       "anyOf": [
         {
@@ -563,6 +574,10 @@
               "$ref": "#/definitions/VariableID",
               "description": "name of the data source, used to reference it in the UI, has same constraints as VariableID"
             },
+            "delimiter": {
+              "description": "only if format = dsv",
+              "type": "string"
+            },
             "format": {
               "$ref": "#/definitions/DataSourceBaseFormat",
               "description": "optional, default is 'json'"
@@ -594,6 +609,10 @@
             "dataSourceName": {
               "$ref": "#/definitions/VariableID",
               "description": "name of the data source, used to reference it in the UI, has same constraints as VariableID"
+            },
+            "delimiter": {
+              "description": "only if format = dsv",
+              "type": "string"
             },
             "filename": {
               "type": "string"
@@ -628,6 +647,10 @@
               "$ref": "#/definitions/VariableID",
               "description": "name of the data source, used to reference it in the UI, has same constraints as VariableID"
             },
+            "delimiter": {
+              "description": "only if format = dsv",
+              "type": "string"
+            },
             "docString": {
               "description": "Assistant should not populate this.",
               "type": "string"
@@ -661,7 +684,8 @@
       "enum": [
         "csv",
         "json",
-        "tsv"
+        "tsv",
+        "dsv"
       ],
       "type": "string"
     },
@@ -1788,7 +1812,7 @@
           "$ref": "#/definitions/SliderElement"
         },
         {
-          "$ref": "#/definitions/TableElement"
+          "$ref": "#/definitions/TabulatorElement"
         },
         {
           "$ref": "#/definitions/TextboxElement"
@@ -2291,15 +2315,14 @@
         },
         "template": {
           "$ref": "#/definitions/MermaidTemplate",
-          "description": "Dynamic option: data-driven template"
+          "description": "Dynamic option 1: data-driven template"
         },
         "type": {
           "const": "mermaid",
           "type": "string"
         },
         "variableId": {
-          "description": "Dynamic option: input from signal bus, or output to signal bus from rendered data-driven template",
-          "type": "string"
+          "$ref": "#/definitions/VariableID"
         }
       },
       "required": [
@@ -2722,6 +2745,20 @@
       ],
       "type": "object"
     },
+    "ScalarCalculation": {
+      "additionalProperties": false,
+      "description": "Scalar calculation for primitive values. Not for object arrays.",
+      "properties": {
+        "vegaExpression": {
+          "description": "Vega expression language, used to calculate the value based on other variables.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "vegaExpression"
+      ],
+      "type": "object"
+    },
     "SequenceTransform": {
       "additionalProperties": false,
       "properties": {
@@ -2853,9 +2890,9 @@
       ],
       "type": "object"
     },
-    "TableElement": {
+    "TabulatorElement": {
       "additionalProperties": false,
-      "description": "Table use for tabular data",
+      "description": "Tabulator use for tabular data",
       "properties": {
         "dataSourceName": {
           "description": "Name of the data source to use for incoming data (output data is available via the variableId of this table element)",
@@ -2864,16 +2901,12 @@
         "editable": {
           "type": "boolean"
         },
-        "label": {
-          "description": "optional label if the variableId is not descriptive enough",
-          "type": "string"
-        },
         "tabulatorOptions": {
           "description": "Tabulator options (must be JSON stringify-able, so no callbacks allowed)",
           "type": "object"
         },
         "type": {
-          "const": "table",
+          "const": "tabulator",
           "type": "string"
         },
         "variableId": {
@@ -2882,8 +2915,7 @@
       },
       "required": [
         "dataSourceName",
-        "type",
-        "variableId"
+        "type"
       ],
       "type": "object"
     },

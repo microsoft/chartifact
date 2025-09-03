@@ -71,6 +71,7 @@ export class EditManager {
 							style(getResourceContent('tabulator.min.css')) +
 							script(getResourceContent('markdown-it.min.js')) +
 							script(getResourceContent('csstree.js')) +
+							script(getResourceContent('js-yaml.min.js')) +
 							script(getResourceContent('vega.min.js')) +
 							script(getResourceContent('vega-lite.min.js')) +
 							script(getResourceContent('tabulator.min.js')) +

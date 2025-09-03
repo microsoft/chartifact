@@ -37,20 +37,13 @@
         "## Table\nUse tables for displaying and interacting with tabular data.",
         "### Basic Table",
         {
-          "type": "table",
-          "dataSourceName": "sampleData",
-          "variableId": "table1",
-          "tabulatorOptions": {
-            "autoColumns": true,
-            "layout": "fitColumns",
-            "maxHeight": "200px"
-          }
+          "type": "tabulator",
+          "dataSourceName": "sampleData"
         },
         "### Selectable Table",
         {
-          "type": "table",
+          "type": "tabulator",
           "dataSourceName": "sampleData",
-          "variableId": "table2",
           "tabulatorOptions": {
             "autoColumns": true,
             "layout": "fitColumns",

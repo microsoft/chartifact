@@ -6,7 +6,7 @@
 import { Preset } from '@microsoft/chartifact-schema';
 import { Batch, IInstance, Plugin, PrioritizedSignal } from '../factory.js';
 import { pluginClassName } from './util.js';
-import { flaggableJsonPlugin } from './config.js';
+import { flaggablePlugin } from './config.js';
 import { PluginNames } from './interfaces.js';
 
 export type PresetsSpec = Preset[];
@@ -21,7 +21,7 @@ const pluginName: PluginNames = 'presets';
 const className = pluginClassName(pluginName);
 
 export const presetsPlugin: Plugin<PresetsSpec> = {
-    ...flaggableJsonPlugin<PresetsSpec>(pluginName, className),
+    ...flaggablePlugin<PresetsSpec>(pluginName, className),
     hydrateComponent: async (renderer, errorHandler, specs) => {
         const { signalBus } = renderer;
         const presetsInstances: PresetsInstance[] = [];

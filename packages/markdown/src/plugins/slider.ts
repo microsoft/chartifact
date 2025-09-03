@@ -6,7 +6,7 @@
 import { VariableControl, SliderElementProps } from '@microsoft/chartifact-schema';
 import { Batch, IInstance, Plugin } from '../factory.js';
 import { pluginClassName } from './util.js';
-import { flaggableJsonPlugin } from './config.js';
+import { flaggablePlugin } from './config.js';
 import { PluginNames } from './interfaces.js';
 
 interface SliderInstance {
@@ -23,7 +23,7 @@ const pluginName: PluginNames = 'slider';
 const className = pluginClassName(pluginName);
 
 export const sliderPlugin: Plugin<SliderSpec> = {
-    ...flaggableJsonPlugin<SliderSpec>(pluginName, className),
+    ...flaggablePlugin<SliderSpec>(pluginName, className),
     hydrateComponent: async (renderer, errorHandler, specs) => {
         const { signalBus } = renderer;
         const sliderInstances: SliderInstance[] = [];

@@ -1,9 +1,13 @@
 # Change Log
 
-All notable changes to the "chartifact" extension will be documented in this file.
+## [1.0.2]
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+- Fixed command activation for copied idoc files with parenthesis numbering. Commands now support these file naming formats for both .md and .json files:
+  - `file.idoc.md`
+  - `file.idoc copy.md`
+  - `file.idoc copy 1.md`
+  - `file.idoc (1).md`
 
-## [Unreleased]
+## [1.0.0]
 
 - Initial release

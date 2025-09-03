@@ -140,3 +140,4 @@ dist
 # jekyll cache and generated files
 .jekyll-cache
 _site
+docs/Gemfile.lock

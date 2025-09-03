@@ -1,1 +1,7 @@
 baseurl: /chartifact
+repository: microsoft/chartifact
+
+# Development settings (local only - not used by GitHub Pages)
+webrick:
+  headers:
+    Access-Control-Allow-Origin: "*"  # CORS for sandbox/iframe development

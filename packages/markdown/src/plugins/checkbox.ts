@@ -6,7 +6,7 @@
 import { VariableControl } from '@microsoft/chartifact-schema';
 import { Batch, IInstance, Plugin } from '../factory.js';
 import { pluginClassName } from './util.js';
-import { flaggableJsonPlugin } from './config.js';
+import { flaggablePlugin } from './config.js';
 import { PluginNames } from './interfaces.js';
 
 interface CheckboxInstance {
@@ -23,7 +23,7 @@ const pluginName: PluginNames = 'checkbox';
 const className = pluginClassName(pluginName);
 
 export const checkboxPlugin: Plugin<CheckboxSpec> = {
-    ...flaggableJsonPlugin<CheckboxSpec>(pluginName, className),
+    ...flaggablePlugin<CheckboxSpec>(pluginName, className),
     hydrateComponent: async (renderer, errorHandler, specs) => {
         const { signalBus } = renderer;
         const checkboxInstances: CheckboxInstance[] = [];

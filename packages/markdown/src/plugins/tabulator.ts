@@ -6,8 +6,8 @@
 import { Batch, IInstance, Plugin, RawFlaggableSpec } from '../factory.js';
 import { Tabulator as TabulatorType, Options as TabulatorOptions } from 'tabulator-tables';
 import { newId, pluginClassName } from './util.js';
-import { TableElementProps } from '@microsoft/chartifact-schema';
-import { flaggableJsonPlugin } from './config.js';
+import { TabulatorElementProps } from '@microsoft/chartifact-schema';
+import { flaggablePlugin } from './config.js';
 import { PluginNames } from './interfaces.js';
 
 interface TabulatorInstance {
@@ -20,7 +20,7 @@ interface TabulatorInstance {
     listening: boolean;
 }
 
-export interface TabulatorSpec extends TableElementProps {
+export interface TabulatorSpec extends TabulatorElementProps {
     tabulatorOptions?: TabulatorOptions;    //recast the default with strong typing
 }
 
@@ -38,7 +38,7 @@ const pluginName: PluginNames = 'tabulator';
 const className = pluginClassName(pluginName);
 
 export const tabulatorPlugin: Plugin<TabulatorSpec> = {
-    ...flaggableJsonPlugin<TabulatorSpec>(pluginName, className, inspectTabulatorSpec, { style: 'box-sizing: border-box;' }),
+    ...flaggablePlugin<TabulatorSpec>(pluginName, className, inspectTabulatorSpec, { style: 'box-sizing: border-box;' }),
     hydrateComponent: async (renderer, errorHandler, specs) => {
         const { signalBus } = renderer;
         const tabulatorInstances: TabulatorInstance[] = [];
@@ -75,8 +75,8 @@ export const tabulatorPlugin: Plugin<TabulatorSpec> = {
                 continue;
             }
 
-            if (!spec.dataSourceName || !spec.variableId) {
-                errorHandler(new Error('Tabulator requires dataSourceName and variableId'), pluginName, index, 'init', container);
+            if (!spec.dataSourceName) {
+                errorHandler(new Error('Tabulator requires dataSourceName'), pluginName, index, 'init', container);
                 continue;
             } else if (spec.dataSourceName === spec.variableId) {
                 errorHandler(new Error('Tabulator dataSourceName and variableId cannot be the same'), pluginName, index, 'init', container);
@@ -134,6 +134,9 @@ export const tabulatorPlugin: Plugin<TabulatorSpec> = {
             }
 
             const outputData = () => {
+                if (!spec.variableId) {
+                    return;
+                }
                 let data: object[];
                 if (selectableRows) {
                     data = table.getSelectedData();

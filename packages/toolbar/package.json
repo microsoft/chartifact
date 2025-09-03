@@ -6,9 +6,10 @@
   "scripts": {
     "clean": "rimraf dist",
     "tsc": "tsc -p .",
+    "bundle": "vite build --config vite.bundle.config.js",
     "build": "npm run tsc",
     "postbuild": "node ./scripts/copy-css.mjs",
-    "build:03": "npm run build"
+    "build:04": "npm run build"
   },
   "author": "Dan Marshall",
   "license": "MIT",

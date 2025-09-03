@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "outDir": "dist",
+        "module": "commonjs",
+        "skipLibCheck": true,
+        "target": "esnext",
+        "lib": [
+            "dom",
+            "esnext"
+        ]
+    },
+    "include": [
+        "src-server"
+    ]
+}

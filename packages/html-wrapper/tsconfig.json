@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "outDir": "js",
+        "module": "commonjs",
+        "skipLibCheck": true,
+        "target": "esnext",
+        "lib": [
+            "dom",
+            "esnext"
+        ]
+    },
+    "include": [
+        "src"
+    ]
+}

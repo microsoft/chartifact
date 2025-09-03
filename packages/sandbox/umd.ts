@@ -4,4 +4,3 @@
 */
 export * as common from 'common';
 export * as sandbox from './src/index.js';
-export * as toolbar from 'toolbar';

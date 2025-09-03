@@ -10,7 +10,7 @@
     "dev": "vite --config vite.config.js",
     "tsc": "tsc -p .",
     "bundle": "vite build --config vite.bundle.config.js",
-    "build": "npm run tsc && npm run bundle",
+    "build": "npm run tsc",
     "build:06": "npm run build"
   },
   "author": "Dan Marshall",

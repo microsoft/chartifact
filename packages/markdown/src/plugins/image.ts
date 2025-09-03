@@ -6,7 +6,7 @@
 import { ImageElementProps } from '@microsoft/chartifact-schema';
 import { IInstance, Plugin } from '../factory.js';
 import { pluginClassName } from './util.js';
-import { flaggableJsonPlugin } from './config.js';
+import { flaggablePlugin } from './config.js';
 import { PluginNames } from './interfaces.js';
 import { DynamicUrl } from './url.js';
 import { ErrorHandler } from '../renderer.js';
@@ -32,7 +32,7 @@ const pluginName: PluginNames = 'image';
 const className = pluginClassName(pluginName);
 
 export const imagePlugin: Plugin<ImageSpec> = {
-    ...flaggableJsonPlugin<ImageSpec>(pluginName, className),
+    ...flaggablePlugin<ImageSpec>(pluginName, className),
     hydrateComponent: async (renderer, errorHandler, specs) => {
         const imageInstances: ImageInstance[] = [];
         for (let index = 0; index < specs.length; index++) {

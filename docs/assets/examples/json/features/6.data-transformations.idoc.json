@@ -58,7 +58,7 @@
       "isArray": true,
       "initialValue": [],
       "calculation": {
-        "dependsOn": [
+        "dataSourceNames": [
           "rawData"
         ],
         "dataFrameTransformations": [
@@ -99,25 +99,13 @@
         },
         "### Filtered Products (in stock, price ≤ ${{maxPrice}})",
         {
-          "type": "table",
-          "dataSourceName": "rawData",
-          "variableId": "filteredTable",
-          "tabulatorOptions": {
-            "autoColumns": true,
-            "layout": "fitColumns",
-            "maxHeight": "200px"
-          }
+          "type": "tabulator",
+          "dataSourceName": "rawData"
         },
         "### Category Statistics",
         {
-          "type": "table",
-          "dataSourceName": "categoryStats",
-          "variableId": "categoryStatsTable",
-          "tabulatorOptions": {
-            "autoColumns": true,
-            "layout": "fitColumns",
-            "maxHeight": "150px"
-          }
+          "type": "tabulator",
+          "dataSourceName": "categoryStats"
         }
       ]
     }

@@ -1,15 +1,13 @@
 {
   "name": "chartifact",
   "displayName": "Chartifact",
-  "private": true,
-  "description": "",
-  "version": "0.0.3",
+  "description": "Declarative, interactive data documents",
+  "version": "1.0.2",
   "publisher": "msrvida",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/microsoft/chartifact.git"
   },
-  "author": "Dan Marshall",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/microsoft/chartifact/issues"
@@ -19,7 +17,12 @@
     "vscode": "^1.101.0"
   },
   "categories": [
-    "Other"
+    "Other",
+    "Visualization"
+  ],
+  "keywords": [
+    "data visualization",
+    "dataviz"
   ],
   "activationEvents": [],
   "browser": "./dist/web/extension.js",
@@ -51,8 +54,8 @@
         "category": "Chartifact Interactive Documents"
       },
       {
-        "command": "chartifact.editIdoc",
-        "title": "Edit Chartifact Interactive Document",
+        "command": "chartifact.createExamplesFolder",
+        "title": "Create Chartifact Examples Folder",
         "category": "Chartifact Interactive Documents"
       },
       {
@@ -76,81 +79,71 @@
         },
         {
           "command": "chartifact.previewIdoc",
-          "when": "resourceExtname == .md && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.md$/",
+          "when": "resourceExtname == .md && resourceFilename =~ /\\.idoc(( copy( \\d+)?)|(\\s\\(\\d+\\)))?\\.md$/",
           "group": "chartifact"
         },
         {
           "command": "chartifact.previewIdoc",
-          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.json$/",
+          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc(( copy( \\d+)?)|(\\s\\(\\d+\\)))?\\.json$/",
           "group": "chartifact"
         },
         {
           "command": "chartifact.convertToHtml",
-          "when": "resourceExtname == .md && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.md$/",
+          "when": "resourceExtname == .md && resourceFilename =~ /\\.idoc(( copy( \\d+)?)|(\\s\\(\\d+\\)))?\\.md$/",
           "group": "chartifact"
         },
         {
           "command": "chartifact.convertToHtml",
-          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.json$/",
+          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc(( copy( \\d+)?)|(\\s\\(\\d+\\)))?\\.json$/",
           "group": "chartifact"
         },
         {
           "command": "chartifact.convertToMarkdown",
-          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.json$/",
+          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc(( copy( \\d+)?)|(\\s\\(\\d+\\)))?\\.json$/",
           "group": "chartifact"
         },
         {
-          "command": "chartifact.editIdoc",
-          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.json$/",
+          "command": "chartifact.createExamplesFolder",
+          "when": "explorerResourceIsFolder",
           "group": "chartifact"
         }
       ],
       "editor/title": [
         {
           "command": "chartifact.previewIdocSplit",
-          "when": "resourceExtname == .md && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.md$/",
+          "when": "resourceExtname == .md && resourceFilename =~ /\\.idoc(( copy( \\d+)?)|(\\s\\(\\d+\\)))?\\.md$/",
           "group": "navigation"
         },
         {
           "command": "chartifact.previewIdocSplit",
-          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.json$/",
+          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc(( copy( \\d+)?)|(\\s\\(\\d+\\)))?\\.json$/",
           "group": "navigation"
         }
       ],
       "editor/title/context": [
         {
           "command": "chartifact.previewIdoc",
-          "when": "resourceExtname == .md && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.md$/",
+          "when": "resourceExtname == .md && resourceFilename =~ /\\.idoc(( copy( \\d+)?)|(\\s\\(\\d+\\)))?\\.md$/",
           "group": "chartifact"
         },
         {
           "command": "chartifact.previewIdoc",
-          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.json$/",
+          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc(( copy( \\d+)?)|(\\s\\(\\d+\\)))?\\.json$/",
           "group": "chartifact"
         },
         {
           "command": "chartifact.convertToHtml",
-          "when": "resourceExtname == .md && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.md$/",
+          "when": "resourceExtname == .md && resourceFilename =~ /\\.idoc(( copy( \\d+)?)|(\\s\\(\\d+\\)))?\\.md$/",
           "group": "chartifact"
         },
         {
           "command": "chartifact.convertToHtml",
-          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.json$/",
+          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc(( copy( \\d+)?)|(\\s\\(\\d+\\)))?\\.json$/",
           "group": "chartifact"
         },
         {
           "command": "chartifact.convertToMarkdown",
-          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.json$/",
-          "group": "chartifact"
-        },
-        {
-          "command": "chartifact.editIdoc",
-          "when": "resourceExtname == .md && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.md$/",
-          "group": "chartifact"
-        },
-        {
-          "command": "chartifact.editIdoc",
-          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc( copy( \\d+)?)?\\.json$/",
+          "when": "resourceExtname == .json && resourceFilename =~ /\\.idoc(( copy( \\d+)?)|(\\s\\(\\d+\\)))?\\.json$/",
           "group": "chartifact"
         }
       ]
@@ -162,6 +155,7 @@
     "test": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --extensionTestsPath=dist/web/test/suite/extensionTests.js",
     "pretest": "npm run compile-web",
     "vscode:prepublish": "npm run package-web",
+    "prebuild": "npm run resources",
     "build": "npm run resources && npm run compile-web",
     "build:08": "npm run build",
     "compile-web": "npm run check-types && npm run lint && npm run resources && node esbuild.js",

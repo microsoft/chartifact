@@ -1,0 +1,275 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Sales Performance Report",
+    "style": {
+        "css": [
+            "body { font-family: 'Times New Roman', serif; margin: 0; padding: 40px; background: white; line-height: 1.6; color: #333; }",
+            ".group { max-width: 800px; margin: 0 auto; }",
+            "h1 { text-align: center; font-size: 2.5em; margin-bottom: 0.5em; color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 20px; }",
+            "h2 { font-size: 1.8em; margin: 40px 0 20px 0; color: #2c3e50; border-bottom: 1px solid #bdc3c7; padding-bottom: 10px; }",
+            "h3 { font-size: 1.3em; margin: 30px 0 15px 0; color: #34495e; }",
+            "blockquote { background: #ecf0f1; padding: 20px; border-left: 5px solid #3498db; margin: 30px 0; font-style: normal; }",
+            "table { width: 100%; border-collapse: collapse; margin: 20px 0; }",
+            "td { padding: 10px 20px; border-bottom: 1px solid #ecf0f1; }",
+            "td:first-child { font-weight: bold; color: #2c3e50; }",
+            ".chart-container { margin: 30px 0; padding: 20px; background: #fafafa; border: 1px solid #ecf0f1; border-radius: 5px; }",
+            "p { margin: 15px 0; text-align: justify; }"
+        ]
+    },
+    "dataLoaders": [
+        {
+            "dataSourceName": "salesData",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"timestamp": "2025-07-15", "order_id": "ORD-0901", "product": "Executive Desk", "category": "Furniture", "region": "North", "salesperson": "Alice Chen", "units": 1, "unit_price": 599.99},
+                {"timestamp": "2025-07-18", "order_id": "ORD-0902", "product": "Office Chair Premium", "category": "Furniture", "region": "East", "salesperson": "Bob Johnson", "units": 2, "unit_price": 299.99},
+                {"timestamp": "2025-07-22", "order_id": "ORD-0903", "product": "Wireless Mouse", "category": "Electronics", "region": "West", "salesperson": "Jane Smith", "units": 3, "unit_price": 35.99},
+                {"timestamp": "2025-07-25", "order_id": "ORD-0904", "product": "File Cabinet", "category": "Furniture", "region": "South", "salesperson": "Charlie Brown", "units": 1, "unit_price": 189.00},
+                {"timestamp": "2025-07-28", "order_id": "ORD-0905", "product": "Printer Paper Pack", "category": "Office Supplies", "region": "North", "salesperson": "Alice Chen", "units": 5, "unit_price": 24.99},
+                {"timestamp": "2025-08-01", "order_id": "ORD-1001", "product": "Software License Pro", "category": "Office Supplies", "region": "West", "salesperson": "Jane Smith", "units": 3, "unit_price": 199.99},
+                {"timestamp": "2025-08-02", "order_id": "ORD-1002", "product": "Notebook Set", "category": "Office Supplies", "region": "East", "salesperson": "Bob Johnson", "units": 10, "unit_price": 15.99},
+                {"timestamp": "2025-08-03", "order_id": "ORD-1003", "product": "Presentation Supplies", "category": "Office Supplies", "region": "North", "salesperson": "Alice Chen", "units": 2, "unit_price": 89.50},
+                {"timestamp": "2025-08-05", "order_id": "ORD-1004", "product": "Stationery Bundle", "category": "Office Supplies", "region": "South", "salesperson": "Charlie Brown", "units": 4, "unit_price": 45.00},
+                {"timestamp": "2025-08-06", "order_id": "ORD-1005", "product": "USB Hub", "category": "Electronics", "region": "West", "salesperson": "Jane Smith", "units": 2, "unit_price": 29.99},
+                {"timestamp": "2025-08-08", "order_id": "ORD-1006", "product": "Tablet Pro", "category": "Electronics", "region": "North", "salesperson": "Alice Chen", "units": 1, "unit_price": 449.99},
+                {"timestamp": "2025-08-10", "order_id": "ORD-1007", "product": "Conference Table", "category": "Furniture", "region": "East", "salesperson": "Bob Johnson", "units": 1, "unit_price": 799.99},
+                {"timestamp": "2025-08-12", "order_id": "ORD-1008", "product": "Ergonomic Chair", "category": "Furniture", "region": "South", "salesperson": "Charlie Brown", "units": 1, "unit_price": 349.99},
+                {"timestamp": "2025-08-14", "order_id": "ORD-1009", "product": "Wireless Keyboard", "category": "Electronics", "region": "West", "salesperson": "Jane Smith", "units": 2, "unit_price": 89.99},
+                {"timestamp": "2025-09-03", "order_id": "ORD-1101", "product": "Laptop Pro", "category": "Electronics", "region": "East", "salesperson": "Bob Johnson", "units": 1, "unit_price": 1299.99},
+                {"timestamp": "2025-09-07", "order_id": "ORD-1102", "product": "Monitor 4K", "category": "Electronics", "region": "West", "salesperson": "Jane Smith", "units": 2, "unit_price": 399.99},
+                {"timestamp": "2025-09-12", "order_id": "ORD-1103", "product": "Wireless Headset", "category": "Electronics", "region": "South", "salesperson": "Charlie Brown", "units": 3, "unit_price": 149.99},
+                {"timestamp": "2025-09-15", "order_id": "ORD-1104", "product": "Smartphone Pro", "category": "Electronics", "region": "North", "salesperson": "Alice Chen", "units": 1, "unit_price": 899.99},
+                {"timestamp": "2025-09-20", "order_id": "ORD-1105", "product": "Desk Organizer", "category": "Office Supplies", "region": "East", "salesperson": "Bob Johnson", "units": 4, "unit_price": 39.99},
+                {"timestamp": "2025-09-05", "order_id": "ORD-1106", "product": "Standing Desk", "category": "Furniture", "region": "North", "salesperson": "Alice Chen", "units": 1, "unit_price": 699.99},
+                {"timestamp": "2025-09-08", "order_id": "ORD-1107", "product": "Bookshelf Unit", "category": "Furniture", "region": "West", "salesperson": "Jane Smith", "units": 1, "unit_price": 299.99},
+                {"timestamp": "2025-09-18", "order_id": "ORD-1108", "product": "Calculator Pro", "category": "Office Supplies", "region": "South", "salesperson": "Charlie Brown", "units": 3, "unit_price": 79.99},
+                {"timestamp": "2025-09-22", "order_id": "ORD-1109", "product": "Whiteboard Large", "category": "Office Supplies", "region": "East", "salesperson": "Bob Johnson", "units": 1, "unit_price": 199.99}
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "variableId": "selectedMonth",
+            "type": "string",
+            "initialValue": "August"
+        },
+        {
+            "variableId": "filteredSalesData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["salesData"],
+                "variableDependencies": ["selectedMonth"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "expr": "selectedMonth === 'July' ? (year(datum.timestamp) === 2025 && month(datum.timestamp) === 6) : selectedMonth === 'August' ? (year(datum.timestamp) === 2025 && month(datum.timestamp) === 7) : selectedMonth === 'September' ? (year(datum.timestamp) === 2025 && month(datum.timestamp) === 8) : false",
+                        "as": "monthMatch"
+                    },
+                    {
+                        "type": "filter",
+                        "expr": "datum.monthMatch"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "revenueCalculation",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["filteredSalesData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "expr": "datum.units * datum.unit_price",
+                        "as": "revenue"
+                    },
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["revenue"],
+                        "as": ["total"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "totalRevenueFormatted",
+            "type": "string",
+            "initialValue": "$0",
+            "calculation": {
+                "vegaExpression": "'$' + format(data('revenueCalculation')[0] ? data('revenueCalculation')[0].total : 0, ',.2f')"
+            }
+        },
+        {
+            "variableId": "totalOrders",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "length(data('filteredSalesData'))"
+            }
+        },
+        {
+            "variableId": "averageOrderValue",
+            "type": "string",
+            "initialValue": "$0.00",
+            "calculation": {
+                "vegaExpression": "'$' + format((data('revenueCalculation')[0] ? data('revenueCalculation')[0].total : 0) / (totalOrders > 0 ? totalOrders : 1), ',.2f')"
+            }
+        },
+        {
+            "variableId": "categoryRevenue",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["filteredSalesData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "expr": "datum.units * datum.unit_price",
+                        "as": "revenue"
+                    },
+                    {
+                        "type": "aggregate",
+                        "groupby": ["category"],
+                        "ops": ["sum"],
+                        "fields": ["revenue"],
+                        "as": ["total_revenue"]
+                    }
+                ]
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "main",
+            "elements": [
+                "# Sales Performance Report",
+                {
+                    "type": "dropdown",
+                    "variableId": "selectedMonth",
+                    "label": "Select Month:",
+                    "options": ["July", "August", "September"]
+                },
+                "**Reporting Period:** {{selectedMonth}} 2025  ",
+                "**Prepared by:** Sales Analytics Team  ",
+                "**Date:** August 24, 2025",
+                "",
+                "## Executive Summary",
+                "",
+                "> This report analyzes sales performance for {{selectedMonth}} 2025. Our analysis reveals total revenue of **{{totalRevenueFormatted}}** across **{{totalOrders}} transactions**, with an average order value of **{{averageOrderValue}}**. The data shows strong performance in the Electronics category, which represents the majority of our revenue during this period.",
+                "",
+                "## Key Performance Metrics",
+                "",
+                "The following table summarizes our core performance indicators for the reporting period:",
+                "",
+                "| Metric | Value |",
+                "|--------|-------|",
+                "| Total Revenue | {{totalRevenueFormatted}} |",
+                "| Number of Orders | {{totalOrders}} |",
+                "| Average Order Value | {{averageOrderValue}} |",
+                "| Active Sales Regions | 4 regions |",
+                "| Product Categories | 2 categories |",
+                "",
+                "## Revenue Analysis by Product Category",
+                "",
+                "Our product portfolio performed differently across categories during this period. The chart below illustrates the revenue distribution:",
+                "",
+                {
+                    "type": "dropdown",
+                    "variableId": "selectedMonth",
+                    "label": "Select Month:",
+                    "options": ["July", "August", "September"]
+                },
+                "",
+                {
+                    "type": "chart",
+                    "chartKey": "categoryChart"
+                },
+                "",
+                "The Electronics category generated the majority of revenue, driven primarily by strong sales of Bluetooth Headphones and Wireless Mouse products. The Furniture category, while smaller in volume, contributed significant value through high-ticket items such as the Office Chair.",
+                "",
+                "## Sales Trend Analysis", 
+                "",
+                "Daily sales performance shows variability throughout the reporting period, with notable patterns emerging:",
+                "",
+                {
+                    "type": "dropdown",
+                    "variableId": "selectedMonth",
+                    "label": "Select Month:",
+                    "options": ["July", "August", "September"]
+                },
+                "",
+                {
+                    "type": "chart",
+                    "chartKey": "trendChart"
+                },
+                "",
+                "The trend analysis reveals that August 6th recorded the highest single-day revenue of $319.96, primarily due to the sale of 4 units of Bluetooth Headphones. August 2nd also showed strong performance with $199.99 in revenue from the Office Chair sale.",
+                "",
+                "## Detailed Transaction Data",
+                "",
+                "The complete transaction dataset for the reporting period is presented below for reference and further analysis:",
+                "",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "filteredSalesData"
+                },
+                "",
+                "## Conclusions and Recommendations",
+                "",
+                "Based on this analysis, we recommend:",
+                "",
+                "1. **Focus on Electronics expansion** - Given the strong performance of electronics products, consider expanding this category's inventory and marketing focus.",
+                "",
+                "2. **Leverage high-value furniture sales** - While furniture has lower transaction volume, the high average order values suggest opportunity for targeted premium product strategies.",
+                "",
+                "3. **Regional performance review** - Jane Smith's performance in the West region generated strong results and could serve as a model for other regions.",
+                "",
+                "4. **Inventory planning** - The Bluetooth Headphones' strong performance suggests increasing stock levels for similar high-margin electronics.",
+                "",
+                "*This report was generated using interactive data analysis. All figures are calculated dynamically from the underlying transaction data.*"
+            ]
+        }
+    ],
+    "resources": {
+        "charts": {
+            "categoryChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "data": {
+                    "name": "categoryRevenue"
+                },
+                "mark": "bar",
+                "width": 400,
+                "height": 250,
+                "encoding": {
+                    "x": {"field": "category", "type": "nominal", "title": "Product Category"},
+                    "y": {"field": "total_revenue", "type": "quantitative", "title": "Revenue ($)"},
+                    "color": {"field": "category", "type": "nominal", "scale": {"range": ["#3498db", "#2c3e50", "#e74c3c"]}}
+                }
+            },
+            "trendChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "data": {
+                    "name": "filteredSalesData"
+                },
+                "transform": [
+                    {"calculate": "datum.units * datum.unit_price", "as": "revenue"}
+                ],
+                "mark": {"type": "line", "point": true, "strokeWidth": 2},
+                "width": 500,
+                "height": 250,
+                "encoding": {
+                    "x": {"field": "timestamp", "type": "temporal", "title": "Date"},
+                    "y": {"field": "revenue", "type": "quantitative", "title": "Daily Revenue ($)"},
+                    "color": {"value": "#3498db"}
+                }
+            }
+        }
+    }
+}

@@ -2,7 +2,7 @@
 * Copyright (c) Microsoft Corporation.
 * Licensed under the MIT License.
 */
-import { VariableID, VariableControl, ElementBase, TemplatedUrl } from './common.js';
+import { VariableID, VariableControl, ElementBase, TemplatedUrl, OptionalVariableControl } from './common.js';
 
 /**
  * Interactive Elements
@@ -98,15 +98,14 @@ export interface MermaidTemplate {
   dataSourceName?: string;
 }
 
-export interface MermaidElementProps extends ElementBase {
+export interface MermaidElementProps extends OptionalVariableControl {
   /** Static option: the raw Mermaid diagram text */
   diagramText?: string;
 
-  /** Dynamic option: data-driven template */
+  /** Dynamic option 1: data-driven template */
   template?: MermaidTemplate;
 
-  /** Dynamic option: input from signal bus, or output to signal bus from rendered data-driven template */
-  variableId?: string;
+  /** Dynamic option 2: input as variableId from signal bus, or output to signal bus from rendered data-driven template */
 }
 
 /**
@@ -141,13 +140,13 @@ export interface Preset {
 }
 
 /**
- * Table
+ * Tabulator
  * use for tabular data
  */
-export interface TableElement extends TableElementProps {
-  type: 'table';
+export interface TabulatorElement extends TabulatorElementProps {
+  type: 'tabulator';
 }
-export interface TableElementProps extends VariableControl {
+export interface TabulatorElementProps extends OptionalVariableControl {
 
   /** Name of the data source to use for incoming data (output data is available via the variableId of this table element) */
   dataSourceName: string;
@@ -211,6 +210,6 @@ export type InteractiveElement =
   | MermaidElement
   | PresetsElement
   | SliderElement
-  | TableElement
+  | TabulatorElement
   | TextboxElement
   ;

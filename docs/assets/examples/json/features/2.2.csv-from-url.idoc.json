@@ -1,0 +1,30 @@
+{
+  "$schema": "https://microsoft.github.io/chartifact/schema/idoc_v1.json",
+  "title": "Feature: CSV from URL",
+  "dataLoaders": [
+    {
+      "dataSourceName": "csvData",
+      "type": "url",
+      "format": "csv",
+      "url": "https://vega.github.io/editor/data/stocks.csv"
+    }
+  ],
+  "groups": [
+    {
+      "groupId": "csv_url",
+      "elements": [
+        "## CSV from URL",
+        "Load CSV data from a fixed URL. This is useful when you have a stable data source that doesn't change frequently.",
+        {
+          "type": "tabulator",
+          "dataSourceName": "csvData",
+          "tabulatorOptions": {
+            "autoColumns": true,
+            "layout": "fitColumns",
+            "maxHeight": "200px"
+          }
+        }
+      ]
+    }
+  ]
+}

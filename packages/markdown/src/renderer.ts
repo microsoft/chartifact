@@ -169,6 +169,12 @@ export class Renderer {
                 }
             }
             await this.signalBus.beginListening();
+
+            //trigger a resize event so that the Vega views can adjust
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 0);
+            
         } catch (error) {
             console.error('Error in rendering plugins', error);
         }

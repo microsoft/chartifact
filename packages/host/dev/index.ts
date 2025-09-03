@@ -4,8 +4,10 @@
 */
 import { SandboxOptions, Sandbox } from '@microsoft/chartifact-sandbox';
 import { Toolbar } from 'toolbar';
-import { rendererCss } from '@microsoft/chartifact-sandbox/src/resources/rendererCss.ts';
-import { rendererUmdJs } from '@microsoft/chartifact-sandbox/src/resources/rendererUmdJs.ts';
+// @ts-ignore: import raw CSS as a string without type declarations
+import rendererCss from '../../markdown/dist/css/chartifact-reset.css?raw';
+// @ts-ignore: import raw CSS as a string without type declarations
+import rendererUmdJs from '../../markdown/dist/umd/chartifact.markdown.umd.js?raw';
 import { Listener } from '../src/index.ts';
 import { InteractiveDocumentWithSchema } from '@microsoft/chartifact-schema';
 
@@ -20,6 +22,7 @@ class LocalSandbox extends Sandbox {
 <style>\n${rendererCss}</style>
 <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
 <script src="https://unpkg.com/css-tree/dist/csstree.js"></script>
+<script src="https://unpkg.com/js-yaml/dist/js-yaml.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega@5.29.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.20.1"></script>
 <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>

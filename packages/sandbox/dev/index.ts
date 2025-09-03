@@ -3,8 +3,10 @@
 * Licensed under the MIT License.
 */
 import { SandboxOptions, Sandbox } from '../src/index.ts';
-import { rendererCss } from '../src/resources/rendererCss.ts';
-import { rendererUmdJs } from '../src/resources/rendererUmdJs.ts';
+// @ts-ignore: import raw CSS as a string without type declarations
+import rendererCss from '../../markdown/dist/css/chartifact-reset.css?raw';
+// @ts-ignore: import raw CSS as a string without type declarations
+import rendererUmdJs from '../../markdown/dist/umd/chartifact.markdown.umd.js?raw';
 const textarea = document.getElementById('md') as HTMLTextAreaElement;
 
 class LocalSandbox extends Sandbox {
@@ -18,6 +20,7 @@ class LocalSandbox extends Sandbox {
 <style>\n${rendererCss}</style>
 <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
 <script src="https://unpkg.com/css-tree/dist/csstree.js"></script>
+<script src="https://unpkg.com/js-yaml/dist/js-yaml.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega@5.29.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.20.1"></script>
 <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>

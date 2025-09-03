@@ -137,7 +137,7 @@
       "isArray": true,
       "initialValue": [],
       "calculation": {
-        "dependsOn": [
+        "dataSourceNames": [
           "itemsData_selected"
         ],
         "dataFrameTransformations": [
@@ -171,7 +171,7 @@
       "elements": [
         "## Select the items you want to buy\n",
         {
-          "type": "table",
+          "type": "tabulator",
           "variableId": "itemsData_selected",
           "dataSourceName": "itemsData",
           "tabulatorOptions": {

@@ -11,6 +11,7 @@ const commonOutputConfig = {
     'vega': 'vega',
     'vega-lite': 'vegaLite',
     'css-tree': 'csstree',
+    'js-yaml': 'jsyaml',
   },
   entryFileNames: 'chartifact.sandbox.umd.js',
 };
@@ -24,7 +25,7 @@ export default defineConfig({
     emptyOutDir: false,
     rollupOptions: {
       // External dependencies that the library expects consumers to provide
-      external: ['vega', 'vega-lite', 'css-tree'],
+      external: ['vega', 'vega-lite', 'css-tree', 'js-yaml'],
       output: [
         {
           ...commonOutputConfig,

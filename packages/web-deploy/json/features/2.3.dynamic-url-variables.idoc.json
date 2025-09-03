@@ -1,0 +1,45 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "Feature: Dynamic URL Variables",
+    "dataLoaders": [
+        {
+            "dataSourceName": "jsonUrlVariable",
+            "type": "url",
+            "format": "json",
+            "url": "{{json_url}}"
+        }
+    ],
+    "variables": [
+        {
+            "variableId": "json_url",
+            "type": "string",
+            "initialValue": "https://vega.github.io/editor/data/barley.json"
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "csv_url_variable",
+            "elements": [
+                "## Dynamic URL Variables",
+                "You can use variables to dynamically change data sources. Use a single variable for the entire URL (no URL encoding is applied) or construct URLs from multiple segments (e.g., `{{host}}/{{path}}`). When using multiple segments, each is encoded using `encodeURIComponent`.",
+                {
+                    "type": "dropdown",
+                    "variableId": "json_url",
+                    "options": [
+                        "https://vega.github.io/editor/data/barley.json",
+                        "https://vega.github.io/editor/data/cars.json"
+                    ]
+                },
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "jsonUrlVariable",
+                    "tabulatorOptions": {
+                        "autoColumns": true,
+                        "layout": "fitColumns",
+                        "maxHeight": "200px"
+                    }
+                }
+            ]
+        }
+    ]
+}

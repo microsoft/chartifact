@@ -1,0 +1,44 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "Feature: Inline JSON Data",
+    "dataLoaders": [
+        {
+            "dataSourceName": "jsonData",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"item": "Stapler", "category": "Office Tools", "price": 12.99, "inStock": true, "quantity": 25},
+                {"item": "Printer Paper", "category": "Paper", "price": 8.50, "inStock": true, "quantity": 150},
+                {"item": "Blue Pens", "category": "Writing", "price": 3.25, "inStock": false, "quantity": 0},
+                {"item": "Notebooks", "category": "Paper", "price": 5.75, "inStock": true, "quantity": 40},
+                {"item": "Desk Lamp", "category": "Furniture", "price": 29.99, "inStock": true, "quantity": 8},
+                {"item": "Paper Clips", "category": "Office Tools", "price": 2.10, "inStock": true, "quantity": 200},
+                {"item": "Whiteboard Markers", "category": "Writing", "price": 7.80, "inStock": false, "quantity": 0},
+                {"item": "File Folders", "category": "Storage", "price": 4.45, "inStock": true, "quantity": 75},
+                {"item": "Ergonomic Chair", "category": "Furniture", "price": 189.99, "inStock": true, "quantity": 3},
+                {"item": "Post-it Notes", "category": "Paper", "price": 6.25, "inStock": true, "quantity": 120},
+                {"item": "Hole Punch", "category": "Office Tools", "price": 15.50, "inStock": false, "quantity": 0},
+                {"item": "Scissors", "category": "Office Tools", "price": 9.75, "inStock": true, "quantity": 18}
+            ]
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "json_data",
+            "elements": [
+                "## Inline JSON Data",
+                "Load data from a static JSON array defined directly in the document.",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "jsonData",
+                    "variableId": "jsonTable",
+                    "tabulatorOptions": {
+                        "autoColumns": true,
+                        "layout": "fitColumns",
+                        "maxHeight": "200px"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -5,7 +5,7 @@
 
 import { GoogleFontsSpec } from '@microsoft/chartifact-schema';
 import { IInstance, Plugin, RawFlaggableSpec } from '../factory.js';
-import { flaggableJsonPlugin } from './config.js';
+import { flaggablePlugin } from './config.js';
 import { PluginNames } from './interfaces.js';
 import { pluginClassName } from './util.js';
 
@@ -165,7 +165,7 @@ function inspectGoogleFontsSpec(spec: GoogleFontsSpec): RawFlaggableSpec<GoogleF
 }
 
 export const googleFontsPlugin: Plugin<GoogleFontsSpec> = {
-    ...flaggableJsonPlugin<GoogleFontsSpec>(pluginName, className, inspectGoogleFontsSpec),
+    ...flaggablePlugin<GoogleFontsSpec>(pluginName, className, inspectGoogleFontsSpec),
     hydrateComponent: async (renderer, errorHandler, specs) => {
         const googleFontsInstances: GoogleFontsInstance[] = [];
         let emitted = false;

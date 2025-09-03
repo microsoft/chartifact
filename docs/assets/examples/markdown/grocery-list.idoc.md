@@ -175,13 +175,13 @@
 }
 ```
 
+
 ## Select the items you want to buy
 
 
 ```json tabulator
 {
   "dataSourceName": "itemsData",
-  "variableId": "itemsData_selected",
   "tabulatorOptions": {
     "autoColumns": true,
     "layout": "fitColumns",
@@ -196,15 +196,18 @@
       "hozAlign": "center",
       "width": 40
     }
-  }
+  },
+  "variableId": "itemsData_selected"
 }
 ```
+
 
 ## Total Price
 
 ${{total}}
 
 ### Categories
+
 
 ```json vega-lite
 {

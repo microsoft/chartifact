@@ -11,7 +11,7 @@
     "watch": "tsc -p . -w",
     "tsc": "tsc -p .",
     "bundle": "vite build --config vite.bundle.config.js",
-    "build": "npm run tsc && npm run bundle",
+    "build": "npm run tsc",
     "build:03": "npm run build"
   },
   "repository": {
@@ -24,5 +24,9 @@
     "url": "https://github.com/microsoft/chartifact/issues"
   },
   "homepage": "https://github.com/microsoft/chartifact#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "js-yaml": "^4.1.0"
+  }
 }

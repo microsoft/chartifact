@@ -3,14 +3,16 @@
 * Licensed under the MIT License.
 */
 import { DataSourceByDynamicURL, DataSourceByFile, DataSourceInline } from '@microsoft/chartifact-schema';
-import { read, SignalRef, ValuesData } from 'vega';
+import { Data, SignalRef, ValuesData } from 'vega';
 import { VegaScope } from './scope.js';
 import { dataAsSignal, ensureDataAndSignalsArray } from './spec.js';
 import { tokenizeTemplate } from 'common';
+import { tickWrap } from './md.js';
 
 export function addStaticDataLoaderToSpec(vegaScope: VegaScope, dataSource: DataSourceInline | DataSourceByFile) {
     const { spec } = vegaScope;
-    const { dataSourceName } = dataSource;
+    const { dataSourceName, delimiter } = dataSource;
+    let inlineDataMd: string;
 
     ensureDataAndSignalsArray(spec);
 
@@ -28,35 +30,51 @@ export function addStaticDataLoaderToSpec(vegaScope: VegaScope, dataSource: Data
             newData.values = dataSource.content as object[];
         } else if (typeof dataSource.content === 'string') {
 
-            //csv / tsv
-            const data = read(dataSource.content, {
-                type: dataSource.format,
-            });
-
-            if (Array.isArray(data)) {
-                newData.values = data;
-            } else {
-                console.warn(`Unsupported inline data format: ${dataSource.format}, type is ${typeof dataSource.content}`);
+            switch (dataSource.format) {
+                case 'csv': {
+                    inlineDataMd = tickWrap(`csv ${dataSourceName}`, dataSource.content);
+                    break;
+                }
+                case 'tsv': {
+                    inlineDataMd = tickWrap(`tsv ${dataSourceName}`, dataSource.content);
+                    break;
+                }
+                case 'dsv': {
+                    inlineDataMd = tickWrap(`dsv delimiter:${delimiter} variableId:${dataSourceName}`, dataSource.content);
+                    break;
+                }
+                default: {
+                    console.warn(`Unsupported inline data format: ${dataSource.format}, type is ${typeof dataSource.content}`);
+                    break;
+                }
             }
-
         } else {
             console.warn(`Unsupported inline data format: ${dataSource.format}, type is ${typeof dataSource.content}`);
         }
 
     } else if (dataSource.type === 'file') {
-        newData.format = {
-            type: dataSource.format
-        };
+        if (dataSource.format === 'dsv') {
+            newData.format = {
+                type: dataSource.format,
+                delimiter: dataSource.delimiter
+            };
+        } else {
+            newData.format = {
+                type: dataSource.format
+            };
+        }
         newData.values = [dataSource.content];
     }
 
     //real data goes to the beginning of the data array
     spec.data.unshift(newData);
+
+    return inlineDataMd;
 }
 
 export function addDynamicDataLoaderToSpec(vegaScope: VegaScope, dataSource: DataSourceByDynamicURL) {
     const { spec } = vegaScope;
-    const { dataSourceName } = dataSource;
+    const { dataSourceName, delimiter } = dataSource;
 
     //look for signal token within the dataSource.url
     const tokens = tokenizeTemplate(dataSource.url);
@@ -76,11 +94,18 @@ export function addDynamicDataLoaderToSpec(vegaScope: VegaScope, dataSource: Dat
     ensureDataAndSignalsArray(spec);
     spec.signals.push(dataAsSignal(dataSourceName));
 
-    //real data goes to the beginning of the data array
-    spec.data.unshift({
+    const data: Data = {
         name: dataSourceName,
         url,
-        format: { type: dataSource.format || 'json' },
         transform: dataSource.dataFrameTransformations || [],
-    });
+    };
+
+    if (dataSource.format === 'dsv') {
+        data.format = { type: dataSource.format, delimiter };
+    } else {
+        data.format = { type: dataSource.format || 'json' };
+    }
+
+    //real data goes to the beginning of the data array
+    spec.data.unshift(data);
 }

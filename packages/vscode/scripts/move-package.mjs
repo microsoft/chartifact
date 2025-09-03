@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const sourceDir = path.resolve(__dirname, '..');
-const destinationDir = path.resolve(__dirname, '../../../docs/dist');
+const destinationDir = path.resolve(__dirname, '../../../docs/dist/v1');
 
 fs.readdir(sourceDir, (err, files) => {
   if (err) {

@@ -1,0 +1,31 @@
+{
+  "$schema": "../../schema/folder_v1.json",
+  "title": "Interactive documents",
+  "docs": [
+    {
+      "title": "Why Chartifact",
+      "description": "Discover the capabilities and benefits of Chartifact for creating interactive data documents.",
+      "href": "markdown/why-chartifact.idoc.md"
+    },
+    {
+      "title": "Sales Dashboard",
+      "description": "A comprehensive sales dashboard with interactive charts and data visualization.",
+      "href": "markdown/sales-dashboard.idoc.md"
+    },
+    {
+      "title": "Sales Report",
+      "description": "A detailed sales report with tabular data and analysis.",
+      "href": "markdown/sales-report.idoc.md"
+    },
+    {
+      "title": "Grocery List",
+      "description": "An interactive grocery list demonstrating form controls and data management.",
+      "href": "markdown/grocery-list.idoc.md"
+    },
+    {
+      "title": "Mermaid Org Chart",
+      "description": "An organizational chart created using Mermaid diagrams with dynamic data.",
+      "href": "markdown/mermaid-org-chart.idoc.md"
+    }
+  ]
+}

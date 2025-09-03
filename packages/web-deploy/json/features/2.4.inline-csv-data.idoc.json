@@ -1,0 +1,60 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "Feature: Inline Delimited Data",
+    "groups": [
+        {
+            "groupId": "inline_csv",
+            "elements": [
+                "## Inline CSV Data",
+                "You can provide CSV data directly as a code block within the document using the **csv plugin** with a `variableId` parameter. This is useful for small datasets or when you want to include sample data without external dependencies.",
+                "",
+                "```csv officeSupplies\nitem,price\nStapler,12.99\nPen,1.25\nLamp,29.99\n```",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "officeSupplies",
+                    "tabulatorOptions": {
+                        "autoColumns": true,
+                        "layout": "fitColumns",
+                        "maxHeight": "150px"
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "inline_tsv",
+            "elements": [
+                "## Inline TSV Data",
+                "You can also use tab-separated values (TSV) with the **tsv plugin** and a `variableId` parameter:",
+                "",
+                "```tsv people\nname\tage\tcity\nAlice\t30\tNew York\nBob\t25\tLos Angeles\nCharlie\t35\tChicago\n```",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "people",
+                    "tabulatorOptions": {
+                        "autoColumns": true,
+                        "layout": "fitColumns",
+                        "maxHeight": "150px"
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "inline_dsv",
+            "elements": [
+                "## Inline DSV Data (Custom Delimiter)",
+                "For custom delimiters, use the **dsv plugin** with `delimiter:` and `variableId:` parameters. Here's an example with pipe-separated values:",
+                "",
+                "```dsv delimiter:| variableId:products\nproduct|category|rating\nLaptop|Electronics|4.5\nChair|Furniture|4.2\nBook|Education|4.8\n```",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "products",
+                    "tabulatorOptions": {
+                        "autoColumns": true,
+                        "layout": "fitColumns",
+                        "maxHeight": "150px"
+                    }
+                }
+            ]
+        }
+    ]
+}

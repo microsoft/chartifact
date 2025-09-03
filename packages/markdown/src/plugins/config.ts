@@ -7,21 +7,35 @@ import { sanitizedHTML } from "../sanitize.js";
 import { PluginNames } from "./interfaces.js";
 import { getJsonScriptTag } from "./util.js";
 import { SpecReview } from 'common';
+import * as yaml from 'js-yaml';
 
-export function flaggableJsonPlugin<T>(pluginName: PluginNames, className: string, flagger?: (spec: T) => RawFlaggableSpec<T>, attrs?: object) {
+/**
+ * Creates a plugin that can parse both JSON and YAML formats
+ */
+export function flaggablePlugin<T>(pluginName: PluginNames, className: string, flagger?: (spec: T) => RawFlaggableSpec<T>, attrs?: object) {
     const plugin: Plugin<T> = {
         name: pluginName,
         fence: (token, index) => {
-            let json = token.content.trim();
+            let content = token.content.trim();
             let spec: T;
             let flaggableSpec: RawFlaggableSpec<T>;
+            
+            // Determine format from token info
+            const info = token.info.trim();
+            const isYaml = info.startsWith('yaml ');
+            const formatName = isYaml ? 'YAML' : 'JSON';
+            
             try {
-                spec = JSON.parse(json);
+                if (isYaml) {
+                    spec = yaml.load(content) as T;
+                } else {
+                    spec = JSON.parse(content);
+                }
             } catch (e) {
                 flaggableSpec = {
                     spec: null,
                     hasFlags: true,
-                    reasons: [`malformed JSON`],
+                    reasons: [`malformed ${formatName}`],
                 };
             }
             if (spec) {
@@ -32,9 +46,9 @@ export function flaggableJsonPlugin<T>(pluginName: PluginNames, className: strin
                 }
             }
             if (flaggableSpec) {
-                json = JSON.stringify(flaggableSpec);
+                content = JSON.stringify(flaggableSpec);
             }
-            return sanitizedHTML('div', { class: className, id: `${pluginName}-${index}`, ...attrs }, json, true);
+            return sanitizedHTML('div', { class: className, id: `${pluginName}-${index}`, ...attrs }, content, true);
         },
         hydrateSpecs: (renderer, errorHandler) => {
             const flagged: SpecReview<T>[] = [];
@@ -56,3 +70,5 @@ export function flaggableJsonPlugin<T>(pluginName: PluginNames, className: strin
     };
     return plugin;
 }
+
+

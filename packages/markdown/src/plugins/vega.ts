@@ -10,7 +10,7 @@ import { ErrorHandler, Renderer } from '../renderer.js';
 import { LogLevel, SignalBus } from '../signalbus.js';
 import { pluginClassName } from './util.js';
 import { defaultCommonOptions } from 'common';
-import { flaggableJsonPlugin, } from './config.js';
+import { flaggablePlugin, } from './config.js';
 import { PluginNames } from './interfaces.js';
 
 const ignoredSignals = ['width', 'height', 'padding', 'autosize', 'background', 'style', 'parent', 'datum', 'item', 'event', 'cursor'];
@@ -42,7 +42,7 @@ export function inspectVegaSpec(spec: Spec) {
 }
 
 export const vegaPlugin: Plugin<Spec> = {
-    ...flaggableJsonPlugin<Spec>(pluginName, className, inspectVegaSpec),
+    ...flaggablePlugin<Spec>(pluginName, className, inspectVegaSpec),
     hydrateComponent: async (renderer, errorHandler, specs) => {
         const { signalBus } = renderer;
         //initialize the expressionFunction only once
@@ -218,7 +218,13 @@ function receiveBatch(batch: Batch, signalBus: SignalBus, vegaInstance: VegaInst
                     logReason = 'not updating data, no match';
                 } else {
                     logReason = 'updating data';
-                    view.change(signalName, changeset().remove(() => true).insert(batchItem.value));
+                    
+                    // Use structuredClone to ensure deep copy
+                    // vega may efficiently have symbols on data to cache a datum's values
+                    // so this needs to appear to be new data
+                    const data = structuredClone(batchItem.value);
+
+                    view.change(signalName, changeset().remove(() => true).insert(data));
                     hasAnyChange = true;
                 }
             }

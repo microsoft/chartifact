@@ -6,7 +6,7 @@
 import { DropdownElementProps } from '@microsoft/chartifact-schema';
 import { Batch, IInstance, Plugin } from '../factory.js';
 import { pluginClassName } from './util.js';
-import { flaggableJsonPlugin } from './config.js';
+import { flaggablePlugin } from './config.js';
 import { PluginNames } from './interfaces.js';
 
 interface DropdownInstance {
@@ -23,7 +23,7 @@ const pluginName: PluginNames = 'dropdown';
 const className = pluginClassName(pluginName);
 
 export const dropdownPlugin: Plugin<DropdownSpec> = {
-    ...flaggableJsonPlugin<DropdownSpec>(pluginName, className),
+    ...flaggablePlugin<DropdownSpec>(pluginName, className),
     hydrateComponent: async (renderer, errorHandler, specs) => {
         const { signalBus } = renderer;
         const dropdownInstances: DropdownInstance[] = [];

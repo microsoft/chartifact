@@ -1,0 +1,49 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "Feature: Table",
+    "dataLoaders": [
+        {
+            "dataSourceName": "sampleData",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"name": "Alice", "age": 25, "city": "New York"},
+                {"name": "Bob", "age": 30, "city": "Chicago"},
+                {"name": "Carol", "age": 35, "city": "Los Angeles"},
+                {"name": "David", "age": 28, "city": "Seattle"}
+            ]
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "main",
+            "elements": [
+                "## Table\nUse tables for displaying and interacting with tabular data.",
+                "### Basic Table",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "sampleData"
+                },
+                "### Selectable Table",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "sampleData",
+                    "tabulatorOptions": {
+                        "autoColumns": true,
+                        "layout": "fitColumns",
+                        "maxHeight": "200px",
+                        "selectableRows": true,
+                        "rowHeader": {
+                            "formatter": "rowSelection",
+                            "titleFormatter": "rowSelection",
+                            "headerSort": false,
+                            "headerHozAlign": "center",
+                            "hozAlign": "center",
+                            "width": 40
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

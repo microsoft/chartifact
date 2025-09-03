@@ -11,7 +11,7 @@ C H A R T I F A C T
 
 Chartifact is a low-code document format for creating interactive, data-driven pages such as reports, dashboards, and presentations. It travels like a document and works like a mini app. Designed for use with your LLM to produce a shareable artifact of your analytic conversations.
 
-&bull; [Examples](./examples) &bull; [Take a tour of the capabilities](./view?load=../assets/examples/features.markdown.folder.json) &bull; [Try now with your LLM](./llm)
+&bull; [Examples](https://microsoft.github.io/chartifact/examples) &bull; [Try with Copilot in VsCode](https://marketplace.visualstudio.com/items?itemName=msrvida.chartifact)
 
 ## Ecosystem
 
@@ -22,16 +22,18 @@ The Chartifact GitHub repo has source code for these interoperating modules:
   * **Text** – Markdown with dynamic placeholders
   * **Inputs** – Textboxes, checkboxes, sliders, dropdowns
   * **Tables** – Sortable, selectable, and editable data grids
-  * **Charts** – Vega and Vega-Lite visualizations
-  * **Diagrams** – Mermaid diagrams (flowcharts, networks, and more) via the mermaid plugin, including tabular data-driven diagram generation
+  * **Charts** – [Vega](https://vega.github.io/vega/) and [Vega-Lite](https://vega.github.io/vega-lite/) visualizations
+  * **Diagrams** – [Mermaid](https://mermaid-js.github.io/mermaid/) diagrams (flowcharts, networks, and more) via the mermaid plugin, including tabular data-driven diagram generation
   * **Images** – Dynamic image URLs based on variables
   * **Presets** – Named sets of variable values for quick scenario switching
 
-* A **set of examples** that your LLM can understand and remix for your scenario.
+* A **sandboxed runtime** that securely renders documents.
 
-* A **VS Code extension** for editing, previewing, and exporting documents.
+* A [set of examples](https://microsoft.github.io/chartifact/examples) that your LLM can understand and remix for your scenario.
 
-* A **web-based viewer and editor** for viewing, quick edits and sharing.
+* A [VS Code extension](https://marketplace.visualstudio.com/items?itemName=msrvida.chartifact) for editing, previewing, and exporting documents.
+
+* A [web-based viewer and editor](https://microsoft.github.io/chartifact/view/) for viewing, quick edits and sharing.
 
 * Tools to **export standalone HTML** documents you can share or embed anywhere.
 
@@ -63,8 +65,6 @@ The document runtime is reactive. Components stay in sync through a shared set o
 * **REST integration** supports fetching data from external sources
 * **Vega transforms** provide built-in tools for reshaping data
 * **Signal bus** coordinates state across all components
-
-Chartifact documents behave like small reactive systems — without custom JavaScript.
 
 ## Styling
 

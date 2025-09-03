@@ -2,12 +2,14 @@
 
 **Declarative, interactive data documents**
 
-Chartifact is a low-code document format for creating interactive, data-driven pages such as reports, dashboards, and presentations. It travels like a document and works like an app. Easily editable and remixable, it’s a file type for an AI-native world.
+Chartifact is a low-code document format for creating interactive, data-driven pages such as reports, dashboards, and presentations. It travels like a document and works like an app. Designed for use with your LLM to produce a shareable artifact of your analytic conversations.
 
 ## Features
 
-
 This extension works with two file formats: `*.idoc.md` and `*.idoc.json`.
+
+### Unzip samples
+- **Explorer View**: Right-click on a folder and select "Create Chartifact Examples Folder". This will create a folder of examples that you and your agent can use for reference when creating your own document.
 
 ### Create Documents
 - **Explorer View**: Right-click on a folder and select "New Chartifact Interactive Document (JSON)" or "New Chartifact Interactive Document (Markdown)".
@@ -15,9 +17,6 @@ This extension works with two file formats: `*.idoc.md` and `*.idoc.json`.
 ### Preview Documents
 - **Explorer View**: Right-click on a `*.idoc.md` or `*.idoc.json` file and select "Preview Chartifact Interactive Document".
 - **Editor Title Bar**: Open a document and select "Preview Chartifact Interactive Document (Split View)" for side-by-side editing and previewing.
-
-### Edit Documents
-- **Explorer View**: Right-click on a `*.idoc.md` or `*.idoc.json` file and select "Edit Chartifact Interactive Document".
 
 ### Convert Documents
 - **Explorer View**: Convert between formats:

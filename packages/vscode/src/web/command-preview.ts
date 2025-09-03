@@ -96,6 +96,7 @@ export class PreviewManager {
 							style(getResourceContent('tabulator.min.css')) +
 							script(getResourceContent('markdown-it.min.js')) +
 							script(getResourceContent('csstree.js')) +
+							script(getResourceContent('js-yaml.min.js')) +
 							script(getResourceContent('vega.min.js')) +
 							script(getResourceContent('vega-lite.min.js')) +
 							script(getResourceContent('tabulator.min.js')) +
@@ -215,6 +216,7 @@ function getWebviewContent(webView: vscode.Webview, context: vscode.ExtensionCon
 
 	// Build the resource links block
 	const resourceLinks = [
+		script(resourceUrl('vega.min.js')),
 		script(resourceUrl('chartifact.host.umd.js')),
 		script(resourceUrl('preview.js')),
 	].join('\n    ');
