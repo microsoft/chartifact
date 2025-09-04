@@ -53,8 +53,7 @@ export async function validateElement(element: PageElement, variables: Variable[
                     break;
                 }
                 case 'image': {
-                    //OUTDATED
-                    //errors.push(...validateUrlRef(element.url, variables, dataLoaders));
+                    // Image validation could be added here if needed
                     break;
                 }
                 case 'dropdown': {
