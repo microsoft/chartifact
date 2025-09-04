@@ -1,4 +1,4 @@
-import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement } from "@microsoft/chartifact-schema";
+import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
 import { getChartType } from "../util.js";
 import { validateVegaLite, validateVegaChart } from "./chart.js";
 import { validateVariableID } from "./common.js";
@@ -18,7 +18,7 @@ export function flattenMarkdownElements(elements: PageElement[]) {
     }, [] as PageElement[]);
 }
 
-export async function validateElement(element: PageElement, variables: Variable[], dataLoaders: DataLoader[]) {
+export async function validateElement(element: PageElement, variables: Variable[], dataLoaders: DataLoader[], charts?: { [chartKey: string]: Vega_or_VegaLite_spec }) {
     const errors: string[] = [];
     if (!element) {
         errors.push('Element must not be null');
@@ -26,23 +26,25 @@ export async function validateElement(element: PageElement, variables: Variable[
         if (typeof element === 'object') {
             switch (element.type) {
                 case 'chart': {
-                    //OUTDATED
-                    // const chartFull = element..chart as ChartFull;
-                    // if (!chartFull) {
-                    //     errors.push('Chart must have a ChartValue');
-                    // } else {
-                    //     const { spec } = chartFull;
-                    //     if (!spec) {
-                    //         //it is a chart placeholder
-                    //     } else {
-                    //         const chartType = getChartType(spec);
-                    //         if (chartType === 'vega-lite') {
-                    //             errors.push(...validateVegaLite(chartFull.spec));
-                    //         } else if (chartType === 'vega') {
-                    //             errors.push(...validateVegaChart(chartFull.spec));
-                    //         }
-                    //     }
-                    // }
+                    const chartElement = element as ChartElement;
+                    if (!chartElement.chartKey) {
+                        errors.push('Chart element must have a chartKey');
+                    } else if (!charts) {
+                        errors.push('Document must have a resources.charts section to use chart elements');
+                    } else if (!charts[chartElement.chartKey]) {
+                        errors.push(`Chart key '${chartElement.chartKey}' not found in resources.charts`);
+                    } else {
+                        // Validate the referenced chart spec
+                        const chartSpec = charts[chartElement.chartKey];
+                        const chartType = getChartType(chartSpec);
+                        if (chartType === 'vega-lite') {
+                            errors.push(...validateVegaLite(chartSpec));
+                        } else if (chartType === 'vega') {
+                            errors.push(...validateVegaChart(chartSpec));
+                        } else {
+                            errors.push(`Chart '${chartElement.chartKey}' has unrecognized chart type`);
+                        }
+                    }
                     break;
                 }
                 case 'checkbox': {
