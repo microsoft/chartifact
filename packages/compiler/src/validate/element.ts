@@ -1,7 +1,7 @@
 import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, ImageElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
 import { getChartType } from "../util.js";
 import { validateVegaLite, validateVegaChart } from "./chart.js";
-import { validateVariableID } from "./common.js";
+import { validateVariableID, validateRequiredString, validateOptionalString, validateOptionalPositiveNumber, validateInputElementWithVariableId } from "./common.js";
 
 export function flattenMarkdownElements(elements: PageElement[]) {
     return elements.reduce((acc, e) => {
@@ -48,52 +48,26 @@ export async function validateElement(element: PageElement, variables: Variable[
                     break;
                 }
                 case 'checkbox': {
-                    errors.push(...validateVariableID(element.variableId));
-                    errors.push(error_idContainsType(element));
+                    errors.push(...validateInputElementWithVariableId(element));
                     break;
                 }
                 case 'image': {
                     const imageElement = element as ImageElement;
                     
                     // Validate required url property
-                    if (!imageElement.url) {
-                        errors.push('Image element must have a url property');
-                    } else if (typeof imageElement.url !== 'string') {
-                        errors.push('Image element url must be a string');
-                    } else if (imageElement.url.trim() === '') {
-                        errors.push('Image element url cannot be empty');
-                    }
+                    errors.push(...validateRequiredString(imageElement.url, 'url', 'Image'));
                     
                     // Validate optional alt property
-                    if (imageElement.alt !== undefined) {
-                        if (typeof imageElement.alt !== 'string') {
-                            errors.push('Image element alt must be a string');
-                        }
-                    }
+                    errors.push(...validateOptionalString(imageElement.alt, 'alt', 'Image'));
                     
-                    // Validate optional height property
-                    if (imageElement.height !== undefined) {
-                        if (typeof imageElement.height !== 'number') {
-                            errors.push('Image element height must be a number');
-                        } else if (imageElement.height <= 0) {
-                            errors.push('Image element height must be a positive number');
-                        }
-                    }
-                    
-                    // Validate optional width property
-                    if (imageElement.width !== undefined) {
-                        if (typeof imageElement.width !== 'number') {
-                            errors.push('Image element width must be a number');
-                        } else if (imageElement.width <= 0) {
-                            errors.push('Image element width must be a positive number');
-                        }
-                    }
+                    // Validate optional height and width properties
+                    errors.push(...validateOptionalPositiveNumber(imageElement.height, 'height', 'Image'));
+                    errors.push(...validateOptionalPositiveNumber(imageElement.width, 'width', 'Image'));
                     
                     break;
                 }
                 case 'dropdown': {
-                    errors.push(...validateVariableID(element.variableId));
-                    errors.push(error_idContainsType(element));
+                    errors.push(...validateInputElementWithVariableId(element));
                     //cannot have both static and dynamic options
                     if (element.options && element.dynamicOptions) {
                         errors.push('Dropdown cannot have both static and dynamic options');
@@ -124,8 +98,7 @@ export async function validateElement(element: PageElement, variables: Variable[
                     break;
                 }
                 case 'slider': {
-                    errors.push(...validateVariableID(element.variableId));
-                    errors.push(error_idContainsType(element));
+                    errors.push(...validateInputElementWithVariableId(element));
                     break;
                 }
                 case 'tabulator': {
@@ -138,8 +111,7 @@ export async function validateElement(element: PageElement, variables: Variable[
                     break;
                 }
                 case 'textbox': {
-                    errors.push(...validateVariableID(element.variableId));
-                    errors.push(error_idContainsType(element));
+                    errors.push(...validateInputElementWithVariableId(element));
                     break;
                 }
                 default: {
@@ -152,16 +124,4 @@ export async function validateElement(element: PageElement, variables: Variable[
         }
     }
     return errors.filter(Boolean);
-}
-
-function error_idContainsType(element: CheckboxElement | DropdownElement | SliderElement | TextboxElement) {
-    //get element type
-    const elementType = element.type;
-    //get variableId
-    const variableId = element.variableId;
-    //if variableId contains elementType, return error
-    if (variableId.includes(elementType)) {
-        return `VariableID must not contain the element type: ${elementType}`;
-    }
-    return null;
 }
