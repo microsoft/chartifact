@@ -1,4 +1,4 @@
-import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
+import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, ImageElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
 import { getChartType } from "../util.js";
 import { validateVegaLite, validateVegaChart } from "./chart.js";
 import { validateVariableID } from "./common.js";
@@ -53,7 +53,42 @@ export async function validateElement(element: PageElement, variables: Variable[
                     break;
                 }
                 case 'image': {
-                    // Image validation could be added here if needed
+                    const imageElement = element as ImageElement;
+                    
+                    // Validate required url property
+                    if (!imageElement.url) {
+                        errors.push('Image element must have a url property');
+                    } else if (typeof imageElement.url !== 'string') {
+                        errors.push('Image element url must be a string');
+                    } else if (imageElement.url.trim() === '') {
+                        errors.push('Image element url cannot be empty');
+                    }
+                    
+                    // Validate optional alt property
+                    if (imageElement.alt !== undefined) {
+                        if (typeof imageElement.alt !== 'string') {
+                            errors.push('Image element alt must be a string');
+                        }
+                    }
+                    
+                    // Validate optional height property
+                    if (imageElement.height !== undefined) {
+                        if (typeof imageElement.height !== 'number') {
+                            errors.push('Image element height must be a number');
+                        } else if (imageElement.height <= 0) {
+                            errors.push('Image element height must be a positive number');
+                        }
+                    }
+                    
+                    // Validate optional width property
+                    if (imageElement.width !== undefined) {
+                        if (typeof imageElement.width !== 'number') {
+                            errors.push('Image element width must be a number');
+                        } else if (imageElement.width <= 0) {
+                            errors.push('Image element width must be a positive number');
+                        }
+                    }
+                    
                     break;
                 }
                 case 'dropdown': {
