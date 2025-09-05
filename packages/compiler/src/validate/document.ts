@@ -15,13 +15,15 @@ export async function validateDocument(page: InteractiveDocument, isNew: boolean
         errors.push('Page must have a variables array (even if empty).');
     }
 
-    for (const dataLoader of page.dataLoaders) {
-        const otherDataLoaders = page.dataLoaders.filter(dl => dl !== dataLoader);
+
+
+    for (const dataLoader of page.dataLoaders || []) {
+        const otherDataLoaders = (page.dataLoaders || []).filter(dl => dl !== dataLoader);
         errors.push(...await validateDataLoader(dataLoader, page.variables, otherDataLoaders));
     }
 
     for (const group of page.groups) {
-        errors.push(...await validateGroup(group, isNew, page.variables, page.dataLoaders));
+        errors.push(...await validateGroup(group, isNew, page.variables, page.dataLoaders, page.resources?.charts));
     }
     return errors;
 }

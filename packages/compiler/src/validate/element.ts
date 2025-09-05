@@ -1,7 +1,7 @@
-import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement } from "@microsoft/chartifact-schema";
+import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, ImageElement, MermaidElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
 import { getChartType } from "../util.js";
 import { validateVegaLite, validateVegaChart } from "./chart.js";
-import { validateVariableID } from "./common.js";
+import { validateVariableID, validateRequiredString, validateOptionalString, validateOptionalPositiveNumber, validateOptionalBoolean, validateOptionalObject, validateInputElementWithVariableId } from "./common.js";
 
 export function flattenMarkdownElements(elements: PageElement[]) {
     return elements.reduce((acc, e) => {
@@ -18,7 +18,7 @@ export function flattenMarkdownElements(elements: PageElement[]) {
     }, [] as PageElement[]);
 }
 
-export async function validateElement(element: PageElement, variables: Variable[], dataLoaders: DataLoader[]) {
+export async function validateElement(element: PageElement, variables: Variable[], dataLoaders: DataLoader[], charts?: { [chartKey: string]: Vega_or_VegaLite_spec }) {
     const errors: string[] = [];
     if (!element) {
         errors.push('Element must not be null');
@@ -26,38 +26,85 @@ export async function validateElement(element: PageElement, variables: Variable[
         if (typeof element === 'object') {
             switch (element.type) {
                 case 'chart': {
-                    //OUTDATED
-                    // const chartFull = element..chart as ChartFull;
-                    // if (!chartFull) {
-                    //     errors.push('Chart must have a ChartValue');
-                    // } else {
-                    //     const { spec } = chartFull;
-                    //     if (!spec) {
-                    //         //it is a chart placeholder
-                    //     } else {
-                    //         const chartType = getChartType(spec);
-                    //         if (chartType === 'vega-lite') {
-                    //             errors.push(...validateVegaLite(chartFull.spec));
-                    //         } else if (chartType === 'vega') {
-                    //             errors.push(...validateVegaChart(chartFull.spec));
-                    //         }
-                    //     }
-                    // }
+                    const chartElement = element as ChartElement;
+                    if (!chartElement.chartKey) {
+                        errors.push('Chart element must have a chartKey');
+                    } else if (!charts) {
+                        errors.push('Document must have a resources.charts section to use chart elements');
+                    } else if (!charts[chartElement.chartKey]) {
+                        errors.push(`Chart key '${chartElement.chartKey}' not found in resources.charts`);
+                    } else {
+                        // Validate the referenced chart spec
+                        const chartSpec = charts[chartElement.chartKey];
+                        const chartType = getChartType(chartSpec);
+                        if (chartType === 'vega-lite') {
+                            errors.push(...validateVegaLite(chartSpec));
+                        } else if (chartType === 'vega') {
+                            errors.push(...validateVegaChart(chartSpec));
+                        } else {
+                            errors.push(`Chart '${chartElement.chartKey}' has unrecognized chart type`);
+                        }
+                    }
                     break;
                 }
                 case 'checkbox': {
-                    errors.push(...validateVariableID(element.variableId));
-                    errors.push(error_idContainsType(element));
+                    errors.push(...validateInputElementWithVariableId(element));
                     break;
                 }
                 case 'image': {
-                    //OUTDATED
-                    //errors.push(...validateUrlRef(element.url, variables, dataLoaders));
+                    const imageElement = element as ImageElement;
+                    
+                    // Validate required url property
+                    errors.push(...validateRequiredString(imageElement.url, 'url', 'Image'));
+                    
+                    // Validate optional alt property
+                    errors.push(...validateOptionalString(imageElement.alt, 'alt', 'Image'));
+                    
+                    // Validate optional height and width properties
+                    errors.push(...validateOptionalPositiveNumber(imageElement.height, 'height', 'Image'));
+                    errors.push(...validateOptionalPositiveNumber(imageElement.width, 'width', 'Image'));
+                    
+                    break;
+                }
+                case 'mermaid': {
+                    const mermaidElement = element as MermaidElement;
+                    
+                    // At least one of diagramText, template, or variableId must be present
+                    if (!mermaidElement.diagramText && !mermaidElement.template && !mermaidElement.variableId) {
+                        errors.push('Mermaid element must have at least one of: diagramText, template, or variableId');
+                    }
+                    
+                    // Validate diagramText if present
+                    errors.push(...validateOptionalString(mermaidElement.diagramText, 'diagramText', 'Mermaid'));
+                    if (mermaidElement.diagramText && mermaidElement.diagramText.trim() === '') {
+                        errors.push('Mermaid element diagramText cannot be empty');
+                    }
+                    
+                    // Validate template if present
+                    if (mermaidElement.template) {
+                        errors.push(...validateOptionalObject(mermaidElement.template, 'template', 'Mermaid'));
+                        if (typeof mermaidElement.template === 'object' && mermaidElement.template !== null) {
+                            errors.push(...validateRequiredString(mermaidElement.template.header, 'template.header', 'Mermaid'));
+                            if (!mermaidElement.template.lineTemplates) {
+                                errors.push('Mermaid element template must have a lineTemplates property');
+                            } else if (typeof mermaidElement.template.lineTemplates !== 'object' || 
+                                     mermaidElement.template.lineTemplates === null || 
+                                     Array.isArray(mermaidElement.template.lineTemplates)) {
+                                errors.push('Mermaid element template.lineTemplates must be an object');
+                            }
+                            errors.push(...validateOptionalString(mermaidElement.template.dataSourceName, 'template.dataSourceName', 'Mermaid'));
+                        }
+                    }
+                    
+                    // Validate variableId if present (follows OptionalVariableControl)
+                    if (mermaidElement.variableId) {
+                        errors.push(...validateVariableID(mermaidElement.variableId));
+                    }
+                    
                     break;
                 }
                 case 'dropdown': {
-                    errors.push(...validateVariableID(element.variableId));
-                    errors.push(error_idContainsType(element));
+                    errors.push(...validateInputElementWithVariableId(element));
                     //cannot have both static and dynamic options
                     if (element.options && element.dynamicOptions) {
                         errors.push('Dropdown cannot have both static and dynamic options');
@@ -88,22 +135,18 @@ export async function validateElement(element: PageElement, variables: Variable[
                     break;
                 }
                 case 'slider': {
-                    errors.push(...validateVariableID(element.variableId));
-                    errors.push(error_idContainsType(element));
+                    errors.push(...validateInputElementWithVariableId(element));
                     break;
                 }
                 case 'tabulator': {
-                    if (!element.dataSourceName) {
-                        errors.push('Tabulator must have a dataSourceName');
-                    }
-                    if (element.tabulatorOptions) {
-                        // TODO validate Tabulator options
-                    }
+                    errors.push(...validateRequiredString(element.dataSourceName, 'dataSourceName', 'Tabulator'));
+                    errors.push(...validateOptionalBoolean(element.editable, 'editable', 'Tabulator'));
+                    errors.push(...validateOptionalObject(element.tabulatorOptions, 'tabulatorOptions', 'Tabulator'));
+                    // TODO: validate tabulatorOptions properties later
                     break;
                 }
                 case 'textbox': {
-                    errors.push(...validateVariableID(element.variableId));
-                    errors.push(error_idContainsType(element));
+                    errors.push(...validateInputElementWithVariableId(element));
                     break;
                 }
                 default: {
@@ -116,16 +159,4 @@ export async function validateElement(element: PageElement, variables: Variable[
         }
     }
     return errors.filter(Boolean);
-}
-
-function error_idContainsType(element: CheckboxElement | DropdownElement | SliderElement | TextboxElement) {
-    //get element type
-    const elementType = element.type;
-    //get variableId
-    const variableId = element.variableId;
-    //if variableId contains elementType, return error
-    if (variableId.includes(elementType)) {
-        return `VariableID must not contain the element type: ${elementType}`;
-    }
-    return null;
 }

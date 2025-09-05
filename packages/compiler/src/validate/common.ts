@@ -7,6 +7,69 @@ const illegalChars = '/|\\\'"`,.;:~-=+?!@#$%^&*()[]{}<>';
 
 export const ignoredSignals = ['width', 'height', 'padding', 'autosize', 'background', 'style', 'parent', 'datum', 'item', 'event', 'cursor', 'origins'];
 
+// Utility functions for property validation
+export function validateRequiredString(value: any, propertyName: string, elementType: string): string[] {
+    const errors: string[] = [];
+    if (!value) {
+        errors.push(`${elementType} element must have a ${propertyName} property`);
+    } else if (typeof value !== 'string') {
+        errors.push(`${elementType} element ${propertyName} must be a string`);
+    } else if (value.trim() === '') {
+        errors.push(`${elementType} element ${propertyName} cannot be empty`);
+    }
+    return errors;
+}
+
+export function validateOptionalString(value: any, propertyName: string, elementType: string): string[] {
+    const errors: string[] = [];
+    if (value !== undefined && typeof value !== 'string') {
+        errors.push(`${elementType} element ${propertyName} must be a string`);
+    }
+    return errors;
+}
+
+export function validateOptionalPositiveNumber(value: any, propertyName: string, elementType: string): string[] {
+    const errors: string[] = [];
+    if (value !== undefined) {
+        if (typeof value !== 'number') {
+            errors.push(`${elementType} element ${propertyName} must be a number`);
+        } else if (value <= 0) {
+            errors.push(`${elementType} element ${propertyName} must be a positive number`);
+        }
+    }
+    return errors;
+}
+
+export function validateOptionalBoolean(value: any, propertyName: string, elementType: string): string[] {
+    const errors: string[] = [];
+    if (value !== undefined && typeof value !== 'boolean') {
+        errors.push(`${elementType} element ${propertyName} must be a boolean`);
+    }
+    return errors;
+}
+
+export function validateOptionalObject(value: any, propertyName: string, elementType: string): string[] {
+    const errors: string[] = [];
+    if (value !== undefined) {
+        if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+            errors.push(`${elementType} element ${propertyName} must be an object`);
+        }
+    }
+    return errors;
+}
+
+export function validateInputElementWithVariableId(element: { type: string; variableId: string }): string[] {
+    const errors: string[] = [];
+    errors.push(...validateVariableID(element.variableId));
+    
+    // Check if variableId contains element type
+    if (element.variableId.includes(element.type)) {
+        errors.push(`VariableID must not contain the element type: ${element.type}`);
+    }
+    
+    return errors;
+}
+
 export function validateVariableID(id: string): string[] {
     if (!id) {
         return ['VariableID must not be null'];
