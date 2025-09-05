@@ -1,4 +1,4 @@
-import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, ImageElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
+import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, ImageElement, MermaidElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
 import { getChartType } from "../util.js";
 import { validateVegaLite, validateVegaChart } from "./chart.js";
 import { validateVariableID, validateRequiredString, validateOptionalString, validateOptionalPositiveNumber, validateOptionalBoolean, validateOptionalObject, validateInputElementWithVariableId } from "./common.js";
@@ -63,6 +63,43 @@ export async function validateElement(element: PageElement, variables: Variable[
                     // Validate optional height and width properties
                     errors.push(...validateOptionalPositiveNumber(imageElement.height, 'height', 'Image'));
                     errors.push(...validateOptionalPositiveNumber(imageElement.width, 'width', 'Image'));
+                    
+                    break;
+                }
+                case 'mermaid': {
+                    const mermaidElement = element as MermaidElement;
+                    
+                    // At least one of diagramText, template, or variableId must be present
+                    if (!mermaidElement.diagramText && !mermaidElement.template && !mermaidElement.variableId) {
+                        errors.push('Mermaid element must have at least one of: diagramText, template, or variableId');
+                    }
+                    
+                    // Validate diagramText if present
+                    errors.push(...validateOptionalString(mermaidElement.diagramText, 'diagramText', 'Mermaid'));
+                    if (mermaidElement.diagramText && mermaidElement.diagramText.trim() === '') {
+                        errors.push('Mermaid element diagramText cannot be empty');
+                    }
+                    
+                    // Validate template if present
+                    if (mermaidElement.template) {
+                        errors.push(...validateOptionalObject(mermaidElement.template, 'template', 'Mermaid'));
+                        if (typeof mermaidElement.template === 'object' && mermaidElement.template !== null) {
+                            errors.push(...validateRequiredString(mermaidElement.template.header, 'template.header', 'Mermaid'));
+                            if (!mermaidElement.template.lineTemplates) {
+                                errors.push('Mermaid element template must have a lineTemplates property');
+                            } else if (typeof mermaidElement.template.lineTemplates !== 'object' || 
+                                     mermaidElement.template.lineTemplates === null || 
+                                     Array.isArray(mermaidElement.template.lineTemplates)) {
+                                errors.push('Mermaid element template.lineTemplates must be an object');
+                            }
+                            errors.push(...validateOptionalString(mermaidElement.template.dataSourceName, 'template.dataSourceName', 'Mermaid'));
+                        }
+                    }
+                    
+                    // Validate variableId if present (follows OptionalVariableControl)
+                    if (mermaidElement.variableId) {
+                        errors.push(...validateVariableID(mermaidElement.variableId));
+                    }
                     
                     break;
                 }
