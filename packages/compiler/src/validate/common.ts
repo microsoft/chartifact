@@ -40,6 +40,24 @@ export function validateOptionalPositiveNumber(value: any, propertyName: string,
     return errors;
 }
 
+export function validateOptionalBoolean(value: any, propertyName: string, elementType: string): string[] {
+    const errors: string[] = [];
+    if (value !== undefined && typeof value !== 'boolean') {
+        errors.push(`${elementType} element ${propertyName} must be a boolean`);
+    }
+    return errors;
+}
+
+export function validateOptionalObject(value: any, propertyName: string, elementType: string): string[] {
+    const errors: string[] = [];
+    if (value !== undefined) {
+        if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+            errors.push(`${elementType} element ${propertyName} must be an object`);
+        }
+    }
+    return errors;
+}
+
 export function validateInputElementWithVariableId(element: { type: string; variableId: string }): string[] {
     const errors: string[] = [];
     errors.push(...validateVariableID(element.variableId));

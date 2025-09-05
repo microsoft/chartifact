@@ -1,7 +1,7 @@
 import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, ImageElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
 import { getChartType } from "../util.js";
 import { validateVegaLite, validateVegaChart } from "./chart.js";
-import { validateVariableID, validateRequiredString, validateOptionalString, validateOptionalPositiveNumber, validateInputElementWithVariableId } from "./common.js";
+import { validateVariableID, validateRequiredString, validateOptionalString, validateOptionalPositiveNumber, validateOptionalBoolean, validateOptionalObject, validateInputElementWithVariableId } from "./common.js";
 
 export function flattenMarkdownElements(elements: PageElement[]) {
     return elements.reduce((acc, e) => {
@@ -102,12 +102,10 @@ export async function validateElement(element: PageElement, variables: Variable[
                     break;
                 }
                 case 'tabulator': {
-                    if (!element.dataSourceName) {
-                        errors.push('Tabulator must have a dataSourceName');
-                    }
-                    if (element.tabulatorOptions) {
-                        // TODO validate Tabulator options
-                    }
+                    errors.push(...validateRequiredString(element.dataSourceName, 'dataSourceName', 'Tabulator'));
+                    errors.push(...validateOptionalBoolean(element.editable, 'editable', 'Tabulator'));
+                    errors.push(...validateOptionalObject(element.tabulatorOptions, 'tabulatorOptions', 'Tabulator'));
+                    // TODO: validate tabulatorOptions properties later
                     break;
                 }
                 case 'textbox': {
