@@ -10,6 +10,11 @@ export interface ToolbarOptions {
     downloadButton?: boolean;
     restartButton?: boolean;
     textarea?: HTMLTextAreaElement;
+    /**
+     * Mode to display content, allowed values: 'markdown' | 'json'.
+     * Only trusted values should be supplied.
+     * If an untrusted value is provided, it will be ignored and replaced with 'markdown'.
+     */
     mode?: 'markdown' | 'json';
     filename?: string;
 }
@@ -26,7 +31,13 @@ export class Toolbar {
 
     constructor(toolbarElementOrSelector: HTMLElement | string, public options: ToolbarOptions = {}) {
         this.filename = options.filename || 'sample';
-        this.mode = options.mode || 'markdown';
+        // Runtime check to restrict mode to allowed values only
+        const allowedModes = ['markdown', 'json'];
+        this.mode = allowedModes.includes(options.mode as string) ? options.mode as 'markdown' | 'json' : 'markdown';
+        
+        // Create a safe displayMode variable to avoid CodeQL alerts
+        const displayMode = this.mode === 'json' ? 'json' : 'markdown';
+        
         this.toolbarElement = typeof toolbarElementOrSelector === 'string' ? document.querySelector(toolbarElementOrSelector) : toolbarElementOrSelector;
 
         if (!this.toolbarElement) {
@@ -51,8 +62,8 @@ export class Toolbar {
     <div style="margin-bottom: 8px;">Download as:</div>
     <ul>
         <li>
-            Source markdown (just the content)<br/>
-            <button type="button" id="download-md" style="margin-right: 8px;">Source markdown</button>
+            Source (just the ${displayMode} content)<br/>
+            <button type="button" id="download-md" style="margin-right: 8px;">Source</button>
         </li>
         <li>
             HTML wrapper (content plus a shareable viewer)<br/>
@@ -127,8 +138,10 @@ export class Toolbar {
             const textarea = this.options.textarea;
             if (!textarea) return;
             const content = textarea.value;
-            const filename = `${filenameWithoutPathOrExtension(this.filename)}.idoc.md`;
-            this.triggerDownload(content, filename, 'text/markdown');
+            const extension = this.mode === 'json' ? '.idoc.json' : '.idoc.md';
+            const mimeType = this.mode === 'json' ? 'application/json' : 'text/markdown';
+            const filename = `${filenameWithoutPathOrExtension(this.filename)}${extension}`;
+            this.triggerDownload(content, filename, mimeType);
         });
 
         // Download as HTML wrapper
