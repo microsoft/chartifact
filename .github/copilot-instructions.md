@@ -42,7 +42,23 @@ Chartifact consists of several interoperating modules:
 
 4. **Security**:
    - Documents are rendered in sandboxed iframes.
+   - **NO HTML elements are allowed** - use only Markdown formatting.
    - No custom JavaScript execution or raw HTML in Markdown.
+   - For layouts and styling, use only CSS classes applied to groups and standard Markdown elements.
+
+## Component Capabilities and Constraints
+
+1. **Dropdown Components**:
+   - Dropdown options must be strings only - no objects with value/label properties
+   - Use simple string arrays for options: `"options": ["Option1", "Option2"]`
+   - For data-driven options, use `dynamicOptions` with a data source
+   - Objects in dropdown options will display as "[object Object]"
+
+2. **Chart Components**:
+   - Heatmaps and complex visualizations should use the `chart` type with `chartKey`
+   - Place chart specifications in the `resources.charts` section
+   - Reference charts using `{"type": "chart", "chartKey": "yourChartKey"}`
+   - Direct `vega-lite` type elements may not render properly for complex charts
 
 ## Examples
 
@@ -50,9 +66,10 @@ Chartifact consists of several interoperating modules:
 - Examples in this repo use the json format and are compiled to markdown.
 - If you are asked to create an example, do it in the packages/web-deploy/json folder, do not modify the destination folder docs/assets/examples - this will be populated by a build.
 - The examples are built manually for now.
+- **IMPORTANT**: When creating examples, use only Markdown formatting - NO HTML elements are allowed. Use plain text, Markdown headers, bold/italic formatting, and CSS styling for visual presentation.
 
 ## Runtime host
 
 - There is a sandboxed runtime that securely renders documents available at https://microsoft.github.io/chartifact/view
 - The url above can accept a `load` parameter to specify the document to render, for example https://microsoft.github.io/chartifact/view/?load=https://raw.githubusercontent.com/microsoft/chartifact/562d086/packages/web-deploy/json/sales-dashboard.idoc.json
-- If you are asked to create an example, please provide a link in the PR comments so it can be previewed.
+- **ALWAYS provide a preview link when creating or modifying examples** - include the preview link in PR comments and descriptions automatically so examples can be tested immediately without being asked.
