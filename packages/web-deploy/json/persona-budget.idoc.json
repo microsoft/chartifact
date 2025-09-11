@@ -118,7 +118,7 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "vegaExpression": "data('adjustedBudgetData') ? data('adjustedBudgetData').reduce((sum, d) => sum + d.adjustedBudget, 0) : 0"
+                "vegaExpression": "data('adjustedBudgetData') ? sum(pluck(data('adjustedBudgetData'), 'adjustedBudget')) : 0"
             }
         },
         {
@@ -126,7 +126,7 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "vegaExpression": "data('adjustedBudgetData') ? data('adjustedBudgetData').reduce((sum, d) => sum + d.spent, 0) : 0"
+                "vegaExpression": "data('adjustedBudgetData') ? sum(pluck(data('adjustedBudgetData'), 'spent')) : 0"
             }
         },
         {
