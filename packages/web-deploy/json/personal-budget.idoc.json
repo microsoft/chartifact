@@ -52,11 +52,7 @@
         }
     ],
     "variables": [
-        {
-            "variableId": "selectedPersona",
-            "type": "string",
-            "initialValue": "Young Professional"
-        },
+
         {
             "variableId": "monthlyIncome",
             "type": "number",
@@ -173,13 +169,8 @@
         {
             "groupId": "controls",
             "elements": [
-                "### 👤 Persona & Income Settings",
-                {
-                    "type": "dropdown",
-                    "variableId": "selectedPersona",
-                    "label": "Select Persona:",
-                    "options": ["Young Professional", "Family of 4", "Recent Graduate", "Mid-Career", "Pre-Retirement"]
-                },
+                "### 💰 Income & Budget Settings",
+
                 {
                     "type": "slider",
                     "variableId": "monthlyIncome",
