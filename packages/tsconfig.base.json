@@ -4,21 +4,12 @@
         "module": "node16",
         "moduleResolution": "node16",
         "skipLibCheck": true,
-        "skipDefaultLibCheck": true,
         "target": "esnext",
         "allowSyntheticDefaultImports": true,
         "lib": [
             "esnext",
             "dom"
-        ],
-        // Performance optimizations
-        "incremental": true,
-        "assumeChangesOnlyAffectDirectDependencies": true,
-        // Additional optimizations
-        "isolatedModules": true,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "strict": false
+        ]
     },
     "include": [
         "src"

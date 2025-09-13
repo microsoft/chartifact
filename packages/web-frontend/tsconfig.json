@@ -1,9 +1,13 @@
 {
-    "extends": "../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "../../docs/assets/js",
         "module": "commonjs",
-        "moduleResolution": "node"
+        "skipLibCheck": true,
+        "target": "esnext",
+        "lib": [
+            "dom",
+            "esnext"
+        ]
     },
     "include": [
         "src"
