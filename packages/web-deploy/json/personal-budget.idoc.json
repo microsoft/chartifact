@@ -4,22 +4,21 @@
     "style": {
         "css": [
             "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
-            "body { display: grid; grid-template-areas: 'header header header' 'controls controls controls' 'overview allocation variance' 'categories categories debug' 'trends trends trends'; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+            "body { display: grid; grid-template-areas: 'header header' 'overview overview' 'allocation variance' 'controls categories' 'trends trends'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
             ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
             "#header { grid-area: header; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; }",
-            "#controls { grid-area: controls; }",
             "#overview { grid-area: overview; text-align: center; }",
             "#allocation { grid-area: allocation; }",
-            "#trends { grid-area: trends; }",
             "#variance { grid-area: variance; }",
+            "#controls { grid-area: controls; }",
             "#categories { grid-area: categories; }",
-            "#debug { grid-area: debug; }",
+            "#trends { grid-area: trends; }",
             "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
             "h2 { margin: 10px 0; font-size: 2em; color: #2d3748; font-weight: 600; }",
             "h3 { margin: 0 0 15px 0; font-size: 1.2em; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
             ".slider-container { margin: 15px 0; }",
             ".slider-label { font-weight: 500; color: #2d3748; margin-bottom: 8px; display: block; }",
-            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'controls' 'overview' 'allocation' 'variance' 'categories' 'debug' 'trends'; } }"
+            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'overview' 'allocation' 'variance' 'controls' 'categories' 'trends'; } }"
         ]
     },
     "dataLoaders": [
@@ -141,7 +140,7 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "vegaExpression": "housingBudget + foodBudget + transportationBudget + entertainmentBudget + savingsBudget + 250 + 200 + 150 + 100"
+                "vegaExpression": "toNumber(housingBudget) + toNumber(foodBudget) + toNumber(transportationBudget) + toNumber(entertainmentBudget) + toNumber(savingsBudget) + 250 + 200 + 150 + 100"
             }
         },
         {
@@ -149,7 +148,7 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "vegaExpression": "housingActual + foodActual + transportationActual + entertainmentActual + savingsActual + 200 + 180 + 120 + 90"
+                "vegaExpression": "toNumber(housingActual) + toNumber(foodActual) + toNumber(transportationActual) + toNumber(entertainmentActual) + toNumber(savingsActual) + 200 + 180 + 120 + 90"
             }
         },
         {
@@ -157,7 +156,7 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "vegaExpression": "totalBudgeted - totalSpent"
+                "vegaExpression": "toNumber(totalBudgeted) - toNumber(totalSpent)"
             }
         },
         {
@@ -224,6 +223,37 @@
             ]
         },
         {
+            "groupId": "overview",
+            "elements": [
+                "### 📊 Budget Overview",
+                "**Total Budgeted:** ${{totalBudgeted}}",
+                "**Total Spent:** ${{totalSpent}}",
+                "**Monthly Income:** ${{monthlyIncome}}",
+                "**Remaining Budget:** ${{totalRemaining}}",
+                "**Savings Rate:** {{savingsRate}}"
+            ]
+        },
+        {
+            "groupId": "allocation",
+            "elements": [
+                "### 🥧 Budget Allocation",
+                {
+                    "type": "chart",
+                    "chartKey": "budgetPieChart"
+                }
+            ]
+        },
+        {
+            "groupId": "variance",
+            "elements": [
+                "### 📊 Budget vs Actual",
+                {
+                    "type": "chart",
+                    "chartKey": "budgetVarianceChart"
+                }
+            ]
+        },
+        {
             "groupId": "controls",
             "elements": [
                 "### 💰 Income & Budget Settings",
@@ -280,27 +310,6 @@
             ]
         },
         {
-            "groupId": "overview",
-            "elements": [
-                "### 📊 Budget Overview",
-                "**Total Budgeted:** ${{totalBudgeted}}",
-                "**Total Spent:** ${{totalSpent}}",
-                "**Monthly Income:** ${{monthlyIncome}}",
-                "**Remaining Budget:** ${{totalRemaining}}",
-                "**Savings Rate:** {{savingsRate}}"
-            ]
-        },
-        {
-            "groupId": "allocation",
-            "elements": [
-                "### 🥧 Budget Allocation",
-                {
-                    "type": "chart",
-                    "chartKey": "budgetPieChart"
-                }
-            ]
-        },
-        {
             "groupId": "categories",
             "elements": [
                 "### 📋 Track This Month's Spending",
@@ -333,31 +342,6 @@
                     "type": "textbox",
                     "variableId": "savingsActual",
                     "label": "Savings Actual"
-                }
-            ]
-        },
-        {
-            "groupId": "debug",
-            "elements": [
-                "### 🐛 Debug: Variance Data",
-                {
-                    "type": "tabulator",
-                    "dataSourceName": "budgetVarianceData",
-                    "tabulatorOptions": {
-                        "autoColumns": true,
-                        "layout": "fitColumns",
-                        "minHeight": "150px"
-                    }
-                }
-            ]
-        },
-        {
-            "groupId": "variance",
-            "elements": [
-                "### 📊 Budget vs Actual",
-                {
-                    "type": "chart",
-                    "chartKey": "budgetVarianceChart"
                 }
             ]
         },
