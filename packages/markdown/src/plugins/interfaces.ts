@@ -8,6 +8,7 @@ export { DropdownSpec } from './dropdown.js';
 export { DsvSpec } from './dsv.js';
 export { ImageSpec } from './image.js';
 export { MermaidSpec } from './mermaid.js';
+export { NumberSpec } from './number.js';
 export { PresetsSpec } from './presets.js';
 export { SliderSpec } from './slider.js';
 export { TabulatorSpec } from './tabulator.js';
@@ -24,6 +25,7 @@ export type PluginNames =
     'image' |
     'google-fonts' |
     'mermaid' |
+    'number' |
     'placeholders' |
     'presets' |
     'slider' |

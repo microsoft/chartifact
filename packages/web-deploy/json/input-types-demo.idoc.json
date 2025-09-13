@@ -1,0 +1,93 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Number Input Demo",
+    "style": {
+        "css": [
+            "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f5f7fa; }",
+            ".group { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }",
+            "h1 { color: #333; text-align: center; }",
+            "h2 { color: #666; margin-top: 30px; }",
+            ".result { background: #e8f5e8; padding: 15px; border-radius: 5px; margin-top: 10px; }",
+            ".vega-bindings { margin: 10px 0; }",
+            ".vega-bind { margin-bottom: 15px; }",
+            ".vega-bind-name { display: inline-block; width: 150px; font-weight: bold; }"
+        ]
+    },
+    "variables": [
+        {
+            "variableId": "userAge",
+            "type": "number",
+            "initialValue": 25
+        },
+        {
+            "variableId": "salary",
+            "type": "number", 
+            "initialValue": 50000
+        },
+        {
+            "variableId": "ageCategory",
+            "type": "string",
+            "initialValue": "Young Adult",
+            "calculation": {
+                "scalarExpression": "userAge < 18 ? 'Minor' : userAge < 30 ? 'Young Adult' : userAge < 50 ? 'Adult' : 'Senior'"
+            }
+        },
+        {
+            "variableId": "monthlyIncome",
+            "type": "number",
+            "initialValue": 4166.67,
+            "calculation": {
+                "scalarExpression": "round(salary / 12 * 100) / 100"
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "header",
+            "elements": [
+                "# Number Input Demo",
+                "",
+                "This demo showcases the new **number** input type in Chartifact. Try changing the values below to see how they affect the calculated results."
+            ]
+        },
+        {
+            "groupId": "inputs",
+            "elements": [
+                "## Input Controls",
+                "",
+                {
+                    "type": "number",
+                    "variableId": "userAge",
+                    "label": "Your Age",
+                    "min": 0,
+                    "max": 120,
+                    "step": 1,
+                    "placeholder": "Enter your age"
+                },
+                "",
+                {
+                    "type": "number",
+                    "variableId": "salary", 
+                    "label": "Annual Salary ($)",
+                    "min": 0,
+                    "max": 1000000,
+                    "step": 1000,
+                    "placeholder": "Enter annual salary"
+                }
+            ]
+        },
+        {
+            "groupId": "results",
+            "elements": [
+                "## Calculated Results",
+                "",
+                "**Age Category:** {{ageCategory}}",
+                "",
+                "**Monthly Income:** ${{monthlyIncome}}",
+                "",
+                "### Summary",
+                "You are **{{userAge}}** years old, categorized as a **{{ageCategory}}**. Your annual salary of **${{salary}}** translates to approximately **${{monthlyIncome}}** per month."
+            ]
+        }
+    ]
+}
