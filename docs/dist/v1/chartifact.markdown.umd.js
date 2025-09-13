@@ -528,6 +528,13 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     return `chartifact-plugin-${pluginName2}`;
   }
   const newId = () => [...Date.now().toString(36) + Math.random().toString(36).slice(2)].sort(() => 0.5 - Math.random()).join("");
+  function debounce(fn, delay) {
+    let timer = null;
+    return ((...args) => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), delay);
+    });
+  }
   let domDocument = typeof document !== "undefined" ? document : void 0;
   function setDomDocument(doc) {
     domDocument = doc;
@@ -2392,7 +2399,7 @@ ${reconstitutedRules.join("\n\n")}
             }
           },
           beginListening() {
-            const updateValue = (e) => {
+            const updateValue = debounce((e) => {
               const value = parseFloat(e.target.value);
               if (valueSpan) {
                 valueSpan.textContent = value.toString();
@@ -2404,7 +2411,7 @@ ${reconstitutedRules.join("\n\n")}
                 }
               };
               signalBus.broadcast(sliderInstance.id, batch);
-            };
+            }, 0);
             element.addEventListener("input", updateValue);
             element.addEventListener("change", updateValue);
           },
@@ -2788,6 +2795,7 @@ ${reconstitutedRules.join("\n\n")}
       console.log(`[Signal Bus][${id}] ${message}`, ...optionalParams);
     }
     async broadcast(originId, batch) {
+      var _a;
       if (!this.active) {
         this.log(originId, "Broadcast called but bus is not active");
         return;
@@ -2809,7 +2817,7 @@ ${reconstitutedRules.join("\n\n")}
         const peerBatch = {};
         let hasBatch = false;
         for (const signalName in batch) {
-          if (peer.initialSignals.some((s) => s.name === signalName) && batch[signalName].value !== this.signalDeps[signalName].value) {
+          if (peer.initialSignals.some((s) => s.name === signalName) && (batch[signalName].value !== this.signalDeps[signalName].value || ((_a = peer.getCurrentSignalValue) == null ? void 0 : _a.call(peer, signalName)) !== batch[signalName].value)) {
             peerBatch[signalName] = batch[signalName];
             hasBatch = true;
           }
