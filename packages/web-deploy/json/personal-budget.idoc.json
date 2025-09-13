@@ -83,7 +83,32 @@
             "type": "number",
             "initialValue": 800
         },
-
+        {
+            "variableId": "adjustedBudgetData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["budgetCategories"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "expr": "datum.category === 'Housing' ? housingBudget : (datum.category === 'Food' ? foodBudget : (datum.category === 'Transportation' ? transportationBudget : (datum.category === 'Entertainment' ? entertainmentBudget : (datum.category === 'Savings' ? savingsBudget : datum.budgeted))))",
+                        "as": "adjustedBudget"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.adjustedBudget - datum.spent",
+                        "as": "remaining"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.spent / datum.adjustedBudget",
+                        "as": "spentPercentage"
+                    }
+                ]
+            }
+        },
         {
             "variableId": "totalBudgeted",
             "type": "number",
@@ -234,7 +259,7 @@
                 "### 📋 Category Details",
                 {
                     "type": "tabulator",
-                    "dataSourceName": "budgetCategories",
+                    "dataSourceName": "adjustedBudgetData",
                     "tabulatorOptions": {
                         "layout": "fitColumns",
                         "maxHeight": "300px",
@@ -243,7 +268,7 @@
                         },
                         "columns": [
                             {"field": "category", "title": "Category", "width": 150},
-                            {"field": "budgeted", "title": "Budgeted", "formatter": "money", "formatterParams": {"symbol": "$"}},
+                            {"field": "adjustedBudget", "title": "Budgeted", "formatter": "money", "formatterParams": {"symbol": "$"}},
                             {"field": "spent", "title": "Spent", "formatter": "money", "formatterParams": {"symbol": "$"}},
                             {"field": "remaining", "title": "Remaining", "formatter": "money", "formatterParams": {"symbol": "$"}},
                             {"field": "spentPercentage", "title": "% Used", "formatter": "progress", "formatterParams": {"max": 1}}
@@ -260,28 +285,8 @@
                 "width": "container",
                 "height": 300,
                 "data": {
-                    "values": [
-                        {"id": "Housing", "spent": 1950, "color": "#667eea"},
-                        {"id": "Food", "spent": 650, "color": "#764ba2"},
-                        {"id": "Transportation", "spent": 380, "color": "#f093fb"},
-                        {"id": "Entertainment", "spent": 280, "color": "#4ecdc4"},
-                        {"id": "Healthcare", "spent": 200, "color": "#45b7d1"},
-                        {"id": "Savings", "spent": 800, "color": "#96ceb4"},
-                        {"id": "Utilities", "spent": 180, "color": "#feca57"},
-                        {"id": "Clothing", "spent": 120, "color": "#ff9ff3"},
-                        {"id": "Personal Care", "spent": 90, "color": "#54a0ff"}
-                    ]
+                    "name": "adjustedBudgetData"
                 },
-                "transform": [
-                    {
-                        "calculate": "datum.id === 'Housing' ? housingBudget : (datum.id === 'Food' ? foodBudget : (datum.id === 'Transportation' ? transportationBudget : (datum.id === 'Entertainment' ? entertainmentBudget : (datum.id === 'Savings' ? savingsBudget : (datum.id === 'Healthcare' ? 250 : (datum.id === 'Utilities' ? 200 : (datum.id === 'Clothing' ? 150 : 100)))))))",
-                        "as": "budgeted"
-                    },
-                    {
-                        "calculate": "datum.budgeted - datum.spent",
-                        "as": "remaining"
-                    }
-                ],
                 "mark": {
                     "type": "arc",
                     "innerRadius": 50,
@@ -290,12 +295,12 @@
                 },
                 "encoding": {
                     "theta": {
-                        "field": "budgeted",
+                        "field": "adjustedBudget",
                         "type": "quantitative",
                         "title": "Budget Amount"
                     },
                     "color": {
-                        "field": "id",
+                        "field": "category",
                         "type": "nominal",
                         "scale": {
                             "range": ["#667eea", "#764ba2", "#f093fb", "#4ecdc4", "#45b7d1", "#96ceb4", "#feca57", "#ff9ff3", "#54a0ff"]
@@ -306,8 +311,8 @@
                         }
                     },
                     "tooltip": [
-                        {"field": "id", "type": "nominal", "title": "Category"},
-                        {"field": "budgeted", "type": "quantitative", "title": "Budgeted", "format": "$,.0f"},
+                        {"field": "category", "type": "nominal", "title": "Category"},
+                        {"field": "adjustedBudget", "type": "quantitative", "title": "Budgeted", "format": "$,.0f"},
                         {"field": "spent", "type": "quantitative", "title": "Spent", "format": "$,.0f"},
                         {"field": "remaining", "type": "quantitative", "title": "Remaining", "format": "$,.0f"}
                     ]
