@@ -10,13 +10,11 @@
     "copy-schema": "node scripts/copy-schema.js",
     "declaration": "rollup -c rollup.config.types.js",
     "strip-blanks": "node scripts/strip-blanks.js",
-    "dev": "tsc -p . -w",
-    "tsc": "tsc -p .",
-    "build": "npm run tsc && npm run declaration && npm run strip-blanks && npm run schema && npm run copy-schema",
-    "build:00": "npm run build",
+    "dev": "npm run esbuild:watch",
     "esbuild": "node esbuild.config.js",
     "esbuild:watch": "node esbuild.config.js --watch",
-    "build:esbuild": "npm run esbuild && npm run strip-blanks && npm run schema && npm run copy-schema"
+    "build": "npm run esbuild && npm run strip-blanks && npm run schema && npm run copy-schema",
+    "build:00": "npm run build"
   },
   "author": "Dan Marshall",
   "license": "MIT",
@@ -24,10 +22,14 @@
   "devDependencies": {
     "esbuild": "^0.25.9",
     "esbuild-plugin-d.ts": "^1.3.1",
+    "rimraf": "^6.0.1",
     "rollup": "^4.50.1",
     "rollup-plugin-dts": "^6.2.3",
     "ts-json-schema-generator": "^2.4.0",
     "vega": "^6.1.2",
     "vega-typings": "^2.0.1"
+  },
+  "dependencies": {
+    "rimraf": "^6.0.1"
   }
 }
