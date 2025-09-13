@@ -1,14 +1,9 @@
 {
+    "extends": "../tsconfig.base.json",
     "compilerOptions": {
-        "declaration": true,
         "removeComments": false, // Keep comments in declaration files
         "outDir": "dist/esnext",
-        "stripInternal": true,
-        "target": "esnext",
-        "module": "node16",
-        "moduleResolution": "node16",
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
+        "stripInternal": true
     },
     "include": [
         "src"
