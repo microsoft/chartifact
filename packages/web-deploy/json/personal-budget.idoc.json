@@ -25,30 +25,32 @@
         {
             "dataSourceName": "budgetCategories",
             "type": "inline",
-            "format": "json",
+            "format": "csv",
             "content": [
-                {"category": "Housing", "budgeted": 2000, "spent": 1950, "color": "#667eea"},
-                {"category": "Food", "budgeted": 600, "spent": 650, "color": "#764ba2"},
-                {"category": "Transportation", "budgeted": 400, "spent": 380, "color": "#f093fb"},
-                {"category": "Entertainment", "budgeted": 300, "spent": 280, "color": "#4ecdc4"},
-                {"category": "Healthcare", "budgeted": 250, "spent": 200, "color": "#45b7d1"},
-                {"category": "Savings", "budgeted": 800, "spent": 800, "color": "#96ceb4"},
-                {"category": "Utilities", "budgeted": 200, "spent": 180, "color": "#feca57"},
-                {"category": "Clothing", "budgeted": 150, "spent": 120, "color": "#ff9ff3"},
-                {"category": "Personal Care", "budgeted": 100, "spent": 90, "color": "#54a0ff"}
+                "category,budgeted,spent,color",
+                "Housing,2000,1950,#667eea",
+                "Food,600,650,#764ba2",
+                "Transportation,400,380,#f093fb",
+                "Entertainment,300,280,#4ecdc4",
+                "Healthcare,250,200,#45b7d1",
+                "Savings,800,800,#96ceb4",
+                "Utilities,200,180,#feca57",
+                "Clothing,150,120,#ff9ff3",
+                "Personal Care,100,90,#54a0ff"
             ]
         },
         {
             "dataSourceName": "monthlyTrends",
             "type": "inline",
-            "format": "json",
+            "format": "csv",
             "content": [
-                {"month": "2024-01", "Housing": 1980, "Food": 620, "Transportation": 390, "Entertainment": 250, "Healthcare": 180, "Savings": 800, "Utilities": 190, "Clothing": 100, "Personal Care": 80},
-                {"month": "2024-02", "Housing": 1950, "Food": 580, "Transportation": 370, "Entertainment": 320, "Healthcare": 220, "Savings": 800, "Utilities": 175, "Clothing": 150, "Personal Care": 95},
-                {"month": "2024-03", "Housing": 1950, "Food": 640, "Transportation": 400, "Entertainment": 280, "Healthcare": 160, "Savings": 800, "Utilities": 185, "Clothing": 80, "Personal Care": 85},
-                {"month": "2024-04", "Housing": 1950, "Food": 610, "Transportation": 420, "Entertainment": 300, "Healthcare": 240, "Savings": 800, "Utilities": 170, "Clothing": 200, "Personal Care": 110},
-                {"month": "2024-05", "Housing": 1950, "Food": 650, "Transportation": 380, "Entertainment": 280, "Healthcare": 200, "Savings": 800, "Utilities": 180, "Clothing": 120, "Personal Care": 90},
-                {"month": "2024-06", "Housing": 1950, "Food": 680, "Transportation": 350, "Entertainment": 350, "Healthcare": 190, "Savings": 800, "Utilities": 160, "Clothing": 180, "Personal Care": 100}
+                "month,Housing,Food,Transportation,Entertainment,Healthcare,Savings,Utilities,Clothing,Personal Care",
+                "2024-01,1980,620,390,250,180,800,190,100,80",
+                "2024-02,1950,580,370,320,220,800,175,150,95",
+                "2024-03,1950,640,400,280,160,800,185,80,85",
+                "2024-04,1950,610,420,300,240,800,170,200,110",
+                "2024-05,1950,650,380,280,200,800,180,120,90",
+                "2024-06,1950,680,350,350,190,800,160,180,100"
             ]
         }
     ],
