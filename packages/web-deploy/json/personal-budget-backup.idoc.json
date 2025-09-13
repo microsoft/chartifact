@@ -89,7 +89,41 @@
             "isArray": true,
             "initialValue": [],
             "calculation": {
-                "vegaExpression": "map(data('budgetCategories'), datum => merge(datum, {adjustedBudget: datum.category === 'Housing' ? housingBudget : datum.category === 'Food' ? foodBudget : datum.category === 'Transportation' ? transportationBudget : datum.category === 'Entertainment' ? entertainmentBudget : datum.category === 'Savings' ? savingsBudget : datum.budgeted, remaining: (datum.category === 'Housing' ? housingBudget : datum.category === 'Food' ? foodBudget : datum.category === 'Transportation' ? transportationBudget : datum.category === 'Entertainment' ? entertainmentBudget : datum.category === 'Savings' ? savingsBudget : datum.budgeted) - datum.spent, spentPercentage: datum.spent / (datum.category === 'Housing' ? housingBudget : datum.category === 'Food' ? foodBudget : datum.category === 'Transportation' ? transportationBudget : datum.category === 'Entertainment' ? entertainmentBudget : datum.category === 'Savings' ? savingsBudget : datum.budgeted)}))"
+                "dataSourceNames": ["budgetCategories"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "expr": "datum.category === 'Housing' ? housingBudget : datum.category === 'Food' ? foodBudget : datum.category === 'Transportation' ? transportationBudget : datum.category === 'Entertainment' ? entertainmentBudget : datum.category === 'Savings' ? savingsBudget : datum.budgeted",
+                        "as": "adjustedBudget"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.adjustedBudget - datum.spent",
+                        "as": "remaining"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.spent / datum.adjustedBudget",
+                        "as": "spentPercentage"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "totalBudgetedData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["adjustedBudgetData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["adjustedBudget"],
+                        "as": ["totalBudgeted"]
+                    }
+                ]
             }
         },
         {
@@ -97,7 +131,24 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "vegaExpression": "housingBudget + foodBudget + transportationBudget + entertainmentBudget + savingsBudget + 250 + 200 + 150 + 100"
+                "vegaExpression": "data('totalBudgetedData')[0] ? data('totalBudgetedData')[0].totalBudgeted : 0"
+            }
+        },
+        {
+            "variableId": "totalSpentData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["adjustedBudgetData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["spent"],
+                        "as": ["totalSpent"]
+                    }
+                ]
             }
         },
         {
@@ -105,7 +156,7 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "vegaExpression": "1950 + 650 + 380 + 280 + 200 + 800 + 180 + 120 + 90"
+                "vegaExpression": "data('totalSpentData')[0] ? data('totalSpentData')[0].totalSpent : 0"
             }
         },
         {
