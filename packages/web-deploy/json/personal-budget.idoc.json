@@ -190,7 +190,18 @@
             "isArray": true,
             "initialValue": [],
             "calculation": {
-                "vegaExpression": "[{\"category\": \"Housing\", \"variance\": housingActual - housingBudget}, {\"category\": \"Food\", \"variance\": foodActual - foodBudget}, {\"category\": \"Transportation\", \"variance\": transportationActual - transportationBudget}, {\"category\": \"Entertainment\", \"variance\": entertainmentActual - entertainmentBudget}, {\"category\": \"Savings\", \"variance\": savingsActual - savingsBudget}]"
+                "dataSourceNames": ["budgetCategories"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.category === 'Housing' || datum.category === 'Food' || datum.category === 'Transportation' || datum.category === 'Entertainment' || datum.category === 'Savings'"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.category === 'Housing' ? housingActual - housingBudget : (datum.category === 'Food' ? foodActual - foodBudget : (datum.category === 'Transportation' ? transportationActual - transportationBudget : (datum.category === 'Entertainment' ? entertainmentActual - entertainmentBudget : (datum.category === 'Savings' ? savingsActual - savingsBudget : 0))))",
+                        "as": "variance"
+                    }
+                ]
             }
         }
     ],
@@ -321,7 +332,7 @@
                 "### 🐛 Debug: Variance Data",
                 {
                     "type": "tabulator",
-                    "variableId": "budgetVarianceData",
+                    "dataSourceName": "budgetVarianceData",
                     "tabulatorOptions": {
                         "autoColumns": true,
                         "layout": "fitColumns",
