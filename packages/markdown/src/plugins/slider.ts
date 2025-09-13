@@ -5,7 +5,7 @@
 
 import { VariableControl, SliderElementProps } from '@microsoft/chartifact-schema';
 import { Batch, IInstance, Plugin } from '../factory.js';
-import { pluginClassName } from './util.js';
+import { debounce, pluginClassName } from './util.js';
 import { flaggablePlugin } from './config.js';
 import { PluginNames } from './interfaces.js';
 
@@ -78,7 +78,7 @@ export const sliderPlugin: Plugin<SliderSpec> = {
                 },
                 beginListening() {
                     // Wire up handler to send the slider value to the signal bus
-                    const updateValue = (e: Event) => {
+                    const updateValue = debounce((e: Event) => {
                         const value = parseFloat((e.target as HTMLInputElement).value);
                         if (valueSpan) {
                             valueSpan.textContent = value.toString();
@@ -90,7 +90,7 @@ export const sliderPlugin: Plugin<SliderSpec> = {
                             },
                         };
                         signalBus.broadcast(sliderInstance.id, batch);
-                    };
+                    }, 0);
 
                     element.addEventListener('input', updateValue);
                     element.addEventListener('change', updateValue);

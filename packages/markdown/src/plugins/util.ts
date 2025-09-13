@@ -26,3 +26,11 @@ export function pluginClassName(pluginName: string) {
 }
 
 export const newId = () => ([...Date.now().toString(36) + Math.random().toString(36).slice(2)]).sort(() => 0.5 - Math.random()).join('');
+
+export function debounce<T extends (...args: any[]) => void>(fn: T, delay: number): T {
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    return ((...args: any[]) => {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+    }) as T;
+}
