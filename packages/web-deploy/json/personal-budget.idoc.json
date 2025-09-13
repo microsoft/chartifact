@@ -266,9 +266,16 @@
             "groupId": "overview",
             "elements": [
                 "### 📊 Budget Overview",
+                {
+                    "type": "slider",
+                    "variableId": "monthlyIncome",
+                    "label": "Monthly Income",
+                    "min": 3000,
+                    "max": 10000,
+                    "step": 250
+                },
                 "**Total Budgeted:** ${{totalBudgeted}}",
                 "**Total Spent:** ${{totalSpent}}",
-                "**Monthly Income:** ${{monthlyIncome}}",
                 "**Remaining Budget:** ${{totalRemaining}}",
                 "**Savings Rate:** {{savingsRate}}"
             ]
@@ -296,16 +303,6 @@
         {
             "groupId": "controls",
             "elements": [
-                "### 💰 Income & Budget Settings",
-
-                {
-                    "type": "slider",
-                    "variableId": "monthlyIncome",
-                    "label": "Monthly Income",
-                    "min": 3000,
-                    "max": 10000,
-                    "step": 250
-                },
                 "### 🏠 Budget Category Adjustments",
                 {
                     "type": "slider",
