@@ -23,7 +23,7 @@ npm run build:esbuild  # esbuild -> strip-blanks -> schema -> copy-schema
 ### Key Features
 
 1. **Individual Module Output**: Uses `bundle: false` to maintain separate JS files
-2. **Declaration Generation**: Hybrid approach using esbuild + tsc for declarations
+2. **Declaration Generation**: Pure plugin approach using `esbuild-plugin-d.ts`
 3. **Rollup Integration**: Reuses existing rollup config for declaration bundling
 4. **Performance**: Faster JavaScript compilation
 5. **Drop-in Replacement**: Same output structure and compatibility
@@ -31,7 +31,8 @@ npm run build:esbuild  # esbuild -> strip-blanks -> schema -> copy-schema
 ### Configuration
 
 - **esbuild.config.js**: Main configuration file
-- **Hybrid Plugin**: Custom plugin that runs `tsc --emitDeclarationOnly` + rollup bundling
+- **Declaration Plugin**: Uses `esbuild-plugin-d.ts` for native TypeScript declaration generation
+- **Bundling Plugin**: Custom plugin for rollup declaration bundling
 - **Problem Matcher**: VS Code integration for build errors
 
 ### Usage
@@ -53,9 +54,9 @@ npm run build
 ### Benefits
 
 - **Performance**: Significantly faster JavaScript compilation
-- **Compatibility**: 100% compatible with existing declaration bundling
+- **Plugin-based**: Native esbuild plugin for TypeScript declarations
 - **Individual Modules**: Maintains separate .js files as requested
-- **TypeScript Support**: Full TypeScript declaration generation
+- **TypeScript Support**: Full TypeScript declaration generation via esbuild-plugin-d.ts
 - **Drop-in**: Can replace `tsc` without breaking existing workflows
 
 ### Migration Strategy
@@ -66,4 +67,4 @@ npm run build
 4. **Replace**: Update main `build` script once validated
 5. **Extend**: Apply to other TypeScript packages (common, web-frontend, etc.)
 
-This approach addresses the original request for esbuild with declaration plugin support while maintaining full compatibility with the existing build system.
+This approach uses pure esbuild plugin architecture for declaration generation instead of hybrid tsc approach, providing better integration and performance.

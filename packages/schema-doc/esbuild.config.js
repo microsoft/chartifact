@@ -1,4 +1,5 @@
 import esbuild from 'esbuild';
+import { dtsPlugin } from 'esbuild-plugin-d.ts';
 import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 
@@ -30,22 +31,15 @@ const esbuildProblemMatcherPlugin = {
 };
 
 /**
- * TypeScript declarations plugin - uses tsc for declarations only
+ * Declaration bundling plugin - bundles individual .d.ts files with rollup
  * @type {import('esbuild').Plugin}
  */
-const declarationsPlugin = {
-	name: 'typescript-declarations',
+const declarationBundlingPlugin = {
+	name: 'declaration-bundling',
 	setup(build) {
 		build.onEnd(async (result) => {
 			if (result.errors.length === 0) {
 				try {
-					console.log('[esbuild] generating TypeScript declarations...');
-					// Use tsc to generate declarations only
-					execSync('npx tsc --emitDeclarationOnly --declaration true', { 
-						stdio: 'inherit',
-						cwd: process.cwd()
-					});
-					
 					// Bundle declarations with rollup if available
 					if (existsSync('rollup.config.types.js')) {
 						console.log('[esbuild] bundling declarations...');
@@ -53,10 +47,10 @@ const declarationsPlugin = {
 							stdio: 'inherit',
 							cwd: process.cwd()
 						});
+						console.log('[esbuild] declarations bundled successfully');
 					}
-					console.log('[esbuild] declarations generated successfully');
 				} catch (error) {
-					console.error('[esbuild] declaration generation failed:', error.message);
+					console.error('[esbuild] declaration bundling failed:', error.message);
 				}
 			}
 		});
@@ -84,7 +78,8 @@ async function main() {
 		
 		plugins: [
 			esbuildProblemMatcherPlugin,
-			declarationsPlugin,
+			dtsPlugin(), // Use esbuild-plugin-d.ts for declaration generation
+			declarationBundlingPlugin, // Bundle declarations after generation
 		],
 	});
 
