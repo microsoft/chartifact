@@ -72,7 +72,11 @@ export class SignalBus {
             for (const signalName in batch) {
                 if (
                     peer.initialSignals.some(s => s.name === signalName)
-                    && batch[signalName].value !== this.signalDeps[signalName].value
+                    && (
+                        (batch[signalName].value !== this.signalDeps[signalName].value)
+                        ||
+                        (peer.getCurrentSignalValue?.(signalName) !== batch[signalName].value)
+                    )
                 ) {
                     peerBatch[signalName] = batch[signalName];
                     hasBatch = true;
