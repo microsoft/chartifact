@@ -4,16 +4,17 @@
     "style": {
         "css": [
             "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
-            "body { display: grid; grid-template-areas: 'header header' 'chart summary' 'transactions transactions'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+            "body { display: grid; grid-template-areas: 'header header' 'chart summary' 'category-summary category-summary' 'transactions transactions'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
             ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
             "#header { grid-area: header; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; text-align: center; }",
             "#summary { grid-area: summary; text-align: center; }",
             "#chart { grid-area: chart; }",
+            "#category-summary { grid-area: category-summary; }",
             "#transactions { grid-area: transactions; }",
             "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
             "h2 { margin: 10px 0; font-size: 2em; color: #2d3748; font-weight: 600; }",
             "h3 { margin: 0 0 15px 0; font-size: 1.2em; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
-            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'summary' 'chart' 'transactions'; } }"
+            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'summary' 'chart' 'category-summary' 'transactions'; } }"
         ]
     },
     "dataLoaders": [
@@ -133,7 +134,7 @@
             "type": "string",
             "initialValue": "$0.00",
             "calculation": {
-                "vegaExpression": "'$' + format(data('totalIncome')[0] ? data('totalIncome')[0].total : 0, ',.2f')"
+                "vegaExpression": "'$' + format(length(data('totalIncome')) > 0 ? data('totalIncome')[0].total : 0, ',.2f')"
             }
         },
         {
@@ -141,7 +142,7 @@
             "type": "string",
             "initialValue": "$0.00",
             "calculation": {
-                "vegaExpression": "'$' + format(abs(data('totalExpenses')[0] ? data('totalExpenses')[0].total : 0), ',.2f')"
+                "vegaExpression": "'$' + format(abs(length(data('totalExpenses')) > 0 ? data('totalExpenses')[0].total : 0), ',.2f')"
             }
         },
         {
@@ -149,7 +150,7 @@
             "type": "string",
             "initialValue": "$0.00",
             "calculation": {
-                "vegaExpression": "'$' + format(data('currentBalance')[0] ? data('currentBalance')[0].total : 0, ',.2f')"
+                "vegaExpression": "'$' + format(length(data('currentBalance')) > 0 ? data('currentBalance')[0].total : 0, ',.2f')"
             }
         }
     ],
@@ -173,10 +174,43 @@
         {
             "groupId": "chart",
             "elements": [
-                "### 🥧 Spending by Category",
+                "### 🥧 Expense Distribution Chart",
                 {
                     "type": "chart",
                     "chartKey": "expensesPieChart"
+                }
+            ]
+        },
+        {
+            "groupId": "category-summary",
+            "elements": [
+                "### 📊 Category Summary Table",
+                {
+                    "type": "tabulator",
+                    "variableId": "categorySummaryTable",
+                    "dataSourceName": "expensesByCategory",
+                    "editable": false,
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "200px",
+                        "columns": [
+                            {
+                                "title": "Category",
+                                "field": "category",
+                                "sorter": "string"
+                            },
+                            {
+                                "title": "Total Spent",
+                                "field": "totalAmount",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "sorter": "number"
+                            }
+                        ]
+                    }
                 }
             ]
         },
