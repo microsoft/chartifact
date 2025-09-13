@@ -4,20 +4,21 @@
     "style": {
         "css": [
             "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
-            "body { display: grid; grid-template-areas: 'header header header' 'controls controls controls' 'overview allocation trends' 'categories categories categories'; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+            "body { display: grid; grid-template-areas: 'header header header' 'controls controls controls' 'overview allocation trends' 'categories categories variance'; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
             ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
             "#header { grid-area: header; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; }",
             "#controls { grid-area: controls; }",
             "#overview { grid-area: overview; text-align: center; }",
             "#allocation { grid-area: allocation; }",
             "#trends { grid-area: trends; }",
+            "#variance { grid-area: variance; }",
             "#categories { grid-area: categories; }",
             "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
             "h2 { margin: 10px 0; font-size: 2em; color: #2d3748; font-weight: 600; }",
             "h3 { margin: 0 0 15px 0; font-size: 1.2em; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
             ".slider-container { margin: 15px 0; }",
             ".slider-label { font-weight: 500; color: #2d3748; margin-bottom: 8px; display: block; }",
-            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'controls' 'overview' 'allocation' 'trends' 'categories'; } }"
+            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'controls' 'overview' 'allocation' 'trends' 'categories' 'variance'; } }"
         ]
     },
     "dataLoaders": [
@@ -84,6 +85,31 @@
             "initialValue": 800
         },
         {
+            "variableId": "housingActual",
+            "type": "number",
+            "initialValue": 1950
+        },
+        {
+            "variableId": "foodActual",
+            "type": "number", 
+            "initialValue": 650
+        },
+        {
+            "variableId": "transportationActual",
+            "type": "number",
+            "initialValue": 380
+        },
+        {
+            "variableId": "entertainmentActual",
+            "type": "number",
+            "initialValue": 280
+        },
+        {
+            "variableId": "savingsActual",
+            "type": "number",
+            "initialValue": 800
+        },
+        {
             "variableId": "adjustedBudgetData",
             "type": "object",
             "isArray": true,
@@ -122,7 +148,7 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "vegaExpression": "1950 + 650 + 380 + 280 + 200 + 800 + 180 + 120 + 90"
+                "vegaExpression": "housingActual + foodActual + transportationActual + entertainmentActual + savingsActual + 200 + 180 + 120 + 90"
             }
         },
         {
@@ -155,6 +181,15 @@
                         "as": ["category", "amount"]
                     }
                 ]
+            }
+        },
+        {
+            "variableId": "budgetVarianceData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "vegaExpression": "[{'category': 'Housing', 'variance': housingActual - housingBudget}, {'category': 'Food', 'variance': foodActual - foodBudget}, {'category': 'Transportation', 'variance': transportationActual - transportationBudget}, {'category': 'Entertainment', 'variance': entertainmentActual - entertainmentBudget}, {'category': 'Savings', 'variance': savingsActual - savingsBudget}]"
             }
         }
     ],
@@ -256,26 +291,46 @@
         {
             "groupId": "categories",
             "elements": [
-                "### 📋 Category Details",
+                "### 📋 Track This Month's Spending",
+                "**Housing:** ${{housingBudget}} budgeted",
                 {
-                    "type": "tabulator",
-                    "dataSourceName": "adjustedBudgetData",
-                    "variableId": "adjustedBudgetDataTable",
-                    "editable": true,
-                    "tabulatorOptions": {
-                        "layout": "fitColumns",
-                        "maxHeight": "300px",
-                        "columnDefaults": {
-                            "headerSort": true
-                        },
-                        "columns": [
-                            {"field": "category", "title": "Category", "width": 150},
-                            {"field": "adjustedBudget", "title": "Budgeted", "formatter": "money", "formatterParams": {"symbol": "$"}, "editor": "input"},
-                            {"field": "spent", "title": "Spent", "formatter": "money", "formatterParams": {"symbol": "$"}, "editor": "input"},
-                            {"field": "remaining", "title": "Remaining", "formatter": "money", "formatterParams": {"symbol": "$"}},
-                            {"field": "spentPercentage", "title": "% Used", "formatter": "progress", "formatterParams": {"min": -1, "max": 2}}
-                        ]
-                    }
+                    "type": "textbox",
+                    "variableId": "housingActual",
+                    "label": "Housing Actual"
+                },
+                "**Food:** ${{foodBudget}} budgeted",
+                {
+                    "type": "textbox",
+                    "variableId": "foodActual", 
+                    "label": "Food Actual"
+                },
+                "**Transportation:** ${{transportationBudget}} budgeted",
+                {
+                    "type": "textbox",
+                    "variableId": "transportationActual",
+                    "label": "Transportation Actual"
+                },
+                "**Entertainment:** ${{entertainmentBudget}} budgeted",
+                {
+                    "type": "textbox",
+                    "variableId": "entertainmentActual",
+                    "label": "Entertainment Actual"
+                },
+                "**Savings:** ${{savingsBudget}} budgeted",
+                {
+                    "type": "textbox",
+                    "variableId": "savingsActual",
+                    "label": "Savings Actual"
+                }
+            ]
+        },
+        {
+            "groupId": "variance",
+            "elements": [
+                "### 📊 Budget vs Actual",
+                {
+                    "type": "chart",
+                    "chartKey": "budgetVarianceChart"
                 }
             ]
         }
@@ -362,6 +417,53 @@
                         {"field": "amount", "type": "quantitative", "title": "Amount", "format": "$,.0f"}
                     ]
                 }
+            },
+            "budgetVarianceChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "description": "Budget variance bar chart with negative values. Shows budget vs actual spending differences.",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "budgetVarianceData"
+                },
+                "encoding": {
+                    "y": {
+                        "field": "category",
+                        "type": "nominal",
+                        "axis": {
+                            "domain": false,
+                            "ticks": false,
+                            "labelAngle": 0,
+                            "labelPadding": 4
+                        },
+                        "title": "Category"
+                    },
+                    "x": {
+                        "field": "variance",
+                        "type": "quantitative",
+                        "scale": {"padding": 20},
+                        "axis": {
+                            "gridColor": {
+                                "condition": {"test": "datum.value === 0", "value": "black"},
+                                "value": "#ddd"
+                            }
+                        },
+                        "title": "Variance (Actual - Budget)"
+                    }
+                },
+                "layer": [
+                    {"mark": "bar"},
+                    {
+                        "mark": {
+                            "type": "text",
+                            "align": {"expr": "datum.variance < 0 ? 'right' : 'left'"},
+                            "dx": {"expr": "datum.variance < 0 ? -2 : 2"}
+                        },
+                        "encoding": {
+                            "text": {"field": "variance", "type": "quantitative", "format": "$,.0f"}
+                        }
+                    }
+                ]
             }
         }
     }
