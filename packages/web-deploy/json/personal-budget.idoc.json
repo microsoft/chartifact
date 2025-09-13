@@ -557,7 +557,18 @@
                     }
                 },
                 "layer": [
-                    {"mark": "bar"},
+                    {
+                        "mark": "bar",
+                        "encoding": {
+                            "color": {
+                                "condition": {
+                                    "test": "datum.variance < 0",
+                                    "value": "#22c55e"
+                                },
+                                "value": "#ef4444"
+                            }
+                        }
+                    },
                     {
                         "mark": {
                             "type": "text",
