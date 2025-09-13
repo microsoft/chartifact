@@ -296,13 +296,35 @@ export class Listener {
         return false;
       }
       
-      // Try to access the iframe's content window and check if the src is still valid
       const iframe = this.sandbox.iframe;
       const contentWindow = iframe.contentWindow;
       
-      // If we can't access the content window or the src is invalid, sandbox is not functional
+      // Basic checks - if these fail, definitely not functional
       if (!contentWindow || !iframe.src || iframe.src === 'about:blank') {
         return false;
+      }
+      
+      // For blob URLs, we need to test if the content is actually accessible
+      // Mobile browsers can garbage collect blob URLs during tombstoning
+      if (iframe.src.startsWith('blob:')) {
+        try {
+          // Try to access the document - this will fail if blob URL is garbage collected
+          const doc = contentWindow.document;
+          if (!doc || !doc.body) {
+            return false;
+          }
+          
+          // Additional check: try to read a property that should exist in our sandbox
+          // Our sandbox should have the Chartifact global or at least some content
+          if (doc.body.children.length === 0) {
+            return false;
+          }
+          
+          return true;
+        } catch (error) {
+          // If we can't access the document, the blob URL is likely garbage collected
+          return false;
+        }
       }
       
       return true;

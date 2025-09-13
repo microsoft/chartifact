@@ -3135,6 +3135,20 @@ ${details}`;
         if (!contentWindow || !iframe.src || iframe.src === "about:blank") {
           return false;
         }
+        if (iframe.src.startsWith("blob:")) {
+          try {
+            const doc = contentWindow.document;
+            if (!doc || !doc.body) {
+              return false;
+            }
+            if (doc.body.children.length === 0) {
+              return false;
+            }
+            return true;
+          } catch (error) {
+            return false;
+          }
+        }
         return true;
       } catch (error) {
         return false;
