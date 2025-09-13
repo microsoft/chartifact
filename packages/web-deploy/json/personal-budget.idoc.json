@@ -85,6 +85,26 @@
             "initialValue": 800
         },
         {
+            "variableId": "healthcareBudget",
+            "type": "number",
+            "initialValue": 250
+        },
+        {
+            "variableId": "utilitiesBudget",
+            "type": "number",
+            "initialValue": 200
+        },
+        {
+            "variableId": "clothingBudget",
+            "type": "number",
+            "initialValue": 150
+        },
+        {
+            "variableId": "personalCareBudget",
+            "type": "number",
+            "initialValue": 100
+        },
+        {
             "variableId": "housingActual",
             "type": "number",
             "initialValue": 1950
@@ -110,6 +130,26 @@
             "initialValue": 800
         },
         {
+            "variableId": "healthcareActual",
+            "type": "number",
+            "initialValue": 200
+        },
+        {
+            "variableId": "utilitiesActual",
+            "type": "number",
+            "initialValue": 180
+        },
+        {
+            "variableId": "clothingActual",
+            "type": "number",
+            "initialValue": 120
+        },
+        {
+            "variableId": "personalCareActual",
+            "type": "number",
+            "initialValue": 90
+        },
+        {
             "variableId": "adjustedBudgetData",
             "type": "object",
             "isArray": true,
@@ -119,7 +159,7 @@
                 "dataFrameTransformations": [
                     {
                         "type": "formula",
-                        "expr": "datum.category === 'Housing' ? housingBudget : (datum.category === 'Food' ? foodBudget : (datum.category === 'Transportation' ? transportationBudget : (datum.category === 'Entertainment' ? entertainmentBudget : (datum.category === 'Savings' ? savingsBudget : datum.budgeted))))",
+                        "expr": "datum.category === 'Housing' ? housingBudget : (datum.category === 'Food' ? foodBudget : (datum.category === 'Transportation' ? transportationBudget : (datum.category === 'Entertainment' ? entertainmentBudget : (datum.category === 'Savings' ? savingsBudget : (datum.category === 'Healthcare' ? healthcareBudget : (datum.category === 'Utilities' ? utilitiesBudget : (datum.category === 'Clothing' ? clothingBudget : (datum.category === 'Personal Care' ? personalCareBudget : datum.budgeted))))))))",
                         "as": "adjustedBudget"
                     },
                     {
@@ -140,7 +180,7 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "vegaExpression": "toNumber(housingBudget) + toNumber(foodBudget) + toNumber(transportationBudget) + toNumber(entertainmentBudget) + toNumber(savingsBudget) + 250 + 200 + 150 + 100"
+                "vegaExpression": "toNumber(housingBudget) + toNumber(foodBudget) + toNumber(transportationBudget) + toNumber(entertainmentBudget) + toNumber(savingsBudget) + toNumber(healthcareBudget) + toNumber(utilitiesBudget) + toNumber(clothingBudget) + toNumber(personalCareBudget)"
             }
         },
         {
@@ -148,7 +188,7 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "vegaExpression": "toNumber(housingActual) + toNumber(foodActual) + toNumber(transportationActual) + toNumber(entertainmentActual) + toNumber(savingsActual) + 200 + 180 + 120 + 90"
+                "vegaExpression": "toNumber(housingActual) + toNumber(foodActual) + toNumber(transportationActual) + toNumber(entertainmentActual) + toNumber(savingsActual) + toNumber(healthcareActual) + toNumber(utilitiesActual) + toNumber(clothingActual) + toNumber(personalCareActual)"
             }
         },
         {
@@ -193,16 +233,16 @@
                 "dataFrameTransformations": [
                     {
                         "type": "filter",
-                        "expr": "datum.category === 'Housing' || datum.category === 'Food' || datum.category === 'Transportation' || datum.category === 'Entertainment' || datum.category === 'Savings'"
+                        "expr": "datum.category === 'Housing' || datum.category === 'Food' || datum.category === 'Transportation' || datum.category === 'Entertainment' || datum.category === 'Healthcare' || datum.category === 'Savings' || datum.category === 'Utilities' || datum.category === 'Clothing' || datum.category === 'Personal Care'"
                     },
                     {
                         "type": "formula",
-                        "expr": "datum.category === 'Housing' ? housingBudget : (datum.category === 'Food' ? foodBudget : (datum.category === 'Transportation' ? transportationBudget : (datum.category === 'Entertainment' ? entertainmentBudget : (datum.category === 'Savings' ? savingsBudget : datum.budgeted))))",
+                        "expr": "datum.category === 'Housing' ? housingBudget : (datum.category === 'Food' ? foodBudget : (datum.category === 'Transportation' ? transportationBudget : (datum.category === 'Entertainment' ? entertainmentBudget : (datum.category === 'Healthcare' ? healthcareBudget : (datum.category === 'Savings' ? savingsBudget : (datum.category === 'Utilities' ? utilitiesBudget : (datum.category === 'Clothing' ? clothingBudget : (datum.category === 'Personal Care' ? personalCareBudget : datum.budgeted))))))))",
                         "as": "budgeted"
                     },
                     {
                         "type": "formula",
-                        "expr": "datum.category === 'Housing' ? housingActual : (datum.category === 'Food' ? foodActual : (datum.category === 'Transportation' ? transportationActual : (datum.category === 'Entertainment' ? entertainmentActual : (datum.category === 'Savings' ? savingsActual : datum.spent))))",
+                        "expr": "datum.category === 'Housing' ? housingActual : (datum.category === 'Food' ? foodActual : (datum.category === 'Transportation' ? transportationActual : (datum.category === 'Entertainment' ? entertainmentActual : (datum.category === 'Healthcare' ? healthcareActual : (datum.category === 'Savings' ? savingsActual : (datum.category === 'Utilities' ? utilitiesActual : (datum.category === 'Clothing' ? clothingActual : (datum.category === 'Personal Care' ? personalCareActual : datum.spent))))))))",
                         "as": "spent"
                     },
                     {
@@ -306,6 +346,38 @@
                     "min": 200,
                     "max": 2000,
                     "step": 50
+                },
+                {
+                    "type": "slider",
+                    "variableId": "healthcareBudget",
+                    "label": "Healthcare",
+                    "min": 100,
+                    "max": 500,
+                    "step": 25
+                },
+                {
+                    "type": "slider",
+                    "variableId": "utilitiesBudget",
+                    "label": "Utilities",
+                    "min": 100,
+                    "max": 400,
+                    "step": 25
+                },
+                {
+                    "type": "slider",
+                    "variableId": "clothingBudget",
+                    "label": "Clothing",
+                    "min": 50,
+                    "max": 300,
+                    "step": 25
+                },
+                {
+                    "type": "slider",
+                    "variableId": "personalCareBudget",
+                    "label": "Personal Care",
+                    "min": 25,
+                    "max": 200,
+                    "step": 25
                 }
             ]
         },
@@ -313,35 +385,50 @@
             "groupId": "categories",
             "elements": [
                 "### 📋 Track This Month's Spending",
-                "**Housing:** ${{housingBudget}} budgeted",
                 {
                     "type": "textbox",
                     "variableId": "housingActual",
                     "label": "Housing Actual"
                 },
-                "**Food:** ${{foodBudget}} budgeted",
                 {
                     "type": "textbox",
                     "variableId": "foodActual", 
                     "label": "Food Actual"
                 },
-                "**Transportation:** ${{transportationBudget}} budgeted",
                 {
                     "type": "textbox",
                     "variableId": "transportationActual",
                     "label": "Transportation Actual"
                 },
-                "**Entertainment:** ${{entertainmentBudget}} budgeted",
                 {
                     "type": "textbox",
                     "variableId": "entertainmentActual",
                     "label": "Entertainment Actual"
                 },
-                "**Savings:** ${{savingsBudget}} budgeted",
+                {
+                    "type": "textbox",
+                    "variableId": "healthcareActual",
+                    "label": "Healthcare Actual"
+                },
                 {
                     "type": "textbox",
                     "variableId": "savingsActual",
                     "label": "Savings Actual"
+                },
+                {
+                    "type": "textbox",
+                    "variableId": "utilitiesActual",
+                    "label": "Utilities Actual"
+                },
+                {
+                    "type": "textbox",
+                    "variableId": "clothingActual",
+                    "label": "Clothing Actual"
+                },
+                {
+                    "type": "textbox",
+                    "variableId": "personalCareActual",
+                    "label": "Personal Care Actual"
                 }
             ]
         },
