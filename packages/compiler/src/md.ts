@@ -188,7 +188,7 @@ function dataLoaderMarkdown(dataSources: DataSource[], variables: Variable[], ta
     return { vegaScope, inlineDataMd };
 }
 
-type pluginSpecs = Plugins.CheckboxSpec | Plugins.DropdownSpec | Plugins.ImageSpec | Plugins.MermaidSpec | Plugins.PresetsSpec | Plugins.SliderSpec | Plugins.TabulatorSpec | Plugins.TextboxSpec;
+type pluginSpecs = Plugins.CheckboxSpec | Plugins.DateSpec | Plugins.DropdownSpec | Plugins.ImageSpec | Plugins.MermaidSpec | Plugins.NumberSpec | Plugins.PresetsSpec | Plugins.SliderSpec | Plugins.TabulatorSpec | Plugins.TextboxSpec;
 
 function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: VegaScope, resources: { charts?: { [chartKey: string]: VegaSpec | VegaLiteSpec } }, pluginFormat: Record<string, "json" | "yaml">) {
     const mdElements: string[] = [];
@@ -329,6 +329,33 @@ function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: Ve
                         placeholder,
                     };
                     addSpec('textbox', textboxSpec, false);
+                    break;
+                }
+                case 'number': {
+                    const { variableId, label, min, max, step, placeholder } = element;
+                    const numberSpec: Plugins.NumberSpec = {
+                        variableId,
+                        value: variables.find(v => v.variableId === variableId)?.initialValue as number,
+                        label,
+                        min,
+                        max,
+                        step,
+                        placeholder,
+                    };
+                    addSpec('number', numberSpec, false);
+                    break;
+                }
+                case 'date': {
+                    const { variableId, label, min, max, placeholder } = element;
+                    const dateSpec: Plugins.DateSpec = {
+                        variableId,
+                        value: variables.find(v => v.variableId === variableId)?.initialValue as string,
+                        label,
+                        min,
+                        max,
+                        placeholder,
+                    };
+                    addSpec('date', dateSpec, false);
                     break;
                 }
                 default: {

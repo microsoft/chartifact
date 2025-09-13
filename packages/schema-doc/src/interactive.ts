@@ -33,6 +33,40 @@ export interface TextboxElementProps extends VariableControl {
 }
 
 /**
+ * Number Input
+ * use for numeric input (integers and decimals)
+ */
+export interface NumberInputElement extends NumberInputElementProps {
+  type: 'number';
+}
+export interface NumberInputElementProps extends VariableControl {
+  /** minimum allowed value */
+  min?: number;
+  /** maximum allowed value */
+  max?: number;
+  /** step increment for the input */
+  step?: number;
+  /** placeholder text to show when input is empty */
+  placeholder?: string;
+}
+
+/**
+ * Date Input
+ * use for date selection
+ */
+export interface DateInputElement extends DateInputElementProps {
+  type: 'date';
+}
+export interface DateInputElementProps extends VariableControl {
+  /** minimum allowed date (YYYY-MM-DD format) */
+  min?: string;
+  /** maximum allowed date (YYYY-MM-DD format) */
+  max?: string;
+  /** placeholder text to show when input is empty */
+  placeholder?: string;
+}
+
+/**
  * Slider
  * prefer sliders over textbox for numbers. Never use for boolean values.
  */
@@ -205,9 +239,11 @@ export interface TabulatorElementProps extends OptionalVariableControl {
 export type InteractiveElement =
   | ChartElement
   | CheckboxElement
+  | DateInputElement
   | DropdownElement
   | ImageElement
   | MermaidElement
+  | NumberInputElement
   | PresetsElement
   | SliderElement
   | TabulatorElement
