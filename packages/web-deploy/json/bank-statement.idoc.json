@@ -50,7 +50,7 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "dataSourceNames": ["transactions"],
+                "dataSourceNames": ["editableTransactions"],
                 "dataFrameTransformations": [
                     {
                         "type": "filter",
@@ -70,7 +70,7 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "dataSourceNames": ["transactions"],
+                "dataSourceNames": ["editableTransactions"],
                 "dataFrameTransformations": [
                     {
                         "type": "filter",
@@ -90,7 +90,7 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "dataSourceNames": ["transactions"],
+                "dataSourceNames": ["editableTransactions"],
                 "dataFrameTransformations": [
                     {
                         "type": "aggregate",
@@ -107,7 +107,7 @@
             "isArray": true,
             "initialValue": [],
             "calculation": {
-                "dataSourceNames": ["transactions"],
+                "dataSourceNames": ["editableTransactions"],
                 "dataFrameTransformations": [
                     {
                         "type": "filter",
