@@ -50,8 +50,9 @@
     "variables": [
         {
             "variableId": "totalIncome",
-            "type": "number",
-            "initialValue": 0,
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
             "calculation": {
                 "dataSourceNames": ["editableTransactions"],
                 "dataFrameTransformations": [
@@ -70,8 +71,9 @@
         },
         {
             "variableId": "totalExpenses",
-            "type": "number",
-            "initialValue": 0,
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
             "calculation": {
                 "dataSourceNames": ["editableTransactions"],
                 "dataFrameTransformations": [
@@ -90,8 +92,9 @@
         },
         {
             "variableId": "currentBalance",
-            "type": "number",
-            "initialValue": 0,
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
             "calculation": {
                 "dataSourceNames": ["editableTransactions"],
                 "dataFrameTransformations": [
