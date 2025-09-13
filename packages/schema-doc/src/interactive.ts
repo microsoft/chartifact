@@ -50,21 +50,7 @@ export interface NumberInputElementProps extends VariableControl {
   placeholder?: string;
 }
 
-/**
- * Date Input
- * use for date selection
- */
-export interface DateInputElement extends DateInputElementProps {
-  type: 'date';
-}
-export interface DateInputElementProps extends VariableControl {
-  /** minimum allowed date (YYYY-MM-DD format) */
-  min?: string;
-  /** maximum allowed date (YYYY-MM-DD format) */
-  max?: string;
-  /** placeholder text to show when input is empty */
-  placeholder?: string;
-}
+
 
 /**
  * Slider
@@ -239,7 +225,6 @@ export interface TabulatorElementProps extends OptionalVariableControl {
 export type InteractiveElement =
   | ChartElement
   | CheckboxElement
-  | DateInputElement
   | DropdownElement
   | ImageElement
   | MermaidElement

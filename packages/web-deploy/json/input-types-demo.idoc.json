@@ -1,6 +1,6 @@
 {
     "$schema": "../../../docs/schema/idoc_v1.json",
-    "title": "Number and Date Input Demo",
+    "title": "Number Input Demo",
     "style": {
         "css": [
             "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f5f7fa; }",
@@ -25,16 +25,6 @@
             "initialValue": 50000
         },
         {
-            "variableId": "birthDate",
-            "type": "string",
-            "initialValue": "1998-01-01"
-        },
-        {
-            "variableId": "startDate",
-            "type": "string",
-            "initialValue": "2024-01-15"
-        },
-        {
             "variableId": "ageCategory",
             "type": "string",
             "initialValue": "Young Adult",
@@ -55,9 +45,9 @@
         {
             "groupId": "header",
             "elements": [
-                "# Number and Date Input Demo",
+                "# Number Input Demo",
                 "",
-                "This demo showcases the new **number** and **date** input types in Chartifact. Try changing the values below to see how they affect the calculated results."
+                "This demo showcases the new **number** input type in Chartifact. Try changing the values below to see how they affect the calculated results."
             ]
         },
         {
@@ -83,21 +73,6 @@
                     "max": 1000000,
                     "step": 1000,
                     "placeholder": "Enter annual salary"
-                },
-                "",
-                {
-                    "type": "date",
-                    "variableId": "birthDate",
-                    "label": "Birth Date",
-                    "min": "1900-01-01",
-                    "max": "2024-12-31"
-                },
-                "",
-                {
-                    "type": "date",
-                    "variableId": "startDate",
-                    "label": "Employment Start Date",
-                    "min": "2020-01-01"
                 }
             ]
         },
@@ -109,10 +84,6 @@
                 "**Age Category:** {{ageCategory}}",
                 "",
                 "**Monthly Income:** ${{monthlyIncome}}",
-                "",
-                "**Birth Date:** {{birthDate}}",
-                "",
-                "**Employment Start Date:** {{startDate}}",
                 "",
                 "### Summary",
                 "You are **{{userAge}}** years old, categorized as a **{{ageCategory}}**. Your annual salary of **${{salary}}** translates to approximately **${{monthlyIncome}}** per month."
