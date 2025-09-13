@@ -198,7 +198,17 @@
                     },
                     {
                         "type": "formula",
-                        "expr": "datum.category === 'Housing' ? housingActual - housingBudget : (datum.category === 'Food' ? foodActual - foodBudget : (datum.category === 'Transportation' ? transportationActual - transportationBudget : (datum.category === 'Entertainment' ? entertainmentActual - entertainmentBudget : (datum.category === 'Savings' ? savingsActual - savingsBudget : 0))))",
+                        "expr": "datum.category === 'Housing' ? housingBudget : (datum.category === 'Food' ? foodBudget : (datum.category === 'Transportation' ? transportationBudget : (datum.category === 'Entertainment' ? entertainmentBudget : (datum.category === 'Savings' ? savingsBudget : datum.budgeted))))",
+                        "as": "budgeted"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.category === 'Housing' ? housingActual : (datum.category === 'Food' ? foodActual : (datum.category === 'Transportation' ? transportationActual : (datum.category === 'Entertainment' ? entertainmentActual : (datum.category === 'Savings' ? savingsActual : datum.spent))))",
+                        "as": "spent"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.spent - datum.budgeted",
                         "as": "variance"
                     }
                 ]
