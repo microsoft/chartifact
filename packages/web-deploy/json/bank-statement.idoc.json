@@ -1,0 +1,302 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Personal Bank Statement",
+    "style": {
+        "css": [
+            "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
+            "body { display: grid; grid-template-areas: 'header header' 'summary summary' 'chart transactions'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+            ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
+            "#header { grid-area: header; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; text-align: center; }",
+            "#summary { grid-area: summary; text-align: center; }",
+            "#chart { grid-area: chart; }",
+            "#transactions { grid-area: transactions; }",
+            "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
+            "h2 { margin: 10px 0; font-size: 2em; color: #2d3748; font-weight: 600; }",
+            "h3 { margin: 0 0 15px 0; font-size: 1.2em; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
+            ".summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }",
+            ".summary-item { text-align: center; padding: 15px; background: #f7fafc; border-radius: 8px; border: 1px solid #e2e8f0; }",
+            ".summary-amount { font-size: 1.5em; font-weight: 600; margin: 5px 0; }",
+            ".income { color: #059669; }",
+            ".expense { color: #dc2626; }",
+            ".balance { color: #1e40af; }",
+            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'summary' 'chart' 'transactions'; } }"
+        ]
+    },
+    "dataLoaders": [
+        {
+            "dataSourceName": "transactions",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"date": "2024-01-02", "description": "Salary Deposit", "category": "Income", "amount": 3500.00, "type": "income"},
+                {"date": "2024-01-03", "description": "Rent Payment", "category": "Housing", "amount": -1200.00, "type": "expense"},
+                {"date": "2024-01-04", "description": "Grocery Store", "category": "Food", "amount": -85.50, "type": "expense"},
+                {"date": "2024-01-05", "description": "Gas Station", "category": "Transportation", "amount": -45.00, "type": "expense"},
+                {"date": "2024-01-06", "description": "Coffee Shop", "category": "Food", "amount": -12.75, "type": "expense"},
+                {"date": "2024-01-08", "description": "Electric Bill", "category": "Utilities", "amount": -89.99, "type": "expense"},
+                {"date": "2024-01-10", "description": "Movie Tickets", "category": "Entertainment", "amount": -28.00, "type": "expense"},
+                {"date": "2024-01-12", "description": "Pharmacy", "category": "Healthcare", "amount": -25.99, "type": "expense"},
+                {"date": "2024-01-14", "description": "Online Shopping", "category": "Shopping", "amount": -67.89, "type": "expense"},
+                {"date": "2024-01-15", "description": "Freelance Project", "category": "Income", "amount": 850.00, "type": "income"},
+                {"date": "2024-01-16", "description": "Restaurant", "category": "Food", "amount": -42.50, "type": "expense"},
+                {"date": "2024-01-18", "description": "Internet Bill", "category": "Utilities", "amount": -59.99, "type": "expense"},
+                {"date": "2024-01-20", "description": "Gym Membership", "category": "Health", "amount": -29.99, "type": "expense"},
+                {"date": "2024-01-22", "description": "Grocery Store", "category": "Food", "amount": -92.34, "type": "expense"},
+                {"date": "2024-01-24", "description": "Car Insurance", "category": "Transportation", "amount": -125.00, "type": "expense"},
+                {"date": "2024-01-25", "description": "Clothing Store", "category": "Shopping", "amount": -89.99, "type": "expense"},
+                {"date": "2024-01-26", "description": "Savings Transfer", "category": "Savings", "amount": -500.00, "type": "transfer"},
+                {"date": "2024-01-28", "description": "Gas Station", "category": "Transportation", "amount": -38.75, "type": "expense"},
+                {"date": "2024-01-30", "description": "Phone Bill", "category": "Utilities", "amount": -45.00, "type": "expense"}
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "variableId": "totalIncome",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "dataSourceNames": ["transactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'income'"
+                    },
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["amount"],
+                        "as": ["total"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "totalExpenses",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "dataSourceNames": ["transactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'expense'"
+                    },
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["amount"],
+                        "as": ["total"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "currentBalance",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "dataSourceNames": ["transactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["amount"],
+                        "as": ["total"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "expensesByCategory",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["transactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'expense'"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "abs(datum.amount)",
+                        "as": "absAmount"
+                    },
+                    {
+                        "type": "aggregate",
+                        "groupby": ["category"],
+                        "ops": ["sum"],
+                        "fields": ["absAmount"],
+                        "as": ["totalAmount"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "formattedIncome",
+            "type": "string",
+            "initialValue": "$0.00",
+            "calculation": {
+                "vegaExpression": "'$' + format(data('totalIncome')[0] ? data('totalIncome')[0].total : 0, ',.2f')"
+            }
+        },
+        {
+            "variableId": "formattedExpenses",
+            "type": "string",
+            "initialValue": "$0.00",
+            "calculation": {
+                "vegaExpression": "'$' + format(abs(data('totalExpenses')[0] ? data('totalExpenses')[0].total : 0), ',.2f')"
+            }
+        },
+        {
+            "variableId": "formattedBalance",
+            "type": "string",
+            "initialValue": "$0.00",
+            "calculation": {
+                "vegaExpression": "'$' + format(data('currentBalance')[0] ? data('currentBalance')[0].total : 0, ',.2f')"
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "header",
+            "elements": [
+                "# 🏦 Personal Bank Statement",
+                "**Track your transactions and spending patterns**"
+            ]
+        },
+        {
+            "groupId": "summary",
+            "elements": [
+                "### 📊 Account Summary",
+                "<div class=\"summary-grid\">",
+                "<div class=\"summary-item\">",
+                "**Total Income**",
+                "<div class=\"summary-amount income\">{{formattedIncome}}</div>",
+                "</div>",
+                "<div class=\"summary-item\">",
+                "**Total Expenses**", 
+                "<div class=\"summary-amount expense\">{{formattedExpenses}}</div>",
+                "</div>",
+                "<div class=\"summary-item\">",
+                "**Current Balance**",
+                "<div class=\"summary-amount balance\">{{formattedBalance}}</div>",
+                "</div>",
+                "</div>"
+            ]
+        },
+        {
+            "groupId": "chart",
+            "elements": [
+                "### 🥧 Spending by Category",
+                {
+                    "type": "chart",
+                    "chartKey": "expensesPieChart"
+                }
+            ]
+        },
+        {
+            "groupId": "transactions",
+            "elements": [
+                "### 📋 Transaction History",
+                "**Edit transactions below to update your statement**",
+                {
+                    "type": "tabulator",
+                    "variableId": "editableTransactions",
+                    "dataSourceName": "transactions",
+                    "editable": true,
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "400px",
+                        "columns": [
+                            {
+                                "title": "Date",
+                                "field": "date",
+                                "sorter": "date",
+                                "editor": "date"
+                            },
+                            {
+                                "title": "Description",
+                                "field": "description",
+                                "editor": "input"
+                            },
+                            {
+                                "title": "Category",
+                                "field": "category",
+                                "editor": "select",
+                                "editorParams": {
+                                    "values": ["Income", "Housing", "Food", "Transportation", "Utilities", "Entertainment", "Healthcare", "Shopping", "Health", "Savings"]
+                                }
+                            },
+                            {
+                                "title": "Amount",
+                                "field": "amount",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "editor": "number",
+                                "editorParams": {
+                                    "step": 0.01
+                                }
+                            },
+                            {
+                                "title": "Type",
+                                "field": "type",
+                                "editor": "select",
+                                "editorParams": {
+                                    "values": ["income", "expense", "transfer"]
+                                }
+                            }
+                        ],
+                        "addRowPos": "top",
+                        "footerElement": "<button onclick='addNewTransaction()' style='padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer;'>Add New Transaction</button>"
+                    }
+                }
+            ]
+        }
+    ],
+    "resources": {
+        "charts": {
+            "expensesPieChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "expensesByCategory"
+                },
+                "mark": {
+                    "type": "arc",
+                    "innerRadius": 50,
+                    "stroke": "white",
+                    "strokeWidth": 2
+                },
+                "encoding": {
+                    "theta": {
+                        "field": "totalAmount",
+                        "type": "quantitative",
+                        "title": "Amount Spent"
+                    },
+                    "color": {
+                        "field": "category",
+                        "type": "nominal",
+                        "scale": {
+                            "range": ["#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899", "#f43f5e", "#84cc16"]
+                        },
+                        "legend": {
+                            "orient": "right",
+                            "title": "Category"
+                        }
+                    },
+                    "tooltip": [
+                        {"field": "category", "type": "nominal", "title": "Category"},
+                        {"field": "totalAmount", "type": "quantitative", "title": "Amount", "format": "$,.2f"}
+                    ]
+                }
+            }
+        }
+    }
+}
