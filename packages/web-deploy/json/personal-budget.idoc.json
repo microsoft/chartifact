@@ -110,11 +110,45 @@
             }
         },
         {
+            "variableId": "totalBudgetedData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["adjustedBudgetData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["adjustedBudget"],
+                        "as": ["totalBudgeted"]
+                    }
+                ]
+            }
+        },
+        {
             "variableId": "totalBudgeted",
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "vegaExpression": "data('adjustedBudgetData') ? sum(pluck(data('adjustedBudgetData'), 'adjustedBudget')) : 0"
+                "vegaExpression": "data('totalBudgetedData')[0] ? data('totalBudgetedData')[0].totalBudgeted : 0"
+            }
+        },
+        {
+            "variableId": "totalSpentData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["adjustedBudgetData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["spent"],
+                        "as": ["totalSpent"]
+                    }
+                ]
             }
         },
         {
@@ -122,7 +156,7 @@
             "type": "number",
             "initialValue": 0,
             "calculation": {
-                "vegaExpression": "data('adjustedBudgetData') ? sum(pluck(data('adjustedBudgetData'), 'spent')) : 0"
+                "vegaExpression": "data('totalSpentData')[0] ? data('totalSpentData')[0].totalSpent : 0"
             }
         },
         {
@@ -174,7 +208,7 @@
                 {
                     "type": "slider",
                     "variableId": "monthlyIncome",
-                    "label": "Monthly Income: ${{monthlyIncome}}",
+                    "label": "Monthly Income",
                     "min": 3000,
                     "max": 10000,
                     "step": 250
@@ -183,7 +217,7 @@
                 {
                     "type": "slider",
                     "variableId": "housingBudget",
-                    "label": "Housing: ${{housingBudget}}",
+                    "label": "Housing",
                     "min": 800,
                     "max": 4000,
                     "step": 50
@@ -191,7 +225,7 @@
                 {
                     "type": "slider",
                     "variableId": "foodBudget",
-                    "label": "Food: ${{foodBudget}}",
+                    "label": "Food",
                     "min": 200,
                     "max": 1200,
                     "step": 25
@@ -199,7 +233,7 @@
                 {
                     "type": "slider",
                     "variableId": "transportationBudget",
-                    "label": "Transportation: ${{transportationBudget}}",
+                    "label": "Transportation",
                     "min": 100,
                     "max": 800,
                     "step": 25
@@ -207,7 +241,7 @@
                 {
                     "type": "slider",
                     "variableId": "entertainmentBudget",
-                    "label": "Entertainment: ${{entertainmentBudget}}",
+                    "label": "Entertainment",
                     "min": 50,
                     "max": 600,
                     "step": 25
@@ -215,7 +249,7 @@
                 {
                     "type": "slider",
                     "variableId": "savingsBudget",
-                    "label": "Savings: ${{savingsBudget}}",
+                    "label": "Savings",
                     "min": 200,
                     "max": 2000,
                     "step": 50
