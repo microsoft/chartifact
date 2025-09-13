@@ -103,7 +103,7 @@
                     },
                     {
                         "type": "formula",
-                        "expr": "datum.spent / datum.adjustedBudget",
+                        "expr": "(datum.spent - datum.adjustedBudget) / datum.adjustedBudget",
                         "as": "spentPercentage"
                     }
                 ]
@@ -260,6 +260,8 @@
                 {
                     "type": "tabulator",
                     "dataSourceName": "adjustedBudgetData",
+                    "variableId": "adjustedBudgetDataTable",
+                    "editable": true,
                     "tabulatorOptions": {
                         "layout": "fitColumns",
                         "maxHeight": "300px",
@@ -268,10 +270,10 @@
                         },
                         "columns": [
                             {"field": "category", "title": "Category", "width": 150},
-                            {"field": "adjustedBudget", "title": "Budgeted", "formatter": "money", "formatterParams": {"symbol": "$"}},
-                            {"field": "spent", "title": "Spent", "formatter": "money", "formatterParams": {"symbol": "$"}},
+                            {"field": "adjustedBudget", "title": "Budgeted", "formatter": "money", "formatterParams": {"symbol": "$"}, "editor": "input"},
+                            {"field": "spent", "title": "Spent", "formatter": "money", "formatterParams": {"symbol": "$"}, "editor": "input"},
                             {"field": "remaining", "title": "Remaining", "formatter": "money", "formatterParams": {"symbol": "$"}},
-                            {"field": "spentPercentage", "title": "% Used", "formatter": "progress", "formatterParams": {"max": 1}}
+                            {"field": "spentPercentage", "title": "% Used", "formatter": "progress", "formatterParams": {"min": -1, "max": 2}}
                         ]
                     }
                 }
