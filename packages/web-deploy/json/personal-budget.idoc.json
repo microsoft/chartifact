@@ -57,7 +57,6 @@
         }
     ],
     "variables": [
-
         {
             "variableId": "monthlyIncome",
             "type": "number",
@@ -115,7 +114,7 @@
         },
         {
             "variableId": "foodActual",
-            "type": "number", 
+            "type": "number",
             "initialValue": 650
         },
         {
@@ -159,7 +158,9 @@
             "isArray": true,
             "initialValue": [],
             "calculation": {
-                "dataSourceNames": ["budgetCategories"],
+                "dataSourceNames": [
+                    "budgetCategories"
+                ],
                 "dataFrameTransformations": [
                     {
                         "type": "formula",
@@ -217,12 +218,27 @@
             "isArray": true,
             "initialValue": [],
             "calculation": {
-                "dataSourceNames": ["monthlyTrends"],
+                "dataSourceNames": [
+                    "monthlyTrends"
+                ],
                 "dataFrameTransformations": [
                     {
                         "type": "fold",
-                        "fields": ["Housing", "Food", "Transportation", "Entertainment", "Healthcare", "Savings", "Utilities", "Clothing", "Personal Care"],
-                        "as": ["category", "amount"]
+                        "fields": [
+                            "Housing",
+                            "Food",
+                            "Transportation",
+                            "Entertainment",
+                            "Healthcare",
+                            "Savings",
+                            "Utilities",
+                            "Clothing",
+                            "Personal Care"
+                        ],
+                        "as": [
+                            "category",
+                            "amount"
+                        ]
                     }
                 ]
             }
@@ -233,7 +249,9 @@
             "isArray": true,
             "initialValue": [],
             "calculation": {
-                "dataSourceNames": ["budgetCategories"],
+                "dataSourceNames": [
+                    "budgetCategories"
+                ],
                 "dataFrameTransformations": [
                     {
                         "type": "filter",
@@ -387,47 +405,47 @@
             "elements": [
                 "### 📋 Track This Month's Spending",
                 {
-                    "type": "textbox",
+                    "type": "number",
                     "variableId": "housingActual",
                     "label": "Housing Actual"
                 },
                 {
-                    "type": "textbox",
-                    "variableId": "foodActual", 
+                    "type": "number",
+                    "variableId": "foodActual",
                     "label": "Food Actual"
                 },
                 {
-                    "type": "textbox",
+                    "type": "number",
                     "variableId": "transportationActual",
                     "label": "Transportation Actual"
                 },
                 {
-                    "type": "textbox",
+                    "type": "number",
                     "variableId": "entertainmentActual",
                     "label": "Entertainment Actual"
                 },
                 {
-                    "type": "textbox",
+                    "type": "number",
                     "variableId": "healthcareActual",
                     "label": "Healthcare Actual"
                 },
                 {
-                    "type": "textbox",
+                    "type": "number",
                     "variableId": "savingsActual",
                     "label": "Savings Actual"
                 },
                 {
-                    "type": "textbox",
+                    "type": "number",
                     "variableId": "utilitiesActual",
                     "label": "Utilities Actual"
                 },
                 {
-                    "type": "textbox",
+                    "type": "number",
                     "variableId": "clothingActual",
                     "label": "Clothing Actual"
                 },
                 {
-                    "type": "textbox",
+                    "type": "number",
                     "variableId": "personalCareActual",
                     "label": "Personal Care Actual"
                 }
@@ -469,7 +487,17 @@
                         "field": "category",
                         "type": "nominal",
                         "scale": {
-                            "range": ["#667eea", "#764ba2", "#f093fb", "#4ecdc4", "#45b7d1", "#96ceb4", "#feca57", "#ff9ff3", "#54a0ff"]
+                            "range": [
+                                "#667eea",
+                                "#764ba2",
+                                "#f093fb",
+                                "#4ecdc4",
+                                "#45b7d1",
+                                "#96ceb4",
+                                "#feca57",
+                                "#ff9ff3",
+                                "#54a0ff"
+                            ]
                         },
                         "legend": {
                             "orient": "right",
@@ -477,10 +505,29 @@
                         }
                     },
                     "tooltip": [
-                        {"field": "category", "type": "nominal", "title": "Category"},
-                        {"field": "adjustedBudget", "type": "quantitative", "title": "Budgeted", "format": "$,.0f"},
-                        {"field": "spent", "type": "quantitative", "title": "Spent", "format": "$,.0f"},
-                        {"field": "remaining", "type": "quantitative", "title": "Remaining", "format": "$,.0f"}
+                        {
+                            "field": "category",
+                            "type": "nominal",
+                            "title": "Category"
+                        },
+                        {
+                            "field": "adjustedBudget",
+                            "type": "quantitative",
+                            "title": "Budgeted",
+                            "format": "$,.0f"
+                        },
+                        {
+                            "field": "spent",
+                            "type": "quantitative",
+                            "title": "Spent",
+                            "format": "$,.0f"
+                        },
+                        {
+                            "field": "remaining",
+                            "type": "quantitative",
+                            "title": "Remaining",
+                            "format": "$,.0f"
+                        }
                     ]
                 }
             },
@@ -514,16 +561,40 @@
                         "field": "category",
                         "type": "nominal",
                         "scale": {
-                            "range": ["#667eea", "#764ba2", "#f093fb", "#4ecdc4", "#45b7d1", "#96ceb4", "#feca57", "#ff9ff3", "#54a0ff"]
+                            "range": [
+                                "#667eea",
+                                "#764ba2",
+                                "#f093fb",
+                                "#4ecdc4",
+                                "#45b7d1",
+                                "#96ceb4",
+                                "#feca57",
+                                "#ff9ff3",
+                                "#54a0ff"
+                            ]
                         },
                         "legend": {
                             "title": "Category"
                         }
                     },
                     "tooltip": [
-                        {"field": "month", "type": "temporal", "title": "Month", "format": "%B %Y"},
-                        {"field": "category", "type": "nominal", "title": "Category"},
-                        {"field": "amount", "type": "quantitative", "title": "Amount", "format": "$,.0f"}
+                        {
+                            "field": "month",
+                            "type": "temporal",
+                            "title": "Month",
+                            "format": "%B %Y"
+                        },
+                        {
+                            "field": "category",
+                            "type": "nominal",
+                            "title": "Category"
+                        },
+                        {
+                            "field": "amount",
+                            "type": "quantitative",
+                            "title": "Amount",
+                            "format": "$,.0f"
+                        }
                     ]
                 }
             },
@@ -550,10 +621,15 @@
                     "x": {
                         "field": "variance",
                         "type": "quantitative",
-                        "scale": {"padding": 20},
+                        "scale": {
+                            "padding": 20
+                        },
                         "axis": {
                             "gridColor": {
-                                "condition": {"test": "datum.value === 0", "value": "black"},
+                                "condition": {
+                                    "test": "datum.value === 0",
+                                    "value": "black"
+                                },
                                 "value": "#ddd"
                             }
                         },
@@ -576,11 +652,19 @@
                     {
                         "mark": {
                             "type": "text",
-                            "align": {"expr": "datum.variance < 0 ? 'right' : 'left'"},
-                            "dx": {"expr": "datum.variance < 0 ? -2 : 2"}
+                            "align": {
+                                "expr": "datum.variance < 0 ? 'right' : 'left'"
+                            },
+                            "dx": {
+                                "expr": "datum.variance < 0 ? -2 : 2"
+                            }
                         },
                         "encoding": {
-                            "text": {"field": "variance", "type": "quantitative", "format": "$,.0f"}
+                            "text": {
+                                "field": "variance",
+                                "type": "quantitative",
+                                "format": "$,.0f"
+                            }
                         }
                     }
                 ]
