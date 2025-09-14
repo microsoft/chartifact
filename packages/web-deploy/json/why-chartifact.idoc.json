@@ -11,9 +11,7 @@
             "#slide3 { background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%); color: white; }",
             "#slide4 { background: linear-gradient(135deg, #27ae60 0%, #2980b9 100%); color: white; }",
             "#slide5 { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; }",
-            "#slide6 { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; justify-content: flex-start; display: grid; grid-template-columns: 1fr 1fr; grid-gap: 2em; align-items: start; min-width: 0; overflow: hidden; }",
-            "#slide6 .left-content { grid-column: 1; }",
-            "#slide6 .right-content { grid-column: 2; min-width: 0; overflow: hidden; }",
+            "#slide6 { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; justify-content: flex-start; }",
             "#slide7 { background: linear-gradient(135deg, #16a085 0%, #27ae60 100%); color: white; }",
             "#slide8 { background: linear-gradient(135deg, #2c3e50 0%, #8e44ad 100%); color: white; text-align: center; justify-content: center; }",
             "h1 { font-size: 2.5em; margin: 0.3em 0; font-weight: 300; line-height: 1.2; }",
@@ -171,64 +169,52 @@
         {
             "groupId": "slide6",
             "elements": [
+                "## 📊 Stop Pasting Chart Images from Excel!",
+                "### Make them live charts from live data instead",
+                "",
+                "**The Problem:**",
+                "- Screenshots become stale immediately",
+                "- No interaction or exploration", 
+                "- Manual updates required",
+                "- Data context lost",
+                "",
+                "**The Solution:**",
+                "- Live data connections",
+                "- Interactive exploration",
+                "- Automatic updates",
+                "- Rich context preserved",
+                "",
+                "### ⚡ Experience the difference below:",
+                "",
+                "### 📈 Live Data Visualization",
                 {
-                    "type": "group",
-                    "groupId": "left-content",
-                    "groupCssClass": "left-content",
-                    "elements": [
-                        "## 📊 Stop Pasting Chart Images from Excel!",
-                        "### Make them live charts from live data instead",
-                        "",
-                        "**The Problem:**",
-                        "- Screenshots become stale immediately",
-                        "- No interaction or exploration", 
-                        "- Manual updates required",
-                        "- Data context lost",
-                        "",
-                        "**The Solution:**",
-                        "- Live data connections",
-                        "- Interactive exploration",
-                        "- Automatic updates",
-                        "- Rich context preserved",
-                        "",
-                        "### ⚡ Experience the difference on the right →"
-                    ]
+                    "type": "chart",
+                    "chartKey": "dataVisualizationChart"
                 },
+                "",
+                "### 📊 Editable Data Source",
+                "**Try editing the values in the table below and watch the chart update in real-time!**",
                 {
-                    "type": "group", 
-                    "groupId": "right-content",
-                    "groupCssClass": "right-content",
-                    "elements": [
-                        "### 📈 Live Data Visualization",
-                        {
-                            "type": "chart",
-                            "chartKey": "dataVisualizationChart"
-                        },
-                        "",
-                        "### 📊 Editable Data Source",
-                        {
-                            "type": "tabulator",
-                            "variableId": "chartData",
-                            "dataSourceName": "chartData",
-                            "editable": true,
-                            "tabulatorOptions": {
-                                "layout": "fitColumns",
-                                "maxHeight": "180px",
-                                "columns": [
-                                    {
-                                        "title": "Category",
-                                        "field": "category",
-                                        "editor": "input"
-                                    },
-                                    {
-                                        "title": "Value",
-                                        "field": "value",
-                                        "editor": "number"
-                                    }
-                                ]
+                    "type": "tabulator",
+                    "variableId": "chartData",
+                    "dataSourceName": "chartData",
+                    "editable": true,
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "180px",
+                        "columns": [
+                            {
+                                "title": "Category",
+                                "field": "category",
+                                "editor": "input"
+                            },
+                            {
+                                "title": "Value",
+                                "field": "value",
+                                "editor": "number"
                             }
-                        }
-                    ]
+                        ]
+                    }
                 }
             ]
         },
