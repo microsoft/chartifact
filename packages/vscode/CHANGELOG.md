@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.6]
+
+Added plugin for number input
+Added budget and banking examples
+
 ## [1.0.5]
 
 Renderer bug fixes
