@@ -50,13 +50,10 @@
             "initialValue": 2025
         },
         {
-            "variableId": "chartTableData",
+            "variableId": "editableChartData",
             "type": "object",
             "isArray": true,
-            "initialValue": [],
-            "calculation": {
-                "dataSourceNames": ["chartData"]
-            }
+            "initialValue": []
         }
     ],
     "resources": {
@@ -66,7 +63,7 @@
                 "width": 250,
                 "height": 250,
                 "data": {
-                    "name": "chartTableData"
+                    "name": "editableChartData"
                 },
                 "mark": {
                     "type": "arc",
@@ -196,7 +193,7 @@
                 "**Try editing the values in the table below and watch the chart update in real-time!**",
                 {
                     "type": "tabulator",
-                    "variableId": "chartData",
+                    "variableId": "editableChartData",
                     "dataSourceName": "chartData",
                     "editable": true,
                     "tabulatorOptions": {
