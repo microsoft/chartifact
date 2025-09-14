@@ -74,5 +74,3 @@ export interface GuardedFetchResponseMessage {
     body?: string;
     error?: string;
 }
-
-
