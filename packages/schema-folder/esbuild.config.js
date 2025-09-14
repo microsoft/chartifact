@@ -68,10 +68,7 @@ async function main() {
 	const ctx = await esbuild.context({
 		entryPoints: [
 			'src/index.ts',
-			'src/common.ts',
-			'src/datasource.ts',
-			'src/interactive.ts',
-			'src/page.ts',
+			'src/folder.ts',
 			'src/schema.ts'
 		],
 		bundle: false, // Keep individual modules as requested
