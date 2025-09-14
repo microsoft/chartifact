@@ -1851,7 +1851,7 @@ ${content}
     return { vegaScope, inlineDataMd };
   }
   function groupMarkdown(group, variables, vegaScope, resources, pluginFormat) {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f;
     const mdElements = [];
     const addSpec = (pluginName, spec, indent = true) => {
       const format = getPluginFormat(pluginName, pluginFormat);
@@ -1982,6 +1982,20 @@ ${content}
               placeholder
             };
             addSpec("textbox", textboxSpec, false);
+            break;
+          }
+          case "number": {
+            const { variableId, label, min, max, step, placeholder } = element;
+            const numberSpec = {
+              variableId,
+              value: (_f = variables.find((v) => v.variableId === variableId)) == null ? void 0 : _f.initialValue,
+              label,
+              min,
+              max,
+              step,
+              placeholder
+            };
+            addSpec("number", numberSpec, false);
             break;
           }
           default: {

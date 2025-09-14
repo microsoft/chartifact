@@ -114,9 +114,20 @@ interface TextboxElement extends TextboxElementProps {
     type: 'textbox';
 }
 interface TextboxElementProps extends VariableControl {
-    /** whether to render as a textarea instead of input */
     multiline?: boolean;
-    /** placeholder text to show when input is empty */
+    placeholder?: string;
+}
+/**
+ * Number
+ * use for numeric input (integers and decimals)
+ */
+interface NumberElement extends NumberElementProps {
+    type: 'number';
+}
+interface NumberElementProps extends VariableControl {
+    min?: number;
+    max?: number;
+    step?: number;
     placeholder?: string;
 }
 /**
@@ -229,7 +240,7 @@ interface TabulatorElementProps extends OptionalVariableControl {
 /**
  * Union type for all possible interactive elements
  */
-type InteractiveElement = ChartElement | CheckboxElement | DropdownElement | ImageElement | MermaidElement | PresetsElement | SliderElement | TabulatorElement | TextboxElement;
+type InteractiveElement = ChartElement | CheckboxElement | DropdownElement | ImageElement | MermaidElement | NumberElement | PresetsElement | SliderElement | TabulatorElement | TextboxElement;
 interface ElementGroup {
     groupId: string;
     elements: PageElement[];
@@ -289,4 +300,4 @@ interface GoogleFontsSpec {
 type InteractiveDocumentWithSchema = InteractiveDocument & {
     $schema?: string;
 };
-export type { Calculation, ChartElement, CheckboxElement, CheckboxProps, DataFrameCalculation, DataLoader, DataLoaderBySpec, DataSource, DataSourceBase, DataSourceBaseFormat, DataSourceByDynamicURL, DataSourceByFile, DataSourceInline, DropdownElement, DropdownElementProps, DynamicDropdownOptions, ElementBase, ElementGroup, GoogleFontsSpec, ImageElement, ImageElementProps, InteractiveDocument, InteractiveDocumentWithSchema, InteractiveElement, MarkdownElement, MermaidElement, MermaidElementProps, MermaidTemplate, OptionalVariableControl, PageElement, PageStyle, Preset, PresetsElement, PresetsElementProps, ReturnType, ScalarCalculation, SliderElement, SliderElementProps, TabulatorElement, TabulatorElementProps, TemplatedUrl, TextboxElement, TextboxElementProps, Variable, VariableControl, VariableID, VariableType, VariableValue, VariableValueArray, VariableValuePrimitive, Vega_or_VegaLite_spec };
+export type { Calculation, ChartElement, CheckboxElement, CheckboxProps, DataFrameCalculation, DataLoader, DataLoaderBySpec, DataSource, DataSourceBase, DataSourceBaseFormat, DataSourceByDynamicURL, DataSourceByFile, DataSourceInline, DropdownElement, DropdownElementProps, DynamicDropdownOptions, ElementBase, ElementGroup, GoogleFontsSpec, ImageElement, ImageElementProps, InteractiveDocument, InteractiveDocumentWithSchema, InteractiveElement, MarkdownElement, MermaidElement, MermaidElementProps, MermaidTemplate, NumberElement, NumberElementProps, OptionalVariableControl, PageElement, PageStyle, Preset, PresetsElement, PresetsElementProps, ReturnType, ScalarCalculation, SliderElement, SliderElementProps, TabulatorElement, TabulatorElementProps, TemplatedUrl, TextboxElement, TextboxElementProps, Variable, VariableControl, VariableID, VariableType, VariableValue, VariableValueArray, VariableValuePrimitive, Vega_or_VegaLite_spec };

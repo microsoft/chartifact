@@ -1813,6 +1813,9 @@
           "$ref": "#/definitions/MermaidElement"
         },
         {
+          "$ref": "#/definitions/NumberElement"
+        },
+        {
           "$ref": "#/definitions/PresetsElement"
         },
         {
@@ -2381,6 +2384,40 @@
       ],
       "type": "object"
     },
+    "NumberElement": {
+      "additionalProperties": false,
+      "description": "Number use for numeric input (integers and decimals)",
+      "properties": {
+        "label": {
+          "description": "optional label if the variableId is not descriptive enough",
+          "type": "string"
+        },
+        "max": {
+          "type": "number"
+        },
+        "min": {
+          "type": "number"
+        },
+        "placeholder": {
+          "type": "string"
+        },
+        "step": {
+          "type": "number"
+        },
+        "type": {
+          "const": "number",
+          "type": "string"
+        },
+        "variableId": {
+          "$ref": "#/definitions/VariableID"
+        }
+      },
+      "required": [
+        "type",
+        "variableId"
+      ],
+      "type": "object"
+    },
     "PackTransform": {
       "additionalProperties": false,
       "properties": {
@@ -2939,11 +2976,9 @@
           "type": "string"
         },
         "multiline": {
-          "description": "whether to render as a textarea instead of input",
           "type": "boolean"
         },
         "placeholder": {
-          "description": "placeholder text to show when input is empty",
           "type": "string"
         },
         "type": {

@@ -1,0 +1,674 @@
+{
+  "$schema": "https://microsoft.github.io/chartifact/schema/idoc_v1.json",
+  "title": "Personal Budget Planner",
+  "style": {
+    "css": [
+      "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
+      "body { display: grid; grid-template-areas: 'header header' 'overview overview' 'allocation variance' 'controls categories' 'trends trends'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+      ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
+      "#header { grid-area: header; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; }",
+      "#overview { grid-area: overview; text-align: center; }",
+      "#allocation { grid-area: allocation; min-width: 0; overflow: hidden; }",
+      "#variance { grid-area: variance; min-width: 0; overflow: hidden; }",
+      "#controls { grid-area: controls; min-width: 0; overflow: hidden; }",
+      "#categories { grid-area: categories; min-width: 0; overflow: hidden; }",
+      "#trends { grid-area: trends; min-width: 0; overflow: hidden; }",
+      "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
+      "h2 { margin: 10px 0; font-size: 2em; color: #2d3748; font-weight: 600; }",
+      "h3 { margin: 0 0 15px 0; font-size: 1.2em; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
+      ".tabulator { max-width: 100%; overflow: auto; }",
+      ".tabulator .tabulator-table { min-width: fit-content; }",
+      ".slider-container { margin: 15px 0; }",
+      ".slider-label { font-weight: 500; color: #2d3748; margin-bottom: 8px; display: block; }",
+      "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'overview' 'allocation' 'variance' 'controls' 'categories' 'trends'; } }"
+    ]
+  },
+  "dataLoaders": [
+    {
+      "dataSourceName": "budgetCategories",
+      "type": "inline",
+      "format": "csv",
+      "content": [
+        "category,budgeted,spent,color",
+        "Housing,2000,1950,#667eea",
+        "Food,600,650,#764ba2",
+        "Transportation,400,380,#f093fb",
+        "Entertainment,300,280,#4ecdc4",
+        "Healthcare,250,200,#45b7d1",
+        "Savings,800,800,#96ceb4",
+        "Utilities,200,180,#feca57",
+        "Clothing,150,120,#ff9ff3",
+        "Personal Care,100,90,#54a0ff"
+      ]
+    },
+    {
+      "dataSourceName": "monthlyTrends",
+      "type": "inline",
+      "format": "csv",
+      "content": [
+        "month,Housing,Food,Transportation,Entertainment,Healthcare,Savings,Utilities,Clothing,Personal Care",
+        "2024-01,1980,620,390,250,180,800,190,100,80",
+        "2024-02,1950,580,370,320,220,800,175,150,95",
+        "2024-03,1950,640,400,280,160,800,185,80,85",
+        "2024-04,1950,610,420,300,240,800,170,200,110",
+        "2024-05,1950,650,380,280,200,800,180,120,90",
+        "2024-06,1950,680,350,350,190,800,160,180,100"
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "variableId": "monthlyIncome",
+      "type": "number",
+      "initialValue": 5500
+    },
+    {
+      "variableId": "housingBudget",
+      "type": "number",
+      "initialValue": 2000
+    },
+    {
+      "variableId": "foodBudget",
+      "type": "number",
+      "initialValue": 600
+    },
+    {
+      "variableId": "transportationBudget",
+      "type": "number",
+      "initialValue": 400
+    },
+    {
+      "variableId": "entertainmentBudget",
+      "type": "number",
+      "initialValue": 300
+    },
+    {
+      "variableId": "savingsBudget",
+      "type": "number",
+      "initialValue": 800
+    },
+    {
+      "variableId": "healthcareBudget",
+      "type": "number",
+      "initialValue": 250
+    },
+    {
+      "variableId": "utilitiesBudget",
+      "type": "number",
+      "initialValue": 200
+    },
+    {
+      "variableId": "clothingBudget",
+      "type": "number",
+      "initialValue": 150
+    },
+    {
+      "variableId": "personalCareBudget",
+      "type": "number",
+      "initialValue": 100
+    },
+    {
+      "variableId": "housingActual",
+      "type": "number",
+      "initialValue": 1950
+    },
+    {
+      "variableId": "foodActual",
+      "type": "number",
+      "initialValue": 650
+    },
+    {
+      "variableId": "transportationActual",
+      "type": "number",
+      "initialValue": 380
+    },
+    {
+      "variableId": "entertainmentActual",
+      "type": "number",
+      "initialValue": 280
+    },
+    {
+      "variableId": "savingsActual",
+      "type": "number",
+      "initialValue": 800
+    },
+    {
+      "variableId": "healthcareActual",
+      "type": "number",
+      "initialValue": 200
+    },
+    {
+      "variableId": "utilitiesActual",
+      "type": "number",
+      "initialValue": 180
+    },
+    {
+      "variableId": "clothingActual",
+      "type": "number",
+      "initialValue": 120
+    },
+    {
+      "variableId": "personalCareActual",
+      "type": "number",
+      "initialValue": 90
+    },
+    {
+      "variableId": "adjustedBudgetData",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "budgetCategories"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "formula",
+            "expr": "datum.category === 'Housing' ? housingBudget : (datum.category === 'Food' ? foodBudget : (datum.category === 'Transportation' ? transportationBudget : (datum.category === 'Entertainment' ? entertainmentBudget : (datum.category === 'Savings' ? savingsBudget : (datum.category === 'Healthcare' ? healthcareBudget : (datum.category === 'Utilities' ? utilitiesBudget : (datum.category === 'Clothing' ? clothingBudget : (datum.category === 'Personal Care' ? personalCareBudget : datum.budgeted))))))))",
+            "as": "adjustedBudget"
+          },
+          {
+            "type": "formula",
+            "expr": "datum.adjustedBudget - datum.spent",
+            "as": "remaining"
+          },
+          {
+            "type": "formula",
+            "expr": "(datum.spent - datum.adjustedBudget) / datum.adjustedBudget",
+            "as": "spentPercentage"
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalBudgeted",
+      "type": "number",
+      "initialValue": 0,
+      "calculation": {
+        "vegaExpression": "toNumber(housingBudget) + toNumber(foodBudget) + toNumber(transportationBudget) + toNumber(entertainmentBudget) + toNumber(savingsBudget) + toNumber(healthcareBudget) + toNumber(utilitiesBudget) + toNumber(clothingBudget) + toNumber(personalCareBudget)"
+      }
+    },
+    {
+      "variableId": "totalSpent",
+      "type": "number",
+      "initialValue": 0,
+      "calculation": {
+        "vegaExpression": "toNumber(housingActual) + toNumber(foodActual) + toNumber(transportationActual) + toNumber(entertainmentActual) + toNumber(savingsActual) + toNumber(healthcareActual) + toNumber(utilitiesActual) + toNumber(clothingActual) + toNumber(personalCareActual)"
+      }
+    },
+    {
+      "variableId": "totalRemaining",
+      "type": "number",
+      "initialValue": 0,
+      "calculation": {
+        "vegaExpression": "toNumber(totalBudgeted) - toNumber(totalSpent)"
+      }
+    },
+    {
+      "variableId": "savingsRate",
+      "type": "string",
+      "initialValue": "0%",
+      "calculation": {
+        "vegaExpression": "format((savingsBudget / monthlyIncome) * 100, '.1f') + '%'"
+      }
+    },
+    {
+      "variableId": "monthlyTrendsLong",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "monthlyTrends"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "fold",
+            "fields": [
+              "Housing",
+              "Food",
+              "Transportation",
+              "Entertainment",
+              "Healthcare",
+              "Savings",
+              "Utilities",
+              "Clothing",
+              "Personal Care"
+            ],
+            "as": [
+              "category",
+              "amount"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "budgetVarianceData",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "budgetCategories"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "filter",
+            "expr": "datum.category === 'Housing' || datum.category === 'Food' || datum.category === 'Transportation' || datum.category === 'Entertainment' || datum.category === 'Healthcare' || datum.category === 'Savings' || datum.category === 'Utilities' || datum.category === 'Clothing' || datum.category === 'Personal Care'"
+          },
+          {
+            "type": "formula",
+            "expr": "datum.category === 'Housing' ? housingBudget : (datum.category === 'Food' ? foodBudget : (datum.category === 'Transportation' ? transportationBudget : (datum.category === 'Entertainment' ? entertainmentBudget : (datum.category === 'Healthcare' ? healthcareBudget : (datum.category === 'Savings' ? savingsBudget : (datum.category === 'Utilities' ? utilitiesBudget : (datum.category === 'Clothing' ? clothingBudget : (datum.category === 'Personal Care' ? personalCareBudget : datum.budgeted))))))))",
+            "as": "budgeted"
+          },
+          {
+            "type": "formula",
+            "expr": "datum.category === 'Housing' ? housingActual : (datum.category === 'Food' ? foodActual : (datum.category === 'Transportation' ? transportationActual : (datum.category === 'Entertainment' ? entertainmentActual : (datum.category === 'Healthcare' ? healthcareActual : (datum.category === 'Savings' ? savingsActual : (datum.category === 'Utilities' ? utilitiesActual : (datum.category === 'Clothing' ? clothingActual : (datum.category === 'Personal Care' ? personalCareActual : datum.spent))))))))",
+            "as": "spent"
+          },
+          {
+            "type": "formula",
+            "expr": "datum.spent - datum.budgeted",
+            "as": "variance"
+          }
+        ]
+      }
+    }
+  ],
+  "groups": [
+    {
+      "groupId": "header",
+      "elements": [
+        "# 💰 Personal Budget Planner",
+        "**Interactive budget planning tool for financial wellness**"
+      ]
+    },
+    {
+      "groupId": "overview",
+      "elements": [
+        "### 📊 Budget Overview",
+        {
+          "type": "slider",
+          "variableId": "monthlyIncome",
+          "label": "Monthly Income",
+          "min": 3000,
+          "max": 10000,
+          "step": 250
+        },
+        "**Total Budgeted:** ${{totalBudgeted}}",
+        "**Total Spent:** ${{totalSpent}}",
+        "**Remaining Budget:** ${{totalRemaining}}",
+        "**Savings Rate:** {{savingsRate}}"
+      ]
+    },
+    {
+      "groupId": "allocation",
+      "elements": [
+        "### 🥧 Budget Allocation",
+        {
+          "type": "chart",
+          "chartKey": "budgetPieChart"
+        }
+      ]
+    },
+    {
+      "groupId": "variance",
+      "elements": [
+        "### 📊 Budget vs Actual",
+        {
+          "type": "chart",
+          "chartKey": "budgetVarianceChart"
+        }
+      ]
+    },
+    {
+      "groupId": "controls",
+      "elements": [
+        "### 🏠 Budget Category Adjustments",
+        {
+          "type": "slider",
+          "variableId": "housingBudget",
+          "label": "Housing",
+          "min": 800,
+          "max": 4000,
+          "step": 50
+        },
+        {
+          "type": "slider",
+          "variableId": "foodBudget",
+          "label": "Food",
+          "min": 200,
+          "max": 1200,
+          "step": 25
+        },
+        {
+          "type": "slider",
+          "variableId": "transportationBudget",
+          "label": "Transportation",
+          "min": 100,
+          "max": 800,
+          "step": 25
+        },
+        {
+          "type": "slider",
+          "variableId": "entertainmentBudget",
+          "label": "Entertainment",
+          "min": 50,
+          "max": 600,
+          "step": 25
+        },
+        {
+          "type": "slider",
+          "variableId": "savingsBudget",
+          "label": "Savings",
+          "min": 200,
+          "max": 2000,
+          "step": 50
+        },
+        {
+          "type": "slider",
+          "variableId": "healthcareBudget",
+          "label": "Healthcare",
+          "min": 100,
+          "max": 500,
+          "step": 25
+        },
+        {
+          "type": "slider",
+          "variableId": "utilitiesBudget",
+          "label": "Utilities",
+          "min": 100,
+          "max": 400,
+          "step": 25
+        },
+        {
+          "type": "slider",
+          "variableId": "clothingBudget",
+          "label": "Clothing",
+          "min": 50,
+          "max": 300,
+          "step": 25
+        },
+        {
+          "type": "slider",
+          "variableId": "personalCareBudget",
+          "label": "Personal Care",
+          "min": 25,
+          "max": 200,
+          "step": 25
+        }
+      ]
+    },
+    {
+      "groupId": "categories",
+      "elements": [
+        "### 📋 Track This Month's Spending",
+        {
+          "type": "number",
+          "variableId": "housingActual",
+          "label": "Housing Actual"
+        },
+        {
+          "type": "number",
+          "variableId": "foodActual",
+          "label": "Food Actual"
+        },
+        {
+          "type": "number",
+          "variableId": "transportationActual",
+          "label": "Transportation Actual"
+        },
+        {
+          "type": "number",
+          "variableId": "entertainmentActual",
+          "label": "Entertainment Actual"
+        },
+        {
+          "type": "number",
+          "variableId": "healthcareActual",
+          "label": "Healthcare Actual"
+        },
+        {
+          "type": "number",
+          "variableId": "savingsActual",
+          "label": "Savings Actual"
+        },
+        {
+          "type": "number",
+          "variableId": "utilitiesActual",
+          "label": "Utilities Actual"
+        },
+        {
+          "type": "number",
+          "variableId": "clothingActual",
+          "label": "Clothing Actual"
+        },
+        {
+          "type": "number",
+          "variableId": "personalCareActual",
+          "label": "Personal Care Actual"
+        }
+      ]
+    },
+    {
+      "groupId": "trends",
+      "elements": [
+        "### 📈 Spending Trends",
+        {
+          "type": "chart",
+          "chartKey": "spendingTrendsChart"
+        }
+      ]
+    }
+  ],
+  "resources": {
+    "charts": {
+      "budgetPieChart": {
+        "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+        "width": "container",
+        "height": 300,
+        "data": {
+          "name": "adjustedBudgetData"
+        },
+        "mark": {
+          "type": "arc",
+          "innerRadius": 50,
+          "stroke": "white",
+          "strokeWidth": 2
+        },
+        "encoding": {
+          "theta": {
+            "field": "adjustedBudget",
+            "type": "quantitative",
+            "title": "Budget Amount"
+          },
+          "color": {
+            "field": "category",
+            "type": "nominal",
+            "scale": {
+              "range": [
+                "#667eea",
+                "#764ba2",
+                "#f093fb",
+                "#4ecdc4",
+                "#45b7d1",
+                "#96ceb4",
+                "#feca57",
+                "#ff9ff3",
+                "#54a0ff"
+              ]
+            },
+            "legend": {
+              "orient": "right",
+              "title": "Categories"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "category",
+              "type": "nominal",
+              "title": "Category"
+            },
+            {
+              "field": "adjustedBudget",
+              "type": "quantitative",
+              "title": "Budgeted",
+              "format": "$,.0f"
+            },
+            {
+              "field": "spent",
+              "type": "quantitative",
+              "title": "Spent",
+              "format": "$,.0f"
+            },
+            {
+              "field": "remaining",
+              "type": "quantitative",
+              "title": "Remaining",
+              "format": "$,.0f"
+            }
+          ]
+        }
+      },
+      "spendingTrendsChart": {
+        "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+        "width": "container",
+        "height": 300,
+        "data": {
+          "name": "monthlyTrendsLong"
+        },
+        "mark": {
+          "type": "line",
+          "point": true,
+          "strokeWidth": 2
+        },
+        "encoding": {
+          "x": {
+            "field": "month",
+            "type": "temporal",
+            "title": "Month",
+            "axis": {
+              "format": "%b %Y"
+            }
+          },
+          "y": {
+            "field": "amount",
+            "type": "quantitative",
+            "title": "Amount Spent ($)"
+          },
+          "color": {
+            "field": "category",
+            "type": "nominal",
+            "scale": {
+              "range": [
+                "#667eea",
+                "#764ba2",
+                "#f093fb",
+                "#4ecdc4",
+                "#45b7d1",
+                "#96ceb4",
+                "#feca57",
+                "#ff9ff3",
+                "#54a0ff"
+              ]
+            },
+            "legend": {
+              "title": "Category"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "month",
+              "type": "temporal",
+              "title": "Month",
+              "format": "%B %Y"
+            },
+            {
+              "field": "category",
+              "type": "nominal",
+              "title": "Category"
+            },
+            {
+              "field": "amount",
+              "type": "quantitative",
+              "title": "Amount",
+              "format": "$,.0f"
+            }
+          ]
+        }
+      },
+      "budgetVarianceChart": {
+        "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+        "description": "Budget variance bar chart with negative values. Shows budget vs actual spending differences.",
+        "width": "container",
+        "height": 300,
+        "data": {
+          "name": "budgetVarianceData"
+        },
+        "encoding": {
+          "y": {
+            "field": "category",
+            "type": "nominal",
+            "axis": {
+              "domain": false,
+              "ticks": false,
+              "labelAngle": 0,
+              "labelPadding": 4
+            },
+            "title": "Category"
+          },
+          "x": {
+            "field": "variance",
+            "type": "quantitative",
+            "scale": {
+              "padding": 20
+            },
+            "axis": {
+              "gridColor": {
+                "condition": {
+                  "test": "datum.value === 0",
+                  "value": "black"
+                },
+                "value": "#ddd"
+              }
+            },
+            "title": "Variance (Actual - Budget)"
+          }
+        },
+        "layer": [
+          {
+            "mark": "bar",
+            "encoding": {
+              "color": {
+                "condition": {
+                  "test": "datum.variance < 0",
+                  "value": "#22c55e"
+                },
+                "value": "#ef4444"
+              }
+            }
+          },
+          {
+            "mark": {
+              "type": "text",
+              "align": {
+                "expr": "datum.variance < 0 ? 'right' : 'left'"
+              },
+              "dx": {
+                "expr": "datum.variance < 0 ? -2 : 2"
+              }
+            },
+            "encoding": {
+              "text": {
+                "field": "variance",
+                "type": "quantitative",
+                "format": "$,.0f"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

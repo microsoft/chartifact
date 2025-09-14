@@ -42,5 +42,16 @@
       "description": "Progressive filtering interface for exploring a movie database with multiple filter stages.",
       "href": "json/movie-picker-basic.idoc.json"
     }
+    ,
+    {
+      "title": "Personal Budget Planner",
+      "description": "Interactive budget planning tool for financial wellness.",
+      "href": "json/personal-budget.idoc.json"
+    },
+    {
+      "title": "Personal Bank Statement",
+      "description": "Track your transactions and spending patterns.",
+      "href": "json/bank-statement.idoc.json"
+    }
   ]
 }

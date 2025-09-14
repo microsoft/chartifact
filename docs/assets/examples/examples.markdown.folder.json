@@ -41,6 +41,16 @@
       "title": "Movies Database Explorer",
       "description": "Progressive filtering interface for exploring a movie database with multiple filter stages.",
       "href": "markdown/movie-picker-basic.idoc.md"
+    },
+    {
+      "title": "Personal Budget Planner",
+      "description": "Interactive budget planning tool for financial wellness.",
+      "href": "markdown/personal-budget.idoc.md"
+    },
+    {
+      "title": "Personal Bank Statement",
+      "description": "Track your transactions and spending patterns.",
+      "href": "markdown/bank-statement.idoc.md"
     }
   ]
 }
