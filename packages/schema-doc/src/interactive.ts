@@ -26,9 +26,7 @@ export interface TextboxElement extends TextboxElementProps {
   type: 'textbox';
 }
 export interface TextboxElementProps extends VariableControl {
-  /** whether to render as a textarea instead of input */
   multiline?: boolean;
-  /** placeholder text to show when input is empty */
   placeholder?: string;
 }
 
@@ -40,13 +38,9 @@ export interface NumberElement extends NumberElementProps {
   type: 'number';
 }
 export interface NumberElementProps extends VariableControl {
-  /** minimum allowed value */
   min?: number;
-  /** maximum allowed value */
   max?: number;
-  /** step increment for the input */
   step?: number;
-  /** placeholder text to show when input is empty */
   placeholder?: string;
 }
 
