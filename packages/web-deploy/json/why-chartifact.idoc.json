@@ -11,7 +11,9 @@
             "#slide3 { background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%); color: white; }",
             "#slide4 { background: linear-gradient(135deg, #27ae60 0%, #2980b9 100%); color: white; }",
             "#slide5 { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; }",
-            "#slide6 { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; justify-content: center; min-width: 0; overflow: hidden; }",
+            "#slide6 { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; justify-content: flex-start; display: grid; grid-template-columns: 1fr 1fr; grid-gap: 2em; align-items: start; min-width: 0; overflow: hidden; }",
+            "#slide6 .left-content { grid-column: 1; }",
+            "#slide6 .right-content { grid-column: 2; min-width: 0; overflow: hidden; }",
             "#slide7 { background: linear-gradient(135deg, #16a085 0%, #27ae60 100%); color: white; }",
             "#slide8 { background: linear-gradient(135deg, #2c3e50 0%, #8e44ad 100%); color: white; text-align: center; justify-content: center; }",
             "h1 { font-size: 2.5em; margin: 0.3em 0; font-weight: 300; line-height: 1.2; }",
@@ -20,7 +22,7 @@
             "p, li { font-size: 1.2em; line-height: 1.5; margin: 0.5em 0; }",
             "ul, ol { margin: 0.5em 0; padding-left: 1.5em; }",
             "li { margin: 0.3em 0; }",
-            ".tabulator { max-width: 100%; overflow: auto; margin: 20px 0; border-radius: 8px; }",
+            ".tabulator { max-width: 100%; overflow: auto; margin: 20px 0; border-radius: 8px; min-width: 0; }",
             ".tabulator .tabulator-table { min-width: fit-content; }",
             ".tabulator .tabulator-header { background: rgba(255,255,255,0.9); color: #333; }",
             ".tabulator .tabulator-cell { background: rgba(255,255,255,0.8); color: #333; }",
@@ -32,116 +34,67 @@
     },
     "dataLoaders": [
         {
-            "dataSourceName": "documentFormats",
+            "dataSourceName": "chartData",
             "type": "inline",
             "format": "json",
             "content": [
-                {"format": "PDF", "capability": "Portable", "score": 95, "interactive": false},
-                {"format": "PDF", "capability": "Human-editable", "score": 10, "interactive": false},
-                {"format": "PDF", "capability": "Interactive", "score": 5, "interactive": false},
-                {"format": "HTML", "capability": "Portable", "score": 40, "interactive": true},
-                {"format": "HTML", "capability": "Human-editable", "score": 30, "interactive": true},
-                {"format": "HTML", "capability": "Interactive", "score": 95, "interactive": true},
-                {"format": "Markdown", "capability": "Portable", "score": 70, "interactive": false},
-                {"format": "Markdown", "capability": "Human-editable", "score": 90, "interactive": false},
-                {"format": "Markdown", "capability": "Interactive", "score": 20, "interactive": false},
-                {"format": "Chartifact", "capability": "Portable", "score": 85, "interactive": true},
-                {"format": "Chartifact", "capability": "Human-editable", "score": 85, "interactive": true},
-                {"format": "Chartifact", "capability": "Interactive", "score": 90, "interactive": true}
-            ]
-        },
-        {
-            "dataSourceName": "excelVsLiveData",
-            "type": "inline",
-            "format": "json",
-            "content": [
-                {"approach": "Excel Screenshot", "update_frequency": "Manual", "interactivity": "None", "data_freshness": "Stale", "effort_to_update": "High"},
-                {"approach": "Live Chart", "update_frequency": "Real-time", "interactivity": "Full", "data_freshness": "Current", "effort_to_update": "None"}
+                {"category": "Excel Screenshots", "value": 25},
+                {"category": "Live Charts", "value": 35},
+                {"category": "Static Images", "value": 20},
+                {"category": "Interactive Data", "value": 20}
             ]
         }
     ],
     "variables": [
-        {
-            "variableId": "interactiveValue",
-            "type": "number",
-            "initialValue": 1000
-        },
-        {
-            "variableId": "calculatedWorth",
-            "type": "string",
-            "initialValue": "1000",
-            "calculation": {
-                "vegaExpression": "format(interactiveValue, ',')"
-            }
-        },
         {
             "variableId": "currentYear",
             "type": "number",
             "initialValue": 2025
         },
         {
-            "variableId": "formatCapabilities",
+            "variableId": "chartTableData",
             "type": "object",
             "isArray": true,
             "initialValue": [],
             "calculation": {
-                "dataSourceNames": ["documentFormats"],
-                "dataFrameTransformations": [
-                    {
-                        "type": "aggregate",
-                        "groupby": ["format"],
-                        "ops": ["mean"],
-                        "fields": ["score"],
-                        "as": ["avgScore"]
-                    }
-                ]
-            }
-        },
-        {
-            "variableId": "excelDataTable",
-            "type": "object",
-            "isArray": true,
-            "initialValue": [],
-            "calculation": {
-                "dataSourceNames": ["excelVsLiveData"]
+                "dataSourceNames": ["chartData"]
             }
         }
     ],
     "resources": {
         "charts": {
-            "formatComparisonChart": {
+            "dataVisualizationChart": {
                 "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
-                "width": 300,
-                "height": 300,
+                "width": 250,
+                "height": 250,
                 "data": {
-                    "name": "formatCapabilities"
+                    "name": "chartTableData"
                 },
                 "mark": {
                     "type": "arc",
-                    "innerRadius": 50,
+                    "innerRadius": 40,
                     "stroke": "white",
-                    "strokeWidth": 3
+                    "strokeWidth": 2
                 },
                 "encoding": {
                     "theta": {
-                        "field": "avgScore",
-                        "type": "quantitative",
-                        "title": "Capability Score"
+                        "field": "value",
+                        "type": "quantitative"
                     },
                     "color": {
-                        "field": "format",
+                        "field": "category",
                         "type": "nominal",
                         "scale": {
-                            "range": ["#e74c3c", "#f39c12", "#27ae60", "#3498db"]
+                            "range": ["#e74c3c", "#3498db", "#95a5a6", "#27ae60"]
                         },
                         "legend": {
-                            "orient": "right",
-                            "title": "Document Format"
+                            "orient": "bottom",
+                            "title": "Data Visualization Types"
                         }
                     },
                     "tooltip": [
-                        {"field": "format", "type": "nominal", "title": "Format"},
-                        {"field": "avgScore", "type": "quantitative", "title": "Average Score", "format": ".1f"}
+                        {"field": "category", "type": "nominal", "title": "Type"},
+                        {"field": "value", "type": "quantitative", "title": "Usage %"}
                     ]
                 }
             }
@@ -218,67 +171,65 @@
         {
             "groupId": "slide6",
             "elements": [
-                "## 📊 Stop Pasting Chart Images from Excel!",
-                "### Make them live charts from live data instead",
-                "",
-                "### If a picture is worth 1,000 words...",
-                "# {{calculatedWorth}}",
-                "### Then an interactive is worth **{{calculatedWorth}}** words",
                 {
-                    "type": "slider",
-                    "variableId": "interactiveValue",
-                    "label": "Adjust the multiplier",
-                    "min": 1000,
-                    "max": 100000,
-                    "step": 1000
+                    "type": "group",
+                    "groupId": "left-content",
+                    "groupCssClass": "left-content",
+                    "elements": [
+                        "## 📊 Stop Pasting Chart Images from Excel!",
+                        "### Make them live charts from live data instead",
+                        "",
+                        "**The Problem:**",
+                        "- Screenshots become stale immediately",
+                        "- No interaction or exploration", 
+                        "- Manual updates required",
+                        "- Data context lost",
+                        "",
+                        "**The Solution:**",
+                        "- Live data connections",
+                        "- Interactive exploration",
+                        "- Automatic updates",
+                        "- Rich context preserved",
+                        "",
+                        "### ⚡ Experience the difference on the right →"
+                    ]
                 },
-                "",
-                "### 📈 Document Format Capabilities",
                 {
-                    "type": "chart",
-                    "chartKey": "formatComparisonChart"
-                },
-                "",
-                "### 🆚 Excel Screenshots vs Live Data",
-                {
-                    "type": "tabulator",
-                    "variableId": "excelComparisonTable",
-                    "dataSourceName": "excelVsLiveData", 
-                    "editable": true,
-                    "tabulatorOptions": {
-                        "layout": "fitColumns",
-                        "maxHeight": "200px",
-                        "columns": [
-                            {
-                                "title": "Approach",
-                                "field": "approach",
-                                "editor": "input"
-                            },
-                            {
-                                "title": "Updates",
-                                "field": "update_frequency",
-                                "editor": "input"
-                            },
-                            {
-                                "title": "Interactive",
-                                "field": "interactivity", 
-                                "editor": "input"
-                            },
-                            {
-                                "title": "Data Freshness",
-                                "field": "data_freshness",
-                                "editor": "input"
-                            },
-                            {
-                                "title": "Effort",
-                                "field": "effort_to_update",
-                                "editor": "input"
+                    "type": "group", 
+                    "groupId": "right-content",
+                    "groupCssClass": "right-content",
+                    "elements": [
+                        "### 📈 Live Data Visualization",
+                        {
+                            "type": "chart",
+                            "chartKey": "dataVisualizationChart"
+                        },
+                        "",
+                        "### 📊 Editable Data Source",
+                        {
+                            "type": "tabulator",
+                            "variableId": "chartData",
+                            "dataSourceName": "chartData",
+                            "editable": true,
+                            "tabulatorOptions": {
+                                "layout": "fitColumns",
+                                "maxHeight": "180px",
+                                "columns": [
+                                    {
+                                        "title": "Category",
+                                        "field": "category",
+                                        "editor": "input"
+                                    },
+                                    {
+                                        "title": "Value",
+                                        "field": "value",
+                                        "editor": "number"
+                                    }
+                                ]
                             }
-                        ]
-                    }
-                },
-                "",
-                "### ⚡ This slide proves the point - you just experienced it!"
+                        }
+                    ]
+                }
             ]
         },
         {
