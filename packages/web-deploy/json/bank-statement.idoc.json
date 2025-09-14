@@ -315,7 +315,7 @@
                         "type": "nominal",
                         "sort": {"field": "totalAmount", "order": "descending"},
                         "scale": {
-                            "range": ["#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899", "#f43f5e", "#84cc16"]
+                            "range": ["#667eea", "#764ba2", "#f093fb", "#4ecdc4", "#45b7d1", "#96ceb4", "#feca57", "#ff9ff3", "#54a0ff"]
                         },
                         "legend": {
                             "orient": "right",
