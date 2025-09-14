@@ -74,3 +74,13 @@ export interface GuardedFetchResponseMessage {
     body?: string;
     error?: string;
 }
+
+export interface HealthCheckMessage {
+    type: 'healthCheck';
+    healthCheckId: string;
+}
+
+export interface HealthCheckResponseMessage {
+    type: 'healthCheckResponse';
+    healthCheckId: string;
+}

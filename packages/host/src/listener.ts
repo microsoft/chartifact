@@ -288,50 +288,30 @@ export class Listener {
   }
 
   /**
-   * Check if the sandbox iframe is still functional by testing if we can access its content window
+   * Check if the sandbox iframe is still functional
+   * For blob URLs, we take a conservative approach and assume they may be garbage collected
    */
   private isSandboxFunctional(): boolean {
-    try {
-      if (!this.sandbox || !this.sandbox.iframe) {
-        return false;
-      }
-      
-      const iframe = this.sandbox.iframe;
-      const contentWindow = iframe.contentWindow;
-      
-      // Basic checks - if these fail, definitely not functional
-      if (!contentWindow || !iframe.src || iframe.src === 'about:blank') {
-        return false;
-      }
-      
-      // For blob URLs, we need to test if the content is actually accessible
-      // Mobile browsers can garbage collect blob URLs during tombstoning
-      if (iframe.src.startsWith('blob:')) {
-        try {
-          // Try to access the document - this will fail if blob URL is garbage collected
-          const doc = contentWindow.document;
-          if (!doc || !doc.body) {
-            return false;
-          }
-          
-          // Additional check: try to read a property that should exist in our sandbox
-          // Our sandbox should have the Chartifact global or at least some content
-          if (doc.body.children.length === 0) {
-            return false;
-          }
-          
-          return true;
-        } catch (error) {
-          // If we can't access the document, the blob URL is likely garbage collected
-          return false;
-        }
-      }
-      
-      return true;
-    } catch (error) {
-      // If accessing iframe throws an error, it's not functional
+    if (!this.sandbox || !this.sandbox.iframe) {
       return false;
     }
+    
+    const iframe = this.sandbox.iframe;
+    const contentWindow = iframe.contentWindow;
+    
+    // Basic checks - if these fail, definitely not functional
+    if (!contentWindow || !iframe.src || iframe.src === 'about:blank') {
+      return false;
+    }
+    
+    // For blob URLs, we can't reliably test accessibility due to sandboxing restrictions
+    // The conservative approach is to always recreate on visibility change for blob URLs
+    // This ensures mobile tombstoning recovery works reliably
+    if (iframe.src.startsWith('blob:')) {
+      return false;
+    }
+    
+    return true;
   }
 
   /**
