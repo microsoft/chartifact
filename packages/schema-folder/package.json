@@ -17,5 +17,10 @@
   },
   "author": "Dan Marshall",
   "license": "MIT",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "esbuild": "^0.25.9",
+    "rollup": "^4.50.1",
+    "rollup-plugin-dts": "^6.2.3"
+  }
 }

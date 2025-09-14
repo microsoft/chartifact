@@ -2,6 +2,7 @@
   "name": "@microsoft/chartifact-workspace",
   "private": true,
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "bundle": "npm run bundle --workspaces --if-present",
     "serve-jekyll": "npx http-server ./docs/_site -p 4000 --cors",

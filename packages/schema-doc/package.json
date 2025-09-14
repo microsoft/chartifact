@@ -18,5 +18,12 @@
   },
   "author": "Dan Marshall",
   "license": "MIT",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "esbuild": "^0.25.9"
+  },
+  "dependencies": {
+    "vega": "^6.1.2",
+    "vega-typings": "^2.0.1"
+  }
 }
