@@ -289,7 +289,7 @@ export class Listener {
 
   /**
    * Check if the sandbox iframe is still functional
-   * For blob URLs, we take a conservative approach and assume they may be garbage collected
+   * Uses basic checks that can be safely performed without violating sandbox restrictions
    */
   private isSandboxFunctional(): boolean {
     if (!this.sandbox || !this.sandbox.iframe) {
@@ -305,10 +305,21 @@ export class Listener {
     }
     
     // For blob URLs, we can't reliably test accessibility due to sandboxing restrictions
-    // The conservative approach is to always recreate on visibility change for blob URLs
-    // This ensures mobile tombstoning recovery works reliably
+    // Only recreate if we can detect actual problems without being too aggressive
     if (iframe.src.startsWith('blob:')) {
-      return false;
+      try {
+        // Try a simple property access that should work if the iframe is functional
+        // but won't violate sandbox restrictions
+        const hasWindow = !!contentWindow;
+        if (!hasWindow) {
+          return false;
+        }
+        // If we can't detect problems, assume it's functional to avoid being too aggressive
+        return true;
+      } catch (error) {
+        // If we get an error accessing basic properties, the iframe is likely broken
+        return false;
+      }
     }
     
     return true;

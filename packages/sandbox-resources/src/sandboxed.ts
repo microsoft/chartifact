@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('message', (event) => {
         if (!event.data) return;
 
-        const message = event.data as Chartifact.common.SandboxApprovalMessage | Chartifact.common.SandboxRenderMessage | Chartifact.common.HealthCheckMessage;
+        const message = event.data as Chartifact.common.SandboxApprovalMessage | Chartifact.common.SandboxRenderMessage;
 
         switch (message.type) {
             case 'sandboxRender': {
@@ -76,15 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     console.debug('Received sandbox approval for an outdated transaction:', message.transactionId, transactionIndex);
                 }
-                break;
-            }
-            case 'healthCheck': {
-                // Respond immediately to health checks to confirm the sandbox is functional
-                const healthCheckResponse: Chartifact.common.HealthCheckResponseMessage = {
-                    type: 'healthCheckResponse',
-                    healthCheckId: message.healthCheckId
-                };
-                window.parent.postMessage(healthCheckResponse, '*');
                 break;
             }
         }
