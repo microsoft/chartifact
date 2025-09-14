@@ -195,8 +195,7 @@
                             {
                                 "title": "Category",
                                 "field": "category",
-                                "sorter": "string",
-                                "width": 120
+                                "sorter": "string"
                             },
                             {
                                 "title": "Total",
@@ -206,8 +205,7 @@
                                     "symbol": "$",
                                     "precision": 2
                                 },
-                                "sorter": "number",
-                                "width": 80
+                                "sorter": "number"
                             }
                         ]
                     }

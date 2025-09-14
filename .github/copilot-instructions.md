@@ -60,6 +60,12 @@ Chartifact consists of several interoperating modules:
    - Reference charts using `{"type": "chart", "chartKey": "yourChartKey"}`
    - Direct `vega-lite` type elements may not render properly for complex charts
 
+3. **Tabulator Components (Critical)**:
+   - **ALWAYS add responsive CSS for grid containers**: Use `min-width: 0` and `overflow: hidden` for grid areas containing tabulators
+   - This prevents tabulator measurement errors that cause infinite growth and call stack overflow
+   - Example: `"#table { grid-area: table; min-width: 0; overflow: hidden; }"`
+   - Also include: `".tabulator { max-width: 100%; overflow: auto; }"` and `".tabulator .tabulator-table { min-width: fit-content; }"`
+
 ## Examples
 
 - Source code for examples is in the packages/web-deploy/json folder
