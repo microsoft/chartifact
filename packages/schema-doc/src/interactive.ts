@@ -33,13 +33,13 @@ export interface TextboxElementProps extends VariableControl {
 }
 
 /**
- * Number Input
+ * Number
  * use for numeric input (integers and decimals)
  */
-export interface NumberInputElement extends NumberInputElementProps {
+export interface NumberElement extends NumberElementProps {
   type: 'number';
 }
-export interface NumberInputElementProps extends VariableControl {
+export interface NumberElementProps extends VariableControl {
   /** minimum allowed value */
   min?: number;
   /** maximum allowed value */
@@ -228,7 +228,7 @@ export type InteractiveElement =
   | DropdownElement
   | ImageElement
   | MermaidElement
-  | NumberInputElement
+  | NumberElement
   | PresetsElement
   | SliderElement
   | TabulatorElement

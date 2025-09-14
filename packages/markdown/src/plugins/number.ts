@@ -3,7 +3,7 @@
 * Licensed under the MIT License.
 */
 
-import { NumberInputElementProps } from '@microsoft/chartifact-schema';
+import { NumberElementProps } from '@microsoft/chartifact-schema';
 import { Batch, IInstance, Plugin } from '../factory.js';
 import { pluginClassName } from './util.js';
 import { flaggablePlugin } from './config.js';
@@ -15,7 +15,7 @@ interface NumberInstance {
     element: HTMLInputElement;
 }
 
-export interface NumberSpec extends NumberInputElementProps {
+export interface NumberSpec extends NumberElementProps {
     value?: number;
 }
 
