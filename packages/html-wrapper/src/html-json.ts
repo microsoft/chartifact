@@ -36,6 +36,6 @@ window.addEventListener('DOMContentLoaded', () => {
     textarea.addEventListener('input', render);
     render();
 
-    const toolbar = Chartifact.toolbar.create('.chartifact-toolbar', { tweakButton: true, textarea });
+    const toolbar = Chartifact.toolbar.create('.chartifact-toolbar', { tweakButton: true, textarea, mode: 'json' });
     toolbar.manageTextareaVisibilityForAgents();
 });
