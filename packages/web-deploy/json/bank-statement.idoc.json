@@ -4,13 +4,14 @@
     "style": {
         "css": [
             "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
-            "body { display: grid; grid-template-areas: 'header header' 'chart summary' 'transactions transactions' 'drilldown drilldown' 'trends patterns'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+            "body { display: grid; grid-template-areas: 'header header' 'chart summary' 'transactions transactions' 'drilldown drilldown' 'breakdown breakdown' 'trends patterns'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
             ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
             "#header { grid-area: header; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; text-align: center; }",
             "#summary { grid-area: summary; text-align: center; min-width: 0; }",
             "#chart { grid-area: chart; min-width: 0; }",
             "#transactions { grid-area: transactions; min-width: 0; }",
             "#drilldown { grid-area: drilldown; min-width: 0; overflow: hidden; }",
+            "#breakdown { grid-area: breakdown; min-width: 0; overflow: hidden; }",
             "#trends { grid-area: trends; min-width: 0; overflow: hidden; }",
             "#patterns { grid-area: patterns; min-width: 0; overflow: hidden; }",
             "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
@@ -21,7 +22,7 @@
             ".compact-table { font-size: 0.85em; }",
             ".compact-table .tabulator-header { height: 30px; }",
             ".compact-table .tabulator-row { height: 28px; }",
-            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'summary' 'chart' 'transactions' 'drilldown' 'trends' 'patterns'; } }"
+            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'summary' 'chart' 'transactions' 'drilldown' 'breakdown' 'trends' 'patterns'; } }"
         ]
     },
     "dataLoaders": [
@@ -49,7 +50,35 @@
                 "2024-01-25,Clothing Store,Shopping,-89.99,expense",
                 "2024-01-26,Savings Transfer,Savings,-500.00,transfer",
                 "2024-01-28,Gas Station,Transportation,-38.75,expense",
-                "2024-01-30,Phone Bill,Utilities,-45.00,expense"
+                "2024-01-30,Phone Bill,Utilities,-45.00,expense",
+                "2024-02-01,Supermarket,Food,-95.20,expense",
+                "2024-02-02,Coffee Shop,Food,-8.50,expense",
+                "2024-02-03,Fast Food,Food,-15.75,expense",
+                "2024-02-04,Grocery Store,Food,-78.90,expense",
+                "2024-02-05,Dining Out,Food,-65.00,expense",
+                "2024-02-06,Water Bill,Utilities,-35.50,expense",
+                "2024-02-07,Gas Bill,Utilities,-125.75,expense",
+                "2024-02-08,Cable TV,Utilities,-89.99,expense",
+                "2024-02-09,Bus Pass,Transportation,-55.00,expense",
+                "2024-02-10,Uber Ride,Transportation,-18.50,expense",
+                "2024-02-11,Parking Fee,Transportation,-12.00,expense",
+                "2024-02-12,Train Ticket,Transportation,-25.75,expense",
+                "2024-02-13,Online Store,Shopping,-145.00,expense",
+                "2024-02-14,Department Store,Shopping,-89.50,expense",
+                "2024-02-15,Bookstore,Shopping,-35.99,expense",
+                "2024-02-16,Electronics Store,Shopping,-299.99,expense",
+                "2024-02-17,Streaming Service,Entertainment,-15.99,expense",
+                "2024-02-18,Concert Tickets,Entertainment,-85.00,expense",
+                "2024-02-19,Game Purchase,Entertainment,-49.99,expense",
+                "2024-02-20,Movie Theater,Entertainment,-32.50,expense",
+                "2024-02-21,Doctor Visit,Healthcare,-150.00,expense",
+                "2024-02-22,Prescription,Healthcare,-45.50,expense",
+                "2024-02-23,Dental Cleaning,Healthcare,-125.00,expense",
+                "2024-02-24,Vitamins,Healthcare,-35.99,expense",
+                "2024-02-25,Mortgage Payment,Housing,-1200.00,expense",
+                "2024-02-26,Home Insurance,Housing,-85.00,expense",
+                "2024-02-27,Property Tax,Housing,-450.00,expense",
+                "2024-02-28,Home Repairs,Housing,-125.50,expense"
             ]
         }
     ],
@@ -259,6 +288,33 @@
                     }
                 ]
             }
+        },
+        {
+            "variableId": "expensesByDescription",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["editableTransactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'expense'"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "abs(datum.amount)",
+                        "as": "absAmount"
+                    },
+                    {
+                        "type": "aggregate",
+                        "groupby": ["category", "description"],
+                        "ops": ["sum"],
+                        "fields": ["absAmount"],
+                        "as": ["totalAmount"]
+                    }
+                ]
+            }
         }
     ],
     "groups": [
@@ -442,6 +498,17 @@
             ]
         },
         {
+            "groupId": "breakdown",
+            "elements": [
+                "### 📊 Spending Breakdown by Description",
+                "**Amount spent per description within each category**",
+                {
+                    "type": "chart",
+                    "chartKey": "expensesByDescriptionChart"
+                }
+            ]
+        },
+        {
             "groupId": "trends",
             "elements": [
                 "### 📈 Spending Trends",
@@ -572,6 +639,57 @@
                         {"field": "totalSpent", "type": "quantitative", "title": "Amount", "format": "$,.2f"},
                         {"field": "transactionCount", "type": "quantitative", "title": "Transactions"}
                     ]
+                }
+            },
+            "expensesByDescriptionChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 400,
+                "data": {
+                    "name": "expensesByDescription"
+                },
+                "mark": "bar",
+                "encoding": {
+                    "row": {
+                        "field": "category",
+                        "type": "nominal",
+                        "title": "Category",
+                        "header": {
+                            "labelAngle": 0,
+                            "labelAlign": "left",
+                            "labelFontSize": 12,
+                            "labelFontWeight": "bold"
+                        }
+                    },
+                    "y": {
+                        "field": "description",
+                        "type": "nominal",
+                        "title": "Description",
+                        "sort": {"field": "totalAmount", "order": "descending"}
+                    },
+                    "x": {
+                        "field": "totalAmount",
+                        "type": "quantitative",
+                        "title": "Amount Spent ($)"
+                    },
+                    "color": {
+                        "field": "category",
+                        "type": "nominal",
+                        "scale": {
+                            "range": ["#667eea", "#764ba2", "#f093fb", "#4ecdc4", "#45b7d1", "#96ceb4", "#feca57", "#ff9ff3", "#54a0ff"]
+                        },
+                        "legend": null
+                    },
+                    "tooltip": [
+                        {"field": "category", "type": "nominal", "title": "Category"},
+                        {"field": "description", "type": "nominal", "title": "Description"},
+                        {"field": "totalAmount", "type": "quantitative", "title": "Amount", "format": "$,.2f"}
+                    ]
+                },
+                "resolve": {
+                    "scale": {
+                        "y": "independent"
+                    }
                 }
             }
         }
