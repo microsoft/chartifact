@@ -1,0 +1,445 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Apple Fitness Rings",
+    "style": {
+        "css": [
+            "body { font-family: 'SF Pro Display', 'Helvetica Neue', 'Arial', sans-serif; margin: 0; padding: 20px; background: #000; color: #fff; }",
+            "body { display: grid; grid-template-areas: 'header' 'controls' 'rings' 'bars'; grid-template-columns: 1fr; gap: 30px; max-width: 800px; margin: 0 auto; }",
+            ".group { background: #1c1c1e; padding: 25px; border-radius: 20px; border: 1px solid #38383a; }",
+            "#header { grid-area: header; text-align: center; background: none; border: none; padding: 0; }",
+            "#controls { grid-area: controls; }",
+            "#rings { grid-area: rings; min-width: 0; display: flex; justify-content: center; align-items: center; }",
+            "#bars { grid-area: bars; min-width: 0; display: grid; grid-template-columns: 1fr; gap: 20px; }",
+            "h1 { margin: 0 0 30px 0; font-size: 2.5em; font-weight: 700; }",
+            "h2 { margin: 0 0 20px 0; font-size: 1.8em; color: #fff; font-weight: 600; }",
+            "h3 { margin: 0 0 15px 0; font-size: 1.1em; color: #8e8e93; font-weight: 500; text-transform: uppercase; letter-spacing: 0.8px; }",
+            ".slider-container { display: grid; grid-template-columns: 100px 1fr 60px; align-items: center; gap: 15px; margin-bottom: 15px; }",
+            ".slider-container label { font-weight: 600; font-size: 1.1em; }",
+            ".slider-container span { font-size: 1.1em; text-align: right; color: #8e8e93; }",
+            "input[type=range] { -webkit-appearance: none; background: transparent; width: 100%; }",
+            "input[type=range]::-webkit-slider-runnable-track { height: 8px; border-radius: 4px; background: #38383a; }",
+            "input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; margin-top: -6px; width: 20px; height: 20px; border-radius: 50%; background: #fff; cursor: pointer; }",
+            "input[type=range].move::-webkit-slider-runnable-track { background: #FF2D55; }",
+            "input[type=range].exercise::-webkit-slider-runnable-track { background: #A7F070; }",
+            "input[type=range].stand::-webkit-slider-runnable-track { background: #00E5E5; }",
+            "@media (max-width: 768px) { #bars { grid-template-columns: 1fr; } }"
+        ]
+    },
+    "dataLoaders": [
+        {
+            "dataSourceName": "baseData",
+            "type": "inline",
+            "format": "csv",
+            "content": [
+                "category,value",
+                "Move,0.7",
+                "Exercise,0.67",
+                "Stand,0.67"
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "variableId": "move",
+            "type": "number",
+            "initialValue": 150
+        },
+        {
+            "variableId": "exercise",
+            "type": "number",
+            "initialValue": 20
+        },
+        {
+            "variableId": "stand",
+            "type": "number",
+            "initialValue": 8
+        },
+        {
+            "variableId": "selectedDay",
+            "type": "string",
+            "initialValue": "Thursday"
+        },
+        {
+            "variableId": "moveTarget",
+            "type": "number",
+            "initialValue": 210
+        },
+        {
+            "variableId": "exerciseTarget",
+            "type": "number",
+            "initialValue": 30
+        },
+        {
+            "variableId": "standTarget",
+            "type": "number",
+            "initialValue": 12
+        },
+        {
+            "variableId": "moveProgress",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "min(1, move / moveTarget)"
+            }
+        },
+        {
+            "variableId": "exerciseProgress",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "min(1, exercise / exerciseTarget)"
+            }
+        },
+        {
+            "variableId": "standProgress",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "min(1, stand / standTarget)"
+            }
+        },
+        {
+            "variableId": "activityData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["baseData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "expr": "datum.category == 'Move' ? moveProgress : datum.category == 'Exercise' ? exerciseProgress : standProgress",
+                        "as": "calculatedValue"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "selectedDay",
+                        "as": "currentDay"
+                    }
+                ]
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "header",
+            "elements": [
+                "# Fitness Rings"
+            ]
+        },
+        {
+            "groupId": "controls",
+            "elements": [
+                "## Your Daily Progress",
+                "**Day**",
+                {
+                    "type": "dropdown",
+                    "variableId": "selectedDay",
+                    "options": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                },
+                "**Move**",
+                {
+                    "type": "slider",
+                    "variableId": "move",
+                    "min": 0,
+                    "max": 315,
+                    "step": 10
+                },
+                "{{move}} / {{moveTarget}} Cal",
+                "**Exercise**",
+                {
+                    "type": "slider",
+                    "variableId": "exercise",
+                    "min": 0,
+                    "max": 45,
+                    "step": 1
+                },
+                "{{exercise}} / {{exerciseTarget}} min",
+                "**Stand**",
+                {
+                    "type": "slider",
+                    "variableId": "stand",
+                    "min": 0,
+                    "max": 18,
+                    "step": 1
+                },
+                "{{stand}} / {{standTarget}} hr"
+            ]
+        },
+        {
+            "groupId": "rings",
+            "elements": [
+                {
+                    "type": "chart",
+                    "chartKey": "activityRings"
+                }
+            ]
+        },
+        {
+            "groupId": "bars",
+            "elements": [
+                {
+                    "type": "chart",
+                    "chartKey": "moveBar"
+                },
+                {
+                    "type": "chart",
+                    "chartKey": "exerciseBar"
+                },
+                {
+                    "type": "chart",
+                    "chartKey": "standBar"
+                }
+            ]
+        }
+    ],
+    "resources": {
+        "charts": {
+            "activityRings": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": 300,
+                "height": 300,
+                "background": "transparent",
+                "data": {
+                    "name": "activityData"
+                },
+                "layer": [
+                    {
+                        "data": {"values": [{"value": 1, "category": "Move"}]},
+                        "mark": {"type": "arc", "innerRadius": 100, "outerRadius": 120, "color": "#38383a", "stroke": null},
+                        "encoding": {
+                            "theta": {"field": "value", "type": "quantitative", "scale": {"domain": [0, 1], "range": [0, 6.283]}}
+                        }
+                    },
+                    {
+                        "data": {"values": [{"value": 1, "category": "Exercise"}]},
+                        "mark": {"type": "arc", "innerRadius": 75, "outerRadius": 95, "color": "#38383a", "stroke": null},
+                        "encoding": {
+                            "theta": {"field": "value", "type": "quantitative", "scale": {"domain": [0, 1], "range": [0, 6.283]}}
+                        }
+                    },
+                    {
+                        "data": {"values": [{"value": 1, "category": "Stand"}]},
+                        "mark": {"type": "arc", "innerRadius": 50, "outerRadius": 70, "color": "#38383a", "stroke": null},
+                        "encoding": {
+                            "theta": {"field": "value", "type": "quantitative", "scale": {"domain": [0, 1], "range": [0, 6.283]}}
+                        }
+                    },
+                    {
+                        "transform": [{"filter": "datum.category == 'Move'"}],
+                        "mark": {"type": "arc", "innerRadius": 100, "outerRadius": 120, "cornerRadius": 10, "color": "#FF2D55", "stroke": null},
+                        "encoding": {
+                            "theta": {"field": "calculatedValue", "type": "quantitative", "scale": {"domain": [0, 1], "range": [0, 6.283]}}
+                        }
+                    },
+                    {
+                        "transform": [{"filter": "datum.category == 'Exercise'"}],
+                        "mark": {"type": "arc", "innerRadius": 75, "outerRadius": 95, "cornerRadius": 10, "color": "#A7F070", "stroke": null},
+                        "encoding": {
+                            "theta": {"field": "calculatedValue", "type": "quantitative", "scale": {"domain": [0, 1], "range": [0, 6.283]}}
+                        }
+                    },
+                    {
+                        "transform": [{"filter": "datum.category == 'Stand'"}],
+                        "mark": {"type": "arc", "innerRadius": 50, "outerRadius": 70, "cornerRadius": 10, "color": "#00E5E5", "stroke": null},
+                        "encoding": {
+                            "theta": {"field": "calculatedValue", "type": "quantitative", "scale": {"domain": [0, 1], "range": [0, 6.283]}}
+                        }
+                    }
+                ]
+            },
+            "moveBar": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 100,
+                "background": "transparent",
+                "data": {
+                    "name": "activityData"
+                },
+                "transform": [
+                    {"filter": "datum.category == 'Move'"},
+                    {
+                        "calculate": "'Sunday'",
+                        "as": "day1"
+                    },
+                    {
+                        "calculate": "'Monday'",
+                        "as": "day2"
+                    },
+                    {
+                        "calculate": "'Tuesday'",
+                        "as": "day3"
+                    },
+                    {
+                        "calculate": "'Wednesday'",
+                        "as": "day4"
+                    },
+                    {
+                        "calculate": "'Thursday'",
+                        "as": "day5"
+                    },
+                    {
+                        "calculate": "'Friday'",
+                        "as": "day6"
+                    },
+                    {
+                        "calculate": "'Saturday'",
+                        "as": "day7"
+                    },
+                    {
+                        "fold": ["day1", "day2", "day3", "day4", "day5", "day6", "day7"],
+                        "as": ["dayType", "day"]
+                    },
+                    {
+                        "calculate": "datum.day == datum.currentDay ? datum.calculatedValue : 0.71",
+                        "as": "finalProgress"
+                    },
+                    {
+                        "calculate": "datum.day == datum.currentDay",
+                        "as": "isCurrentDay"
+                    }
+                ],
+                "mark": {"type": "bar", "cornerRadius": 5, "width": {"band": 0.7}},
+                "encoding": {
+                    "y": {"field": "finalProgress", "type": "quantitative", "scale": {"domain": [0, 1.2]}, "axis": null},
+                    "x": {"field": "day", "type": "nominal", "axis": {"title": "Move - Weekly Progress", "labelColor": "#fff", "titleColor": "#fff"}},
+                    "color": {
+                        "condition": {
+                            "test": "datum.isCurrentDay",
+                            "value": "#FF2D55"
+                        },
+                        "value": "#FF2D5580"
+                    }
+                }
+            },
+            "exerciseBar": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 100,
+                "background": "transparent",
+                "data": {
+                    "name": "activityData"
+                },
+                "transform": [
+                    {"filter": "datum.category == 'Exercise'"},
+                    {
+                        "calculate": "'Sunday'",
+                        "as": "day1"
+                    },
+                    {
+                        "calculate": "'Monday'",
+                        "as": "day2"
+                    },
+                    {
+                        "calculate": "'Tuesday'",
+                        "as": "day3"
+                    },
+                    {
+                        "calculate": "'Wednesday'",
+                        "as": "day4"
+                    },
+                    {
+                        "calculate": "'Thursday'",
+                        "as": "day5"
+                    },
+                    {
+                        "calculate": "'Friday'",
+                        "as": "day6"
+                    },
+                    {
+                        "calculate": "'Saturday'",
+                        "as": "day7"
+                    },
+                    {
+                        "fold": ["day1", "day2", "day3", "day4", "day5", "day6", "day7"],
+                        "as": ["dayType", "day"]
+                    },
+                    {
+                        "calculate": "datum.day == datum.currentDay ? datum.calculatedValue : 0.67",
+                        "as": "finalProgress"
+                    },
+                    {
+                        "calculate": "datum.day == datum.currentDay",
+                        "as": "isCurrentDay"
+                    }
+                ],
+                "mark": {"type": "bar", "cornerRadius": 5, "width": {"band": 0.7}},
+                "encoding": {
+                    "y": {"field": "finalProgress", "type": "quantitative", "scale": {"domain": [0, 1.2]}, "axis": null},
+                    "x": {"field": "day", "type": "nominal", "axis": {"title": "Exercise - Weekly Progress", "labelColor": "#fff", "titleColor": "#fff"}},
+                    "color": {
+                        "condition": {
+                            "test": "datum.isCurrentDay",
+                            "value": "#A7F070"
+                        },
+                        "value": "#A7F07080"
+                    }
+                }
+            },
+            "standBar": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 100,
+                "background": "transparent",
+                "data": {
+                    "name": "activityData"
+                },
+                "transform": [
+                    {"filter": "datum.category == 'Stand'"},
+                    {
+                        "calculate": "'Sunday'",
+                        "as": "day1"
+                    },
+                    {
+                        "calculate": "'Monday'",
+                        "as": "day2"
+                    },
+                    {
+                        "calculate": "'Tuesday'",
+                        "as": "day3"
+                    },
+                    {
+                        "calculate": "'Wednesday'",
+                        "as": "day4"
+                    },
+                    {
+                        "calculate": "'Thursday'",
+                        "as": "day5"
+                    },
+                    {
+                        "calculate": "'Friday'",
+                        "as": "day6"
+                    },
+                    {
+                        "calculate": "'Saturday'",
+                        "as": "day7"
+                    },
+                    {
+                        "fold": ["day1", "day2", "day3", "day4", "day5", "day6", "day7"],
+                        "as": ["dayType", "day"]
+                    },
+                    {
+                        "calculate": "datum.day == datum.currentDay ? datum.calculatedValue : 0.67",
+                        "as": "finalProgress"
+                    },
+                    {
+                        "calculate": "datum.day == datum.currentDay",
+                        "as": "isCurrentDay"
+                    }
+                ],
+                "mark": {"type": "bar", "cornerRadius": 5, "width": {"band": 0.7}},
+                "encoding": {
+                    "y": {"field": "finalProgress", "type": "quantitative", "scale": {"domain": [0, 1.2]}, "axis": null},
+                    "x": {"field": "day", "type": "nominal", "axis": {"title": "Stand - Weekly Progress", "labelColor": "#fff", "titleColor": "#fff"}},
+                    "color": {
+                        "condition": {
+                            "test": "datum.isCurrentDay",
+                            "value": "#00E5E5"
+                        },
+                        "value": "#00E5E580"
+                    }
+                }
+            }
+        }
+    }
+}
