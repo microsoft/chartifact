@@ -75,6 +75,7 @@ Chartifact consists of several interoperating modules:
 - **IMPORTANT**: When creating examples, use only Markdown formatting - NO HTML elements are allowed. Use plain text, Markdown headers, bold/italic formatting, and CSS styling for visual presentation.
 
 ## Smoke Test
+
 - After creating or modifying examples, always run a smoke test to ensure they render correctly.
 - Use the `packages\html-wrapper\test\example.mjs` script to generate an HTML file from your JSON example.
 - Open the generated HTML file in a browser to verify that:
