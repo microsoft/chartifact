@@ -1,0 +1,905 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Advanced Personal Financial Dashboard",
+    "style": {
+        "css": [
+            "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
+            "body { display: grid; grid-template-areas: 'header header header' 'summary metrics insights' 'trends spending budget' 'merchants patterns categories' 'transactions transactions transactions'; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1600px; margin: 0 auto; }",
+            ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
+            "#header { grid-area: header; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; text-align: center; }",
+            "#summary { grid-area: summary; text-align: center; min-width: 0; overflow: hidden; }",
+            "#metrics { grid-area: metrics; min-width: 0; overflow: hidden; }",
+            "#insights { grid-area: insights; min-width: 0; overflow: hidden; }",
+            "#trends { grid-area: trends; min-width: 0; overflow: hidden; }",
+            "#spending { grid-area: spending; min-width: 0; overflow: hidden; }",
+            "#budget { grid-area: budget; min-width: 0; overflow: hidden; }",
+            "#merchants { grid-area: merchants; min-width: 0; overflow: hidden; }",
+            "#patterns { grid-area: patterns; min-width: 0; overflow: hidden; }",
+            "#categories { grid-area: categories; min-width: 0; overflow: hidden; }",
+            "#transactions { grid-area: transactions; min-width: 0; overflow: hidden; }",
+            "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
+            "h2 { margin: 10px 0; font-size: 2em; color: #2d3748; font-weight: 600; }",
+            "h3 { margin: 0 0 15px 0; font-size: 1.2em; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
+            ".tabulator { max-width: 100%; overflow: auto; }",
+            ".tabulator .tabulator-table { min-width: fit-content; }",
+            ".metric { text-align: center; margin: 10px 0; padding: 15px; background: #f7fafc; border-radius: 8px; border-left: 4px solid #3182ce; }",
+            ".metric .value { font-size: 1.5em; font-weight: bold; color: #2d3748; }",
+            ".metric .label { font-size: 0.9em; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; }",
+            ".positive { color: #38a169; }",
+            ".negative { color: #e53e3e; }",
+            ".warning { color: #d69e2e; }",
+            ".slider-container { margin: 15px 0; }",
+            ".slider-label { font-weight: 500; color: #2d3748; margin-bottom: 8px; display: block; }",
+            "@media (max-width: 1200px) { body { grid-template-columns: 1fr 1fr; grid-template-areas: 'header header' 'summary metrics' 'insights trends' 'spending budget' 'merchants patterns' 'categories categories' 'transactions transactions'; } }",
+            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'summary' 'metrics' 'insights' 'trends' 'spending' 'budget' 'merchants' 'patterns' 'categories' 'transactions'; } }"
+        ]
+    },
+    "dataLoaders": [
+        {
+            "dataSourceName": "transactions",
+            "type": "inline",
+            "format": "csv",
+            "content": [
+                "date,description,category,amount,type,merchant",
+                "2024-01-02,Salary Deposit,Income,3500.00,income,Employer",
+                "2024-01-03,Rent Payment,Housing,-1200.00,expense,Property Management Co",
+                "2024-01-04,Grocery Store,Food,-85.50,expense,Whole Foods",
+                "2024-01-05,Gas Station,Transportation,-45.00,expense,Shell",
+                "2024-01-06,Coffee Shop,Food,-12.75,expense,Starbucks",
+                "2024-01-08,Electric Bill,Utilities,-89.99,expense,ConEd",
+                "2024-01-10,Movie Tickets,Entertainment,-28.00,expense,AMC Theaters",
+                "2024-01-12,Pharmacy,Healthcare,-25.99,expense,CVS Pharmacy",
+                "2024-01-14,Online Shopping,Shopping,-67.89,expense,Amazon",
+                "2024-01-15,Freelance Project,Income,850.00,income,Client ABC",
+                "2024-01-16,Restaurant,Food,-42.50,expense,Local Bistro",
+                "2024-01-18,Internet Bill,Utilities,-59.99,expense,Comcast",
+                "2024-01-20,Gym Membership,Health,-29.99,expense,Planet Fitness",
+                "2024-01-22,Grocery Store,Food,-92.34,expense,Whole Foods",
+                "2024-01-24,Car Insurance,Transportation,-125.00,expense,Geico",
+                "2024-01-25,Clothing Store,Shopping,-89.99,expense,H&M",
+                "2024-01-26,Savings Transfer,Savings,-500.00,transfer,Savings Account",
+                "2024-01-28,Gas Station,Transportation,-38.75,expense,Shell",
+                "2024-01-30,Phone Bill,Utilities,-45.00,expense,Verizon",
+                "2024-02-01,Coffee Shop,Food,-8.50,expense,Starbucks",
+                "2024-02-03,Subscription,Entertainment,-15.99,expense,Netflix",
+                "2024-02-05,Grocery Store,Food,-78.25,expense,Trader Joes",
+                "2024-02-07,Restaurant,Food,-65.00,expense,Local Bistro",
+                "2024-02-10,Gas Station,Transportation,-42.30,expense,Exxon",
+                "2024-02-12,Online Shopping,Shopping,-125.50,expense,Amazon",
+                "2024-02-14,Date Night,Entertainment,-95.00,expense,Fine Dining",
+                "2024-02-16,Freelance Project,Income,750.00,income,Client XYZ",
+                "2024-02-18,Pharmacy,Healthcare,-18.75,expense,Walgreens",
+                "2024-02-20,Coffee Shop,Food,-11.25,expense,Local Cafe",
+                "2024-02-22,Grocery Store,Food,-89.50,expense,Whole Foods",
+                "2024-02-25,Clothing Store,Shopping,-145.99,expense,Target",
+                "2024-02-28,Gas Station,Transportation,-40.80,expense,Shell"
+            ]
+        },
+        {
+            "dataSourceName": "categoryBudgets",
+            "type": "inline", 
+            "format": "csv",
+            "content": [
+                "category,budgetAmount,color",
+                "Housing,1200,#667eea",
+                "Food,400,#764ba2", 
+                "Transportation,300,#f093fb",
+                "Utilities,250,#4ecdc4",
+                "Entertainment,200,#45b7d1",
+                "Healthcare,150,#96ceb4",
+                "Shopping,200,#feca57",
+                "Health,50,#ff9ff3",
+                "Savings,600,#54a0ff"
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "variableId": "selectedTimeframe",
+            "type": "string",
+            "initialValue": "All Time"
+        },
+        {
+            "variableId": "totalIncome",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["editableTransactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'income'"
+                    },
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["amount"],
+                        "as": ["total"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "totalExpenses",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["editableTransactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'expense'"
+                    },
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["amount"],
+                        "as": ["total"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "totalSavings",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["editableTransactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'transfer' && datum.category === 'Savings'"
+                    },
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["amount"],
+                        "as": ["total"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "currentBalance",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["editableTransactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["amount"],
+                        "as": ["total"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "expensesByCategory",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["editableTransactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'expense'"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "abs(datum.amount)",
+                        "as": "absAmount"
+                    },
+                    {
+                        "type": "aggregate",
+                        "groupby": ["category"],
+                        "ops": ["sum", "count"],
+                        "fields": ["absAmount", "absAmount"],
+                        "as": ["totalAmount", "transactionCount"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "budgetComparison",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["expensesByCategory", "categoryBudgets"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "lookup",
+                        "from": "categoryBudgets",
+                        "key": "category",
+                        "fields": ["budgetAmount", "color"],
+                        "as": ["budget", "color"]
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.totalAmount - datum.budget",
+                        "as": "variance"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.totalAmount / datum.budget",
+                        "as": "percentOfBudget"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.budget - datum.totalAmount",
+                        "as": "remaining"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "topMerchants",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["editableTransactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'expense'"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "abs(datum.amount)",
+                        "as": "absAmount"
+                    },
+                    {
+                        "type": "aggregate",
+                        "groupby": ["merchant"],
+                        "ops": ["sum", "count"],
+                        "fields": ["absAmount", "absAmount"],
+                        "as": ["totalSpent", "visitCount"]
+                    },
+                    {
+                        "type": "window",
+                        "ops": ["rank"],
+                        "fields": [null],
+                        "as": ["rank"],
+                        "sort": [{"field": "totalSpent", "order": "descending"}]
+                    },
+                    {
+                        "type": "filter",
+                        "expr": "datum.rank <= 10"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "dailySpending",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["editableTransactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'expense'"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "abs(datum.amount)",
+                        "as": "absAmount"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datetime(datum.date)",
+                        "as": "dateTime"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "day(datum.dateTime)",
+                        "as": "dayOfWeek"
+                    },
+                    {
+                        "type": "aggregate",
+                        "groupby": ["date"],
+                        "ops": ["sum"],
+                        "fields": ["absAmount"],
+                        "as": ["dailyTotal"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "weeklySpending",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["editableTransactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'expense'"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "abs(datum.amount)",
+                        "as": "absAmount"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datetime(datum.date)",
+                        "as": "dateTime"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "week(datum.dateTime)",
+                        "as": "weekOfYear"
+                    },
+                    {
+                        "type": "aggregate",
+                        "groupby": ["weekOfYear"],
+                        "ops": ["sum"],
+                        "fields": ["absAmount"],
+                        "as": ["weeklyTotal"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "spendingByDayOfWeek",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["editableTransactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'expense'"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "abs(datum.amount)",
+                        "as": "absAmount"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datetime(datum.date)",
+                        "as": "dateTime"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "day(datum.dateTime)",
+                        "as": "dayOfWeek"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.dayOfWeek === 0 ? 'Sunday' : datum.dayOfWeek === 1 ? 'Monday' : datum.dayOfWeek === 2 ? 'Tuesday' : datum.dayOfWeek === 3 ? 'Wednesday' : datum.dayOfWeek === 4 ? 'Thursday' : datum.dayOfWeek === 5 ? 'Friday' : 'Saturday'",
+                        "as": "dayName"
+                    },
+                    {
+                        "type": "aggregate",
+                        "groupby": ["dayOfWeek", "dayName"],
+                        "ops": ["sum", "count"],
+                        "fields": ["absAmount", "absAmount"],
+                        "as": ["totalSpent", "transactionCount"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "formattedIncome",
+            "type": "string",
+            "initialValue": "$0.00",
+            "calculation": {
+                "vegaExpression": "'$' + format(length(data('totalIncome')) > 0 ? data('totalIncome')[0].total : 0, ',.2f')"
+            }
+        },
+        {
+            "variableId": "formattedExpenses", 
+            "type": "string",
+            "initialValue": "$0.00",
+            "calculation": {
+                "vegaExpression": "'$' + format(abs(length(data('totalExpenses')) > 0 ? data('totalExpenses')[0].total : 0), ',.2f')"
+            }
+        },
+        {
+            "variableId": "formattedBalance",
+            "type": "string", 
+            "initialValue": "$0.00",
+            "calculation": {
+                "vegaExpression": "'$' + format(length(data('currentBalance')) > 0 ? data('currentBalance')[0].total : 0, ',.2f')"
+            }
+        },
+        {
+            "variableId": "formattedSavings",
+            "type": "string", 
+            "initialValue": "$0.00",
+            "calculation": {
+                "vegaExpression": "'$' + format(abs(length(data('totalSavings')) > 0 ? data('totalSavings')[0].total : 0), ',.2f')"
+            }
+        },
+        {
+            "variableId": "savingsRate",
+            "type": "string",
+            "initialValue": "0%",
+            "calculation": {
+                "vegaExpression": "format((abs(length(data('totalSavings')) > 0 ? data('totalSavings')[0].total : 0) / (length(data('totalIncome')) > 0 ? data('totalIncome')[0].total : 1)) * 100, '.1f') + '%'"
+            }
+        },
+        {
+            "variableId": "avgDailySpending",
+            "type": "string",
+            "initialValue": "$0.00",
+            "calculation": {
+                "vegaExpression": "'$' + format((abs(length(data('totalExpenses')) > 0 ? data('totalExpenses')[0].total : 0) / 30), ',.2f')"
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "header",
+            "elements": [
+                "# 💰 Advanced Personal Financial Dashboard",
+                "**Deep insights into your spending habits and financial patterns**"
+            ]
+        },
+        {
+            "groupId": "summary",
+            "elements": [
+                "### 📊 Financial Overview",
+                "",
+                "**Total Income:** {{formattedIncome}}",
+                "**Total Expenses:** {{formattedExpenses}}",
+                "**Current Balance:** {{formattedBalance}}",
+                "**Total Savings:** {{formattedSavings}}",
+                "",
+                "#### Quick Stats",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "expensesByCategory",
+                    "editable": false,
+                    "cssClass": "compact-table",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "headerSort": false,
+                        "initialSort": [
+                            {"column": "totalAmount", "dir": "desc"}
+                        ],
+                        "columns": [
+                            {
+                                "title": "Category",
+                                "field": "category",
+                                "sorter": "string"
+                            },
+                            {
+                                "title": "Total",
+                                "field": "totalAmount",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "sorter": "number"
+                            },
+                            {
+                                "title": "Transactions",
+                                "field": "transactionCount",
+                                "sorter": "number"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "metrics",
+            "elements": [
+                "### 🎯 Key Metrics",
+                "",
+                "<div class='metric'>",
+                "<div class='value'>{{savingsRate}}</div>",
+                "<div class='label'>Savings Rate</div>",
+                "</div>",
+                "",
+                "<div class='metric'>",
+                "<div class='value'>{{avgDailySpending}}</div>",
+                "<div class='label'>Avg Daily Spending</div>",
+                "</div>",
+                "",
+                "#### Financial Health",
+                "- **Expense Ratio:** High spending in Food and Housing",
+                "- **Saving Behavior:** Regular savings transfers detected",
+                "- **Income Diversity:** Salary + Freelance income"
+            ]
+        },
+        {
+            "groupId": "insights",
+            "elements": [
+                "### 🔍 Smart Insights",
+                "",
+                "**Top Spending Categories:**",
+                "1. Housing ({{formattedExpenses}} of expenses)",
+                "2. Food & Dining (frequent purchases)", 
+                "3. Transportation (regular fuel costs)",
+                "",
+                "**Spending Patterns:**",
+                "- Most active merchant: Starbucks (frequent coffee purchases)",
+                "- Grocery shopping: Mostly Whole Foods",
+                "- Regular bills: Utilities paid on time",
+                "",
+                "**Recommendations:**",
+                "- Consider bulk coffee purchases to reduce café visits",
+                "- Monitor entertainment spending trends",
+                "- Great job on consistent savings!"
+            ]
+        },
+        {
+            "groupId": "trends",
+            "elements": [
+                "### 📈 Spending Trends",
+                {
+                    "type": "chart",
+                    "chartKey": "dailySpendingTrend"
+                }
+            ]
+        },
+        {
+            "groupId": "spending",
+            "elements": [
+                "### 🥧 Category Breakdown",
+                {
+                    "type": "chart",
+                    "chartKey": "expensesPieChart"
+                }
+            ]
+        },
+        {
+            "groupId": "budget",
+            "elements": [
+                "### 🎯 Budget vs Actual",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "budgetComparison",
+                    "editable": false,
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "columns": [
+                            {
+                                "title": "Category",
+                                "field": "category",
+                                "sorter": "string"
+                            },
+                            {
+                                "title": "Budget",
+                                "field": "budget",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "sorter": "number"
+                            },
+                            {
+                                "title": "Actual",
+                                "field": "totalAmount",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "sorter": "number"
+                            },
+                            {
+                                "title": "Variance",
+                                "field": "variance",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "sorter": "number"
+                            },
+                            {
+                                "title": "% of Budget",
+                                "field": "percentOfBudget",
+                                "formatter": "progress",
+                                "formatterParams": {
+                                    "min": 0,
+                                    "max": 2,
+                                    "color": ["green", "orange", "red"],
+                                    "legend": true
+                                },
+                                "sorter": "number"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "merchants",
+            "elements": [
+                "### 🏪 Top Merchants",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "topMerchants",
+                    "editable": false,
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "columns": [
+                            {
+                                "title": "Merchant",
+                                "field": "merchant",
+                                "sorter": "string"
+                            },
+                            {
+                                "title": "Total Spent",
+                                "field": "totalSpent",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "sorter": "number"
+                            },
+                            {
+                                "title": "Visits",
+                                "field": "visitCount",
+                                "sorter": "number"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "patterns",
+            "elements": [
+                "### 📅 Day of Week Patterns",
+                {
+                    "type": "chart",
+                    "chartKey": "dayOfWeekSpending"
+                }
+            ]
+        },
+        {
+            "groupId": "categories",
+            "elements": [
+                "### 📊 Category Deep Dive",
+                {
+                    "type": "chart",
+                    "chartKey": "budgetComparisonChart"
+                }
+            ]
+        },
+        {
+            "groupId": "transactions",
+            "elements": [
+                "### 📋 Transaction History",
+                "**Edit transactions below to update your analysis**",
+                {
+                    "type": "tabulator",
+                    "variableId": "editableTransactions",
+                    "dataSourceName": "transactions",
+                    "editable": true,
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "400px",
+                        "columns": [
+                            {
+                                "title": "Date",
+                                "field": "date",
+                                "sorter": "date",
+                                "editor": "date"
+                            },
+                            {
+                                "title": "Description",
+                                "field": "description",
+                                "editor": "input"
+                            },
+                            {
+                                "title": "Merchant",
+                                "field": "merchant",
+                                "editor": "input"
+                            },
+                            {
+                                "title": "Category",
+                                "field": "category",
+                                "editor": "list",
+                                "editorParams": {
+                                    "values": ["Income", "Housing", "Food", "Transportation", "Utilities", "Entertainment", "Healthcare", "Shopping", "Health", "Savings"]
+                                }
+                            },
+                            {
+                                "title": "Amount",
+                                "field": "amount",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "editor": "number",
+                                "editorParams": {
+                                    "step": 0.01
+                                }
+                            },
+                            {
+                                "title": "Type",
+                                "field": "type",
+                                "editor": "list",
+                                "editorParams": {
+                                    "values": ["income", "expense", "transfer"]
+                                }
+                            }
+                        ],
+                        "addRowPos": "top"
+                    }
+                }
+            ]
+        }
+    ],
+    "resources": {
+        "charts": {
+            "expensesPieChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "expensesByCategory"
+                },
+                "mark": {
+                    "type": "arc",
+                    "innerRadius": 50,
+                    "stroke": "white",
+                    "strokeWidth": 2
+                },
+                "encoding": {
+                    "theta": {
+                        "field": "totalAmount",
+                        "type": "quantitative",
+                        "title": "Amount Spent"
+                    },
+                    "color": {
+                        "field": "category",
+                        "type": "nominal",
+                        "sort": {"field": "totalAmount", "order": "descending"},
+                        "scale": {
+                            "range": ["#667eea", "#764ba2", "#f093fb", "#4ecdc4", "#45b7d1", "#96ceb4", "#feca57", "#ff9ff3", "#54a0ff"]
+                        },
+                        "legend": {
+                            "orient": "right",
+                            "title": "Category"
+                        }
+                    },
+                    "tooltip": [
+                        {"field": "category", "type": "nominal", "title": "Category"},
+                        {"field": "totalAmount", "type": "quantitative", "title": "Amount", "format": "$,.2f"},
+                        {"field": "transactionCount", "type": "quantitative", "title": "Transactions"}
+                    ]
+                }
+            },
+            "dailySpendingTrend": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 200,
+                "data": {
+                    "name": "dailySpending"
+                },
+                "mark": {
+                    "type": "line",
+                    "point": true,
+                    "strokeWidth": 3
+                },
+                "encoding": {
+                    "x": {
+                        "field": "date",
+                        "type": "temporal",
+                        "title": "Date"
+                    },
+                    "y": {
+                        "field": "dailyTotal",
+                        "type": "quantitative",
+                        "title": "Daily Spending ($)"
+                    },
+                    "color": {
+                        "value": "#667eea"
+                    },
+                    "tooltip": [
+                        {"field": "date", "type": "temporal", "title": "Date"},
+                        {"field": "dailyTotal", "type": "quantitative", "title": "Amount", "format": "$,.2f"}
+                    ]
+                }
+            },
+            "dayOfWeekSpending": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 200,
+                "data": {
+                    "name": "spendingByDayOfWeek"
+                },
+                "mark": "bar",
+                "encoding": {
+                    "x": {
+                        "field": "dayName",
+                        "type": "ordinal",
+                        "title": "Day of Week",
+                        "sort": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+                    },
+                    "y": {
+                        "field": "totalSpent",
+                        "type": "quantitative",
+                        "title": "Total Spent ($)"
+                    },
+                    "color": {
+                        "field": "totalSpent",
+                        "type": "quantitative",
+                        "scale": {
+                            "range": ["#e8f4f8", "#2e86ab"]
+                        },
+                        "legend": null
+                    },
+                    "tooltip": [
+                        {"field": "dayName", "type": "nominal", "title": "Day"},
+                        {"field": "totalSpent", "type": "quantitative", "title": "Amount", "format": "$,.2f"},
+                        {"field": "transactionCount", "type": "quantitative", "title": "Transactions"}
+                    ]
+                }
+            },
+            "budgetComparisonChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "budgetComparison"
+                },
+                "transform": [
+                    {
+                        "fold": ["budget", "totalAmount"],
+                        "as": ["type", "amount"]
+                    }
+                ],
+                "mark": "bar",
+                "encoding": {
+                    "x": {
+                        "field": "category",
+                        "type": "nominal",
+                        "title": "Category"
+                    },
+                    "y": {
+                        "field": "amount",
+                        "type": "quantitative",
+                        "title": "Amount ($)"
+                    },
+                    "color": {
+                        "field": "type",
+                        "type": "nominal",
+                        "scale": {
+                            "domain": ["budget", "totalAmount"],
+                            "range": ["#a8dadc", "#e63946"]
+                        },
+                        "legend": {
+                            "title": "Type",
+                            "labelExpr": "datum.label === 'budget' ? 'Budget' : 'Actual'"
+                        }
+                    },
+                    "xOffset": {
+                        "field": "type",
+                        "type": "nominal"
+                    },
+                    "tooltip": [
+                        {"field": "category", "type": "nominal", "title": "Category"},
+                        {"field": "type", "type": "nominal", "title": "Type"},
+                        {"field": "amount", "type": "quantitative", "title": "Amount", "format": "$,.2f"}
+                    ]
+                }
+            }
+        }
+    }
+}
