@@ -4,12 +4,15 @@
     "style": {
         "css": [
             "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
-            "body { display: grid; grid-template-areas: 'header header' 'chart summary' 'transactions transactions'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+            "body { display: grid; grid-template-areas: 'header header' 'chart summary' 'transactions transactions' 'drilldown drilldown' 'trends patterns'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
             ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
             "#header { grid-area: header; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; text-align: center; }",
             "#summary { grid-area: summary; text-align: center; min-width: 0; }",
             "#chart { grid-area: chart; min-width: 0; }",
             "#transactions { grid-area: transactions; min-width: 0; }",
+            "#drilldown { grid-area: drilldown; min-width: 0; overflow: hidden; }",
+            "#trends { grid-area: trends; min-width: 0; overflow: hidden; }",
+            "#patterns { grid-area: patterns; min-width: 0; overflow: hidden; }",
             "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
             "h2 { margin: 10px 0; font-size: 2em; color: #2d3748; font-weight: 600; }",
             "h3 { margin: 0 0 15px 0; font-size: 1.2em; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
@@ -18,7 +21,7 @@
             ".compact-table { font-size: 0.85em; }",
             ".compact-table .tabulator-header { height: 30px; }",
             ".compact-table .tabulator-row { height: 28px; }",
-            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'summary' 'chart' 'transactions'; } }"
+            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'summary' 'chart' 'transactions' 'drilldown' 'trends' 'patterns'; } }"
         ]
     },
     "dataLoaders": [
@@ -160,6 +163,102 @@
             "calculation": {
                 "vegaExpression": "'$' + format(length(data('currentBalance')) > 0 ? data('currentBalance')[0].total : 0, ',.2f')"
             }
+        },
+        {
+            "variableId": "transactionsByCategory",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["editableTransactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'expense'"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "abs(datum.amount)",
+                        "as": "absAmount"
+                    },
+                    {
+                        "type": "aggregate",
+                        "groupby": ["category"],
+                        "ops": ["sum", "count", "mean", "max"],
+                        "fields": ["absAmount", "absAmount", "absAmount", "absAmount"],
+                        "as": ["totalAmount", "transactionCount", "avgAmount", "maxAmount"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "dailySpending",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["editableTransactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'expense'"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "abs(datum.amount)",
+                        "as": "absAmount"
+                    },
+                    {
+                        "type": "aggregate",
+                        "groupby": ["date"],
+                        "ops": ["sum"],
+                        "fields": ["absAmount"],
+                        "as": ["dailyTotal"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "spendingByDayOfWeek",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["editableTransactions"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.type === 'expense'"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "abs(datum.amount)",
+                        "as": "absAmount"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datetime(datum.date)",
+                        "as": "dateTime"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "day(datum.dateTime)",
+                        "as": "dayOfWeek"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.dayOfWeek === 0 ? 'Sunday' : datum.dayOfWeek === 1 ? 'Monday' : datum.dayOfWeek === 2 ? 'Tuesday' : datum.dayOfWeek === 3 ? 'Wednesday' : datum.dayOfWeek === 4 ? 'Thursday' : datum.dayOfWeek === 5 ? 'Friday' : 'Saturday'",
+                        "as": "dayName"
+                    },
+                    {
+                        "type": "aggregate",
+                        "groupby": ["dayOfWeek", "dayName"],
+                        "ops": ["sum", "count"],
+                        "fields": ["absAmount", "absAmount"],
+                        "as": ["totalSpent", "transactionCount"]
+                    }
+                ]
+            }
         }
     ],
     "groups": [
@@ -281,6 +380,86 @@
                     }
                 }
             ]
+        },
+        {
+            "groupId": "drilldown",
+            "elements": [
+                "### 🔍 Category Deep Dive",
+                "**Detailed breakdown of spending patterns by category**",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "transactionsByCategory",
+                    "editable": false,
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "initialSort": [
+                            {"column": "totalAmount", "dir": "desc"}
+                        ],
+                        "columns": [
+                            {
+                                "title": "Category",
+                                "field": "category",
+                                "sorter": "string"
+                            },
+                            {
+                                "title": "Total Spent",
+                                "field": "totalAmount",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "sorter": "number"
+                            },
+                            {
+                                "title": "Transactions",
+                                "field": "transactionCount",
+                                "sorter": "number"
+                            },
+                            {
+                                "title": "Avg per Transaction",
+                                "field": "avgAmount",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "sorter": "number"
+                            },
+                            {
+                                "title": "Largest Transaction",
+                                "field": "maxAmount",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "sorter": "number"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "trends",
+            "elements": [
+                "### 📈 Spending Trends",
+                {
+                    "type": "chart",
+                    "chartKey": "dailySpendingTrend"
+                }
+            ]
+        },
+        {
+            "groupId": "patterns",
+            "elements": [
+                "### 📅 Spending Patterns",
+                {
+                    "type": "chart",
+                    "chartKey": "dayOfWeekSpending"
+                }
+            ]
         }
     ],
     "resources": {
@@ -325,6 +504,73 @@
                     "tooltip": [
                         {"field": "category", "type": "nominal", "title": "Category"},
                         {"field": "totalAmount", "type": "quantitative", "title": "Amount", "format": "$,.2f"}
+                    ]
+                }
+            },
+            "dailySpendingTrend": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 250,
+                "data": {
+                    "name": "dailySpending"
+                },
+                "mark": {
+                    "type": "line",
+                    "point": true,
+                    "strokeWidth": 3
+                },
+                "encoding": {
+                    "x": {
+                        "field": "date",
+                        "type": "temporal",
+                        "title": "Date"
+                    },
+                    "y": {
+                        "field": "dailyTotal",
+                        "type": "quantitative",
+                        "title": "Daily Spending ($)"
+                    },
+                    "color": {
+                        "value": "#667eea"
+                    },
+                    "tooltip": [
+                        {"field": "date", "type": "temporal", "title": "Date"},
+                        {"field": "dailyTotal", "type": "quantitative", "title": "Amount", "format": "$,.2f"}
+                    ]
+                }
+            },
+            "dayOfWeekSpending": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 250,
+                "data": {
+                    "name": "spendingByDayOfWeek"
+                },
+                "mark": "bar",
+                "encoding": {
+                    "x": {
+                        "field": "dayName",
+                        "type": "ordinal",
+                        "title": "Day of Week",
+                        "sort": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+                    },
+                    "y": {
+                        "field": "totalSpent",
+                        "type": "quantitative",
+                        "title": "Total Spent ($)"
+                    },
+                    "color": {
+                        "field": "totalSpent",
+                        "type": "quantitative",
+                        "scale": {
+                            "range": ["#e8f4f8", "#2e86ab"]
+                        },
+                        "legend": null
+                    },
+                    "tooltip": [
+                        {"field": "dayName", "type": "nominal", "title": "Day"},
+                        {"field": "totalSpent", "type": "quantitative", "title": "Amount", "format": "$,.2f"},
+                        {"field": "transactionCount", "type": "quantitative", "title": "Transactions"}
                     ]
                 }
             }
