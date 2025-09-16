@@ -81,6 +81,8 @@ Chartifact consists of several interoperating modules:
    - There are no console errors or warnings
    - All components render correctly
    - Interactive elements function as expected
+- If issues are found, fix them before finalizing your changes.
+- Attach the smoke screenshot to your PR for verification.
 
 ## Runtime host
 
