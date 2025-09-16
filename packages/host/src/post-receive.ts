@@ -10,10 +10,7 @@ export function setupPostMessageHandling(host: Listener) {
         try {
             // Validate the message structure
             if (!event.data || typeof event.data !== 'object') {
-                host.errorHandler(
-                    'Invalid message format',
-                    'Received message is not an object or is undefined.'
-                );
+                console.log('Received invalid message format: expected object, got', event.data);
                 return;
             }
 

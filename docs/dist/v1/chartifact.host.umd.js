@@ -2888,10 +2888,7 @@ ${guardedJs}
     window.addEventListener("message", (event) => {
       try {
         if (!event.data || typeof event.data !== "object") {
-          host.errorHandler(
-            "Invalid message format",
-            "Received message is not an object or is undefined."
-          );
+          console.log("Received invalid message format: expected object, got", event.data);
           return;
         }
         const message = event.data;
@@ -3137,22 +3134,22 @@ ${details}`;
       }
     }
     /**
-     * Check if the sandbox iframe is still functional by testing if we can access its content window
+     * Check if the sandbox iframe is still functional
+     * Conservative approach that only detects clear evidence of tombstoning
      */
     isSandboxFunctional() {
-      try {
-        if (!this.sandbox || !this.sandbox.iframe) {
-          return false;
-        }
-        const iframe = this.sandbox.iframe;
-        const contentWindow = iframe.contentWindow;
-        if (!contentWindow || !iframe.src || iframe.src === "about:blank") {
-          return false;
-        }
-        return true;
-      } catch (error) {
+      if (!this.sandbox || !this.sandbox.iframe) {
         return false;
       }
+      const iframe = this.sandbox.iframe;
+      const contentWindow = iframe.contentWindow;
+      if (!contentWindow) {
+        return false;
+      }
+      if (!iframe.src || iframe.src === "about:blank") {
+        return false;
+      }
+      return true;
     }
     /**
      * Cleanup method to remove event listeners
@@ -3294,7 +3291,7 @@ window.addEventListener('DOMContentLoaded', () => {
     };
     textarea.addEventListener('input', render);
     render();
-    const toolbar = Chartifact.toolbar.create('.chartifact-toolbar', { tweakButton: true, textarea });
+    const toolbar = Chartifact.toolbar.create('.chartifact-toolbar', { tweakButton: true, textarea, mode: 'json' });
     toolbar.manageTextareaVisibilityForAgents();
 });
 `;
