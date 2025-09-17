@@ -3232,9 +3232,11 @@ ${reconstitutedRules.join("\n\n")}
       errorHandler(e, pluginName$1, index2, "parse", container);
       return;
     }
+    const div = document.createElement("div");
+    container.appendChild(div);
     try {
       view = new vega.View(runtime, {
-        container,
+        container: div,
         renderer: renderer.options.vegaRenderer,
         logger: new VegaLogger((error) => {
           errorHandler(error, pluginName$1, index2, "view", container);

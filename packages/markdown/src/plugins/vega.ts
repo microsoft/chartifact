@@ -292,9 +292,12 @@ async function createVegaInstance(specInit: SpecInit, renderer: Renderer, errorH
         return;
     }
 
+    const div = document.createElement('div');
+    container.appendChild(div);
+
     try {
         view = new View(runtime, {
-            container,
+            container: div,
             renderer: renderer.options.vegaRenderer,
             logger: new VegaLogger(error => {
                 errorHandler(error, pluginName, index, 'view', container);
