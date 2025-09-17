@@ -4,9 +4,10 @@
     "style": {
         "css": [
             "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #0d1421; color: white; }",
-            "body { display: grid; grid-template-areas: 'header header header' 'summary summary summary' 'biggest profitable netprofit' 'charts charts charts' 'trades trades trades'; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1600px; margin: 0 auto; }",
+            "body { display: grid; grid-template-areas: 'header header header' 'modeler modeler modeler' 'summary summary summary' 'biggest profitable netprofit' 'charts charts charts' 'trades trades trades'; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1600px; margin: 0 auto; }",
             ".group { background: #1a2332; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid #2d3748; }",
             "#header { grid-area: header; background: linear-gradient(135deg, #00d09c 0%, #5ac53b 100%); color: white; text-align: center; }",
+            "#modeler { grid-area: modeler; min-width: 0; overflow: hidden; }",
             "#summary { grid-area: summary; text-align: center; }",
             "#biggest { grid-area: biggest; min-width: 0; overflow: hidden; }",
             "#profitable { grid-area: profitable; min-width: 0; overflow: hidden; }",
@@ -28,8 +29,8 @@
             ".compact-table { font-size: 0.9em; }",
             ".compact-table .tabulator-header { height: 35px; }",
             ".compact-table .tabulator-row { height: 32px; }",
-            "@media (max-width: 1200px) { body { grid-template-columns: 1fr 1fr; grid-template-areas: 'header header' 'summary summary' 'biggest profitable' 'netprofit netprofit' 'charts charts' 'trades trades'; } }",
-            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'summary' 'biggest' 'profitable' 'netprofit' 'charts' 'trades'; } }"
+            "@media (max-width: 1200px) { body { grid-template-columns: 1fr 1fr; grid-template-areas: 'header header' 'modeler modeler' 'summary summary' 'biggest profitable' 'netprofit netprofit' 'charts charts' 'trades trades'; } }",
+            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'modeler' 'summary' 'biggest' 'profitable' 'netprofit' 'charts' 'trades'; } }"
         ]
     },
     "dataLoaders": [
@@ -64,6 +65,26 @@
                 {"date": "2024-04-25", "stock": "SOFI", "company": "SoFi Technologies", "action": "sell", "quantity": 200, "price": 8.95, "fees": 0.50},
                 {"date": "2024-04-15", "stock": "RIVN", "company": "Rivian Automotive", "action": "buy", "quantity": 150, "price": 11.89, "fees": 0.50},
                 {"date": "2024-05-03", "stock": "RIVN", "company": "Rivian Automotive", "action": "sell", "quantity": 150, "price": 9.73, "fees": 0.50}
+            ]
+        },
+        {
+            "dataSourceName": "stockPrices",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"stock": "AAPL", "company": "Apple Inc.", "currentPrice": 195.89, "modeledPrice": 195.89},
+                {"stock": "TSLA", "company": "Tesla Inc.", "currentPrice": 188.13, "modeledPrice": 188.13},
+                {"stock": "MSFT", "company": "Microsoft Corp.", "currentPrice": 420.33, "modeledPrice": 420.33},
+                {"stock": "NVDA", "company": "NVIDIA Corp.", "currentPrice": 790.92, "modeledPrice": 790.92},
+                {"stock": "GOOGL", "company": "Alphabet Inc.", "currentPrice": 134.12, "modeledPrice": 134.12},
+                {"stock": "AMZN", "company": "Amazon.com Inc.", "currentPrice": 168.39, "modeledPrice": 168.39},
+                {"stock": "META", "company": "Meta Platforms Inc.", "currentPrice": 515.23, "modeledPrice": 515.23},
+                {"stock": "NFLX", "company": "Netflix Inc.", "currentPrice": 575.37, "modeledPrice": 575.37},
+                {"stock": "COIN", "company": "Coinbase Global Inc.", "currentPrice": 218.77, "modeledPrice": 218.77},
+                {"stock": "AMD", "company": "Advanced Micro Devices", "currentPrice": 195.42, "modeledPrice": 195.42},
+                {"stock": "PLTR", "company": "Palantir Technologies", "currentPrice": 22.15, "modeledPrice": 22.15},
+                {"stock": "SOFI", "company": "SoFi Technologies", "currentPrice": 8.95, "modeledPrice": 8.95},
+                {"stock": "RIVN", "company": "Rivian Automotive", "currentPrice": 9.73, "modeledPrice": 9.73}
             ]
         }
     ],
@@ -194,6 +215,64 @@
             "calculation": {
                 "vegaExpression": "format((winningTrades / (length(data('profitByCompany')) > 0 ? length(data('profitByCompany')) : 1)) * 100, '.1f') + '%'"
             }
+        },
+        {
+            "variableId": "modeledProfitByCompany",
+            "type": "object", 
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["profitByCompany", "editableStockPrices"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "lookup",
+                        "from": "editableStockPrices", 
+                        "key": "stock",
+                        "fields": ["modeledPrice"],
+                        "as": ["newPrice"]
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.newPrice || datum.currentPrice || 0",
+                        "as": "finalPrice"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.netProfit + (datum.finalPrice - datum.currentPrice) * 100",
+                        "as": "modeledNetProfit"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.modeledNetProfit > 0 ? 'WIN' : 'LOSS'",
+                        "as": "modeledProfitStatus"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "totalModeledProfit",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["modeledProfitByCompany"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["modeledNetProfit"],
+                        "as": ["totalModeledProfit"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "formattedModeledProfit",
+            "type": "string",
+            "initialValue": "$0.00",
+            "calculation": {
+                "vegaExpression": "format(length(data('totalModeledProfit')) > 0 ? data('totalModeledProfit')[0].totalModeledProfit : 0, ',.2f')"
+            }
         }
     ],
     "groups": [
@@ -202,6 +281,66 @@
             "elements": [
                 "# 🏹 Robin Hood Trading Dashboard",
                 "**Your complete trading performance analysis**"
+            ]
+        },
+        {
+            "groupId": "modeler",
+            "elements": [
+                "### 🎯 Stock Price Modeler",
+                "**Edit stock prices below to see how changes would affect your portfolio**",
+                {
+                    "type": "tabulator",
+                    "variableId": "editableStockPrices",
+                    "dataSourceName": "stockPrices",
+                    "editable": true,
+                    "cssClass": "compact-table",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "300px",
+                        "columns": [
+                            {
+                                "title": "Stock",
+                                "field": "stock",
+                                "width": 80,
+                                "editor": false
+                            },
+                            {
+                                "title": "Company",
+                                "field": "company",
+                                "width": 200,
+                                "editor": false
+                            },
+                            {
+                                "title": "Current Price",
+                                "field": "currentPrice",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "width": 120,
+                                "editor": false
+                            },
+                            {
+                                "title": "Modeled Price",
+                                "field": "modeledPrice",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "width": 120,
+                                "editor": "number",
+                                "editorParams": {
+                                    "step": 0.01,
+                                    "min": 0.01
+                                }
+                            }
+                        ]
+                    }
+                },
+                "",
+                "**Modeled Portfolio Value:** ${{formattedModeledProfit}}"
             ]
         },
         {
