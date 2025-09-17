@@ -1,0 +1,474 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Robin Hood Trading Dashboard",
+    "style": {
+        "css": [
+            "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #0d1421; color: white; }",
+            "body { display: grid; grid-template-areas: 'header header header' 'summary summary summary' 'biggest profitable netprofit' 'charts charts charts' 'trades trades trades'; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1600px; margin: 0 auto; }",
+            ".group { background: #1a2332; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid #2d3748; }",
+            "#header { grid-area: header; background: linear-gradient(135deg, #00d09c 0%, #5ac53b 100%); color: white; text-align: center; }",
+            "#summary { grid-area: summary; text-align: center; }",
+            "#biggest { grid-area: biggest; min-width: 0; overflow: hidden; }",
+            "#profitable { grid-area: profitable; min-width: 0; overflow: hidden; }",
+            "#netprofit { grid-area: netprofit; text-align: center; }",
+            "#charts { grid-area: charts; min-width: 0; overflow: hidden; }",
+            "#trades { grid-area: trades; min-width: 0; overflow: hidden; }",
+            "h1 { margin: 0; padding: 20px 0; font-size: 2.2em; font-weight: 700; }",
+            "h2 { margin: 10px 0; font-size: 2.2em; color: #00d09c; font-weight: 700; }",
+            "h3 { margin: 0 0 15px 0; font-size: 1.3em; color: #a0aec0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }",
+            ".profit-positive { color: #00d09c; }",
+            ".profit-negative { color: #ff5757; }",
+            ".tabulator { max-width: 100%; overflow: auto; background: #1a2332; }",
+            ".tabulator .tabulator-table { min-width: fit-content; }",
+            ".tabulator .tabulator-header { background: #2d3748; color: white; }",
+            ".tabulator .tabulator-row { background: #1a2332; border-bottom: 1px solid #2d3748; }",
+            ".tabulator .tabulator-row:hover { background: #2d3748; }",
+            ".compact-table { font-size: 0.9em; }",
+            ".compact-table .tabulator-header { height: 35px; }",
+            ".compact-table .tabulator-row { height: 32px; }",
+            "@media (max-width: 1200px) { body { grid-template-columns: 1fr 1fr; grid-template-areas: 'header header' 'summary summary' 'biggest profitable' 'netprofit netprofit' 'charts charts' 'trades trades'; } }",
+            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'summary' 'biggest' 'profitable' 'netprofit' 'charts' 'trades'; } }"
+        ]
+    },
+    "dataLoaders": [
+        {
+            "dataSourceName": "trades",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"date": "2024-01-15", "stock": "AAPL", "company": "Apple Inc.", "action": "buy", "quantity": 50, "price": 185.92, "fees": 0.50},
+                {"date": "2024-01-22", "stock": "AAPL", "company": "Apple Inc.", "action": "sell", "quantity": 50, "price": 195.89, "fees": 0.50},
+                {"date": "2024-01-18", "stock": "TSLA", "company": "Tesla Inc.", "action": "buy", "quantity": 25, "price": 219.16, "fees": 0.50},
+                {"date": "2024-02-05", "stock": "TSLA", "company": "Tesla Inc.", "action": "sell", "quantity": 25, "price": 188.13, "fees": 0.50},
+                {"date": "2024-01-25", "stock": "MSFT", "company": "Microsoft Corp.", "action": "buy", "quantity": 30, "price": 402.56, "fees": 0.50},
+                {"date": "2024-02-12", "stock": "MSFT", "company": "Microsoft Corp.", "action": "sell", "quantity": 30, "price": 420.33, "fees": 0.50},
+                {"date": "2024-02-08", "stock": "NVDA", "company": "NVIDIA Corp.", "action": "buy", "quantity": 15, "price": 722.48, "fees": 0.50},
+                {"date": "2024-02-28", "stock": "NVDA", "company": "NVIDIA Corp.", "action": "sell", "quantity": 15, "price": 790.92, "fees": 0.50},
+                {"date": "2024-02-14", "stock": "GOOGL", "company": "Alphabet Inc.", "action": "buy", "quantity": 20, "price": 139.69, "fees": 0.50},
+                {"date": "2024-03-05", "stock": "GOOGL", "company": "Alphabet Inc.", "action": "sell", "quantity": 20, "price": 134.12, "fees": 0.50},
+                {"date": "2024-02-20", "stock": "AMZN", "company": "Amazon.com Inc.", "action": "buy", "quantity": 40, "price": 153.75, "fees": 0.50},
+                {"date": "2024-03-12", "stock": "AMZN", "company": "Amazon.com Inc.", "action": "sell", "quantity": 40, "price": 168.39, "fees": 0.50},
+                {"date": "2024-03-01", "stock": "META", "company": "Meta Platforms Inc.", "action": "buy", "quantity": 35, "price": 487.09, "fees": 0.50},
+                {"date": "2024-03-20", "stock": "META", "company": "Meta Platforms Inc.", "action": "sell", "quantity": 35, "price": 515.23, "fees": 0.50},
+                {"date": "2024-03-08", "stock": "NFLX", "company": "Netflix Inc.", "action": "buy", "quantity": 12, "price": 598.54, "fees": 0.50},
+                {"date": "2024-03-25", "stock": "NFLX", "company": "Netflix Inc.", "action": "sell", "quantity": 12, "price": 575.37, "fees": 0.50},
+                {"date": "2024-03-15", "stock": "COIN", "company": "Coinbase Global Inc.", "action": "buy", "quantity": 80, "price": 254.31, "fees": 0.50},
+                {"date": "2024-04-02", "stock": "COIN", "company": "Coinbase Global Inc.", "action": "sell", "quantity": 80, "price": 218.77, "fees": 0.50},
+                {"date": "2024-03-22", "stock": "AMD", "company": "Advanced Micro Devices", "action": "buy", "quantity": 60, "price": 178.89, "fees": 0.50},
+                {"date": "2024-04-08", "stock": "AMD", "company": "Advanced Micro Devices", "action": "sell", "quantity": 60, "price": 195.42, "fees": 0.50},
+                {"date": "2024-04-01", "stock": "PLTR", "company": "Palantir Technologies", "action": "buy", "quantity": 100, "price": 24.77, "fees": 0.50},
+                {"date": "2024-04-18", "stock": "PLTR", "company": "Palantir Technologies", "action": "sell", "quantity": 100, "price": 22.15, "fees": 0.50},
+                {"date": "2024-04-10", "stock": "SOFI", "company": "SoFi Technologies", "action": "buy", "quantity": 200, "price": 7.32, "fees": 0.50},
+                {"date": "2024-04-25", "stock": "SOFI", "company": "SoFi Technologies", "action": "sell", "quantity": 200, "price": 8.95, "fees": 0.50},
+                {"date": "2024-04-15", "stock": "RIVN", "company": "Rivian Automotive", "action": "buy", "quantity": 150, "price": 11.89, "fees": 0.50},
+                {"date": "2024-05-03", "stock": "RIVN", "company": "Rivian Automotive", "action": "sell", "quantity": 150, "price": 9.73, "fees": 0.50}
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "variableId": "tradesWithValue",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["trades"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "expr": "datum.quantity * datum.price + datum.fees",
+                        "as": "totalValue"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.action === 'buy' ? -(datum.totalValue) : (datum.totalValue - 2 * datum.fees)",
+                        "as": "cashFlow"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "biggestTrades",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["tradesWithValue"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "window",
+                        "sort": [{"field": "totalValue", "order": "descending"}],
+                        "ops": ["rank"],
+                        "as": ["rank"]
+                    },
+                    {
+                        "type": "filter",
+                        "expr": "datum.rank <= 5"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "profitByCompany",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["tradesWithValue"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "groupby": ["stock", "company"],
+                        "ops": ["sum"],
+                        "fields": ["cashFlow"],
+                        "as": ["netProfit"]
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.netProfit > 0 ? 'Profitable' : 'Loss'",
+                        "as": "profitStatus"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "totalNetProfit",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["tradesWithValue"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["cashFlow"],
+                        "as": ["totalProfit"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "formattedNetProfit",
+            "type": "string",
+            "initialValue": "$0.00",
+            "calculation": {
+                "vegaExpression": "format(length(data('totalNetProfit')) > 0 ? data('totalNetProfit')[0].totalProfit : 0, ',.2f')"
+            }
+        },
+        {
+            "variableId": "profitClass",
+            "type": "string",
+            "initialValue": "",
+            "calculation": {
+                "vegaExpression": "(length(data('totalNetProfit')) > 0 ? data('totalNetProfit')[0].totalProfit : 0) >= 0 ? 'profit-positive' : 'profit-negative'"
+            }
+        },
+        {
+            "variableId": "totalTrades",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "length(data('trades'))"
+            }
+        },
+        {
+            "variableId": "winningTrades",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "length(pluck(data('profitByCompany'), 'netProfit')) > 0 ? length(pluck(data('profitByCompany'), 'netProfit', {'test': 'datum.netProfit > 0'})) : 0"
+            }
+        },
+        {
+            "variableId": "winRate",
+            "type": "string",
+            "initialValue": "0%",
+            "calculation": {
+                "vegaExpression": "format((winningTrades / (length(data('profitByCompany')) > 0 ? length(data('profitByCompany')) : 1)) * 100, '.1f') + '%'"
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "header",
+            "elements": [
+                "# 🏹 Robin Hood Trading Dashboard",
+                "**Your complete trading performance analysis**"
+            ]
+        },
+        {
+            "groupId": "summary",
+            "elements": [
+                "### 📈 Portfolio Summary",
+                "**Total Trades:** {{totalTrades}} | **Win Rate:** {{winRate}} | **Winning Positions:** {{winningTrades}}"
+            ]
+        },
+        {
+            "groupId": "biggest",
+            "elements": [
+                "### 💰 Biggest Trades by Value",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "biggestTrades",
+                    "cssClass": "compact-table",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "headerSort": false,
+                        "columns": [
+                            {
+                                "title": "Stock",
+                                "field": "stock",
+                                "width": 80
+                            },
+                            {
+                                "title": "Company",
+                                "field": "company",
+                                "width": 180
+                            },
+                            {
+                                "title": "Action",
+                                "field": "action",
+                                "width": 60,
+                                "formatter": "html",
+                                "formatterParams": {
+                                    "html": "value === 'buy' ? '<span style=\"color: #ff5757;\">BUY</span>' : '<span style=\"color: #00d09c;\">SELL</span>'"
+                                }
+                            },
+                            {
+                                "title": "Qty",
+                                "field": "quantity",
+                                "width": 60
+                            },
+                            {
+                                "title": "Price",
+                                "field": "price",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "width": 80
+                            },
+                            {
+                                "title": "Total Value",
+                                "field": "totalValue",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "width": 100
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "profitable",
+            "elements": [
+                "### 📊 Profitability by Company",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "profitByCompany",
+                    "cssClass": "compact-table",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "headerSort": false,
+                        "initialSort": [
+                            {"column": "netProfit", "dir": "desc"}
+                        ],
+                        "columns": [
+                            {
+                                "title": "Stock",
+                                "field": "stock",
+                                "width": 80
+                            },
+                            {
+                                "title": "Company",
+                                "field": "company",
+                                "width": 200
+                            },
+                            {
+                                "title": "Net P&L",
+                                "field": "netProfit",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "width": 100,
+                                "cellFormatter": "function(cell) { var value = cell.getValue(); return value >= 0 ? '<span style=\"color: #00d09c;\">$' + Math.abs(value).toFixed(2) + '</span>' : '<span style=\"color: #ff5757;\">-$' + Math.abs(value).toFixed(2) + '</span>'; }"
+                            },
+                            {
+                                "title": "Status",
+                                "field": "profitStatus",
+                                "width": 80,
+                                "formatter": "html",
+                                "formatterParams": {
+                                    "html": "value === 'Profitable' ? '<span style=\"color: #00d09c; font-weight: bold;\">WIN</span>' : '<span style=\"color: #ff5757; font-weight: bold;\">LOSS</span>'"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "netprofit",
+            "elements": [
+                "### 💵 Total Net Profit/Loss",
+                "## <span class=\"{{profitClass}}\">${{formattedNetProfit}}</span>"
+            ]
+        },
+        {
+            "groupId": "charts",
+            "elements": [
+                "### 📈 Performance Charts",
+                {
+                    "type": "chart",
+                    "chartKey": "profitChart"
+                }
+            ]
+        },
+        {
+            "groupId": "trades",
+            "elements": [
+                "### 📋 Complete Trade History",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "tradesWithValue",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "400px",
+                        "initialSort": [
+                            {"column": "date", "dir": "desc"}
+                        ],
+                        "columns": [
+                            {
+                                "title": "Date",
+                                "field": "date",
+                                "sorter": "date",
+                                "width": 100
+                            },
+                            {
+                                "title": "Stock",
+                                "field": "stock",
+                                "width": 80
+                            },
+                            {
+                                "title": "Company",
+                                "field": "company",
+                                "width": 200
+                            },
+                            {
+                                "title": "Action",
+                                "field": "action",
+                                "width": 80,
+                                "formatter": "html",
+                                "formatterParams": {
+                                    "html": "value === 'buy' ? '<span style=\"color: #ff5757; font-weight: bold;\">BUY</span>' : '<span style=\"color: #00d09c; font-weight: bold;\">SELL</span>'"
+                                }
+                            },
+                            {
+                                "title": "Quantity",
+                                "field": "quantity",
+                                "width": 80
+                            },
+                            {
+                                "title": "Price",
+                                "field": "price",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "width": 100
+                            },
+                            {
+                                "title": "Fees",
+                                "field": "fees",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "width": 80
+                            },
+                            {
+                                "title": "Total Value",
+                                "field": "totalValue",
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                },
+                                "width": 120
+                            },
+                            {
+                                "title": "Cash Flow",
+                                "field": "cashFlow",
+                                "width": 120,
+                                "formatter": "function(cell) { var value = cell.getValue(); return value >= 0 ? '<span style=\"color: #00d09c;\">+$' + Math.abs(value).toFixed(2) + '</span>' : '<span style=\"color: #ff5757;\">-$' + Math.abs(value).toFixed(2) + '</span>'; }"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "resources": {
+        "charts": {
+            "profitChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 350,
+                "data": {
+                    "name": "profitByCompany"
+                },
+                "mark": {
+                    "type": "bar",
+                    "cornerRadiusEnd": 4
+                },
+                "encoding": {
+                    "x": {
+                        "field": "stock",
+                        "type": "nominal",
+                        "title": "Stock Symbol",
+                        "sort": {"field": "netProfit", "order": "descending"}
+                    },
+                    "y": {
+                        "field": "netProfit",
+                        "type": "quantitative",
+                        "title": "Net Profit/Loss ($)"
+                    },
+                    "color": {
+                        "field": "netProfit",
+                        "type": "quantitative",
+                        "scale": {
+                            "domain": [-3000, 0, 3000],
+                            "range": ["#ff5757", "#1a2332", "#00d09c"]
+                        },
+                        "legend": null
+                    },
+                    "tooltip": [
+                        {"field": "stock", "type": "nominal", "title": "Stock"},
+                        {"field": "company", "type": "nominal", "title": "Company"},
+                        {"field": "netProfit", "type": "quantitative", "title": "Net P&L", "format": "$,.2f"},
+                        {"field": "profitStatus", "type": "nominal", "title": "Status"}
+                    ]
+                },
+                "config": {
+                    "axis": {
+                        "labelColor": "#a0aec0",
+                        "titleColor": "#a0aec0",
+                        "domainColor": "#2d3748",
+                        "tickColor": "#2d3748"
+                    },
+                    "background": "#1a2332"
+                }
+            }
+        }
+    }
+}
