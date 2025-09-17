@@ -1,0 +1,5 @@
+StockSymbol,Quantity,PurchasePrice,CurrentPrice
+NVDA,50,450,900
+AMD,100,100,160
+TSMC,75,90,140
+PLTR,200,15,25
