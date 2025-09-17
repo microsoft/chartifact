@@ -3,19 +3,12 @@ import { validateDataLoader } from "./loader.js";
 import { validateGroup } from "./group.js";
 
 
-export async function validateDocument(page: InteractiveDocument, isNew: boolean) {
+export async function validateDocument(page: InteractiveDocument) {
     const errors: string[] = [];
 
     if (!page.title) {
         errors.push('Page title is required.');
     }
-
-    //variables
-    if (!page.variables) {
-        errors.push('Page must have a variables array (even if empty).');
-    }
-
-
 
     for (const dataLoader of page.dataLoaders || []) {
         const otherDataLoaders = (page.dataLoaders || []).filter(dl => dl !== dataLoader);
@@ -23,7 +16,7 @@ export async function validateDocument(page: InteractiveDocument, isNew: boolean
     }
 
     for (const group of page.groups) {
-        errors.push(...await validateGroup(group, isNew, page.variables, page.dataLoaders, page.resources?.charts));
+        errors.push(...await validateGroup(group, page.variables, page.dataLoaders, page.resources?.charts));
     }
     return errors;
 }
