@@ -32,7 +32,7 @@ export function validateDataSource(dataSource: DataSourceBase, variables: Variab
     }
 
     //check for collision with variable names
-    const existingVariable = variables.find((v) => v.variableId === dataSource.dataSourceName);
+    const existingVariable = variables?.find((v) => v.variableId === dataSource.dataSourceName);
     if (existingVariable) {
         errors.push(`Data source with dataSourceName ${dataSource.dataSourceName} collides with variable name.`);
     }
