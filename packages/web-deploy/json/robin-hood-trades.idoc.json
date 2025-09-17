@@ -18,15 +18,13 @@
             "h3 { margin: 0 0 15px 0; font-size: 1.3em; color: #a0aec0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }",
             ".profit-positive { color: #00d09c; }",
             ".profit-negative { color: #ff5757; }",
-            ".tabulator { max-width: 100%; overflow: auto; background: #1a2332; color: white; }",
+            ".tabulator { max-width: 100%; overflow: auto; background: #1a2332 !important; color: white !important; }",
             ".tabulator .tabulator-table { min-width: fit-content; }",
-            ".tabulator .tabulator-header { background: #2d3748; color: white; }",
-            ".tabulator .tabulator-row { background: #1a2332; border-bottom: 1px solid #2d3748; color: white; }",
-            ".tabulator .tabulator-row:hover { background: #2d3748; color: white; }",
-            ".tabulator .tabulator-cell { color: white; }",
+            ".tabulator .tabulator-header { background: #2d3748 !important; color: white !important; }",
+            ".tabulator .tabulator-row { background: #1a2332 !important; border-bottom: 1px solid #2d3748; color: white !important; }",
+            ".tabulator .tabulator-row:hover { background: #2d3748 !important; color: white !important; }",
+            ".tabulator .tabulator-cell { color: white !important; }",
             ".action-cell { font-weight: bold; }",
-            ".profit-positive h2 { color: #00d09c !important; }",
-            ".profit-negative h2 { color: #ff5757 !important; }",
             ".compact-table { font-size: 0.9em; }",
             ".compact-table .tabulator-header { height: 35px; }",
             ".compact-table .tabulator-row { height: 32px; }",
@@ -87,6 +85,11 @@
                         "type": "formula",
                         "expr": "datum.action === 'buy' ? -(datum.totalValue) : (datum.totalValue - 2 * datum.fees)",
                         "as": "cashFlow"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "upper(datum.action)",
+                        "as": "actionDisplay"
                     }
                 ]
             }
@@ -129,7 +132,7 @@
                     },
                     {
                         "type": "formula",
-                        "expr": "datum.netProfit > 0 ? 'Profitable' : 'Loss'",
+                        "expr": "datum.netProfit > 0 ? 'WIN' : 'LOSS'",
                         "as": "profitStatus"
                     }
                 ]
@@ -232,10 +235,9 @@
                             },
                             {
                                 "title": "Action",
-                                "field": "action",
+                                "field": "actionDisplay",
                                 "width": 60,
-                                "formatter": "function(cell) { var value = cell.getValue(); return value === 'buy' ? 'BUY' : 'SELL'; }",
-                                "cssClass": "action-cell"
+                                "formatter": "plaintext"
                             },
                             {
                                 "title": "Qty",
@@ -311,7 +313,7 @@
                                 "title": "Status",
                                 "field": "profitStatus",
                                 "width": 80,
-                                "formatter": "function(cell) { var value = cell.getValue(); return value === 'Profitable' ? 'WIN' : 'LOSS'; }"
+                                "formatter": "plaintext"
                             }
                         ]
                     }
@@ -320,7 +322,6 @@
         },
         {
             "groupId": "netprofit",
-            "cssClass": "{{profitClass}}",
             "elements": [
                 "### 💵 Total Net Profit/Loss",
                 "## **${{formattedNetProfit}}**"
@@ -368,9 +369,9 @@
                             },
                             {
                                 "title": "Action",
-                                "field": "action",
+                                "field": "actionDisplay",
                                 "width": 80,
-                                "formatter": "function(cell) { var value = cell.getValue(); return value === 'buy' ? 'BUY' : 'SELL'; }"
+                                "formatter": "plaintext"
                             },
                             {
                                 "title": "Quantity",
