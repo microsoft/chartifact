@@ -22,7 +22,7 @@ export function setupClipboardHandling(host: Listener) {
         const item = clipboardData.items[i];
 
         if (item.kind === 'string' && item.type === 'text/plain') {
-          item.getAsString((content) => {
+          item.getAsString(async (content) => {
             if (!content) {
               host.errorHandler(
                 'Pasted content is empty',
@@ -38,7 +38,7 @@ export function setupClipboardHandling(host: Listener) {
               );
               return;
             }
-            determineContent('clipboard-content', content, host, true, true);
+            await determineContent('clipboard-content', content, host, true, true);
           });
           handled = true;
           break;

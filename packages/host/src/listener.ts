@@ -3,7 +3,7 @@
 * Licensed under the MIT License.
 */
 import { Sandbox } from '@microsoft/chartifact-sandbox';
-import { targetMarkdown } from '@microsoft/chartifact-compiler';
+import { targetMarkdown, validation } from '@microsoft/chartifact-compiler';
 import { setupClipboardHandling } from './clipboard.js';
 import { setupDragDropHandling } from './dragdrop.js';
 import { setupFileUpload } from './upload.js';
@@ -186,7 +186,7 @@ export class Listener {
     }
   }
 
-  public render(title: string, markdown: string | null, interactiveDocument: InteractiveDocument | null, showRestart: boolean) {
+  public async render(title: string, markdown: string | null, interactiveDocument: InteractiveDocument | null, showRestart: boolean) {
     if (this.toolbar) {
       this.toolbar.filename = title;
     }
@@ -196,7 +196,16 @@ export class Listener {
       if (this.toolbar) {
         this.toolbar.mode = 'json';
       }
-      this.renderInteractiveDocument(interactiveDocument);
+      const validationErrors = await validation.validateDocument(interactiveDocument);
+      if (validationErrors.length > 0) {
+        this.errorHandler(
+          'Invalid interactive document',
+          'Please fix the following errors:\n\n' + validationErrors.map(e => `- ${e}`).join('\n')
+        );
+        didError = true;
+      } else {
+        this.renderInteractiveDocument(interactiveDocument);
+      }
     } else if (markdown) {
       this.onSetMode('markdown', markdown, null);
       if (this.toolbar) {

@@ -8,7 +8,7 @@ import { determineContent } from "./string.js";
 export function readFile(file: File, host: Listener) {
     if (file.name.endsWith('.json') || file.name.endsWith('.md')) {
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
             let content = e.target?.result as string;
             if (!content) {
                 host.errorHandler(
@@ -25,7 +25,7 @@ export function readFile(file: File, host: Listener) {
                 );
                 return;
             }
-            determineContent(file.name, content, host, true, true);
+            await determineContent(file.name, content, host, true, true);
         };
         reader.onerror = (e) => {
             host.errorHandler(
