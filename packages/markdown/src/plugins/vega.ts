@@ -116,6 +116,7 @@ export const vegaPlugin: Plugin<Spec> = {
                         view.runAfter(async () => {
                             if (receiveBatch(batch, signalBus, vegaInstance)) {
                                 signalBus.log(vegaInstance.id, 'running after _pulse, changes from', from);
+                                view.resize();
                                 vegaInstance.needToRun = true;
                             } else {
                                 signalBus.log(vegaInstance.id, 'no changes');
