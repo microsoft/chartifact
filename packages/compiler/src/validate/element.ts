@@ -1,7 +1,7 @@
 import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, ImageElement, MermaidElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
 import { getChartType } from "../util.js";
 import { validateVegaLite, validateVegaChart } from "./chart.js";
-import { validateVariableID, validateRequiredString, validateOptionalString, validateOptionalPositiveNumber, validateOptionalBoolean, validateOptionalObject, validateInputElementWithVariableId } from "./common.js";
+import { validateVariableID, validateRequiredString, validateOptionalString, validateOptionalPositiveNumber, validateOptionalBoolean, validateOptionalObject, validateInputElementWithVariableId, validateMarkdownString } from "./common.js";
 
 export function flattenMarkdownElements(elements: PageElement[]) {
     return elements.reduce((acc, e) => {
@@ -78,6 +78,9 @@ export async function validateElement(element: PageElement, variables: Variable[
                     errors.push(...validateOptionalString(mermaidElement.diagramText, 'diagramText', 'Mermaid'));
                     if (mermaidElement.diagramText && mermaidElement.diagramText.trim() === '') {
                         errors.push('Mermaid element diagramText cannot be empty');
+                    }
+                    if (mermaidElement.diagramText) {
+                        errors.push(...validateMarkdownString(mermaidElement.diagramText, 'diagramText', 'Mermaid'));
                     }
                     
                     // Validate template if present
@@ -156,6 +159,9 @@ export async function validateElement(element: PageElement, variables: Variable[
             }
         } else if (typeof element !== 'string') {
             errors.push('Element must be an array or a string.');
+        } else {
+            // Validate string elements (markdown content) for HTML
+            errors.push(...validateMarkdownString(element, 'content', 'Markdown'));
         }
     }
     return errors.filter(Boolean);
