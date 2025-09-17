@@ -198,7 +198,7 @@ export function validateCalculation(calculation: Calculation, variables: Variabl
                     } else {
                         // Check if the data source exists in variables or dataLoaders
                         const existsInVariables = variables.some(v => v.variableId === dsName);
-                        const existsInDataLoaders = dataLoaders.some(dl => dl.dataSourceName === dsName);
+                        const existsInDataLoaders = dataLoaders.filter(dl => dl.type !== 'spec').some(dl => dl.dataSourceName === dsName);
                         if (!existsInVariables && !existsInDataLoaders) {
                             errors.push(`DataFrameCalculation references unknown data source: ${dsName}`);
                         }
