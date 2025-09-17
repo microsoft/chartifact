@@ -18,11 +18,15 @@
             "h3 { margin: 0 0 15px 0; font-size: 1.3em; color: #a0aec0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }",
             ".profit-positive { color: #00d09c; }",
             ".profit-negative { color: #ff5757; }",
-            ".tabulator { max-width: 100%; overflow: auto; background: #1a2332; }",
+            ".tabulator { max-width: 100%; overflow: auto; background: #1a2332; color: white; }",
             ".tabulator .tabulator-table { min-width: fit-content; }",
             ".tabulator .tabulator-header { background: #2d3748; color: white; }",
-            ".tabulator .tabulator-row { background: #1a2332; border-bottom: 1px solid #2d3748; }",
-            ".tabulator .tabulator-row:hover { background: #2d3748; }",
+            ".tabulator .tabulator-row { background: #1a2332; border-bottom: 1px solid #2d3748; color: white; }",
+            ".tabulator .tabulator-row:hover { background: #2d3748; color: white; }",
+            ".tabulator .tabulator-cell { color: white; }",
+            ".action-cell { font-weight: bold; }",
+            ".profit-positive h2 { color: #00d09c !important; }",
+            ".profit-negative h2 { color: #ff5757 !important; }",
             ".compact-table { font-size: 0.9em; }",
             ".compact-table .tabulator-header { height: 35px; }",
             ".compact-table .tabulator-row { height: 32px; }",
@@ -230,10 +234,8 @@
                                 "title": "Action",
                                 "field": "action",
                                 "width": 60,
-                                "formatter": "html",
-                                "formatterParams": {
-                                    "html": "value === 'buy' ? '<span style=\"color: #ff5757;\">BUY</span>' : '<span style=\"color: #00d09c;\">SELL</span>'"
-                                }
+                                "formatter": "function(cell) { var value = cell.getValue(); return value === 'buy' ? 'BUY' : 'SELL'; }",
+                                "cssClass": "action-cell"
                             },
                             {
                                 "title": "Qty",
@@ -299,16 +301,17 @@
                                     "precision": 2
                                 },
                                 "width": 100,
-                                "cellFormatter": "function(cell) { var value = cell.getValue(); return value >= 0 ? '<span style=\"color: #00d09c;\">$' + Math.abs(value).toFixed(2) + '</span>' : '<span style=\"color: #ff5757;\">-$' + Math.abs(value).toFixed(2) + '</span>'; }"
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                }
                             },
                             {
                                 "title": "Status",
                                 "field": "profitStatus",
                                 "width": 80,
-                                "formatter": "html",
-                                "formatterParams": {
-                                    "html": "value === 'Profitable' ? '<span style=\"color: #00d09c; font-weight: bold;\">WIN</span>' : '<span style=\"color: #ff5757; font-weight: bold;\">LOSS</span>'"
-                                }
+                                "formatter": "function(cell) { var value = cell.getValue(); return value === 'Profitable' ? 'WIN' : 'LOSS'; }"
                             }
                         ]
                     }
@@ -317,9 +320,10 @@
         },
         {
             "groupId": "netprofit",
+            "cssClass": "{{profitClass}}",
             "elements": [
                 "### 💵 Total Net Profit/Loss",
-                "## <span class=\"{{profitClass}}\">${{formattedNetProfit}}</span>"
+                "## **${{formattedNetProfit}}**"
             ]
         },
         {
@@ -366,10 +370,7 @@
                                 "title": "Action",
                                 "field": "action",
                                 "width": 80,
-                                "formatter": "html",
-                                "formatterParams": {
-                                    "html": "value === 'buy' ? '<span style=\"color: #ff5757; font-weight: bold;\">BUY</span>' : '<span style=\"color: #00d09c; font-weight: bold;\">SELL</span>'"
-                                }
+                                "formatter": "function(cell) { var value = cell.getValue(); return value === 'buy' ? 'BUY' : 'SELL'; }"
                             },
                             {
                                 "title": "Quantity",
@@ -410,7 +411,11 @@
                                 "title": "Cash Flow",
                                 "field": "cashFlow",
                                 "width": 120,
-                                "formatter": "function(cell) { var value = cell.getValue(); return value >= 0 ? '<span style=\"color: #00d09c;\">+$' + Math.abs(value).toFixed(2) + '</span>' : '<span style=\"color: #ff5757;\">-$' + Math.abs(value).toFixed(2) + '</span>'; }"
+                                "formatter": "money",
+                                "formatterParams": {
+                                    "symbol": "$",
+                                    "precision": 2
+                                }
                             }
                         ]
                     }
