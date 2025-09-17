@@ -1,6 +1,6 @@
 {
     "$schema": "../../../docs/schema/idoc_v1.json",
-    "title": "Apple Fitness Rings",
+    "title": "Fitness Rings",
     "style": {
         "css": [
             "body { font-family: 'SF Pro Display', 'Helvetica Neue', 'Arial', sans-serif; margin: 0; padding: 20px; background: #000; color: #fff; }",
