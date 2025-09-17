@@ -2,7 +2,7 @@ import { ElementGroup, Variable, DataLoader, Vega_or_VegaLite_spec } from "@micr
 import { flattenMarkdownElements, validateElement } from "./element.js";
 
 
-export async function validateGroup(group: ElementGroup, isNew: boolean, variables: Variable[], dataLoaders: DataLoader[], charts?: { [chartKey: string]: Vega_or_VegaLite_spec }) {
+export async function validateGroup(group: ElementGroup, variables: Variable[], dataLoaders: DataLoader[], charts?: { [chartKey: string]: Vega_or_VegaLite_spec }) {
     const errors: string[] = [];
 
     //concatenate markdown elements
