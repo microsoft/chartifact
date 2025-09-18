@@ -18,6 +18,16 @@ function convertToMarkdown(interactiveDocument: InteractiveDocument): string {
 }
 
 async function convertJsonFiles(sourceDir: string, destDir: string, jsonCopyBase: string) {
+    // Ensure the main destination directories exist
+    if (!fs.existsSync(destDir)) {
+        fs.mkdirSync(destDir, { recursive: true });
+        console.log(`Created directory: ${destDir}`);
+    }
+    if (!fs.existsSync(jsonCopyBase)) {
+        fs.mkdirSync(jsonCopyBase, { recursive: true });
+        console.log(`Created directory: ${jsonCopyBase}`);
+    }
+
     const files = fs.readdirSync(sourceDir, { withFileTypes: true });
 
     for (const file of files) {
