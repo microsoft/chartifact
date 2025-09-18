@@ -38,7 +38,7 @@ export interface HostRenderRequestMessage {
 
 export interface HostStatusMessage {
     type: 'hostStatus';
-    hostStatus: 'ready' | 'compiling' | 'rendering' | 'rendered' | 'error' | 'loading';
+    hostStatus: 'ready' | 'validating' | 'compiling' | 'rendering' | 'rendered' | 'error' | 'loading';
     details?: string;
 }
 

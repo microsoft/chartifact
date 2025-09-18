@@ -184,6 +184,7 @@ export class Listener {
       this.previewDiv.appendChild(pMessage);
       this.previewDiv.appendChild(pDetails);
     }
+    console.error('Error:', message, details);
   }
 
   public async render(title: string, markdown: string | null, interactiveDocument: InteractiveDocument | null, showRestart: boolean) {
@@ -196,16 +197,7 @@ export class Listener {
       if (this.toolbar) {
         this.toolbar.mode = 'json';
       }
-      const validationErrors = await validation.validateDocument(interactiveDocument);
-      if (validationErrors.length > 0) {
-        this.errorHandler(
-          'Invalid interactive document',
-          'Please fix the following errors:\n\n' + validationErrors.map(e => `- ${e}`).join('\n')
-        );
-        didError = true;
-      } else {
-        this.renderInteractiveDocument(interactiveDocument);
-      }
+      didError = !await this.renderInteractiveDocument(interactiveDocument);
     } else if (markdown) {
       this.onSetMode('markdown', markdown, null);
       if (this.toolbar) {
@@ -233,10 +225,22 @@ export class Listener {
     this.removeInteractionHandlers = []; // Clear handlers after rendering
   }
 
-  public renderInteractiveDocument(content: InteractiveDocument) {
-    postStatus(this.options.postMessageTarget, { type: 'hostStatus', hostStatus: 'compiling', details: 'Starting interactive document compilation' });
-    const markdown = targetMarkdown(content);
-    this.renderMarkdown(markdown);
+  public async renderInteractiveDocument(content: InteractiveDocument) {
+    let didError = false;
+    postStatus(this.options.postMessageTarget, { type: 'hostStatus', hostStatus: 'validating', details: 'Starting interactive document validation' });
+    const validationErrors = await validation.validateDocument(content);
+    if (validationErrors.length > 0) {
+      this.errorHandler(
+        'Invalid interactive document',
+        'Please fix the following errors:\n\n' + validationErrors.map(e => `- ${e}`).join('\n')
+      );
+      didError = true;
+    } else {
+      postStatus(this.options.postMessageTarget, { type: 'hostStatus', hostStatus: 'compiling', details: 'Starting interactive document compilation' });
+      const markdown = targetMarkdown(content);
+      this.renderMarkdown(markdown);
+    }
+    return !didError;
   }
 
   private hideLoadingAndHelp() {
@@ -246,7 +250,7 @@ export class Listener {
 
   public renderMarkdown(markdown: string) {
     this.hideLoadingAndHelp();
-    
+
     // Store current markdown for potential restoration
     this.currentMarkdown = markdown;
 
@@ -304,21 +308,21 @@ export class Listener {
     if (!this.sandbox || !this.sandbox.iframe) {
       return false;
     }
-    
+
     const iframe = this.sandbox.iframe;
     const contentWindow = iframe.contentWindow;
-    
+
     // Only recreate if we have clear evidence of a broken iframe
     // Missing contentWindow is a clear sign of tombstoning
     if (!contentWindow) {
       return false;
     }
-    
+
     // Missing or invalid src indicates a problem
     if (!iframe.src || iframe.src === 'about:blank') {
       return false;
     }
-    
+
     // For normal cases (including blob URLs), assume functional to preserve user state
     // Only the clear failures above will trigger recreation
     return true;
