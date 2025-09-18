@@ -20,8 +20,8 @@ export function flattenMarkdownElements(elements: PageElement[]) {
 
 export async function validateElement(element: PageElement, groupIndex: number, elementIndex: number, variables: Variable[], dataLoaders: DataLoader[], charts?: { [chartKey: string]: Vega_or_VegaLite_spec }) {
     const errors: string[] = [];
-    if (!element) {
-        errors.push('Element must not be null');
+    if (element == null) {  //catch both null and undefined
+        errors.push('Element must not be null or undefined.');
     } else {
         if (typeof element === 'object') {
             switch (element.type) {
