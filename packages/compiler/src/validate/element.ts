@@ -18,7 +18,7 @@ export function flattenMarkdownElements(elements: PageElement[]) {
     }, [] as PageElement[]);
 }
 
-export async function validateElement(element: PageElement, variables: Variable[], dataLoaders: DataLoader[], charts?: { [chartKey: string]: Vega_or_VegaLite_spec }) {
+export async function validateElement(element: PageElement, groupIndex: number, elementIndex: number, variables: Variable[], dataLoaders: DataLoader[], charts?: { [chartKey: string]: Vega_or_VegaLite_spec }) {
     const errors: string[] = [];
     if (!element) {
         errors.push('Element must not be null');
@@ -49,6 +49,34 @@ export async function validateElement(element: PageElement, variables: Variable[
                 }
                 case 'checkbox': {
                     errors.push(...validateInputElementWithVariableId(element));
+                    break;
+                }
+                case 'dropdown': {
+                    errors.push(...validateInputElementWithVariableId(element));
+                    //cannot have both static and dynamic options
+                    if (element.options && element.dynamicOptions) {
+                        errors.push('Dropdown cannot have both static and dynamic options');
+                        break;
+                    }
+                    if (element.dynamicOptions) {
+                        if (!element.dynamicOptions.dataSourceName) {
+                            errors.push('Dynamic dropdown must have a data source name');
+                        }
+                        if (!element.dynamicOptions.fieldName) {
+                            errors.push('Dynamic dropdown must have a field name');
+                        }
+                    }
+                    if (element.options) {
+                        // ensure each option is a string
+                        if (!Array.isArray(element.options)) {
+                            errors.push('Dropdown options must be an array of strings');
+                        }
+                        element.options.forEach((option, index) => {
+                            if (typeof option !== 'string') {
+                                errors.push(`Dropdown option at index ${index} must be a string`);
+                            }
+                        });
+                    }
                     break;
                 }
                 case 'image': {
@@ -106,32 +134,8 @@ export async function validateElement(element: PageElement, variables: Variable[
 
                     break;
                 }
-                case 'dropdown': {
+                case 'number': {
                     errors.push(...validateInputElementWithVariableId(element));
-                    //cannot have both static and dynamic options
-                    if (element.options && element.dynamicOptions) {
-                        errors.push('Dropdown cannot have both static and dynamic options');
-                        break;
-                    }
-                    if (element.dynamicOptions) {
-                        if (!element.dynamicOptions.dataSourceName) {
-                            errors.push('Dynamic dropdown must have a data source name');
-                        }
-                        if (!element.dynamicOptions.fieldName) {
-                            errors.push('Dynamic dropdown must have a field name');
-                        }
-                    }
-                    if (element.options) {
-                        // ensure each option is a string
-                        if (!Array.isArray(element.options)) {
-                            errors.push('Dropdown options must be an array of strings');
-                        }
-                        element.options.forEach((option, index) => {
-                            if (typeof option !== 'string') {
-                                errors.push(`Dropdown option at index ${index} must be a string`);
-                            }
-                        });
-                    }
                     break;
                 }
                 case 'presets': {
@@ -165,7 +169,7 @@ export async function validateElement(element: PageElement, variables: Variable[
                     break;
                 }
                 default: {
-                    errors.push(`Unknown element type: ${JSON.stringify(element)}`);
+                    errors.push(`Unknown element type at group ${groupIndex}, element index ${elementIndex}: ${JSON.stringify(element)}`);
                     break;
                 }
             }

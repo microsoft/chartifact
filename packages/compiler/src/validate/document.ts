@@ -19,8 +19,8 @@ export async function validateDocument(page: InteractiveDocument) {
         errors.push(...await validateDataLoader(dataLoader, variables, tabulatorElements, otherDataLoaders));
     }
 
-    for (const group of page.groups) {
-        errors.push(...await validateGroup(group, variables, dataLoaders, page.resources?.charts));
+    for (const [groupIndex, group] of page.groups.entries()) {
+        errors.push(...await validateGroup(group, groupIndex, variables, dataLoaders, page.resources?.charts));
     }
     return errors;
 }
