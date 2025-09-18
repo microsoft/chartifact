@@ -15,7 +15,7 @@ export interface ContentResult {
     errorDetail?: string;
 }
 
-export function determineContent(urlOrTitle: string, content: string, host: Listener, handle: boolean, showRestart: boolean): ContentResult {
+export async function determineContent(urlOrTitle: string, content: string, host: Listener, handle: boolean, showRestart: boolean): Promise<ContentResult> {
     const result = _determineContent(content);
     if (handle) {
         if (result.error) {
@@ -25,11 +25,11 @@ export function determineContent(urlOrTitle: string, content: string, host: List
             );
             return;
         } else if (result.idoc) {
-            host.render(urlOrTitle, undefined, result.idoc, showRestart);
+            await host.render(urlOrTitle, undefined, result.idoc, showRestart);
         } else if (result.folder) {
             loadFolder(urlOrTitle, result.folder, host);
         } else if (result.markdown) {
-            host.render(urlOrTitle, result.markdown, undefined, showRestart);
+            await host.render(urlOrTitle, result.markdown, undefined, showRestart);
         }
     }
     return result;

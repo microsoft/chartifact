@@ -3,27 +3,24 @@ import { validateDataLoader } from "./loader.js";
 import { validateGroup } from "./group.js";
 
 
-export async function validateDocument(page: InteractiveDocument, isNew: boolean) {
+export async function validateDocument(page: InteractiveDocument) {
     const errors: string[] = [];
 
     if (!page.title) {
         errors.push('Page title is required.');
     }
 
-    //variables
-    if (!page.variables) {
-        errors.push('Page must have a variables array (even if empty).');
+    const dataLoaders = page.dataLoaders || [];
+    const variables = page.variables || [];
+    const tabulatorElements = page.groups.flatMap(group => group.elements.filter(e => typeof e !== 'string' && e.type === 'tabulator'));
+
+    for (const dataLoader of dataLoaders) {
+        const otherDataLoaders = dataLoaders.filter(dl => dl !== dataLoader);
+        errors.push(...await validateDataLoader(dataLoader, variables, tabulatorElements, otherDataLoaders));
     }
 
-
-
-    for (const dataLoader of page.dataLoaders || []) {
-        const otherDataLoaders = (page.dataLoaders || []).filter(dl => dl !== dataLoader);
-        errors.push(...await validateDataLoader(dataLoader, page.variables, otherDataLoaders));
-    }
-
-    for (const group of page.groups) {
-        errors.push(...await validateGroup(group, isNew, page.variables, page.dataLoaders, page.resources?.charts));
+    for (const [groupIndex, group] of page.groups.entries()) {
+        errors.push(...await validateGroup(group, groupIndex, variables, dataLoaders, page.resources?.charts));
     }
     return errors;
 }

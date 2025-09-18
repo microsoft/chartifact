@@ -170,11 +170,11 @@ async function resolveUrl(title: string, base: string, relativeOrAbsolute: strin
         return;
     }
     if (result.idoc) {
-        host.render(title, undefined, result.idoc, false);
+        await host.render(title, undefined, result.idoc, false);
     } else if (result.markdown) {
-        host.render(title, result.markdown, undefined, false);
+        await host.render(title, result.markdown, undefined, false);
     } else if (result.folder) {
-        host.render('Error', 'Nested folders are not supported', undefined, false);
+        await host.render('Error', 'Nested folders are not supported', undefined, false);
     } else {
         host.errorHandler(
             'Invalid document format',

@@ -38,7 +38,8 @@ export async function loadViaUrl(loadUrl: string, host: Listener, handle: boolea
         errorDetail: `Error loading file from the provided URL`
       };
     }
-    return determineContent(url.href, response.body, host, handle, showRestart);
+    const result = await determineContent(url.href, response.body, host, handle, showRestart);
+    return result;
   } catch (error) {
     return {
       error: 'Error loading file',

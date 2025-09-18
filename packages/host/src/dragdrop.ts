@@ -13,7 +13,7 @@ export function setupDragDropHandling(host: Listener) {
     e.stopPropagation();
   };
 
-  const dropHandler = (e: DragEvent) => {
+  const dropHandler = async (e: DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -39,7 +39,7 @@ export function setupDragDropHandling(host: Listener) {
         );
         return;
       }
-      determineContent('dropped-content', content, host, true, true);
+      await determineContent('dropped-content', content, host, true, true);
     } else {
       host.errorHandler(
         'Unsupported drop content',

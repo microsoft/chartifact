@@ -1,6 +1,8 @@
-import { FilterTransform, Transforms } from "vega";
+import { FilterTransform, FormulaTransform, Transforms } from "vega";
+import { validateVegaExpression } from "./common.js";
+import { DataLoader, TabulatorElement, Variable } from "@microsoft/chartifact-schema";
 
-export function validateTransforms(dataFrameTransformations: Transforms[]) {
+export function validateTransforms(dataFrameTransformations: Transforms[], variables: Variable[], tabulatorElements: TabulatorElement[], dataLoaders: DataLoader[]) {
     const errors: string[] = [];
     //check transformations
     if (dataFrameTransformations) {
@@ -8,7 +10,7 @@ export function validateTransforms(dataFrameTransformations: Transforms[]) {
             errors.push('Data source dataFrameTransformations must be an array');
         } else {
             dataFrameTransformations.forEach((t, index) => {
-                const transformErrors = validateTransform(t);
+                const transformErrors = validateTransform(t, variables, tabulatorElements, dataLoaders);
                 if (transformErrors.length > 0) {
                     errors.push(`Transform ${index} has the following errors: ${transformErrors.join(', ')}`);
                 }
@@ -18,7 +20,7 @@ export function validateTransforms(dataFrameTransformations: Transforms[]) {
     return errors;
 }
 
-export function validateTransform(transform: Transforms) {
+export function validateTransform(transform: Transforms, variables: Variable[], tabulatorElements: TabulatorElement[], dataLoaders: DataLoader[]) {
     const errors: string[] = [];
     //check transformations
     if (transform) {
@@ -91,7 +93,16 @@ export function validateTransform(transform: Transforms) {
                         break;
                     }
                     case 'formula': {
-                        // TODO validate formula transform
+                        const t = transform as FormulaTransform;
+                        //ensure formula transform has a valid as property
+                        if (!t.as) {
+                            errors.push('Formula transform must have an as property');
+                        }
+                        //ensure formula transform has a valid expr property
+                        if (!t.expr) {
+                            errors.push('Formula transform must have an expr property');
+                        }
+                        errors.push(...validateVegaExpression(t.expr, variables, tabulatorElements, dataLoaders));
                         break;
                     }
                     case 'geojson': {
@@ -239,7 +250,7 @@ export function validateTransform(transform: Transforms) {
                         break;
                     }
                     default: {
-                        const t= transform as any;
+                        const t = transform as any;
                         errors.push(`Unknown transform type: ${t.type}`);
                     }
                 }

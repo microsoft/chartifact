@@ -1,4 +1,4 @@
-import { DataSourceBase, Variable } from "@microsoft/chartifact-schema";
+import { DataLoader, DataSourceBase, TabulatorElement, Variable } from "@microsoft/chartifact-schema";
 import { validateVariableID } from "./common.js";
 import { validateTransforms } from "./transforms.js";
 
@@ -11,7 +11,7 @@ export function validateDataSourceBase(ds: DataSourceBase) {
     return errors;
 }
 
-export function validateDataSource(dataSource: DataSourceBase, variables: Variable[], otherDataSources: DataSourceBase[]): string[] {
+export function validateDataSource(dataSource: DataSourceBase, variables: Variable[], tabulatorElements: TabulatorElement[], otherDataSources: DataSourceBase[]): string[] {
     const errors: string[] = validateDataSourceBase(dataSource);
 
     //ensure it has a dataSourceName
@@ -32,7 +32,10 @@ export function validateDataSource(dataSource: DataSourceBase, variables: Variab
     }
 
     //check for collision with variable names
-    const existingVariable = variables.find((v) => v.variableId === dataSource.dataSourceName);
+    const existingVariable =
+        variables?.find((v) => v.variableId === dataSource.dataSourceName)
+        || tabulatorElements?.find((t) => t.variableId === dataSource.dataSourceName)
+        ;
     if (existingVariable) {
         errors.push(`Data source with dataSourceName ${dataSource.dataSourceName} collides with variable name.`);
     }
@@ -43,8 +46,11 @@ export function validateDataSource(dataSource: DataSourceBase, variables: Variab
         errors.push(`Data source with dataSourceName ${dataSource.dataSourceName} already exists.`);
     }
 
+    //TODO cast to dataLoader type
+    const dataLoaders: DataLoader[] = [];
+
     //check transformations
-    errors.push(...validateTransforms(dataSource.dataFrameTransformations));
+    errors.push(...validateTransforms(dataSource.dataFrameTransformations, variables, tabulatorElements, dataLoaders));
 
     return errors;
 }

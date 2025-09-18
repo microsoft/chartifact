@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.7]
+
+Added json validation
+
 ## [1.0.6]
 
 Added plugin for number input
