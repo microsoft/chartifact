@@ -7,11 +7,13 @@ Please generate a Chartifact report for each client based on the CSV files and p
 3. A summary of key metrics and insights.
 4. An editable tabulator that allows the client to simulate different investment scenarios.
 
-The Chartifact reports should be based on these examples:
+## Examples
+This is MANDATORY - read and understand each of our standard documents:
 - docs/assets/examples/json/bank-statement.idoc.json
 - docs/assets/examples/json/personal-budget.idoc.json
 - docs/assets/examples/json/sales-report.idoc.json
 
+## Output
 The output should be one Chartifact report per client, organized and labeled clearly in a output folder.
 
 ## Schema
