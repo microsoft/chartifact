@@ -2,7 +2,7 @@ I have a folder structure where each folder is named after a client. Inside each
 
 Please generate a Chartifact report for each client based on the CSV files and profile.md in their respective folders. The report should include:
 
-1. A header that says Alex Quantum Capital on our brand color #44a08d in the background
+1. A header that says Alex Quantum Capital on our brand color #44a08d in the background (but do not use this color for charts.)
 2. Visualizations tailored to the type of investment (e.g., crypto trends, real estate ROI, stock performance).
 3. A summary of key metrics and insights.
 4. An editable tabulator that allows the client to simulate different investment scenarios.
@@ -12,6 +12,9 @@ This is MANDATORY - read and understand each of our standard documents:
 - docs/assets/examples/json/bank-statement.idoc.json
 - docs/assets/examples/json/personal-budget.idoc.json
 - docs/assets/examples/json/sales-report.idoc.json
+
+## Client Isolation
+Ensure that you do not mix client data, work with one client folder at a time. 
 
 ## Output
 The output should be one Chartifact report per client, organized and labeled clearly in a output folder.
