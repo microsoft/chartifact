@@ -51,6 +51,11 @@
       "title": "Personal Bank Statement",
       "description": "Track your transactions and spending patterns.",
       "href": "markdown/bank-statement.idoc.md"
+    },
+    {
+      "title": "Fitness Rings",
+      "description": "Interactive fitness tracker with activity rings visualization.",
+      "href": "markdown/activity-rings.idoc.md"
     }
   ]
 }

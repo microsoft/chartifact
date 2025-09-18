@@ -52,6 +52,11 @@
       "title": "Personal Bank Statement",
       "description": "Track your transactions and spending patterns.",
       "href": "json/bank-statement.idoc.json"
+    },
+    {
+      "title": "Fitness Rings",
+      "description": "Interactive fitness tracker with activity rings visualization.",
+      "href": "json/activity-rings.idoc.json"
     }
   ]
 }
