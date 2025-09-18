@@ -91,7 +91,7 @@ export function validateVariableID(id: string): string[] {
 export const variableTypes = ['number', 'string', 'boolean'];
 
 // HTML tag detection regex - matches opening and closing HTML tags
-const HTML_TAG_REGEX = /<\/?[a-zA-Z][a-zA-Z0-9\-]*(?:\s[^>]*)?>|<![^>]*>/g;
+const HTML_TAG_REGEX = /<![^<>]*>|<\/?[A-Za-z][A-Za-z0-9-]*(?:\s[^<>]*)?>/g;
 
 export function validateMarkdownString(value: string, propertyName: string, elementType: string): string[] {
     const errors: string[] = [];
