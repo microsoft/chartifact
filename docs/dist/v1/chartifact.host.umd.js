@@ -865,7 +865,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
             break;
           }
           default: {
-            errors.push(`Unknown element type at group ${groupIndex}, element index ${elementIndex}: ${JSON.stringify(element)}`);
+            errors.push(`Unknown element type ${element.type} at group ${groupIndex}, element index ${elementIndex}: ${JSON.stringify(element)}`);
             break;
           }
         }
@@ -3772,6 +3772,7 @@ ${details}`;
         this.previewDiv.appendChild(pMessage);
         this.previewDiv.appendChild(pDetails);
       }
+      console.error("Error:", message, details);
     }
     async render(title, markdown, interactiveDocument, showRestart) {
       if (this.toolbar) {
@@ -3783,16 +3784,7 @@ ${details}`;
         if (this.toolbar) {
           this.toolbar.mode = "json";
         }
-        const validationErrors = await validateDocument(interactiveDocument);
-        if (validationErrors.length > 0) {
-          this.errorHandler(
-            "Invalid interactive document",
-            "Please fix the following errors:\n\n" + validationErrors.map((e) => `- ${e}`).join("\n")
-          );
-          didError = true;
-        } else {
-          this.renderInteractiveDocument(interactiveDocument);
-        }
+        didError = !await this.renderInteractiveDocument(interactiveDocument);
       } else if (markdown) {
         this.onSetMode("markdown", markdown, null);
         if (this.toolbar) {
@@ -3818,10 +3810,22 @@ ${details}`;
       this.removeInteractionHandlers.forEach((removeHandler) => removeHandler());
       this.removeInteractionHandlers = [];
     }
-    renderInteractiveDocument(content) {
-      postStatus(this.options.postMessageTarget, { type: "hostStatus", hostStatus: "compiling", details: "Starting interactive document compilation" });
-      const markdown = targetMarkdown(content);
-      this.renderMarkdown(markdown);
+    async renderInteractiveDocument(content) {
+      let didError = false;
+      postStatus(this.options.postMessageTarget, { type: "hostStatus", hostStatus: "validating", details: "Starting interactive document validation" });
+      const validationErrors = await validateDocument(content);
+      if (validationErrors.length > 0) {
+        this.errorHandler(
+          "Invalid interactive document",
+          "Please fix the following errors:\n\n" + validationErrors.map((e) => `- ${e}`).join("\n")
+        );
+        didError = true;
+      } else {
+        postStatus(this.options.postMessageTarget, { type: "hostStatus", hostStatus: "compiling", details: "Starting interactive document compilation" });
+        const markdown = targetMarkdown(content);
+        this.renderMarkdown(markdown);
+      }
+      return !didError;
     }
     hideLoadingAndHelp() {
       show(this.loadingDiv, false);
@@ -3920,7 +3924,7 @@ ${details}`;
     <header class="chartifact-toolbar"></header>
 
     <main class="chartifact-main">
-        <textarea class="chartifact-source" id="source"
+        <textarea class="chartifact-source" id="source" spellcheck="false"
             placeholder="Type your Chartifact markdown here...">{{TEXTAREA_CONTENT}}</textarea>
 
         <div class="chartifact-preview" id="preview"></div>
@@ -3975,7 +3979,7 @@ window.addEventListener('DOMContentLoaded', () => {
     <header class="chartifact-toolbar"></header>
 
     <main class="chartifact-main">
-        <textarea class="chartifact-source" id="source"
+        <textarea class="chartifact-source" id="source" spellcheck="false"
             placeholder="Type your Chartifact json here...">{{TEXTAREA_CONTENT}}</textarea>
 
         <div class="chartifact-preview" id="preview"></div>

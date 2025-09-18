@@ -22,7 +22,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     <header class="chartifact-toolbar"></header>
 
     <main class="chartifact-main">
-        <textarea class="chartifact-source" id="source"
+        <textarea class="chartifact-source" id="source" spellcheck="false"
             placeholder="Type your Chartifact markdown here...">{{TEXTAREA_CONTENT}}</textarea>
 
         <div class="chartifact-preview" id="preview"></div>
@@ -77,7 +77,7 @@ window.addEventListener('DOMContentLoaded', () => {
     <header class="chartifact-toolbar"></header>
 
     <main class="chartifact-main">
-        <textarea class="chartifact-source" id="source"
+        <textarea class="chartifact-source" id="source" spellcheck="false"
             placeholder="Type your Chartifact json here...">{{TEXTAREA_CONTENT}}</textarea>
 
         <div class="chartifact-preview" id="preview"></div>

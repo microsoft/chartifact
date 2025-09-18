@@ -865,7 +865,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
             break;
           }
           default: {
-            errors.push(`Unknown element type at group ${groupIndex}, element index ${elementIndex}: ${JSON.stringify(element)}`);
+            errors.push(`Unknown element type ${element.type} at group ${groupIndex}, element index ${elementIndex}: ${JSON.stringify(element)}`);
             break;
           }
         }
