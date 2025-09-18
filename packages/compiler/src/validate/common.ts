@@ -1,4 +1,4 @@
-import { Variable, DataLoader, Calculation } from '@microsoft/chartifact-schema';
+import { Variable, DataLoader, Calculation, TabulatorElement } from '@microsoft/chartifact-schema';
 import { parse } from 'vega';
 import { createSpecWithVariables } from '../spec.js';
 import { validateTransforms } from './transforms.js';
@@ -61,12 +61,12 @@ export function validateOptionalObject(value: any, propertyName: string, element
 export function validateInputElementWithVariableId(element: { type: string; variableId: string }): string[] {
     const errors: string[] = [];
     errors.push(...validateVariableID(element.variableId));
-    
+
     // Check if variableId contains element type
     if (element.variableId.includes(element.type)) {
         errors.push(`VariableID must not contain the element type: ${element.type}`);
     }
-    
+
     return errors;
 }
 
@@ -104,7 +104,7 @@ export function validateMarkdownString(value: string, propertyName: string, elem
     return errors;
 }
 
-export function validateVariable(variable: Variable, otherVariables: Variable[], dataLoaders: DataLoader[]): string[] {
+export function validateVariable(variable: Variable, otherVariables: Variable[], tabulatorElements: TabulatorElement[], dataLoaders: DataLoader[]): string[] {
     const errors: string[] = [];
 
     if (typeof variable !== 'object' || variable === null) {
@@ -153,7 +153,7 @@ export function validateVariable(variable: Variable, otherVariables: Variable[],
     }
 
     if (variable.calculation) {
-        const calculationErrors = validateCalculation(variable.calculation, otherVariables, dataLoaders);
+        const calculationErrors = validateCalculation(variable.calculation, otherVariables, tabulatorElements, dataLoaders);
         if (calculationErrors.length > 0) {
             errors.push(...calculationErrors.map((error) => `Calculation error: ${error}`));
         }
@@ -174,7 +174,7 @@ export function validateVariable(variable: Variable, otherVariables: Variable[],
     return errors;
 }
 
-export function validateCalculation(calculation: Calculation, variables: Variable[], dataLoaders: DataLoader[]): string[] {
+export function validateCalculation(calculation: Calculation, variables: Variable[], tabulatorElements: TabulatorElement[], dataLoaders: DataLoader[]): string[] {
     const errors: string[] = [];
 
     if (typeof calculation !== 'object' || calculation === null) {
@@ -186,7 +186,7 @@ export function validateCalculation(calculation: Calculation, variables: Variabl
     if ('dataSourceNames' in calculation || 'dataFrameTransformations' in calculation) {
         // Validate DataFrameCalculation
         const dfCalc = calculation as any; // Using any for now to access properties
-        
+
         if (dfCalc.dataSourceNames) {
             if (!Array.isArray(dfCalc.dataSourceNames)) {
                 errors.push('DataFrameCalculation dataSourceNames must be an array.');
@@ -198,7 +198,9 @@ export function validateCalculation(calculation: Calculation, variables: Variabl
                     } else {
                         // Check if the data source exists in variables or dataLoaders
                         const existsInVariables = variables.some(v => v.variableId === dsName);
-                        const existsInDataLoaders = dataLoaders.filter(dl => dl.type !== 'spec').some(dl => dl.dataSourceName === dsName);
+                        const existsInDataLoaders = dataLoaders.filter(dl => {
+                            return dl.type !== 'spec';
+                        }).some(dl => dl.dataSourceName === dsName);
                         if (!existsInVariables && !existsInDataLoaders) {
                             errors.push(`DataFrameCalculation references unknown data source: ${dsName}`);
                         }
@@ -208,7 +210,7 @@ export function validateCalculation(calculation: Calculation, variables: Variabl
         }
 
         if (dfCalc.dataFrameTransformations) {
-            errors.push(...validateTransforms(dfCalc.dataFrameTransformations));
+            errors.push(...validateTransforms(dfCalc.dataFrameTransformations, variables, tabulatorElements, dataLoaders));
         }
     } else if ('vegaExpression' in calculation) {
         // Validate ScalarCalculation
@@ -218,10 +220,30 @@ export function validateCalculation(calculation: Calculation, variables: Variabl
         } else if (scalarCalc.vegaExpression.indexOf('\n') !== -1) {
             errors.push('ScalarCalculation vegaExpression must not contain newlines.');
         }
-        // Note: Full vega expression validation is commented out in original code
+        errors.push(...validateVegaExpression(scalarCalc.vegaExpression, variables, tabulatorElements, dataLoaders));
     } else {
         errors.push('Calculation must be either a DataFrameCalculation (with dataSourceNames/dataFrameTransformations) or ScalarCalculation (with vegaExpression).');
     }
 
+    return errors;
+}
+
+export function validateVegaExpression(vegaExpression: string, variables: Variable[], tabulatorElements: TabulatorElement[], dataLoaders: DataLoader[]): string[] {
+    const errors: string[] = [];
+
+    //create a Vega spec to validate the expression
+    const spec = createSpecWithVariables(variables, tabulatorElements, dataLoaders);
+
+    //now add one more signal with the calculation expression
+    spec.signals.push({
+        name: 'calculation',
+        update: vegaExpression,
+    });
+
+    try {
+        parse(spec);
+    } catch (e) {
+        errors.push(`Calculation vegaExpression is invalid: ${e.message}`);
+    }
     return errors;
 }
