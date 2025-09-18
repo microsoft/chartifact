@@ -169,7 +169,7 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                     break;
                 }
                 default: {
-                    errors.push(`Unknown element type at group ${groupIndex}, element index ${elementIndex}: ${JSON.stringify(element)}`);
+                    errors.push(`Unknown element type ${(element as any).type} at group ${groupIndex}, element index ${elementIndex}: ${JSON.stringify(element)}`);
                     break;
                 }
             }
