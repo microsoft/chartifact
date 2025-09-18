@@ -130,7 +130,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     const tokens = tokenizeTemplate(input);
     return renderVegaExpression(tokens);
   }
-  const index$3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  const index$4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
     VEGA_BUILTIN_FUNCTIONS,
     collectIdentifiers,
@@ -139,15 +139,37 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     renderVegaExpression,
     tokenizeTemplate
   }, Symbol.toStringTag, { value: "Module" }));
-  function safeVariableName(name) {
-    return name.replace(/[^a-zA-Z0-9_]/g, "_");
+  function validateVegaChart(_spec) {
+    const errors = [];
+    return errors;
   }
-  function getChartType(spec) {
-    const $schema = spec == null ? void 0 : spec.$schema;
-    if (!$schema) {
-      return "vega-lite";
+  function validateVegaLite(_spec) {
+    const errors = [];
+    const spec = _spec;
+    if (!spec.data) {
+      errors.push(`Vega-Lite chart is missing data`);
     }
-    return $schema.includes("vega-lite") ? "vega-lite" : "vega";
+    return errors;
+  }
+  function validateVegaLiteByComparison(specTemplate, spec) {
+    const noLayerOrConcatMsg = "You may NOT use layer, hconcat, or vconcat in this chart, please use the template and only make minimal changes.";
+    const errors = [];
+    if (spec.hconcat && !specTemplate.hconcat) {
+      errors.push(noLayerOrConcatMsg);
+    } else if (!spec.hconcat && specTemplate.hconcat) {
+      errors.push("You must use hconcat in this chart.");
+    }
+    if (spec.vconcat && !specTemplate.vconcat) {
+      errors.push(noLayerOrConcatMsg);
+    } else if (!spec.vconcat && specTemplate.vconcat) {
+      errors.push("You must use vconcat in this chart.");
+    }
+    if (spec.layer && !specTemplate.layer) {
+      errors.push(noLayerOrConcatMsg);
+    } else if (!spec.layer && specTemplate.layer) {
+      errors.push("You must use layer in this chart.");
+    }
+    return errors;
   }
   function topologicalSort(list) {
     const nameToObject = /* @__PURE__ */ new Map();
@@ -214,6 +236,15 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         values: []
       });
     });
+    if (stubDataLoaders) {
+      stubDataLoaders.filter((dl) => dl.type !== "spec").forEach((dl) => {
+        spec.signals.push(dataAsSignal(dl.dataSourceName));
+        spec.data.push({
+          name: dl.dataSourceName,
+          values: []
+        });
+      });
+    }
     topologicalSort(variables).forEach((v) => {
       const calculation = calculationType(v);
       if (calculation == null ? void 0 : calculation.dfCalc) {
@@ -259,6 +290,700 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       update: `data('${name}')`
     };
   }
+  function validateTransforms(dataFrameTransformations, variables, tabulatorElements, dataLoaders) {
+    const errors = [];
+    if (dataFrameTransformations) {
+      if (!Array.isArray(dataFrameTransformations)) {
+        errors.push("Data source dataFrameTransformations must be an array");
+      } else {
+        dataFrameTransformations.forEach((t, index2) => {
+          const transformErrors = validateTransform(t, variables, tabulatorElements, dataLoaders);
+          if (transformErrors.length > 0) {
+            errors.push(`Transform ${index2} has the following errors: ${transformErrors.join(", ")}`);
+          }
+        });
+      }
+    }
+    return errors;
+  }
+  function validateTransform(transform, variables, tabulatorElements, dataLoaders) {
+    const errors = [];
+    if (transform) {
+      if (typeof transform !== "object") {
+        errors.push("Transform must be an object");
+      } else {
+        if (!transform.type) {
+          errors.push("Transform must have a type");
+        } else {
+          switch (transform.type) {
+            case "aggregate": {
+              break;
+            }
+            case "bin": {
+              break;
+            }
+            case "collect": {
+              break;
+            }
+            case "contour": {
+              break;
+            }
+            case "countpattern": {
+              break;
+            }
+            case "cross": {
+              break;
+            }
+            case "crossfilter": {
+              break;
+            }
+            case "density": {
+              break;
+            }
+            case "dotbin": {
+              break;
+            }
+            case "extent": {
+              break;
+            }
+            case "filter": {
+              const t = transform;
+              if (!t.expr) {
+                errors.push("Filter transform must have an expr property");
+              }
+              break;
+            }
+            case "flatten": {
+              break;
+            }
+            case "fold": {
+              break;
+            }
+            case "force": {
+              break;
+            }
+            case "formula": {
+              const t = transform;
+              if (!t.as) {
+                errors.push("Formula transform must have an as property");
+              }
+              if (!t.expr) {
+                errors.push("Formula transform must have an expr property");
+              }
+              errors.push(...validateVegaExpression(t.expr, variables, tabulatorElements, dataLoaders));
+              break;
+            }
+            case "geojson": {
+              break;
+            }
+            case "geopath": {
+              break;
+            }
+            case "geopoint": {
+              break;
+            }
+            case "geoshape": {
+              break;
+            }
+            case "graticule": {
+              break;
+            }
+            case "heatmap": {
+              break;
+            }
+            case "identifier": {
+              break;
+            }
+            case "impute": {
+              break;
+            }
+            case "isocontour": {
+              break;
+            }
+            case "joinaggregate": {
+              break;
+            }
+            case "kde": {
+              break;
+            }
+            case "kde2d": {
+              break;
+            }
+            case "label": {
+              break;
+            }
+            case "linkpath": {
+              break;
+            }
+            case "loess": {
+              break;
+            }
+            case "lookup": {
+              break;
+            }
+            case "nest": {
+              break;
+            }
+            case "pack": {
+              break;
+            }
+            case "partition": {
+              break;
+            }
+            case "pie": {
+              break;
+            }
+            case "pivot": {
+              break;
+            }
+            case "project": {
+              break;
+            }
+            case "quantile": {
+              break;
+            }
+            case "regression": {
+              break;
+            }
+            case "resolvefilter": {
+              break;
+            }
+            case "sample": {
+              break;
+            }
+            case "sequence": {
+              break;
+            }
+            case "stack": {
+              break;
+            }
+            case "stratify": {
+              break;
+            }
+            case "timeunit": {
+              break;
+            }
+            case "tree": {
+              break;
+            }
+            case "treelinks": {
+              break;
+            }
+            case "treemap": {
+              break;
+            }
+            case "voronoi": {
+              break;
+            }
+            case "window": {
+              break;
+            }
+            case "wordcloud": {
+              break;
+            }
+            default: {
+              const t = transform;
+              errors.push(`Unknown transform type: ${t.type}`);
+            }
+          }
+        }
+      }
+    }
+    return errors;
+  }
+  const illegalChars = "/|\\'\"`,.;:~-=+?!@#$%^&*()[]{}<>";
+  const ignoredSignals = ["width", "height", "padding", "autosize", "background", "style", "parent", "datum", "item", "event", "cursor", "origins"];
+  function validateRequiredString(value, propertyName, elementType) {
+    const errors = [];
+    if (!value) {
+      errors.push(`${elementType} element must have a ${propertyName} property`);
+    } else if (typeof value !== "string") {
+      errors.push(`${elementType} element ${propertyName} must be a string`);
+    } else if (value.trim() === "") {
+      errors.push(`${elementType} element ${propertyName} cannot be empty`);
+    }
+    return errors;
+  }
+  function validateOptionalString(value, propertyName, elementType) {
+    const errors = [];
+    if (value !== void 0 && typeof value !== "string") {
+      errors.push(`${elementType} element ${propertyName} must be a string`);
+    }
+    return errors;
+  }
+  function validateOptionalPositiveNumber(value, propertyName, elementType) {
+    const errors = [];
+    if (value !== void 0) {
+      if (typeof value !== "number") {
+        errors.push(`${elementType} element ${propertyName} must be a number`);
+      } else if (value <= 0) {
+        errors.push(`${elementType} element ${propertyName} must be a positive number`);
+      }
+    }
+    return errors;
+  }
+  function validateOptionalBoolean(value, propertyName, elementType) {
+    const errors = [];
+    if (value !== void 0 && typeof value !== "boolean") {
+      errors.push(`${elementType} element ${propertyName} must be a boolean`);
+    }
+    return errors;
+  }
+  function validateOptionalObject(value, propertyName, elementType) {
+    const errors = [];
+    if (value !== void 0) {
+      if (typeof value !== "object" || value === null || Array.isArray(value)) {
+        errors.push(`${elementType} element ${propertyName} must be an object`);
+      }
+    }
+    return errors;
+  }
+  function validateInputElementWithVariableId(element) {
+    const errors = [];
+    errors.push(...validateVariableID(element.variableId));
+    if (element.variableId.includes(element.type)) {
+      errors.push(`VariableID must not contain the element type: ${element.type}`);
+    }
+    return errors;
+  }
+  function validateVariableID(id) {
+    if (!id) {
+      return ["VariableID must not be null"];
+    }
+    const errors = [];
+    if (ignoredSignals.includes(id)) {
+      errors.push(`VariableID must not be one of the following reserved words: ${ignoredSignals.join(", ")}`);
+    }
+    for (let i2 = 0; i2 < illegalChars.length; i2++) {
+      if (id.includes(illegalChars[i2])) {
+        errors.push(`VariableID must not contain the following characters: ${illegalChars}`);
+        break;
+      }
+    }
+    return errors;
+  }
+  const variableTypes = ["number", "string", "boolean"];
+  const HTML_TAG_REGEX = /<![^<>]*>|<\/?[A-Za-z][A-Za-z0-9-]*(?:\s[^<>]*)?>/g;
+  function validateMarkdownString(value, propertyName, elementType) {
+    const errors = [];
+    if (value && typeof value === "string") {
+      const htmlMatches = value.match(HTML_TAG_REGEX);
+      if (htmlMatches && htmlMatches.length > 0) {
+        errors.push(`${elementType} ${propertyName} must not contain HTML elements. Found: ${htmlMatches.slice(0, 3).join(", ")}${htmlMatches.length > 3 ? "..." : ""}`);
+      }
+    }
+    return errors;
+  }
+  function validateVariable(variable, otherVariables, tabulatorElements, dataLoaders) {
+    const errors = [];
+    if (typeof variable !== "object" || variable === null) {
+      errors.push("Variable must be an object.");
+      return errors;
+    }
+    if (!variable.variableId) {
+      errors.push("Variable must have a variableId property.");
+    } else if (typeof variable.variableId !== "string") {
+      errors.push("Variable variableId must be a string.");
+    } else {
+      const idErrors = validateVariableID(variable.variableId);
+      if (idErrors.length > 0) {
+        errors.push(...idErrors);
+      }
+    }
+    if (variable.isArray) {
+      if (!Array.isArray(variable.initialValue)) {
+        errors.push("Variable isArray is true, but initialValue is not an array.");
+      } else {
+        for (let i2 = 0; i2 < variable.initialValue.length; i2++) {
+          if (typeof variable.initialValue[i2] !== variable.type) {
+            errors.push(`Variable initialValue[${i2}] must be of type ${variable.type}.`);
+          }
+          if (Array.isArray(variable.initialValue[i2])) {
+            errors.push(`Variable initialValue[${i2}] must not be an array.`);
+          }
+        }
+      }
+    } else {
+      if (Array.isArray(variable.initialValue)) {
+        errors.push("Variable isArray is false, but initialValue is an array.");
+      } else {
+        if (typeof variable.initialValue !== variable.type) {
+          errors.push(`Variable initialValue must be of type ${variable.type}.`);
+        }
+      }
+    }
+    if (variable.calculation) {
+      const calculationErrors = validateCalculation(variable.calculation, otherVariables, tabulatorElements, dataLoaders);
+      if (calculationErrors.length > 0) {
+        errors.push(...calculationErrors.map((error) => `Calculation error: ${error}`));
+      }
+    }
+    const existingVariable = otherVariables.find((v) => v.variableId === variable.variableId);
+    if (existingVariable) {
+      errors.push(`Variable with variableId ${variable.variableId} already exists.`);
+    }
+    const existingDataLoader = dataLoaders.filter((ds) => ds.type !== "spec").find((dl) => dl.dataSourceName === variable.variableId);
+    if (existingDataLoader) {
+      errors.push(`Variable with variableId ${variable.variableId} collides with data loader name ${existingDataLoader.dataSourceName}.`);
+    }
+    return errors;
+  }
+  function validateCalculation(calculation, variables, tabulatorElements, dataLoaders) {
+    const errors = [];
+    if (typeof calculation !== "object" || calculation === null) {
+      errors.push("Calculation must be an object.");
+      return errors;
+    }
+    if ("dataSourceNames" in calculation || "dataFrameTransformations" in calculation) {
+      const dfCalc = calculation;
+      if (dfCalc.dataSourceNames) {
+        if (!Array.isArray(dfCalc.dataSourceNames)) {
+          errors.push("DataFrameCalculation dataSourceNames must be an array.");
+        } else {
+          dfCalc.dataSourceNames.forEach((dsName, index2) => {
+            if (typeof dsName !== "string") {
+              errors.push(`DataFrameCalculation dataSourceNames[${index2}] must be a string.`);
+            } else {
+              const existsInVariables = variables.some((v) => v.variableId === dsName);
+              const existsInDataLoaders = dataLoaders.filter((dl) => {
+                return dl.type !== "spec";
+              }).some((dl) => dl.dataSourceName === dsName);
+              if (!existsInVariables && !existsInDataLoaders) {
+                errors.push(`DataFrameCalculation references unknown data source: ${dsName}`);
+              }
+            }
+          });
+        }
+      }
+      if (dfCalc.dataFrameTransformations) {
+        errors.push(...validateTransforms(dfCalc.dataFrameTransformations, variables, tabulatorElements, dataLoaders));
+      }
+    } else if ("vegaExpression" in calculation) {
+      const scalarCalc = calculation;
+      if (typeof scalarCalc.vegaExpression !== "string") {
+        errors.push("ScalarCalculation vegaExpression must be a string.");
+      } else if (scalarCalc.vegaExpression.indexOf("\n") !== -1) {
+        errors.push("ScalarCalculation vegaExpression must not contain newlines.");
+      }
+      errors.push(...validateVegaExpression(scalarCalc.vegaExpression, variables, tabulatorElements, dataLoaders));
+    } else {
+      errors.push("Calculation must be either a DataFrameCalculation (with dataSourceNames/dataFrameTransformations) or ScalarCalculation (with vegaExpression).");
+    }
+    return errors;
+  }
+  function validateVegaExpression(vegaExpression, variables, tabulatorElements, dataLoaders) {
+    const errors = [];
+    const spec = createSpecWithVariables(variables, tabulatorElements, dataLoaders);
+    spec.signals.push({
+      name: "calculation",
+      update: vegaExpression
+    });
+    try {
+      vega.parse(spec);
+    } catch (e) {
+      errors.push(`Calculation vegaExpression is invalid: ${e.message}`);
+    }
+    return errors;
+  }
+  function validateDataSourceBase(ds) {
+    const errors = [];
+    if (!ds.dataSourceName) {
+      errors.push("Data source must have a dataSourceName");
+    }
+    return errors;
+  }
+  function validateDataSource(dataSource, variables, tabulatorElements, otherDataSources) {
+    const errors = validateDataSourceBase(dataSource);
+    if (!dataSource.dataSourceName) {
+      errors.push("Data source must have a dataSourceName");
+      return errors;
+    }
+    const idErrors = validateVariableID(dataSource.dataSourceName);
+    if (idErrors.length > 0) {
+      errors.push(...idErrors);
+    }
+    if (dataSource.dataSourceName.endsWith("-selected")) {
+      errors.push('Data source name may not end with "-selected"');
+    }
+    const existingVariable = (variables == null ? void 0 : variables.find((v) => v.variableId === dataSource.dataSourceName)) || (tabulatorElements == null ? void 0 : tabulatorElements.find((t) => t.variableId === dataSource.dataSourceName));
+    if (existingVariable) {
+      errors.push(`Data source with dataSourceName ${dataSource.dataSourceName} collides with variable name.`);
+    }
+    const existingDataSource = otherDataSources.find((ds) => dataSource.dataSourceName === ds.dataSourceName);
+    if (existingDataSource) {
+      errors.push(`Data source with dataSourceName ${dataSource.dataSourceName} already exists.`);
+    }
+    const dataLoaders = [];
+    errors.push(...validateTransforms(dataSource.dataFrameTransformations, variables, tabulatorElements, dataLoaders));
+    return errors;
+  }
+  function safeVariableName(name) {
+    return name.replace(/[^a-zA-Z0-9_]/g, "_");
+  }
+  function getChartType(spec) {
+    const $schema = spec == null ? void 0 : spec.$schema;
+    if (!$schema) {
+      return "vega-lite";
+    }
+    return $schema.includes("vega-lite") ? "vega-lite" : "vega";
+  }
+  function flattenMarkdownElements(elements) {
+    return elements.reduce((acc, e) => {
+      if (typeof e === "string") {
+        if (acc.length > 0 && typeof acc[acc.length - 1] === "string") {
+          acc[acc.length - 1] += "\n" + e;
+        } else {
+          acc.push(e);
+        }
+      } else {
+        acc.push(e);
+      }
+      return acc;
+    }, []);
+  }
+  async function validateElement(element, groupIndex, elementIndex, variables, dataLoaders, charts) {
+    const errors = [];
+    if (element == null) {
+      errors.push("Element must not be null or undefined.");
+    } else {
+      if (typeof element === "object") {
+        switch (element.type) {
+          case "chart": {
+            const chartElement = element;
+            if (!chartElement.chartKey) {
+              errors.push("Chart element must have a chartKey");
+            } else if (!charts) {
+              errors.push("Document must have a resources.charts section to use chart elements");
+            } else if (!charts[chartElement.chartKey]) {
+              errors.push(`Chart key '${chartElement.chartKey}' not found in resources.charts`);
+            } else {
+              const chartSpec = charts[chartElement.chartKey];
+              const chartType = getChartType(chartSpec);
+              if (chartType === "vega-lite") {
+                errors.push(...validateVegaLite(chartSpec));
+              } else if (chartType === "vega") {
+                errors.push(...validateVegaChart());
+              } else {
+                errors.push(`Chart '${chartElement.chartKey}' has unrecognized chart type`);
+              }
+            }
+            break;
+          }
+          case "checkbox": {
+            errors.push(...validateInputElementWithVariableId(element));
+            break;
+          }
+          case "dropdown": {
+            errors.push(...validateInputElementWithVariableId(element));
+            if (element.options && element.dynamicOptions) {
+              errors.push("Dropdown cannot have both static and dynamic options");
+              break;
+            }
+            if (element.dynamicOptions) {
+              if (!element.dynamicOptions.dataSourceName) {
+                errors.push("Dynamic dropdown must have a data source name");
+              }
+              if (!element.dynamicOptions.fieldName) {
+                errors.push("Dynamic dropdown must have a field name");
+              }
+            }
+            if (element.options) {
+              if (!Array.isArray(element.options)) {
+                errors.push("Dropdown options must be an array of strings");
+              }
+              element.options.forEach((option, index2) => {
+                if (typeof option !== "string") {
+                  errors.push(`Dropdown option at index ${index2} must be a string`);
+                }
+              });
+            }
+            break;
+          }
+          case "image": {
+            const imageElement = element;
+            errors.push(...validateRequiredString(imageElement.url, "url", "Image"));
+            errors.push(...validateOptionalString(imageElement.alt, "alt", "Image"));
+            errors.push(...validateOptionalPositiveNumber(imageElement.height, "height", "Image"));
+            errors.push(...validateOptionalPositiveNumber(imageElement.width, "width", "Image"));
+            break;
+          }
+          case "mermaid": {
+            const mermaidElement = element;
+            if (!mermaidElement.diagramText && !mermaidElement.template && !mermaidElement.variableId) {
+              errors.push("Mermaid element must have at least one of: diagramText, template, or variableId");
+            }
+            errors.push(...validateOptionalString(mermaidElement.diagramText, "diagramText", "Mermaid"));
+            if (mermaidElement.diagramText && mermaidElement.diagramText.trim() === "") {
+              errors.push("Mermaid element diagramText cannot be empty");
+            }
+            if (mermaidElement.diagramText) {
+              errors.push(...validateMarkdownString(mermaidElement.diagramText, "diagramText", "Mermaid"));
+            }
+            if (mermaidElement.template) {
+              errors.push(...validateOptionalObject(mermaidElement.template, "template", "Mermaid"));
+              if (typeof mermaidElement.template === "object" && mermaidElement.template !== null) {
+                errors.push(...validateRequiredString(mermaidElement.template.header, "template.header", "Mermaid"));
+                if (!mermaidElement.template.lineTemplates) {
+                  errors.push("Mermaid element template must have a lineTemplates property");
+                } else if (typeof mermaidElement.template.lineTemplates !== "object" || mermaidElement.template.lineTemplates === null || Array.isArray(mermaidElement.template.lineTemplates)) {
+                  errors.push("Mermaid element template.lineTemplates must be an object");
+                }
+                errors.push(...validateOptionalString(mermaidElement.template.dataSourceName, "template.dataSourceName", "Mermaid"));
+              }
+            }
+            if (mermaidElement.variableId) {
+              errors.push(...validateVariableID(mermaidElement.variableId));
+            }
+            break;
+          }
+          case "number": {
+            errors.push(...validateInputElementWithVariableId(element));
+            break;
+          }
+          case "presets": {
+            break;
+          }
+          case "slider": {
+            errors.push(...validateInputElementWithVariableId(element));
+            break;
+          }
+          case "tabulator": {
+            errors.push(...validateRequiredString(element.dataSourceName, "dataSourceName", "Tabulator"));
+            errors.push(...validateOptionalBoolean(element.editable, "editable", "Tabulator"));
+            errors.push(...validateOptionalObject(element.tabulatorOptions, "tabulatorOptions", "Tabulator"));
+            if (element.variableId) {
+              errors.push(...validateVariableID(element.variableId));
+              const existingVariable = variables == null ? void 0 : variables.find((v) => v.variableId === element.variableId);
+              if (existingVariable) {
+                errors.push(`Tabulator variableId ${element.variableId} collides with existing variable name, the variable should be renamed or removed.`);
+              }
+            }
+            break;
+          }
+          case "textbox": {
+            errors.push(...validateInputElementWithVariableId(element));
+            break;
+          }
+          default: {
+            errors.push(`Unknown element type at group ${groupIndex}, element index ${elementIndex}: ${JSON.stringify(element)}`);
+            break;
+          }
+        }
+      } else if (typeof element !== "string") {
+        errors.push("Element must be an array or a string.");
+      } else {
+        errors.push(...validateMarkdownString(element, "content", "Markdown"));
+      }
+    }
+    return errors.filter(Boolean);
+  }
+  async function validateGroup(group, groupIndex, variables, dataLoaders, charts) {
+    const errors = [];
+    group.elements = flattenMarkdownElements(group.elements);
+    for (const [index2, e] of group.elements.entries()) {
+      const elementValidationErrors = await validateElement(e, groupIndex, index2, variables, dataLoaders, charts);
+      if (elementValidationErrors.length > 0) {
+        errors.push(...elementValidationErrors);
+      }
+    }
+    return errors;
+  }
+  async function validateDataLoader(dataLoader, variables, tabulatorElements, otherDataLoaders) {
+    const errors = [];
+    if (typeof dataLoader !== "object") {
+      errors.push("DataLoader must be an object");
+      return errors;
+    }
+    if (!dataLoader.type) {
+      errors.push("DataLoader must have a type");
+    }
+    switch (dataLoader.type) {
+      case "file": {
+        errors.push(...validateDataSource(dataLoader, variables, tabulatorElements, otherDataLoaders.filter((dl) => dl.type !== "spec")));
+        break;
+      }
+      case "url": {
+        errors.push(...validateDataSource(dataLoader, variables, tabulatorElements, otherDataLoaders.filter((dl) => dl.type !== "spec")));
+        break;
+      }
+      case "spec": {
+        if (!dataLoader.spec) {
+          errors.push("DataLoader must have a spec");
+        }
+        if (typeof dataLoader.spec !== "object") {
+          errors.push("DataLoader spec must be an object");
+        }
+        break;
+      }
+      case "inline": {
+        if (dataLoader.format) {
+          switch (dataLoader.format) {
+            case "json":
+            case "csv":
+            case "tsv":
+            case "dsv":
+              break;
+            default:
+              errors.push(`Inline DataLoader format "${dataLoader.format}" is not supported`);
+          }
+        }
+        if (!dataLoader.content) {
+          errors.push("Inline DataLoader must have content");
+        }
+        break;
+      }
+      default: {
+        errors.push(`DataLoader type "${dataLoader.type}" is not supported`);
+      }
+    }
+    return errors;
+  }
+  async function validateDocument(page) {
+    var _a;
+    const errors = [];
+    if (!page.title) {
+      errors.push("Page title is required.");
+    }
+    const dataLoaders = page.dataLoaders || [];
+    const variables = page.variables || [];
+    const tabulatorElements = page.groups.flatMap((group) => group.elements.filter((e) => typeof e !== "string" && e.type === "tabulator"));
+    for (const dataLoader of dataLoaders) {
+      const otherDataLoaders = dataLoaders.filter((dl) => dl !== dataLoader);
+      errors.push(...await validateDataLoader(dataLoader, variables, tabulatorElements, otherDataLoaders));
+    }
+    for (const [groupIndex, group] of page.groups.entries()) {
+      errors.push(...await validateGroup(group, groupIndex, variables, dataLoaders, (_a = page.resources) == null ? void 0 : _a.charts));
+    }
+    return errors;
+  }
+  const index$3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    flattenMarkdownElements,
+    ignoredSignals,
+    validateCalculation,
+    validateDataLoader,
+    validateDataSource,
+    validateDataSourceBase,
+    validateDocument,
+    validateElement,
+    validateGroup,
+    validateInputElementWithVariableId,
+    validateMarkdownString,
+    validateOptionalBoolean,
+    validateOptionalObject,
+    validateOptionalPositiveNumber,
+    validateOptionalString,
+    validateRequiredString,
+    validateTransform,
+    validateTransforms,
+    validateVariable,
+    validateVariableID,
+    validateVegaChart,
+    validateVegaExpression,
+    validateVegaLite,
+    validateVegaLiteByComparison,
+    variableTypes
+  }, Symbol.toStringTag, { value: "Module" }));
   function addStaticDataLoaderToSpec(vegaScope, dataSource) {
     const { spec } = vegaScope;
     const { dataSourceName, delimiter } = dataSource;
@@ -2021,7 +2746,8 @@ ${content}
   const index$2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
     normalizeNewlines,
-    targetMarkdown
+    targetMarkdown,
+    validation: index$3
   }, Symbol.toStringTag, { value: "Module" }));
   const rendererHtml = `<!DOCTYPE html>
 <html lang="en">
@@ -2658,7 +3384,7 @@ document.addEventListener('DOMContentLoaded', () => {
     App,
     Editor
   }, Symbol.toStringTag, { value: "Module" }));
-  exports2.common = index$3;
+  exports2.common = index$4;
   exports2.compiler = index$2;
   exports2.editor = index;
   exports2.sandbox = index$1;
