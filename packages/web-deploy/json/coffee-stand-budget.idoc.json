@@ -1,0 +1,663 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "The Daily Grind - Coffee Stand Budget",
+    "style": {
+        "css": [
+            "body { font-family: 'Georgia', serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #f4f1e8 0%, #e8dcc0 100%); }",
+            "body { display: grid; grid-template-areas: 'header header' 'overview overview' 'allocation variance' 'controls categories' 'trends trends'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+            ".group { background: #faf8f3; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(101, 67, 33, 0.15); border: 2px solid #d4a574; position: relative; }",
+            ".group::before { content: ''; position: absolute; top: -1px; left: -1px; right: -1px; bottom: -1px; background: linear-gradient(45deg, #8b4513, #cd853f, #daa520, #cd853f, #8b4513); border-radius: 15px; z-index: -1; }",
+            "#header { grid-area: header; background: linear-gradient(135deg, #8b4513 0%, #a0522d 25%, #cd853f 50%, #daa520 75%, #b8860b 100%); color: #fff5ee; text-align: center; position: relative; }",
+            "#header::after { content: '☕'; position: absolute; top: 10px; right: 20px; font-size: 2em; opacity: 0.3; }",
+            "#overview { grid-area: overview; text-align: center; background: linear-gradient(135deg, #fff8dc 0%, #f5e6d3 100%); }",
+            "#allocation { grid-area: allocation; min-width: 0; overflow: hidden; background: linear-gradient(135deg, #fdf5e6 0%, #f4e6d7 100%); }",
+            "#variance { grid-area: variance; min-width: 0; overflow: hidden; background: linear-gradient(135deg, #f9f1e6 0%, #f0e6d2 100%); }",
+            "#controls { grid-area: controls; min-width: 0; overflow: hidden; background: linear-gradient(135deg, #faf6f0 0%, #f2e8d5 100%); }",
+            "#categories { grid-area: categories; min-width: 0; overflow: hidden; background: linear-gradient(135deg, #fbf7f0 0%, #f3e9d6 100%); }",
+            "#trends { grid-area: trends; min-width: 0; overflow: hidden; background: linear-gradient(135deg, #fdf9f3 0%, #f5ebd8 100%); }",
+            "h1 { margin: 0; padding: 20px 0; font-size: 2.2em; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); letter-spacing: 1px; }",
+            "h2 { margin: 10px 0; font-size: 2em; color: #654321; font-weight: 700; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }",
+            "h3 { margin: 0 0 15px 0; font-size: 1.3em; color: #8b4513; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #cd853f; padding-bottom: 5px; }",
+            ".tabulator { max-width: 100%; overflow: auto; border-radius: 10px; border: 1px solid #cd853f; }",
+            ".tabulator .tabulator-table { min-width: fit-content; background: #faf8f3; }",
+            ".slider-container { margin: 15px 0; background: rgba(205, 133, 63, 0.1); padding: 10px; border-radius: 8px; border-left: 4px solid #8b4513; }",
+            ".slider-label { font-weight: 600; color: #654321; margin-bottom: 8px; display: block; }",
+            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'overview' 'allocation' 'variance' 'controls' 'categories' 'trends'; } }"
+        ]
+    },
+    "dataLoaders": [
+        {
+            "dataSourceName": "budgetCategories",
+            "type": "inline",
+            "format": "csv",
+            "content": [
+                "category,budgeted,spent,color",
+                "Coffee Beans,1200,1150,#8b4513",
+                "Milk & Dairy,800,820,#a0522d",
+                "Rent,1500,1500,#cd853f",
+                "Labor,2500,2400,#daa520",
+                "Equipment,400,350,#b8860b",
+                "Marketing,300,280,#d2691e",
+                "Utilities,250,230,#bc8f8f",
+                "Supplies,200,180,#f4a460",
+                "Profit,1350,1590,#deb887"
+            ]
+        },
+        {
+            "dataSourceName": "monthlyTrends",
+            "type": "inline",
+            "format": "csv",
+            "content": [
+                "month,Coffee Beans,Milk & Dairy,Rent,Labor,Equipment,Marketing,Utilities,Supplies,Profit",
+                "2024-01,1180,750,1500,2300,320,250,240,160,1300",
+                "2024-02,1150,780,1500,2450,380,290,220,180,1350",
+                "2024-03,1200,820,1500,2400,300,270,230,170,1420",
+                "2024-04,1100,800,1500,2500,450,310,250,190,1380",
+                "2024-05,1150,820,1500,2400,350,280,230,180,1590",
+                "2024-06,1220,850,1500,2350,400,320,260,200,1450"
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "variableId": "monthlyRevenue",
+            "type": "number",
+            "initialValue": 8500
+        },
+        {
+            "variableId": "coffeeBeansBudget",
+            "type": "number",
+            "initialValue": 1200
+        },
+        {
+            "variableId": "milkDairyBudget",
+            "type": "number",
+            "initialValue": 800
+        },
+        {
+            "variableId": "rentBudget",
+            "type": "number",
+            "initialValue": 1500
+        },
+        {
+            "variableId": "laborBudget",
+            "type": "number",
+            "initialValue": 2500
+        },
+        {
+            "variableId": "equipmentBudget",
+            "type": "number",
+            "initialValue": 400
+        },
+        {
+            "variableId": "marketingBudget",
+            "type": "number",
+            "initialValue": 300
+        },
+        {
+            "variableId": "utilitiesBudget",
+            "type": "number",
+            "initialValue": 250
+        },
+        {
+            "variableId": "suppliesBudget",
+            "type": "number",
+            "initialValue": 200
+        },
+        {
+            "variableId": "profitBudget",
+            "type": "number",
+            "initialValue": 1350
+        },
+        {
+            "variableId": "coffeeBeansActual",
+            "type": "number",
+            "initialValue": 1150
+        },
+        {
+            "variableId": "milkDairyActual",
+            "type": "number",
+            "initialValue": 820
+        },
+        {
+            "variableId": "rentActual",
+            "type": "number",
+            "initialValue": 1500
+        },
+        {
+            "variableId": "laborActual",
+            "type": "number",
+            "initialValue": 2400
+        },
+        {
+            "variableId": "equipmentActual",
+            "type": "number",
+            "initialValue": 350
+        },
+        {
+            "variableId": "marketingActual",
+            "type": "number",
+            "initialValue": 280
+        },
+        {
+            "variableId": "utilitiesActual",
+            "type": "number",
+            "initialValue": 230
+        },
+        {
+            "variableId": "suppliesActual",
+            "type": "number",
+            "initialValue": 180
+        },
+        {
+            "variableId": "profitActual",
+            "type": "number",
+            "initialValue": 1590
+        },
+        {
+            "variableId": "adjustedBudgetData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": [
+                    "budgetCategories"
+                ],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "expr": "datum.category === 'Coffee Beans' ? coffeeBeansBudget : (datum.category === 'Milk & Dairy' ? milkDairyBudget : (datum.category === 'Rent' ? rentBudget : (datum.category === 'Labor' ? laborBudget : (datum.category === 'Equipment' ? equipmentBudget : (datum.category === 'Marketing' ? marketingBudget : (datum.category === 'Utilities' ? utilitiesBudget : (datum.category === 'Supplies' ? suppliesBudget : (datum.category === 'Profit' ? profitBudget : datum.budgeted))))))))",
+                        "as": "adjustedBudget"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.adjustedBudget - datum.spent",
+                        "as": "remaining"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "(datum.spent - datum.adjustedBudget) / datum.adjustedBudget",
+                        "as": "spentPercentage"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "totalBudgeted",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "toNumber(coffeeBeansBudget) + toNumber(milkDairyBudget) + toNumber(rentBudget) + toNumber(laborBudget) + toNumber(equipmentBudget) + toNumber(marketingBudget) + toNumber(utilitiesBudget) + toNumber(suppliesBudget) + toNumber(profitBudget)"
+            }
+        },
+        {
+            "variableId": "totalSpent",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "toNumber(coffeeBeansActual) + toNumber(milkDairyActual) + toNumber(rentActual) + toNumber(laborActual) + toNumber(equipmentActual) + toNumber(marketingActual) + toNumber(utilitiesActual) + toNumber(suppliesActual) + toNumber(profitActual)"
+            }
+        },
+        {
+            "variableId": "totalRemaining",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "toNumber(totalBudgeted) - toNumber(totalSpent)"
+            }
+        },
+        {
+            "variableId": "profitMargin",
+            "type": "string",
+            "initialValue": "0%",
+            "calculation": {
+                "vegaExpression": "format((profitBudget / monthlyRevenue) * 100, '.1f') + '%'"
+            }
+        },
+        {
+            "variableId": "monthlyTrendsLong",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": [
+                    "monthlyTrends"
+                ],
+                "dataFrameTransformations": [
+                    {
+                        "type": "fold",
+                        "fields": [
+                            "Coffee Beans",
+                            "Milk & Dairy",
+                            "Rent",
+                            "Labor",
+                            "Equipment",
+                            "Marketing",
+                            "Utilities",
+                            "Supplies",
+                            "Profit"
+                        ],
+                        "as": [
+                            "category",
+                            "amount"
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "budgetVarianceData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": [
+                    "budgetCategories"
+                ],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.category === 'Coffee Beans' || datum.category === 'Milk & Dairy' || datum.category === 'Rent' || datum.category === 'Labor' || datum.category === 'Equipment' || datum.category === 'Marketing' || datum.category === 'Utilities' || datum.category === 'Supplies'"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.category === 'Coffee Beans' ? coffeeBeansBudget : (datum.category === 'Milk & Dairy' ? milkDairyBudget : (datum.category === 'Rent' ? rentBudget : (datum.category === 'Labor' ? laborBudget : (datum.category === 'Equipment' ? equipmentBudget : (datum.category === 'Marketing' ? marketingBudget : (datum.category === 'Utilities' ? utilitiesBudget : (datum.category === 'Supplies' ? suppliesBudget : datum.budgeted)))))))",
+                        "as": "budgeted"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.category === 'Coffee Beans' ? coffeeBeansActual : (datum.category === 'Milk & Dairy' ? milkDairyActual : (datum.category === 'Rent' ? rentActual : (datum.category === 'Labor' ? laborActual : (datum.category === 'Equipment' ? equipmentActual : (datum.category === 'Marketing' ? marketingActual : (datum.category === 'Utilities' ? utilitiesActual : (datum.category === 'Supplies' ? suppliesActual : datum.spent)))))))",
+                        "as": "spent"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.spent - datum.budgeted",
+                        "as": "variance"
+                    }
+                ]
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "header",
+            "elements": [
+                "# ☕ The Daily Grind - Coffee Stand Budget",
+                "**Brewing success one cup at a time! ☕📊**"
+            ]
+        },
+        {
+            "groupId": "overview",
+            "elements": [
+                "### ☕ Monthly Brew Overview",
+                {
+                    "type": "slider",
+                    "variableId": "monthlyRevenue",
+                    "label": "☕ Monthly Revenue (Cups Sold!)",
+                    "min": 5000,
+                    "max": 15000,
+                    "step": 500
+                },
+                "**☕ Total Budgeted:** ${{totalBudgeted}}",
+                "**💰 Total Spent:** ${{totalSpent}}",
+                "**📈 Remaining Budget:** ${{totalRemaining}}",
+                "**🎯 Profit Margin:** {{profitMargin}}"
+            ]
+        },
+        {
+            "groupId": "allocation",
+            "elements": [
+                "### ☕ Bean-to-Budget Breakdown",
+                {
+                    "type": "chart",
+                    "chartKey": "budgetPieChart"
+                }
+            ]
+        },
+        {
+            "groupId": "variance",
+            "elements": [
+                "### 📊 Espresso vs Reality Check",
+                {
+                    "type": "chart",
+                    "chartKey": "budgetVarianceChart"
+                }
+            ]
+        },
+        {
+            "groupId": "controls",
+            "elements": [
+                "### ☕ Brew-tiful Expense Adjustments",
+                {
+                    "type": "slider",
+                    "variableId": "coffeeBeansBudget",
+                    "label": "Coffee Beans",
+                    "min": 500,
+                    "max": 2000,
+                    "step": 50
+                },
+                {
+                    "type": "slider",
+                    "variableId": "milkDairyBudget",
+                    "label": "Milk & Dairy",
+                    "min": 300,
+                    "max": 1500,
+                    "step": 50
+                },
+                {
+                    "type": "slider",
+                    "variableId": "rentBudget",
+                    "label": "Rent",
+                    "min": 800,
+                    "max": 3000,
+                    "step": 100
+                },
+                {
+                    "type": "slider",
+                    "variableId": "laborBudget",
+                    "label": "Labor",
+                    "min": 1000,
+                    "max": 4000,
+                    "step": 100
+                },
+                {
+                    "type": "slider",
+                    "variableId": "equipmentBudget",
+                    "label": "Equipment",
+                    "min": 100,
+                    "max": 800,
+                    "step": 50
+                },
+                {
+                    "type": "slider",
+                    "variableId": "marketingBudget",
+                    "label": "Marketing",
+                    "min": 100,
+                    "max": 600,
+                    "step": 25
+                },
+                {
+                    "type": "slider",
+                    "variableId": "utilitiesBudget",
+                    "label": "Utilities",
+                    "min": 100,
+                    "max": 500,
+                    "step": 25
+                },
+                {
+                    "type": "slider",
+                    "variableId": "suppliesBudget",
+                    "label": "Supplies",
+                    "min": 100,
+                    "max": 400,
+                    "step": 25
+                }
+            ]
+        },
+        {
+            "groupId": "categories",
+            "elements": [
+                "### 📋 Track Your Daily Grind Expenses",
+                {
+                    "type": "number",
+                    "variableId": "coffeeBeansActual",
+                    "label": "Coffee Beans"
+                },
+                {
+                    "type": "number",
+                    "variableId": "milkDairyActual",
+                    "label": "Milk & Dairy"
+                },
+                {
+                    "type": "number",
+                    "variableId": "rentActual",
+                    "label": "Rent"
+                },
+                {
+                    "type": "number",
+                    "variableId": "laborActual",
+                    "label": "Labor"
+                },
+                {
+                    "type": "number",
+                    "variableId": "equipmentActual",
+                    "label": "Equipment"
+                },
+                {
+                    "type": "number",
+                    "variableId": "marketingActual",
+                    "label": "Marketing"
+                },
+                {
+                    "type": "number",
+                    "variableId": "utilitiesActual",
+                    "label": "Utilities"
+                },
+                {
+                    "type": "number",
+                    "variableId": "suppliesActual",
+                    "label": "Supplies"
+                }
+            ]
+        },
+        {
+            "groupId": "trends",
+            "elements": [
+                "### 📈 The Coffee Chronicles - Monthly Trends",
+                {
+                    "type": "chart",
+                    "chartKey": "spendingTrendsChart"
+                }
+            ]
+        }
+    ],
+    "resources": {
+        "charts": {
+            "budgetPieChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "adjustedBudgetData"
+                },
+                "mark": {
+                    "type": "arc",
+                    "innerRadius": 50,
+                    "stroke": "white",
+                    "strokeWidth": 2
+                },
+                "encoding": {
+                    "theta": {
+                        "field": "adjustedBudget",
+                        "type": "quantitative",
+                        "title": "Budget Amount"
+                    },
+                    "color": {
+                        "field": "category",
+                        "type": "nominal",
+                        "scale": {
+                            "range": [
+                                "#8b4513",
+                                "#a0522d",
+                                "#cd853f",
+                                "#daa520",
+                                "#b8860b",
+                                "#d2691e",
+                                "#bc8f8f",
+                                "#f4a460",
+                                "#deb887"
+                            ]
+                        },
+                        "legend": {
+                            "orient": "right",
+                            "title": "Coffee Categories"
+                        }
+                    },
+                    "tooltip": [
+                        {
+                            "field": "category",
+                            "type": "nominal",
+                            "title": "Category"
+                        },
+                        {
+                            "field": "adjustedBudget",
+                            "type": "quantitative",
+                            "title": "Budgeted",
+                            "format": "$,.0f"
+                        },
+                        {
+                            "field": "spent",
+                            "type": "quantitative",
+                            "title": "Spent",
+                            "format": "$,.0f"
+                        },
+                        {
+                            "field": "remaining",
+                            "type": "quantitative",
+                            "title": "Remaining",
+                            "format": "$,.0f"
+                        }
+                    ]
+                }
+            },
+            "spendingTrendsChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "monthlyTrendsLong"
+                },
+                "mark": {
+                    "type": "line",
+                    "point": true,
+                    "strokeWidth": 2
+                },
+                "encoding": {
+                    "x": {
+                        "field": "month",
+                        "type": "temporal",
+                        "title": "Month",
+                        "axis": {
+                            "format": "%b %Y"
+                        }
+                    },
+                    "y": {
+                        "field": "amount",
+                        "type": "quantitative",
+                        "title": "Amount Spent ($)"
+                    },
+                    "color": {
+                        "field": "category",
+                        "type": "nominal",
+                        "scale": {
+                            "range": [
+                                "#8b4513",
+                                "#a0522d",
+                                "#cd853f",
+                                "#daa520",
+                                "#b8860b",
+                                "#d2691e",
+                                "#bc8f8f",
+                                "#f4a460",
+                                "#deb887"
+                            ]
+                        },
+                        "legend": {
+                            "title": "Coffee Expense Categories"
+                        }
+                    },
+                    "tooltip": [
+                        {
+                            "field": "month",
+                            "type": "temporal",
+                            "title": "Month",
+                            "format": "%B %Y"
+                        },
+                        {
+                            "field": "category",
+                            "type": "nominal",
+                            "title": "Category"
+                        },
+                        {
+                            "field": "amount",
+                            "type": "quantitative",
+                            "title": "Amount",
+                            "format": "$,.0f"
+                        }
+                    ]
+                }
+            },
+            "budgetVarianceChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "description": "Budget variance bar chart with negative values. Shows budget vs actual spending differences.",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "budgetVarianceData"
+                },
+                "encoding": {
+                    "y": {
+                        "field": "category",
+                        "type": "nominal",
+                        "axis": {
+                            "domain": false,
+                            "ticks": false,
+                            "labelAngle": 0,
+                            "labelPadding": 4
+                        },
+                        "title": "Category"
+                    },
+                    "x": {
+                        "field": "variance",
+                        "type": "quantitative",
+                        "scale": {
+                            "padding": 20
+                        },
+                        "axis": {
+                            "gridColor": {
+                                "condition": {
+                                    "test": "datum.value === 0",
+                                    "value": "black"
+                                },
+                                "value": "#ddd"
+                            }
+                        },
+                        "title": "Variance (Actual - Budget)"
+                    }
+                },
+                "layer": [
+                    {
+                        "mark": "bar",
+                        "encoding": {
+                            "color": {
+                                "condition": {
+                                    "test": "datum.variance < 0",
+                                    "value": "#22c55e"
+                                },
+                                "value": "#ef4444"
+                            }
+                        }
+                    },
+                    {
+                        "mark": {
+                            "type": "text",
+                            "align": {
+                                "expr": "datum.variance < 0 ? 'right' : 'left'"
+                            },
+                            "dx": {
+                                "expr": "datum.variance < 0 ? -2 : 2"
+                            }
+                        },
+                        "encoding": {
+                            "text": {
+                                "field": "variance",
+                                "type": "quantitative",
+                                "format": "$,.0f"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

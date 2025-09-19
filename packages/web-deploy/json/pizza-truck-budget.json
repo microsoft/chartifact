@@ -1,0 +1,674 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Wood Fired Pizza Truck Dashboard",
+    "style": {
+        "css": [
+            "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #fef7ed; }",
+            "body { display: grid; grid-template-areas: 'header header' 'overview overview' 'allocation variance' 'controls categories' 'trends trends'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+            ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #fed7aa; }",
+            "#header { grid-area: header; background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%); color: white; text-align: center; }",
+            "#overview { grid-area: overview; text-align: center; }",
+            "#allocation { grid-area: allocation; min-width: 0; overflow: hidden; }",
+            "#variance { grid-area: variance; min-width: 0; overflow: hidden; }",
+            "#controls { grid-area: controls; min-width: 0; overflow: hidden; }",
+            "#categories { grid-area: categories; min-width: 0; overflow: hidden; }",
+            "#trends { grid-area: trends; min-width: 0; overflow: hidden; }",
+            "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
+            "h2 { margin: 10px 0; font-size: 2em; color: #2d3748; font-weight: 600; }",
+            "h3 { margin: 0 0 15px 0; font-size: 1.2em; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
+            ".tabulator { max-width: 100%; overflow: auto; }",
+            ".tabulator .tabulator-table { min-width: fit-content; }",
+            ".slider-container { margin: 15px 0; }",
+            ".slider-label { font-weight: 500; color: #2d3748; margin-bottom: 8px; display: block; }",
+            "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'overview' 'allocation' 'variance' 'controls' 'categories' 'trends'; } }"
+        ]
+    },
+    "dataLoaders": [
+        {
+            "dataSourceName": "budgetCategories",
+            "type": "inline",
+            "format": "csv",
+            "content": [
+                "category,budgeted,spent,color",
+                "Ingredients,2500,2450,#dc2626",
+                "Fuel & Gas,800,750,#ea580c",
+                "Staff Wages,3200,3200,#f97316",
+                "Equipment Maintenance,400,350,#fb923c",
+                "Permits & Licenses,200,180,#fed7aa",
+                "Insurance,600,600,#ffedd5",
+                "Marketing,300,280,#fef3c7",
+                "Truck Payment,1200,1200,#fef7ed",
+                "Utilities,150,140,#fff7ed"
+            ]
+        },
+        {
+            "dataSourceName": "monthlyTrends",
+            "type": "inline",
+            "format": "csv",
+            "content": [
+                "month,Ingredients,Fuel & Gas,Staff Wages,Equipment Maintenance,Permits & Licenses,Insurance,Marketing,Truck Payment,Utilities",
+                "2024-01,2200,720,3000,320,150,600,250,1200,130",
+                "2024-02,2300,680,3100,380,160,600,300,1200,125",
+                "2024-03,2400,750,3200,400,170,600,280,1200,135",
+                "2024-04,2350,790,3200,350,180,600,320,1200,140",
+                "2024-05,2450,750,3200,350,180,600,280,1200,140",
+                "2024-06,2500,720,3200,420,190,600,350,1200,145"
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "variableId": "monthlyRevenue",
+            "type": "number",
+            "initialValue": 12000
+        },
+        {
+            "variableId": "ingredientsBudget",
+            "type": "number",
+            "initialValue": 2500
+        },
+        {
+            "variableId": "fuelBudget",
+            "type": "number",
+            "initialValue": 800
+        },
+        {
+            "variableId": "staffBudget",
+            "type": "number",
+            "initialValue": 3200
+        },
+        {
+            "variableId": "equipmentBudget",
+            "type": "number",
+            "initialValue": 400
+        },
+        {
+            "variableId": "permitsBudget",
+            "type": "number",
+            "initialValue": 200
+        },
+        {
+            "variableId": "insuranceBudget",
+            "type": "number",
+            "initialValue": 600
+        },
+        {
+            "variableId": "marketingBudget",
+            "type": "number",
+            "initialValue": 300
+        },
+        {
+            "variableId": "truckBudget",
+            "type": "number",
+            "initialValue": 1200
+        },
+        {
+            "variableId": "utilitiesBudget",
+            "type": "number",
+            "initialValue": 150
+        },
+        {
+            "variableId": "ingredientsActual",
+            "type": "number",
+            "initialValue": 2450
+        },
+        {
+            "variableId": "fuelActual",
+            "type": "number",
+            "initialValue": 750
+        },
+        {
+            "variableId": "staffActual",
+            "type": "number",
+            "initialValue": 3200
+        },
+        {
+            "variableId": "equipmentActual",
+            "type": "number",
+            "initialValue": 350
+        },
+        {
+            "variableId": "permitsActual",
+            "type": "number",
+            "initialValue": 180
+        },
+        {
+            "variableId": "insuranceActual",
+            "type": "number",
+            "initialValue": 600
+        },
+        {
+            "variableId": "marketingActual",
+            "type": "number",
+            "initialValue": 280
+        },
+        {
+            "variableId": "truckActual",
+            "type": "number",
+            "initialValue": 1200
+        },
+        {
+            "variableId": "utilitiesActual",
+            "type": "number",
+            "initialValue": 140
+        },
+        {
+            "variableId": "adjustedBudgetData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": [
+                    "budgetCategories"
+                ],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "expr": "datum.category === 'Ingredients' ? ingredientsBudget : (datum.category === 'Fuel & Gas' ? fuelBudget : (datum.category === 'Staff Wages' ? staffBudget : (datum.category === 'Equipment Maintenance' ? equipmentBudget : (datum.category === 'Permits & Licenses' ? permitsBudget : (datum.category === 'Insurance' ? insuranceBudget : (datum.category === 'Marketing' ? marketingBudget : (datum.category === 'Truck Payment' ? truckBudget : (datum.category === 'Utilities' ? utilitiesBudget : datum.budgeted))))))))",
+                        "as": "adjustedBudget"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.adjustedBudget - datum.spent",
+                        "as": "remaining"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "(datum.spent - datum.adjustedBudget) / datum.adjustedBudget",
+                        "as": "spentPercentage"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "totalBudgeted",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "toNumber(ingredientsBudget) + toNumber(fuelBudget) + toNumber(staffBudget) + toNumber(equipmentBudget) + toNumber(permitsBudget) + toNumber(insuranceBudget) + toNumber(marketingBudget) + toNumber(truckBudget) + toNumber(utilitiesBudget)"
+            }
+        },
+        {
+            "variableId": "totalSpent",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "toNumber(ingredientsActual) + toNumber(fuelActual) + toNumber(staffActual) + toNumber(equipmentActual) + toNumber(permitsActual) + toNumber(insuranceActual) + toNumber(marketingActual) + toNumber(truckActual) + toNumber(utilitiesActual)"
+            }
+        },
+        {
+            "variableId": "totalRemaining",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "toNumber(monthlyRevenue) - toNumber(totalSpent)"
+            }
+        },
+        {
+            "variableId": "profitMargin",
+            "type": "string",
+            "initialValue": "0%",
+            "calculation": {
+                "vegaExpression": "format(((monthlyRevenue - totalSpent) / monthlyRevenue) * 100, '.1f') + '%'"
+            }
+        },
+        {
+            "variableId": "monthlyTrendsLong",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": [
+                    "monthlyTrends"
+                ],
+                "dataFrameTransformations": [
+                    {
+                        "type": "fold",
+                        "fields": [
+                            "Ingredients",
+                            "Fuel & Gas",
+                            "Staff Wages",
+                            "Equipment Maintenance",
+                            "Permits & Licenses",
+                            "Insurance",
+                            "Marketing",
+                            "Truck Payment",
+                            "Utilities"
+                        ],
+                        "as": [
+                            "category",
+                            "amount"
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "budgetVarianceData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": [
+                    "budgetCategories"
+                ],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.category === 'Ingredients' || datum.category === 'Fuel & Gas' || datum.category === 'Staff Wages' || datum.category === 'Equipment Maintenance' || datum.category === 'Permits & Licenses' || datum.category === 'Insurance' || datum.category === 'Marketing' || datum.category === 'Truck Payment' || datum.category === 'Utilities'"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.category === 'Ingredients' ? ingredientsBudget : (datum.category === 'Fuel & Gas' ? fuelBudget : (datum.category === 'Staff Wages' ? staffBudget : (datum.category === 'Equipment Maintenance' ? equipmentBudget : (datum.category === 'Permits & Licenses' ? permitsBudget : (datum.category === 'Insurance' ? insuranceBudget : (datum.category === 'Marketing' ? marketingBudget : (datum.category === 'Truck Payment' ? truckBudget : (datum.category === 'Utilities' ? utilitiesBudget : datum.budgeted))))))))",
+                        "as": "budgeted"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.category === 'Ingredients' ? ingredientsActual : (datum.category === 'Fuel & Gas' ? fuelActual : (datum.category === 'Staff Wages' ? staffActual : (datum.category === 'Equipment Maintenance' ? equipmentActual : (datum.category === 'Permits & Licenses' ? permitsActual : (datum.category === 'Insurance' ? insuranceActual : (datum.category === 'Marketing' ? marketingActual : (datum.category === 'Truck Payment' ? truckActual : (datum.category === 'Utilities' ? utilitiesActual : datum.spent))))))))",
+                        "as": "spent"
+                    },
+                    {
+                        "type": "formula",
+                        "expr": "datum.spent - datum.budgeted",
+                        "as": "variance"
+                    }
+                ]
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "header",
+            "elements": [
+                "# 🍕 Wood Fired Pizza Truck Dashboard",
+                "**Business operations and profitability tracker**"
+            ]
+        },
+        {
+            "groupId": "overview",
+            "elements": [
+                "### 📊 Business Overview",
+                {
+                    "type": "slider",
+                    "variableId": "monthlyRevenue",
+                    "label": "Monthly Revenue Target",
+                    "min": 8000,
+                    "max": 20000,
+                    "step": 500
+                },
+                "**Total Expenses Budget:** ${{totalBudgeted}}",
+                "**Total Actual Expenses:** ${{totalSpent}}",
+                "**Net Profit:** ${{totalRemaining}}",
+                "**Profit Margin:** {{profitMargin}}"
+            ]
+        },
+        {
+            "groupId": "allocation",
+            "elements": [
+                "### 🥧 Expense Allocation",
+                {
+                    "type": "chart",
+                    "chartKey": "budgetPieChart"
+                }
+            ]
+        },
+        {
+            "groupId": "variance",
+            "elements": [
+                "### 📊 Budget vs Actual Expenses",
+                {
+                    "type": "chart",
+                    "chartKey": "budgetVarianceChart"
+                }
+            ]
+        },
+        {
+            "groupId": "controls",
+            "elements": [
+                "### � Expense Budget Adjustments",
+                {
+                    "type": "slider",
+                    "variableId": "ingredientsBudget",
+                    "label": "Ingredients",
+                    "min": 1500,
+                    "max": 4000,
+                    "step": 50
+                },
+                {
+                    "type": "slider",
+                    "variableId": "fuelBudget",
+                    "label": "Fuel & Gas",
+                    "min": 400,
+                    "max": 1200,
+                    "step": 25
+                },
+                {
+                    "type": "slider",
+                    "variableId": "staffBudget",
+                    "label": "Staff Wages",
+                    "min": 2000,
+                    "max": 5000,
+                    "step": 100
+                },
+                {
+                    "type": "slider",
+                    "variableId": "equipmentBudget",
+                    "label": "Equipment Maintenance",
+                    "min": 200,
+                    "max": 800,
+                    "step": 25
+                },
+                {
+                    "type": "slider",
+                    "variableId": "permitsBudget",
+                    "label": "Permits & Licenses",
+                    "min": 100,
+                    "max": 400,
+                    "step": 25
+                },
+                {
+                    "type": "slider",
+                    "variableId": "insuranceBudget",
+                    "label": "Insurance",
+                    "min": 400,
+                    "max": 1000,
+                    "step": 50
+                },
+                {
+                    "type": "slider",
+                    "variableId": "marketingBudget",
+                    "label": "Marketing",
+                    "min": 100,
+                    "max": 600,
+                    "step": 25
+                },
+                {
+                    "type": "slider",
+                    "variableId": "truckBudget",
+                    "label": "Truck Payment",
+                    "min": 800,
+                    "max": 2000,
+                    "step": 50
+                },
+                {
+                    "type": "slider",
+                    "variableId": "utilitiesBudget",
+                    "label": "Utilities",
+                    "min": 100,
+                    "max": 300,
+                    "step": 25
+                }
+            ]
+        },
+        {
+            "groupId": "categories",
+            "elements": [
+                "### 📋 Track This Month's Expenses",
+                {
+                    "type": "number",
+                    "variableId": "ingredientsActual",
+                    "label": "Ingredients Actual"
+                },
+                {
+                    "type": "number",
+                    "variableId": "fuelActual",
+                    "label": "Fuel & Gas Actual"
+                },
+                {
+                    "type": "number",
+                    "variableId": "staffActual",
+                    "label": "Staff Wages Actual"
+                },
+                {
+                    "type": "number",
+                    "variableId": "equipmentActual",
+                    "label": "Equipment Maintenance Actual"
+                },
+                {
+                    "type": "number",
+                    "variableId": "permitsActual",
+                    "label": "Permits & Licenses Actual"
+                },
+                {
+                    "type": "number",
+                    "variableId": "insuranceActual",
+                    "label": "Insurance Actual"
+                },
+                {
+                    "type": "number",
+                    "variableId": "marketingActual",
+                    "label": "Marketing Actual"
+                },
+                {
+                    "type": "number",
+                    "variableId": "truckActual",
+                    "label": "Truck Payment Actual"
+                },
+                {
+                    "type": "number",
+                    "variableId": "utilitiesActual",
+                    "label": "Utilities Actual"
+                }
+            ]
+        },
+        {
+            "groupId": "trends",
+            "elements": [
+                "### 📈 Expense Trends",
+                {
+                    "type": "chart",
+                    "chartKey": "spendingTrendsChart"
+                }
+            ]
+        }
+    ],
+    "resources": {
+        "charts": {
+            "budgetPieChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "adjustedBudgetData"
+                },
+                "mark": {
+                    "type": "arc",
+                    "innerRadius": 50,
+                    "stroke": "white",
+                    "strokeWidth": 2
+                },
+                "encoding": {
+                    "theta": {
+                        "field": "adjustedBudget",
+                        "type": "quantitative",
+                        "title": "Expense Amount"
+                    },
+                    "color": {
+                        "field": "category",
+                        "type": "nominal",
+                        "scale": {
+                            "range": [
+                                "#dc2626",
+                                "#ea580c",
+                                "#f97316",
+                                "#fb923c",
+                                "#fed7aa",
+                                "#ffedd5",
+                                "#fef3c7",
+                                "#fef7ed",
+                                "#fff7ed"
+                            ]
+                        },
+                        "legend": {
+                            "orient": "right",
+                            "title": "Categories"
+                        }
+                    },
+                    "tooltip": [
+                        {
+                            "field": "category",
+                            "type": "nominal",
+                            "title": "Category"
+                        },
+                        {
+                            "field": "adjustedBudget",
+                            "type": "quantitative",
+                            "title": "Budgeted",
+                            "format": "$,.0f"
+                        },
+                        {
+                            "field": "spent",
+                            "type": "quantitative",
+                            "title": "Actual",
+                            "format": "$,.0f"
+                        },
+                        {
+                            "field": "remaining",
+                            "type": "quantitative",
+                            "title": "Remaining",
+                            "format": "$,.0f"
+                        }
+                    ]
+                }
+            },
+            "spendingTrendsChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "monthlyTrendsLong"
+                },
+                "mark": {
+                    "type": "line",
+                    "point": true,
+                    "strokeWidth": 2
+                },
+                "encoding": {
+                    "x": {
+                        "field": "month",
+                        "type": "temporal",
+                        "title": "Month",
+                        "axis": {
+                            "format": "%b %Y"
+                        }
+                    },
+                    "y": {
+                        "field": "amount",
+                        "type": "quantitative",
+                        "title": "Amount Spent ($)"
+                    },
+                    "color": {
+                        "field": "category",
+                        "type": "nominal",
+                        "scale": {
+                            "range": [
+                                "#dc2626",
+                                "#ea580c",
+                                "#f97316",
+                                "#fb923c",
+                                "#fed7aa",
+                                "#ffedd5",
+                                "#fef3c7",
+                                "#fef7ed",
+                                "#fff7ed"
+                            ]
+                        },
+                        "legend": {
+                            "title": "Category"
+                        }
+                    },
+                    "tooltip": [
+                        {
+                            "field": "month",
+                            "type": "temporal",
+                            "title": "Month",
+                            "format": "%B %Y"
+                        },
+                        {
+                            "field": "category",
+                            "type": "nominal",
+                            "title": "Category"
+                        },
+                        {
+                            "field": "amount",
+                            "type": "quantitative",
+                            "title": "Amount",
+                            "format": "$,.0f"
+                        }
+                    ]
+                }
+            },
+            "budgetVarianceChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "description": "Expense variance bar chart with negative values. Shows budgeted vs actual expense differences.",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "budgetVarianceData"
+                },
+                "encoding": {
+                    "y": {
+                        "field": "category",
+                        "type": "nominal",
+                        "axis": {
+                            "domain": false,
+                            "ticks": false,
+                            "labelAngle": 0,
+                            "labelPadding": 4
+                        },
+                        "title": "Category"
+                    },
+                    "x": {
+                        "field": "variance",
+                        "type": "quantitative",
+                        "scale": {
+                            "padding": 20
+                        },
+                        "axis": {
+                            "gridColor": {
+                                "condition": {
+                                    "test": "datum.value === 0",
+                                    "value": "black"
+                                },
+                                "value": "#ddd"
+                            }
+                        },
+                        "title": "Variance (Actual - Budget)"
+                    }
+                },
+                "layer": [
+                    {
+                        "mark": "bar",
+                        "encoding": {
+                            "color": {
+                                "condition": {
+                                    "test": "datum.variance < 0",
+                                    "value": "#22c55e"
+                                },
+                                "value": "#ef4444"
+                            }
+                        }
+                    },
+                    {
+                        "mark": {
+                            "type": "text",
+                            "align": {
+                                "expr": "datum.variance < 0 ? 'right' : 'left'"
+                            },
+                            "dx": {
+                                "expr": "datum.variance < 0 ? -2 : 2"
+                            }
+                        },
+                        "encoding": {
+                            "text": {
+                                "field": "variance",
+                                "type": "quantitative",
+                                "format": "$,.0f"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
