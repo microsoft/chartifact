@@ -49,7 +49,7 @@ Chartifact consists of several interoperating modules:
 1. **Dropdown Components**:
    - Dropdown options must be strings only, not objects
    - Use simple string arrays for options: `"options": ["Option1", "Option2"]`
-   - For data-driven options, use `dynamicOptions` with a data source. See docs\assets\examples\json\features\7.dropdown.idoc.json
+   - For data-driven options, use `dynamicOptions` with a data source. See `docs\assets\examples\json\features\7.dropdown.idoc.json`
 
 2. **Chart Components**:
    - Place chart specifications in the `resources.charts` section
@@ -63,13 +63,12 @@ Chartifact consists of several interoperating modules:
 
 ## Examples
 
-- Source code for examples is in the packages/web-deploy/json folder
+- Source code for examples is in the `packages/web-deploy/json` folder
 - Examples in this repo use the json format and are compiled to markdown.
-- If you are asked to create an example, do it in the packages/web-deploy/json folder, do not modify the destination folder docs/assets/examples - this will be populated by a build.
-- The examples are built manually for now.
-- **IMPORTANT**: When creating examples, use only Markdown formatting - NO HTML elements are allowed. Use plain text, Markdown headers, bold/italic formatting, and CSS styling for visual presentation.
-- Validate the json against the TypeScript schema declaration of InteractiveDocumentWithSchema in docs\schema\idoc_v1.d.ts
-- After you know it validates statically, validate dynamically. See packages\compiler\test\validate.mjs
+- If you are asked to create an example, do it in the `packages/web-deploy/json` folder, do not modify the destination folder `docs/assets/examples` - this will be populated by a build.
+- **IMPORTANT**: NO HTML elements are allowed.
+- Validate the json against the TypeScript schema declaration of InteractiveDocumentWithSchema in `docs\schema\idoc_v1.d.ts`
+- After you know it validates statically, validate dynamically. See `packages\compiler\test\validate.mjs`
 
 
 ## Smoke Test
