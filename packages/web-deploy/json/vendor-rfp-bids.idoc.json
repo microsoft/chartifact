@@ -563,23 +563,23 @@
                     "name": "radarData"
                 },
                 "mark": {
-                    "type": "line",
-                    "strokeWidth": 2
+                    "type": "bar",
+                    "cornerRadiusEnd": 2
                 },
                 "encoding": {
-                    "theta": {
+                    "x": {
                         "field": "criteria",
                         "type": "nominal",
-                        "scale": {
-                            "range": [0, 6.28]
+                        "title": "Evaluation Criteria",
+                        "axis": {
+                            "labelAngle": -45
                         }
                     },
-                    "radius": {
+                    "y": {
                         "field": "score",
                         "type": "quantitative",
+                        "title": "Score",
                         "scale": {
-                            "type": "linear",
-                            "range": [0, 150],
                             "domain": [0, 100]
                         }
                     },
@@ -592,6 +592,10 @@
                         "legend": {
                             "title": "Vendor"
                         }
+                    },
+                    "xOffset": {
+                        "field": "vendor_name",
+                        "type": "nominal"
                     },
                     "tooltip": [
                         {"field": "vendor_name", "type": "nominal", "title": "Vendor"},
