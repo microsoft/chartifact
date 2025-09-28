@@ -329,6 +329,10 @@
                 },
                 {
                     "type": "chart",
+                    "chartKey": "experienceBarChart"
+                },
+                {
+                    "type": "chart",
                     "chartKey": "radarComparisonChart"
                 }
             ]
@@ -506,7 +510,7 @@
                 },
                 "mark": {
                     "type": "circle",
-                    "size": 200,
+                    "size": 150,
                     "stroke": "white",
                     "strokeWidth": 2
                 },
@@ -539,16 +543,6 @@
                         },
                         "legend": {
                             "title": "Vendor"
-                        }
-                    },
-                    "size": {
-                        "field": "experience_score",
-                        "type": "quantitative",
-                        "scale": {
-                            "range": [100, 400]
-                        },
-                        "legend": {
-                            "title": "Experience Score"
                         }
                     },
                     "tooltip": [
@@ -655,6 +649,52 @@
                         {"field": "weighted_score", "type": "quantitative", "title": "Weighted Score", "format": ".1f"},
                         {"field": "rank", "type": "ordinal", "title": "Rank"},
                         {"field": "total_cost", "type": "quantitative", "title": "Cost", "format": "$,.0f"}
+                    ]
+                }
+            },
+            "experienceBarChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 250,
+                "title": "Experience Scores by Vendor",
+                "data": {
+                    "name": "comparisonData"
+                },
+                "mark": {
+                    "type": "bar",
+                    "cornerRadiusEnd": 4
+                },
+                "encoding": {
+                    "x": {
+                        "field": "experience_score",
+                        "type": "quantitative",
+                        "title": "Experience Score",
+                        "scale": {
+                            "domain": [0, 100]
+                        }
+                    },
+                    "y": {
+                        "field": "vendor_name",
+                        "type": "nominal",
+                        "title": "Vendor",
+                        "sort": {
+                            "field": "experience_score",
+                            "order": "descending"
+                        }
+                    },
+                    "color": {
+                        "field": "vendor_name",
+                        "type": "nominal",
+                        "scale": {
+                            "range": ["#4f46e5", "#7c3aed", "#ec4899", "#f59e0b", "#10b981"]
+                        },
+                        "legend": null
+                    },
+                    "tooltip": [
+                        {"field": "vendor_name", "type": "nominal", "title": "Vendor"},
+                        {"field": "experience_score", "type": "quantitative", "title": "Experience Score"},
+                        {"field": "reference_count", "type": "quantitative", "title": "References"},
+                        {"field": "company_size", "type": "nominal", "title": "Company Size"}
                     ]
                 }
             }
