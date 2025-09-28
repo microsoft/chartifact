@@ -505,7 +505,6 @@
                 },
                 "mark": {
                     "type": "circle",
-                    "size": 150,
                     "stroke": "white",
                     "strokeWidth": 2
                 },
@@ -538,6 +537,16 @@
                         },
                         "legend": {
                             "title": "Vendor"
+                        }
+                    },
+                    "size": {
+                        "field": "experience_score",
+                        "type": "quantitative",
+                        "scale": {
+                            "range": [100, 400]
+                        },
+                        "legend": {
+                            "title": "Experience Score"
                         }
                     },
                     "tooltip": [
