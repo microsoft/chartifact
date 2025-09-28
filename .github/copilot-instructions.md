@@ -68,7 +68,9 @@ Chartifact consists of several interoperating modules:
 - If you are asked to create an example, do it in the packages/web-deploy/json folder, do not modify the destination folder docs/assets/examples - this will be populated by a build.
 - The examples are built manually for now.
 - **IMPORTANT**: When creating examples, use only Markdown formatting - NO HTML elements are allowed. Use plain text, Markdown headers, bold/italic formatting, and CSS styling for visual presentation.
-- Validate the json against thhe TypeScript schema declaration of InteractiveDocumentWithSchema in docs\schema\idoc_v1.d.ts
+- Validate the json against the TypeScript schema declaration of InteractiveDocumentWithSchema in docs\schema\idoc_v1.d.ts
+- After you know it validates statically, validate dynamically. See packages\compiler\test\validate.mjs
+
 
 ## Smoke Test
 
