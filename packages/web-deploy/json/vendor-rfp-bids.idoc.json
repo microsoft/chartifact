@@ -564,7 +564,6 @@
                 },
                 "mark": {
                     "type": "line",
-                    "point": true,
                     "strokeWidth": 2
                 },
                 "encoding": {
@@ -681,14 +680,6 @@
                             "field": "experience_score",
                             "order": "descending"
                         }
-                    },
-                    "color": {
-                        "field": "vendor_name",
-                        "type": "nominal",
-                        "scale": {
-                            "range": ["#4f46e5", "#7c3aed", "#ec4899", "#f59e0b", "#10b981"]
-                        },
-                        "legend": null
                     },
                     "tooltip": [
                         {"field": "vendor_name", "type": "nominal", "title": "Vendor"},
