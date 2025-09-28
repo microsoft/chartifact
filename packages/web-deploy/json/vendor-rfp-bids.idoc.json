@@ -4,16 +4,16 @@
     "style": {
         "css": [
             "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
-            "body { display: grid; grid-template-areas: 'header header header' 'overview overview overview' 'filters comparison comparison' 'details details details' 'scoring scoring scoring'; grid-template-columns: minmax(250px, 1fr) 2fr 2fr; gap: 20px; max-width: 1600px; margin: 0 auto; }",
+            "body { display: grid; grid-template-areas: 'header header header' 'filters comparison comparison' 'details details details' 'scoring scoring scoring'; grid-template-columns: minmax(250px, 1fr) 2fr 2fr; gap: 20px; max-width: 1600px; margin: 0 auto; }",
             ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
-            "#header { grid-area: header; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; text-align: center; }",
-            "#overview { grid-area: overview; text-align: center; }",
+            "#header { grid-area: header; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; text-align: center; padding: 15px 20px; }",
+
             "#filters { grid-area: filters; min-width: 0; overflow: hidden; }",
             "#comparison { grid-area: comparison; min-width: 0; overflow: hidden; }",
             "#details { grid-area: details; min-width: 0; overflow: hidden; }",
             "#scoring { grid-area: scoring; min-width: 0; overflow: hidden; }",
-            "h1 { margin: 0; padding: 20px 0; font-size: 2.2em; font-weight: 600; }",
-            "h2 { margin: 10px 0; font-size: 1.8em; color: #1e293b; font-weight: 600; }",
+            "h1 { margin: 0 0 10px 0; padding: 0; font-size: 2em; font-weight: 600; }",
+            "h2 { margin: 5px 0; font-size: 1.2em; color: #e2e8f0; font-weight: 400; }",
             "h3 { margin: 0 0 15px 0; font-size: 1.1em; color: #475569; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
             ".tabulator { max-width: 100%; overflow: auto; }",
             ".tabulator .tabulator-table { min-width: fit-content; }",
@@ -265,14 +265,9 @@
             "groupId": "header",
             "elements": [
                 "# 🏢 Vendor RFP Bid Comparison Dashboard",
-                "**Compare and evaluate vendor proposals across multiple dimensions**"
-            ]
-        },
-        {
-            "groupId": "overview",
-            "elements": [
-                "## 📊 Overview",
-                "**Total Vendors:** {{vendorCount}} | **Average Cost:** ${{avgCost | number:,.0f}} | **Top Ranked:** {{topVendor}}"
+                "**Compare and evaluate vendor proposals across multiple dimensions**",
+                "",
+                "## 📊 **Total Vendors:** {{vendorCount}} | **Average Cost:** ${{avgCost | number:,.0f}} | **Top Ranked:** {{topVendor}}"
             ]
         },
         {
