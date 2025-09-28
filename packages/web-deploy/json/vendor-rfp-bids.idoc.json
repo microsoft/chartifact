@@ -255,7 +255,7 @@
             }
         }
     ],
-    "components": [
+    "groups": [
         {
             "groupId": "header",
             "elements": [
@@ -306,11 +306,7 @@
                     "variableId": "selectedVendors",
                     "label": "Compare Vendors",
                     "multiple": true,
-                    "dynamicOptions": {
-                        "dataSourceName": "vendorBids",
-                        "valueField": "vendor_id",
-                        "labelField": "vendor_name"
-                    }
+                    "options": ["VENDOR_001", "VENDOR_002", "VENDOR_003", "VENDOR_004", "VENDOR_005"]
                 }
             ]
         },
