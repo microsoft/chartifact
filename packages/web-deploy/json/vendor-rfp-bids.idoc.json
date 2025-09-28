@@ -181,7 +181,7 @@
                 "dataFrameTransformations": [
                     {
                         "type": "filter",
-                        "expr": "indexof(selectedVendors, datum.vendor_name) >= 0"
+                        "expr": "indexof(selectedVendors, datum.vendor_name) >= 0 && datum.total_cost >= minCostFilter && datum.total_cost <= maxCostFilter && datum.technical_score >= minTechnicalScore"
                     }
                 ]
             }
@@ -218,7 +218,7 @@
                 "dataFrameTransformations": [
                     {
                         "type": "filter",
-                        "expr": "indexof(selectedVendors, datum.vendor_name) >= 0"
+                        "expr": "indexof(selectedVendors, datum.vendor_name) >= 0 && datum.total_cost >= minCostFilter && datum.total_cost <= maxCostFilter && datum.technical_score >= minTechnicalScore"
                     },
                     {
                         "type": "fold",
