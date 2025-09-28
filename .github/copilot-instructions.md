@@ -21,8 +21,6 @@ Chartifact consists of several interoperating modules:
 
 4. **Web-Based Viewer and Editor**: Enables quick edits and sharing.
 
-5. **Export Tools**: Generate standalone HTML documents for sharing or embedding.
-
 ## Developer Workflows
 
 ### Build
@@ -49,16 +47,13 @@ Chartifact consists of several interoperating modules:
 ## Component Capabilities and Constraints
 
 1. **Dropdown Components**:
-   - Dropdown options must be strings only - no objects with value/label properties
+   - Dropdown options must be strings only, not objects
    - Use simple string arrays for options: `"options": ["Option1", "Option2"]`
-   - For data-driven options, use `dynamicOptions` with a data source
-   - Objects in dropdown options will display as "[object Object]"
+   - For data-driven options, use `dynamicOptions` with a data source. See docs\assets\examples\json\features\7.dropdown.idoc.json
 
 2. **Chart Components**:
-   - Heatmaps and complex visualizations should use the `chart` type with `chartKey`
    - Place chart specifications in the `resources.charts` section
    - Reference charts using `{"type": "chart", "chartKey": "yourChartKey"}`
-   - Direct `vega-lite` type elements may not render properly for complex charts
 
 3. **Tabulator Components (Critical)**:
    - **ALWAYS add responsive CSS for grid containers**: Use `min-width: 0` and `overflow: hidden` for grid areas containing tabulators
@@ -73,6 +68,7 @@ Chartifact consists of several interoperating modules:
 - If you are asked to create an example, do it in the packages/web-deploy/json folder, do not modify the destination folder docs/assets/examples - this will be populated by a build.
 - The examples are built manually for now.
 - **IMPORTANT**: When creating examples, use only Markdown formatting - NO HTML elements are allowed. Use plain text, Markdown headers, bold/italic formatting, and CSS styling for visual presentation.
+- Validate the json against thhe TypeScript schema declaration of InteractiveDocumentWithSchema in docs\schema\idoc_v1.d.ts
 
 ## Smoke Test
 
@@ -87,6 +83,10 @@ Chartifact consists of several interoperating modules:
 
 ## Runtime host
 
-- There is a sandboxed runtime that securely renders documents available at https://microsoft.github.io/chartifact/view
-- The url above can accept a `load` parameter to specify the document to render, for example https://microsoft.github.io/chartifact/view/?load=https://raw.githubusercontent.com/microsoft/chartifact/562d086/packages/web-deploy/json/sales-dashboard.idoc.json
-- **ALWAYS provide a preview link when creating or modifying examples** - include the preview link in PR comments and descriptions automatically so examples can be tested immediately without being asked.
+If the agent is run in the cloud:
+   - There is a sandboxed runtime that securely renders documents available at https://microsoft.github.io/chartifact/view
+   - The url above can accept a `load` parameter to specify the document to render, for example https://microsoft.github.io/chartifact/view/?load=https://raw.githubusercontent.com/microsoft/chartifact/562d086/packages/web-deploy/json/sales-dashboard.idoc.json
+   - **ALWAYS provide a preview link when creating or modifying examples** - include the preview link in PR comments and descriptions automatically so examples can be tested immediately without being asked.
+
+If the agent is run locally:
+   - the user can preview documents using the VS Code extension.
