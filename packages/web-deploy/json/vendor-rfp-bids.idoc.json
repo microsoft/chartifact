@@ -48,7 +48,8 @@
                     "industry_focus": "Healthcare, Finance",
                     "certifications": "ISO 9001, SOC 2",
                     "reference_count": 12,
-                    "geographic_coverage": "Global"
+                    "geographic_coverage": "Global",
+                    "user_rating": 4
                 },
                 {
                     "vendor_id": "VENDOR_002", 
@@ -67,7 +68,8 @@
                     "industry_focus": "Technology, Manufacturing",
                     "certifications": "ISO 27001, PCI DSS",
                     "reference_count": 8,
-                    "geographic_coverage": "North America"
+                    "geographic_coverage": "North America",
+                    "user_rating": 5
                 },
                 {
                     "vendor_id": "VENDOR_003",
@@ -86,7 +88,8 @@
                     "industry_focus": "Government, Education",
                     "certifications": "FedRAMP, ISO 9001",
                     "reference_count": 15,
-                    "geographic_coverage": "Global"
+                    "geographic_coverage": "Global",
+                    "user_rating": 3
                 },
                 {
                     "vendor_id": "VENDOR_004",
@@ -105,7 +108,8 @@
                     "industry_focus": "Retail, E-commerce",
                     "certifications": "ISO 27001, SOC 2",
                     "reference_count": 10,
-                    "geographic_coverage": "Europe, North America"
+                    "geographic_coverage": "Europe, North America",
+                    "user_rating": 4
                 },
                 {
                     "vendor_id": "VENDOR_005",
@@ -124,7 +128,8 @@
                     "industry_focus": "Startups, SMB",
                     "certifications": "ISO 9001",
                     "reference_count": 6,
-                    "geographic_coverage": "North America"
+                    "geographic_coverage": "North America",
+                    "user_rating": 3
                 }
             ]
         }
@@ -134,7 +139,7 @@
             "variableId": "selectedVendors",
             "type": "object",
             "isArray": true,
-            "initialValue": ["VENDOR_001", "VENDOR_002", "VENDOR_003"]
+            "initialValue": ["TechSolutions Inc", "InnovateCorp", "GlobalTech Partners"]
         },
         {
             "variableId": "minCostFilter",
@@ -176,7 +181,7 @@
                 "dataFrameTransformations": [
                     {
                         "type": "filter",
-                        "expr": "indexof(selectedVendors, datum.vendor_id) >= 0"
+                        "expr": "indexof(selectedVendors, datum.vendor_name) >= 0"
                     }
                 ]
             }
@@ -213,7 +218,7 @@
                 "dataFrameTransformations": [
                     {
                         "type": "filter",
-                        "expr": "indexof(selectedVendors, datum.vendor_id) >= 0"
+                        "expr": "indexof(selectedVendors, datum.vendor_name) >= 0"
                     },
                     {
                         "type": "fold",
@@ -306,7 +311,11 @@
                     "variableId": "selectedVendors",
                     "label": "Compare Vendors",
                     "multiple": true,
-                    "options": ["VENDOR_001", "VENDOR_002", "VENDOR_003", "VENDOR_004", "VENDOR_005"]
+                    "size": 10,
+                    "dynamicOptions": {
+                        "dataSourceName": "vendorBids",
+                        "fieldName": "vendor_name"
+                    }
                 }
             ]
         },
@@ -383,6 +392,22 @@
                                 "field": "innovation_score",
                                 "sorter": "number",
                                 "width": 100
+                            },
+                            {
+                                "title": "Rating",
+                                "field": "user_rating",
+                                "formatter": "star",
+                                "formatterParams": {
+                                    "stars": 5
+                                },
+                                "editor": "star",
+                                "editorParams": {
+                                    "elementAttributes": {
+                                        "style": "color: #f59e0b;"
+                                    }
+                                },
+                                "sorter": "number",
+                                "width": 120
                             },
                             {
                                 "title": "Contact",
@@ -490,6 +515,10 @@
                         "field": "total_cost",
                         "type": "quantitative",
                         "title": "Total Cost ($)",
+                        "scale": {
+                            "domain": [200000, 350000],
+                            "nice": true
+                        },
                         "axis": {
                             "format": "$,.0f"
                         }
