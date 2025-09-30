@@ -1,0 +1,70 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "Feature: Danfo.js Correlation Matrix",
+    "dataLoaders": [
+        {
+            "dataSourceName": "salesData",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"revenue": 1000, "units": 100, "price": 10, "cost": 600, "profit": 400},
+                {"revenue": 1500, "units": 150, "price": 10, "cost": 900, "profit": 600},
+                {"revenue": 2000, "units": 200, "price": 10, "cost": 1200, "profit": 800},
+                {"revenue": 2500, "units": 250, "price": 10, "cost": 1500, "profit": 1000},
+                {"revenue": 3000, "units": 300, "price": 10, "cost": 1800, "profit": 1200},
+                {"revenue": 1200, "units": 120, "price": 10, "cost": 720, "profit": 480},
+                {"revenue": 1800, "units": 180, "price": 10, "cost": 1080, "profit": 720},
+                {"revenue": 2200, "units": 220, "price": 10, "cost": 1320, "profit": 880},
+                {"revenue": 2700, "units": 270, "price": 10, "cost": 1620, "profit": 1080},
+                {"revenue": 3200, "units": 320, "price": 10, "cost": 1920, "profit": 1280}
+            ]
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "main",
+            "elements": [
+                "## Danfo.js Data Transformations",
+                "This example demonstrates using Danfo.js for data analysis, specifically computing a correlation matrix.",
+                "### Sales Data",
+                "Here is the original sales data:",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "salesData",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "300px"
+                    }
+                },
+                "### Correlation Matrix",
+                "The correlation matrix shows how strongly different metrics are related:",
+                {
+                    "type": "danfo",
+                    "dataSourceName": "salesData",
+                    "variableId": "correlationMatrix",
+                    "operation": "corr"
+                },
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "correlationMatrix",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "300px"
+                    }
+                },
+                "### Interpretation",
+                "- Values close to **1.0** indicate strong positive correlation",
+                "- Values close to **-1.0** indicate strong negative correlation",
+                "- Values close to **0** indicate little to no correlation",
+                "",
+                "In this sales data:",
+                "- Revenue and units are perfectly correlated (1.0) since revenue = units × price",
+                "- Cost and profit both correlate strongly with units and revenue",
+                "- Price has no correlation since it's constant in this dataset"
+            ]
+        }
+    ],
+    "resources": {
+        "css": ".tabulator { font-size: 0.9em; }\n.danfo-status { padding: 10px; background-color: #f0f0f0; border-radius: 4px; margin: 10px 0; }"
+    }
+}
