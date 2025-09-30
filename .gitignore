@@ -146,3 +146,4 @@ docs/Gemfile.lock
 danfo-smoke-test.html
 validate-danfo.mjs
 test-danfo.mjs
+validate-danfo-ml.mjs

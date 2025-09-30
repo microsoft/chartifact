@@ -1,0 +1,154 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "Feature: Danfo.js ML Data Preparation",
+    "dataLoaders": [
+        {
+            "dataSourceName": "rawData",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"age": 25, "income": 50000, "category": "A", "score": 85, "region": "North"},
+                {"age": 35, "income": 75000, "category": "B", "score": 92, "region": "South"},
+                {"age": 45, "income": null, "category": "A", "score": 78, "region": "East"},
+                {"age": 30, "income": 60000, "category": "C", "score": null, "region": "West"},
+                {"age": 50, "income": 90000, "category": "B", "score": 88, "region": "North"},
+                {"age": 28, "income": 55000, "category": "A", "score": 90, "region": "South"},
+                {"age": 40, "income": 80000, "category": "C", "score": 85, "region": "East"},
+                {"age": 33, "income": 70000, "category": "B", "score": 95, "region": "West"}
+            ]
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "main",
+            "elements": [
+                "## Danfo.js ML Data Preparation Pipeline",
+                "This example demonstrates the full ML data prep workflow using Danfo operations.",
+                "",
+                "### Step 1: Raw Data",
+                "Here's our raw dataset with missing values and categorical variables:",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "rawData",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "250px"
+                    }
+                },
+                "",
+                "### Step 2: Handle Missing Values (fillna)",
+                "Fill missing values with appropriate defaults:",
+                {
+                    "type": "danfo",
+                    "dataSourceName": "rawData",
+                    "variableId": "filledData",
+                    "operation": "fillna",
+                    "operationConfig": {
+                        "value": 0
+                    }
+                },
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "filledData",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "250px"
+                    }
+                },
+                "",
+                "### Step 3: Select Features (select)",
+                "Select only the features we want for ML:",
+                {
+                    "type": "danfo",
+                    "dataSourceName": "filledData",
+                    "variableId": "selectedFeatures",
+                    "operation": "select",
+                    "operationConfig": {
+                        "columns": ["age", "income", "category", "score"]
+                    }
+                },
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "selectedFeatures",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "250px"
+                    }
+                },
+                "",
+                "### Step 4: One-Hot Encode Categorical (oneHot)",
+                "Encode categorical variables as numeric columns:",
+                {
+                    "type": "danfo",
+                    "dataSourceName": "selectedFeatures",
+                    "variableId": "encodedData",
+                    "operation": "oneHot",
+                    "operationConfig": {
+                        "columns": ["category"],
+                        "prefix": "cat"
+                    }
+                },
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "encodedData",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "250px"
+                    }
+                },
+                "",
+                "### Step 5: Scale Numeric Features (scale)",
+                "Normalize numeric features for ML algorithms:",
+                {
+                    "type": "danfo",
+                    "dataSourceName": "encodedData",
+                    "variableId": "scaledData",
+                    "operation": "scale",
+                    "operationConfig": {
+                        "method": "normalize",
+                        "columns": ["age", "income", "score"]
+                    }
+                },
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "scaledData",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "250px"
+                    }
+                },
+                "",
+                "### Drop Unwanted Columns (drop)",
+                "Remove the original categorical column after encoding:",
+                {
+                    "type": "danfo",
+                    "dataSourceName": "encodedData",
+                    "variableId": "finalData",
+                    "operation": "drop",
+                    "operationConfig": {
+                        "columns": ["category"]
+                    }
+                },
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "finalData",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "250px"
+                    }
+                },
+                "",
+                "### Summary",
+                "The data is now clean, numeric, and ML-ready:",
+                "- ✅ Missing values handled",
+                "- ✅ Only relevant features selected",
+                "- ✅ Categorical variables encoded",
+                "- ✅ Numeric features scaled",
+                "- ✅ Ready for ML/Tensor pipelines"
+            ]
+        }
+    ],
+    "resources": {
+        "css": ".tabulator { font-size: 0.85em; }\n.danfo-status { padding: 10px; background-color: #f0f0f0; border-radius: 4px; margin: 10px 0; }\nh3 { margin-top: 30px; color: #0066cc; }"
+    }
+}

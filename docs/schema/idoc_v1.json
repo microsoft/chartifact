@@ -492,19 +492,26 @@
     },
     "DanfoElement": {
       "additionalProperties": false,
-      "description": "Danfo use for data transformations like correlation matrices, groupBy, etc.",
+      "description": "Danfo use for data transformations like correlation matrices, groupBy, ML data prep, etc.",
       "properties": {
         "dataSourceName": {
           "description": "Name of the data source to use for incoming data (output data is available via the variableId)",
           "type": "string"
         },
         "operation": {
-          "description": "Type of operation to perform",
+          "description": "Type of Danfo operation to perform",
           "enum": [
             "corr",
             "describe",
             "groupby",
-            "sortValues"
+            "sortValues",
+            "select",
+            "drop",
+            "oneHot",
+            "scale",
+            "fillna",
+            "dropna",
+            "datePart"
           ],
           "type": "string"
         },

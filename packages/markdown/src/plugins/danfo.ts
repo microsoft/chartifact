@@ -170,6 +170,153 @@ export const danfoPlugin: Plugin<DanfoSpec> = {
                             break;
                         }
                         
+                        case 'select': {
+                            // Select specific columns
+                            const config = spec.operationConfig as any;
+                            if (!config || !config.columns || !Array.isArray(config.columns)) {
+                                throw new Error('select requires operationConfig with "columns" array');
+                            }
+                            const selectedDf = df.loc({ columns: config.columns });
+                            result = dfd.toJSON(selectedDf);
+                            break;
+                        }
+                        
+                        case 'drop': {
+                            // Drop specific columns
+                            const config = spec.operationConfig as any;
+                            if (!config || !config.columns || !Array.isArray(config.columns)) {
+                                throw new Error('drop requires operationConfig with "columns" array');
+                            }
+                            const droppedDf = df.drop({ columns: config.columns, axis: 1 });
+                            result = dfd.toJSON(droppedDf);
+                            break;
+                        }
+                        
+                        case 'oneHot': {
+                            // One-hot encode categorical columns
+                            const config = spec.operationConfig as any;
+                            if (!config || !config.columns || !Array.isArray(config.columns)) {
+                                throw new Error('oneHot requires operationConfig with "columns" array');
+                            }
+                            let encodedDf = df;
+                            for (const column of config.columns) {
+                                encodedDf = dfd.get_dummies(encodedDf, { columns: [column], prefix: config.prefix || column });
+                            }
+                            result = dfd.toJSON(encodedDf);
+                            break;
+                        }
+                        
+                        case 'scale': {
+                            // Normalize or standardize numeric features
+                            const config = spec.operationConfig as any;
+                            const method = config?.method || 'standardize'; // 'standardize' or 'normalize'
+                            const columns = config?.columns; // if not specified, scale all numeric columns
+                            
+                            let scaledDf = df;
+                            if (method === 'standardize') {
+                                // Standardize (z-score normalization)
+                                const scaler = new dfd.MinMaxScaler();
+                                if (columns && Array.isArray(columns)) {
+                                    const subset = df.loc({ columns });
+                                    scaler.fit(subset);
+                                    const scaledSubset = scaler.transform(subset);
+                                    // Replace the columns in the original dataframe
+                                    for (let i = 0; i < columns.length; i++) {
+                                        scaledDf = scaledDf.addColumn(columns[i], scaledSubset[columns[i]].values, { inplace: false });
+                                    }
+                                } else {
+                                    scaler.fit(df);
+                                    scaledDf = scaler.transform(df);
+                                }
+                            } else if (method === 'normalize') {
+                                // Min-max normalization (0-1 range)
+                                const scaler = new dfd.MinMaxScaler();
+                                if (columns && Array.isArray(columns)) {
+                                    const subset = df.loc({ columns });
+                                    scaler.fit(subset);
+                                    const scaledSubset = scaler.transform(subset);
+                                    for (let i = 0; i < columns.length; i++) {
+                                        scaledDf = scaledDf.addColumn(columns[i], scaledSubset[columns[i]].values, { inplace: false });
+                                    }
+                                } else {
+                                    scaler.fit(df);
+                                    scaledDf = scaler.transform(df);
+                                }
+                            }
+                            result = dfd.toJSON(scaledDf);
+                            break;
+                        }
+                        
+                        case 'fillna': {
+                            // Fill missing values
+                            const config = spec.operationConfig as any;
+                            const value = config?.value !== undefined ? config.value : 0;
+                            const columns = config?.columns; // if not specified, fill all columns
+                            
+                            let filledDf = df;
+                            if (columns && Array.isArray(columns)) {
+                                for (const column of columns) {
+                                    filledDf = filledDf.fillna({ columns: [column], values: [value], inplace: false });
+                                }
+                            } else {
+                                filledDf = df.fillna(value, { inplace: false });
+                            }
+                            result = dfd.toJSON(filledDf);
+                            break;
+                        }
+                        
+                        case 'dropna': {
+                            // Drop rows with missing values
+                            const config = spec.operationConfig as any;
+                            const axis = config?.axis || 0; // 0 for rows, 1 for columns
+                            
+                            const droppedDf = df.dropna({ axis, inplace: false });
+                            result = dfd.toJSON(droppedDf);
+                            break;
+                        }
+                        
+                        case 'datePart': {
+                            // Extract date parts (year, month, day, hour) from datetime columns
+                            const config = spec.operationConfig as any;
+                            if (!config || !config.column) {
+                                throw new Error('datePart requires operationConfig with "column" field');
+                            }
+                            const parts = config.parts || ['year', 'month', 'day']; // default parts to extract
+                            
+                            let resultDf = df;
+                            const dateColumn = df[config.column];
+                            
+                            for (const part of parts) {
+                                let partValues: number[];
+                                switch (part) {
+                                    case 'year':
+                                        partValues = dateColumn.dt.year().values;
+                                        break;
+                                    case 'month':
+                                        partValues = dateColumn.dt.month().values;
+                                        break;
+                                    case 'day':
+                                        partValues = dateColumn.dt.day().values;
+                                        break;
+                                    case 'hour':
+                                        partValues = dateColumn.dt.hour().values;
+                                        break;
+                                    default:
+                                        continue;
+                                }
+                                const columnName = `${config.column}_${part}`;
+                                resultDf = resultDf.addColumn(columnName, partValues, { inplace: false });
+                            }
+                            
+                            // Optionally drop the original column
+                            if (config.dropOriginal) {
+                                resultDf = resultDf.drop({ columns: [config.column], axis: 1 });
+                            }
+                            
+                            result = dfd.toJSON(resultDf);
+                            break;
+                        }
+                        
                         default:
                             throw new Error(`Unknown operation: ${spec.operation}`);
                     }

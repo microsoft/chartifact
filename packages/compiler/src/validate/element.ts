@@ -56,7 +56,7 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                     errors.push(...validateRequiredString(danfoElement.dataSourceName, 'dataSourceName', 'Danfo'));
                     
                     // Validate operation
-                    const validOperations = ['corr', 'describe', 'groupby', 'sortValues'];
+                    const validOperations = ['corr', 'describe', 'groupby', 'sortValues', 'select', 'drop', 'oneHot', 'scale', 'fillna', 'dropna', 'datePart'];
                     if (!danfoElement.operation) {
                         errors.push('Danfo element must have an operation');
                     } else if (!validOperations.includes(danfoElement.operation)) {

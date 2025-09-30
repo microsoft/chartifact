@@ -239,7 +239,7 @@ interface TabulatorElementProps extends OptionalVariableControl {
 }
 /**
  * Danfo
- * use for data transformations like correlation matrices, groupBy, etc.
+ * use for data transformations like correlation matrices, groupBy, ML data prep, etc.
  */
 interface DanfoElement extends DanfoElementProps {
     type: 'danfo';
@@ -247,8 +247,8 @@ interface DanfoElement extends DanfoElementProps {
 interface DanfoElementProps extends OptionalVariableControl {
     /** Name of the data source to use for incoming data (output data is available via the variableId) */
     dataSourceName: string;
-    /** Type of operation to perform */
-    operation: 'corr' | 'describe' | 'groupby' | 'sortValues';
+    /** Type of Danfo operation to perform */
+    operation: 'corr' | 'describe' | 'groupby' | 'sortValues' | 'select' | 'drop' | 'oneHot' | 'scale' | 'fillna' | 'dropna' | 'datePart';
     /** Optional configuration for the operation */
     operationConfig?: object;
 }
