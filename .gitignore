@@ -141,3 +141,8 @@ dist
 .jekyll-cache
 _site
 docs/Gemfile.lock
+
+# Test files
+danfo-smoke-test.html
+validate-danfo.mjs
+test-danfo.mjs
