@@ -4,6 +4,7 @@
 */
 export { CheckboxSpec } from './checkbox.js';
 export { CsvSpec } from './csv.js';
+export { DanfoSpec } from './danfo.js';
 export { DropdownSpec } from './dropdown.js';
 export { DsvSpec } from './dsv.js';
 export { ImageSpec } from './image.js';
@@ -20,6 +21,7 @@ export type PluginNames =
     'css' |
     'csv' |
     'checkbox' |
+    'danfo' |
     'dropdown' |
     'dsv' |
     'image' |

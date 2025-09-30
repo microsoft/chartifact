@@ -238,9 +238,24 @@ interface TabulatorElementProps extends OptionalVariableControl {
     tabulatorOptions?: object;
 }
 /**
+ * Danfo
+ * use for data transformations like correlation matrices, groupBy, etc.
+ */
+interface DanfoElement extends DanfoElementProps {
+    type: 'danfo';
+}
+interface DanfoElementProps extends OptionalVariableControl {
+    /** Name of the data source to use for incoming data (output data is available via the variableId) */
+    dataSourceName: string;
+    /** Type of operation to perform */
+    operation: 'corr' | 'describe' | 'groupby' | 'sortValues';
+    /** Optional configuration for the operation */
+    operationConfig?: object;
+}
+/**
  * Union type for all possible interactive elements
  */
-type InteractiveElement = ChartElement | CheckboxElement | DropdownElement | ImageElement | MermaidElement | NumberElement | PresetsElement | SliderElement | TabulatorElement | TextboxElement;
+type InteractiveElement = ChartElement | CheckboxElement | DanfoElement | DropdownElement | ImageElement | MermaidElement | NumberElement | PresetsElement | SliderElement | TabulatorElement | TextboxElement;
 interface ElementGroup {
     groupId: string;
     elements: PageElement[];

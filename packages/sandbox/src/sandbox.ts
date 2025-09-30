@@ -117,6 +117,7 @@ export class Sandbox {
 <script src="https://cdn.jsdelivr.net/npm/vega@5.29.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.20.1"></script>
 <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/danfojs@1.1.2/lib/bundle.min.js"></script>
 <script src="${url}/chartifact/dist/v1/chartifact.markdown.umd.js"></script>
 `;
     }

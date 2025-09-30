@@ -214,11 +214,30 @@ export interface TabulatorElementProps extends OptionalVariableControl {
 }
 
 /**
+ * Danfo
+ * use for data transformations like correlation matrices, groupBy, etc.
+ */
+export interface DanfoElement extends DanfoElementProps {
+  type: 'danfo';
+}
+export interface DanfoElementProps extends OptionalVariableControl {
+  /** Name of the data source to use for incoming data (output data is available via the variableId) */
+  dataSourceName: string;
+
+  /** Type of operation to perform */
+  operation: 'corr' | 'describe' | 'groupby' | 'sortValues';
+
+  /** Optional configuration for the operation */
+  operationConfig?: object;
+}
+
+/**
  * Union type for all possible interactive elements
  */
 export type InteractiveElement =
   | ChartElement
   | CheckboxElement
+  | DanfoElement
   | DropdownElement
   | ImageElement
   | MermaidElement
