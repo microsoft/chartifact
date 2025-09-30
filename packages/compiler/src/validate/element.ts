@@ -1,4 +1,4 @@
-import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, ImageElement, MermaidElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
+import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, ImageElement, MermaidElement, DanfoElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
 import { getChartType } from "../util.js";
 import { validateVegaLite, validateVegaChart } from "./chart.js";
 import { validateVariableID, validateRequiredString, validateOptionalString, validateOptionalPositiveNumber, validateOptionalBoolean, validateOptionalObject, validateInputElementWithVariableId, validateMarkdownString } from "./common.js";
@@ -49,6 +49,34 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                 }
                 case 'checkbox': {
                     errors.push(...validateInputElementWithVariableId(element));
+                    break;
+                }
+                case 'danfo': {
+                    const danfoElement = element as DanfoElement;
+                    errors.push(...validateRequiredString(danfoElement.dataSourceName, 'dataSourceName', 'Danfo'));
+                    
+                    // Validate operation
+                    const validOperations = ['corr', 'describe', 'groupby', 'sortValues'];
+                    if (!danfoElement.operation) {
+                        errors.push('Danfo element must have an operation');
+                    } else if (!validOperations.includes(danfoElement.operation)) {
+                        errors.push(`Danfo operation must be one of: ${validOperations.join(', ')}`);
+                    }
+                    
+                    // Validate operationConfig if present
+                    errors.push(...validateOptionalObject(danfoElement.operationConfig, 'operationConfig', 'Danfo'));
+                    
+                    // If a variableId is specified, it must be valid
+                    if (danfoElement.variableId) {
+                        errors.push(...validateVariableID(danfoElement.variableId));
+                        
+                        // It must not collide with existing variable names
+                        const existingVariable = variables?.find((v) => v.variableId === danfoElement.variableId);
+                        if (existingVariable) {
+                            errors.push(`Danfo variableId ${danfoElement.variableId} collides with existing variable name, the variable should be renamed or removed.`);
+                        }
+                    }
+                    
                     break;
                 }
                 case 'dropdown': {

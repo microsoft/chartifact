@@ -59,6 +59,7 @@
   "dependencies": {
     "@mdit/plugin-attrs": "^0.22.0",
     "@mdit/plugin-container": "^0.22.0",
+    "@rollup/rollup-linux-x64-gnu": "^4.52.3",
     "fflate": "^0.8.2",
     "markdown-it": "^14.1.0",
     "tabulator-tables": "^6.3.1",

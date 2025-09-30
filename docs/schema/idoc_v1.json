@@ -490,6 +490,43 @@
       ],
       "type": "object"
     },
+    "DanfoElement": {
+      "additionalProperties": false,
+      "description": "Danfo use for data transformations like correlation matrices, groupBy, etc.",
+      "properties": {
+        "dataSourceName": {
+          "description": "Name of the data source to use for incoming data (output data is available via the variableId)",
+          "type": "string"
+        },
+        "operation": {
+          "description": "Type of operation to perform",
+          "enum": [
+            "corr",
+            "describe",
+            "groupby",
+            "sortValues"
+          ],
+          "type": "string"
+        },
+        "operationConfig": {
+          "description": "Optional configuration for the operation",
+          "type": "object"
+        },
+        "type": {
+          "const": "danfo",
+          "type": "string"
+        },
+        "variableId": {
+          "$ref": "#/definitions/VariableID"
+        }
+      },
+      "required": [
+        "dataSourceName",
+        "operation",
+        "type"
+      ],
+      "type": "object"
+    },
     "DataFrameCalculation": {
       "additionalProperties": false,
       "description": "DataFrame calculation for object arrays. Not for primitive/scalar values.",
@@ -1802,6 +1839,9 @@
         },
         {
           "$ref": "#/definitions/CheckboxElement"
+        },
+        {
+          "$ref": "#/definitions/DanfoElement"
         },
         {
           "$ref": "#/definitions/DropdownElement"
