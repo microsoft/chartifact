@@ -3,7 +3,7 @@
 * Licensed under the MIT License.
 */
 import { DataSourceByDynamicURL, DataSourceByFile, DataSourceInline } from '@microsoft/chartifact-schema';
-import { Data, SignalRef, ValuesData } from 'vega';
+import { Data, SignalRef, SourceData, ValuesData } from 'vega';
 import { VegaScope } from './scope.js';
 import { dataAsSignal, ensureDataAndSignalsArray } from './spec.js';
 import { tokenizeTemplate } from 'common';
@@ -16,60 +16,59 @@ export function addStaticDataLoaderToSpec(vegaScope: VegaScope, dataSource: Data
 
     ensureDataAndSignalsArray(spec);
 
-    spec.signals.push(dataAsSignal(dataSourceName));
+    if (dataSource.type === 'inline' && dataSource.format === 'json') {
 
-    const newData: ValuesData = {
-        name: dataSourceName,
-        values: [],
-        transform: dataSource.dataFrameTransformations || [],
-    };
+        const newData: ValuesData = {
+            name: dataSourceName,
+            values: dataSource.content as object[],
+            transform: dataSource.dataFrameTransformations || [],
+        };
+        spec.signals.push(dataAsSignal(dataSourceName));
 
-    if (dataSource.type === 'inline') {
+        //real data goes to the beginning of the data array
+        spec.data.unshift(newData);
 
-        if (dataSource.format === 'json') {
-            newData.values = dataSource.content as object[];
-        } else if (typeof dataSource.content === 'string' || (Array.isArray(dataSource.content) && typeof dataSource.content[0] === 'string')) {
+    } else if (typeof dataSource.content === 'string' || (Array.isArray(dataSource.content) && typeof dataSource.content[0] === 'string')) {
 
-            const content = dataSource.content as string | string[];
+        const content = dataSource.type === 'file' ? dataSource.content : dsvContent(dataSource.content as string | string[]);
 
-            switch (dataSource.format) {
-                case 'csv': {
-                    inlineDataMd = tickWrap(`csv ${dataSourceName}`, dsvContent(content));
-                    break;
-                }
-                case 'tsv': {
-                    inlineDataMd = tickWrap(`tsv ${dataSourceName}`, dsvContent(content));
-                    break;
-                }
-                case 'dsv': {
-                    inlineDataMd = tickWrap(`dsv delimiter:${delimiter} variableId:${dataSourceName}`, dsvContent(content));
-                    break;
-                }
-                default: {
-                    console.warn(`Unsupported inline data format: ${dataSource.format}, type is ${typeof dataSource.content}`);
-                    break;
-                }
+        let ds_raw = dataSourceName;
+        
+        if (dataSource.dataFrameTransformations) {
+            ds_raw += '_raw'; //append _raw to the original data source name to create a new data source for the inline data
+
+            const newData: SourceData = {
+                name: dataSourceName,
+                source: ds_raw,
+                transform: dataSource.dataFrameTransformations || [],
+            };
+            spec.signals.push(dataAsSignal(dataSourceName));
+
+            //real data goes to the beginning of the data array
+            spec.data.unshift(newData);
+        }
+
+        switch (dataSource.format) {
+            case 'csv': {
+                inlineDataMd = tickWrap(`csv ${ds_raw}`, content);
+                break;
             }
-        } else {
-            console.warn(`Unsupported inline data format: ${dataSource.format}, type is ${typeof dataSource.content}`);
+            case 'tsv': {
+                inlineDataMd = tickWrap(`tsv ${ds_raw}`, content);
+                break;
+            }
+            case 'dsv': {
+                inlineDataMd = tickWrap(`dsv delimiter:${delimiter} variableId:${ds_raw}`, content);
+                break;
+            }
+            default: {
+                console.warn(`Unsupported inline data format: ${dataSource.format}, type is ${typeof dataSource.content}`);
+                break;
+            }
         }
-
-    } else if (dataSource.type === 'file') {
-        if (dataSource.format === 'dsv') {
-            newData.format = {
-                type: dataSource.format,
-                delimiter: dataSource.delimiter
-            };
-        } else {
-            newData.format = {
-                type: dataSource.format
-            };
-        }
-        newData.values = [dataSource.content];
+    } else {
+        console.warn(`Unsupported inline data format: ${dataSource.format}, type is ${typeof dataSource.content}`);
     }
-
-    //real data goes to the beginning of the data array
-    spec.data.unshift(newData);
 
     return inlineDataMd;
 }
