@@ -5,28 +5,14 @@
         {
             "dataSourceName": "chartData",
             "type": "inline",
-            "format": "json",
+            "format": "csv",
             "content": [
-                {
-                    "category": "A",
-                    "value": 20
-                },
-                {
-                    "category": "B",
-                    "value": 34
-                },
-                {
-                    "category": "C",
-                    "value": 55
-                },
-                {
-                    "category": "D",
-                    "value": 40
-                },
-                {
-                    "category": "E",
-                    "value": 67
-                }
+                "category,value",
+                "A,20",
+                "B,34",
+                "C,55",
+                "D,40",
+                "E,67"
             ]
         }
     ],
