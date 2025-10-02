@@ -2,7 +2,7 @@
 * Copyright (c) Microsoft Corporation.
 * Licensed under the MIT License.
 */
-import { Spec as VegaSpec } from 'vega-typings';
+import { SourceData, Spec as VegaSpec } from 'vega-typings';
 import { TopLevelSpec as VegaLiteSpec } from "vega-lite";
 import { DataSource, ElementGroup, InteractiveDocument, TabulatorElement, Variable } from '@microsoft/chartifact-schema';
 import { getChartType } from './util.js';
@@ -184,6 +184,20 @@ function dataLoaderMarkdown(dataSources: DataSource[], variables: Variable[], ta
             }
         }
     }
+
+    //for every data item, make sure upstream sources are defined
+    vegaScope.spec.data.forEach(d => {
+        if ((d as SourceData).source) {
+            //source may be a string or array, convert to array for easier processing
+            const sources = Array.isArray((d as SourceData).source) ? (d as SourceData).source as string[] : [(d as SourceData).source as string];
+            sources.forEach(s => {
+                if (!vegaScope.spec.data.find(dd => dd.name === s)) {
+                    //add a placeholder data source
+                    vegaScope.spec.data.unshift({ name: s });
+                }
+            });
+        }
+    });
 
     return { vegaScope, inlineDataMd };
 }
