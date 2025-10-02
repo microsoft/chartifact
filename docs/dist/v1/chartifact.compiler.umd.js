@@ -1005,52 +1005,51 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     const { dataSourceName, delimiter } = dataSource;
     let inlineDataMd;
     ensureDataAndSignalsArray(spec);
-    spec.signals.push(dataAsSignal(dataSourceName));
-    const newData = {
-      name: dataSourceName,
-      values: [],
-      transform: dataSource.dataFrameTransformations || []
-    };
-    if (dataSource.type === "inline") {
-      if (dataSource.format === "json") {
-        newData.values = dataSource.content;
-      } else if (typeof dataSource.content === "string" || Array.isArray(dataSource.content) && typeof dataSource.content[0] === "string") {
-        const content = dataSource.content;
-        switch (dataSource.format) {
-          case "csv": {
-            inlineDataMd = tickWrap(`csv ${dataSourceName}`, dsvContent(content));
-            break;
-          }
-          case "tsv": {
-            inlineDataMd = tickWrap(`tsv ${dataSourceName}`, dsvContent(content));
-            break;
-          }
-          case "dsv": {
-            inlineDataMd = tickWrap(`dsv delimiter:${delimiter} variableId:${dataSourceName}`, dsvContent(content));
-            break;
-          }
-          default: {
-            console.warn(`Unsupported inline data format: ${dataSource.format}, type is ${typeof dataSource.content}`);
-            break;
-          }
+    if (dataSource.type === "inline" && dataSource.format === "json") {
+      const newData = {
+        name: dataSourceName,
+        values: dataSource.content,
+        transform: dataSource.dataFrameTransformations || []
+      };
+      spec.signals.push(dataAsSignal(dataSourceName));
+      spec.data.unshift(newData);
+    } else if (typeof dataSource.content === "string" || Array.isArray(dataSource.content) && typeof dataSource.content[0] === "string") {
+      const content = dataSource.type === "file" ? dataSource.content : dsvContent(dataSource.content);
+      let ds_raw = dataSourceName;
+      if (dataSource.dataFrameTransformations) {
+        ds_raw += "_raw";
+        const newData = {
+          name: dataSourceName,
+          source: ds_raw,
+          transform: dataSource.dataFrameTransformations || []
+        };
+        spec.signals.push(dataAsSignal(dataSourceName));
+        spec.data.unshift(newData);
+        spec.data.unshift({
+          name: ds_raw
+        });
+      }
+      switch (dataSource.format) {
+        case "csv": {
+          inlineDataMd = tickWrap(`csv ${ds_raw}`, content);
+          break;
         }
-      } else {
-        console.warn(`Unsupported inline data format: ${dataSource.format}, type is ${typeof dataSource.content}`);
+        case "tsv": {
+          inlineDataMd = tickWrap(`tsv ${ds_raw}`, content);
+          break;
+        }
+        case "dsv": {
+          inlineDataMd = tickWrap(`dsv delimiter:${delimiter} variableId:${ds_raw}`, content);
+          break;
+        }
+        default: {
+          console.warn(`Unsupported inline data format: ${dataSource.format}, type is ${typeof dataSource.content}`);
+          break;
+        }
       }
-    } else if (dataSource.type === "file") {
-      if (dataSource.format === "dsv") {
-        newData.format = {
-          type: dataSource.format,
-          delimiter: dataSource.delimiter
-        };
-      } else {
-        newData.format = {
-          type: dataSource.format
-        };
-      }
-      newData.values = [dataSource.content];
+    } else {
+      console.warn(`Unsupported inline data format: ${dataSource.format}, type is ${typeof dataSource.content}`);
     }
-    spec.data.unshift(newData);
     return inlineDataMd;
   }
   function dsvContent(content) {
@@ -1242,6 +1241,16 @@ ${content}
         }
       }
     }
+    vegaScope.spec.data.forEach((d) => {
+      if (d.source) {
+        const sources = Array.isArray(d.source) ? d.source : [d.source];
+        sources.forEach((s) => {
+          if (!vegaScope.spec.data.find((dd) => dd.name === s)) {
+            vegaScope.spec.data.unshift({ name: s });
+          }
+        });
+      }
+    });
     return { vegaScope, inlineDataMd };
   }
   function groupMarkdown(group, variables, vegaScope, resources, pluginFormat) {
