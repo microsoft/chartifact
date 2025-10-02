@@ -44,8 +44,12 @@ export function addStaticDataLoaderToSpec(vegaScope: VegaScope, dataSource: Data
             };
             spec.signals.push(dataAsSignal(dataSourceName));
 
-            //real data goes to the beginning of the data array
             spec.data.unshift(newData);
+
+            //add a placeholder data since the transform depends on it
+            spec.data.unshift({
+                name: ds_raw
+            });
         }
 
         switch (dataSource.format) {
