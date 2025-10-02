@@ -41,17 +41,9 @@
       "name": "formattedBalance",
       "value": "$0.00",
       "update": "'$' + format(length(data('currentBalance')) > 0 ? data('currentBalance')[0].total : 0, ',.2f')"
-    },
-    {
-      "name": "transactions",
-      "update": "data('transactions')"
     }
   ],
   "data": [
-    {
-      "name": "transactions",
-      "values": []
-    },
     {
       "name": "editableTransactions",
       "values": []

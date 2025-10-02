@@ -110,24 +110,14 @@
       "name": "totalRemaining",
       "value": 0,
       "update": "toNumber(totalBudgeted) - toNumber(totalSpent)"
-    },
-    {
-      "name": "budgetCategories",
-      "update": "data('budgetCategories')"
-    },
-    {
-      "name": "monthlyTrends",
-      "update": "data('monthlyTrends')"
     }
   ],
   "data": [
     {
-      "name": "monthlyTrends",
-      "values": []
+      "name": "monthlyTrends"
     },
     {
-      "name": "budgetCategories",
-      "values": []
+      "name": "budgetCategories"
     },
     {
       "name": "adjustedBudgetData",

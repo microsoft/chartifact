@@ -68,17 +68,9 @@
       "name": "standProgress",
       "value": 0,
       "update": "length(data('selectedDayData')) > 0 ? min(1, data('selectedDayData')[0].stand / standTarget) : 0"
-    },
-    {
-      "name": "activityData",
-      "update": "data('activityData')"
     }
   ],
   "data": [
-    {
-      "name": "activityData",
-      "values": []
-    },
     {
       "name": "editableActivityData",
       "values": []
