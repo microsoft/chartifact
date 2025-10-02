@@ -42,8 +42,11 @@
   ],
   "data": [
     {
+      "name": "habitData_raw"
+    },
+    {
       "name": "habitData",
-      "values": [],
+      "source": "habitData_raw",
       "transform": [
         {
           "type": "formula",
@@ -579,7 +582,7 @@ dynamicOptions:
 :::
 
 
-```csv habitData
+```csv habitData_raw
 date,habit,completed
 2024-01-01,Exercise,true
 2024-01-01,Water Intake,true
