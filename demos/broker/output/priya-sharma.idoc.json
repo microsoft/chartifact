@@ -188,10 +188,9 @@
       }
     }
   ],
-  "elements": [
+  "groups": [
     {
-      "type": "group",
-      "id": "header",
+      "groupId": "header",
       "elements": [
         {
           "type": "text",
@@ -200,8 +199,7 @@
       ]
     },
     {
-      "type": "group",
-      "id": "profile",
+      "groupId": "profile",
       "elements": [
         {
           "type": "text",
@@ -210,8 +208,7 @@
       ]
     },
     {
-      "type": "group",
-      "id": "summary",
+      "groupId": "summary",
       "elements": [
         {
           "type": "text",
@@ -224,8 +221,7 @@
       ]
     },
     {
-      "type": "group",
-      "id": "realestate",
+      "groupId": "realestate",
       "elements": [
         {
           "type": "text",
@@ -242,8 +238,7 @@
       ]
     },
     {
-      "type": "group",
-      "id": "funds",
+      "groupId": "funds",
       "elements": [
         {
           "type": "text",
@@ -260,8 +255,7 @@
       ]
     },
     {
-      "type": "group",
-      "id": "portfolio",
+      "groupId": "portfolio",
       "elements": [
         {
           "type": "text",

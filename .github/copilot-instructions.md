@@ -37,6 +37,12 @@ Chartifact consists of several interoperating modules:
    - `.idoc.md`: Markdown format for human-readable documents.
    - `.idoc.json`: JSON format for structured, programmatic generation. This is compiled to markdown.
 
+2. **Schema Validation**:
+   - **ALWAYS validate JSON documents against the schema** at `docs/schema/idoc_v1.d.ts` or `docs/schema/idoc_v1.json`
+   - Use `node packages/compiler/test/validate.mjs <path-to-file.idoc.json>` to validate files
+   - If build is not available, cross-check structure against schema and reference examples in `docs/assets/examples/json/`
+   - **CRITICAL**: Documents must use `"groups"` at root level (NOT `"elements"`), and each group must have `"groupId"` (NOT `"type": "group"` and `"id"`)
+
 3. **Styling**:
    - Use standard CSS for styling documents. Examples are provided for articles, dashboards, and slides.
 

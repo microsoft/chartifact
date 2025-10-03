@@ -22,10 +22,18 @@ The output should be one Chartifact report per client, organized and labeled cle
 ## Schema
 Ensure your document json adheres to the TypeScript declarations: docs/schema/idoc_v1.d.ts
 
+**CRITICAL**: The document must use `"groups"` at the root level (NOT `"elements"`), and each group must have `"groupId"` (NOT `"type": "group"` and `"id"`). Always refer to the schema and existing examples to verify the correct structure.
+
 ## Validation
-Check each json file for validation errors
-example:
+**MANDATORY**: Validate each json file for schema compliance before considering the task complete.
+
+Example validation:
 ```sh
 #from the root
-node packages/compiler/test/validate.mjs docs/assets/examples/json/movie-picker.idoc.json
+node packages/compiler/test/validate.mjs demos/broker/output/kenji-tanaka.idoc.json
 ```
+
+If the build is not available, at minimum:
+1. Verify JSON syntax with a JSON parser
+2. Cross-check structure against docs/schema/idoc_v1.d.ts
+3. Compare with reference examples in docs/assets/examples/json/

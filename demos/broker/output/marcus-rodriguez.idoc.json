@@ -208,10 +208,9 @@
       }
     }
   ],
-  "elements": [
+  "groups": [
     {
-      "type": "group",
-      "id": "header",
+      "groupId": "header",
       "elements": [
         {
           "type": "text",
@@ -220,8 +219,7 @@
       ]
     },
     {
-      "type": "group",
-      "id": "profile",
+      "groupId": "profile",
       "elements": [
         {
           "type": "text",
@@ -230,8 +228,7 @@
       ]
     },
     {
-      "type": "group",
-      "id": "summary",
+      "groupId": "summary",
       "elements": [
         {
           "type": "text",
@@ -244,8 +241,7 @@
       ]
     },
     {
-      "type": "group",
-      "id": "bonds",
+      "groupId": "bonds",
       "elements": [
         {
           "type": "text",
@@ -262,8 +258,7 @@
       ]
     },
     {
-      "type": "group",
-      "id": "stocks",
+      "groupId": "stocks",
       "elements": [
         {
           "type": "text",
@@ -280,8 +275,7 @@
       ]
     },
     {
-      "type": "group",
-      "id": "portfolio",
+      "groupId": "portfolio",
       "elements": [
         {
           "type": "text",
