@@ -1,0 +1,437 @@
+{
+  "$schema": "https://microsoft.github.io/chartifact/schema/idoc_v1.json",
+  "title": "Fatima Al-Fassi Investment Report",
+  "style": {
+    "css": [
+      "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
+      "body { display: grid; grid-template-areas: 'header header' 'profile profile' 'summary summary' 'angel commodities' 'portfolio portfolio'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+      ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
+      "#header { grid-area: header; background: linear-gradient(135deg, #44a08d 0%, #093637 100%); color: white; text-align: center; }",
+      "#profile { grid-area: profile; }",
+      "#summary { grid-area: summary; text-align: center; }",
+      "#angel { grid-area: angel; min-width: 0; overflow: hidden; }",
+      "#commodities { grid-area: commodities; min-width: 0; overflow: hidden; }",
+      "#portfolio { grid-area: portfolio; min-width: 0; overflow: hidden; }",
+      "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
+      "h2 { margin: 10px 0; font-size: 2em; color: #2d3748; font-weight: 600; }",
+      "h3 { margin: 0 0 15px 0; font-size: 1.2em; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
+      ".tabulator { max-width: 100%; overflow: auto; }",
+      ".tabulator .tabulator-table { min-width: fit-content; }",
+      ".metric { display: inline-block; margin: 0 20px; }",
+      ".metric-value { font-size: 2.5em; font-weight: bold; color: #2d3748; display: block; }",
+      ".metric-label { font-size: 0.9em; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; }",
+      ".positive { color: #10b981; }",
+      ".negative { color: #ef4444; }",
+      "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'profile' 'summary' 'angel' 'commodities' 'portfolio'; } }"
+    ]
+  },
+  "dataLoaders": [
+    {
+      "dataSourceName": "angelInvestments",
+      "type": "inline",
+      "format": "csv",
+      "content": [
+        "StartupName,InvestmentAmount,EquityPercentage,InvestmentDate",
+        "InnovateAI,100000,10,2022-03-15",
+        "BioGenTech,250000,15,2021-09-01",
+        "QuantumLeap,150000,12,2023-01-20"
+      ]
+    },
+    {
+      "dataSourceName": "commodities",
+      "type": "inline",
+      "format": "csv",
+      "content": [
+        "Commodity,Quantity,Unit,PurchasePrice",
+        "Gold,100,oz,1800",
+        "Silver,500,oz,25",
+        "CrudeOil,1000,barrel,70"
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "variableId": "angelData",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "editableAngelInvestments"
+        ],
+        "dataFrameTransformations": []
+      }
+    },
+    {
+      "variableId": "commoditiesData",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "editableCommodities"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "formula",
+            "as": "TotalValue",
+            "expr": "datum.Quantity * datum.PurchasePrice"
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalAngelInvestment",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "angelData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "InvestmentAmount"
+            ],
+            "as": [
+              "total"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalCommoditiesValue",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "commoditiesData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "TotalValue"
+            ],
+            "as": [
+              "total"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalPortfolioValue",
+      "type": "number",
+      "initialValue": 0,
+      "calculation": {
+        "vegaExpression": "(length(totalAngelInvestment) > 0 ? totalAngelInvestment[0].total : 0) + (length(totalCommoditiesValue) > 0 ? totalCommoditiesValue[0].total : 0)"
+      }
+    },
+    {
+      "variableId": "numberOfStartups",
+      "type": "number",
+      "initialValue": 0,
+      "calculation": {
+        "vegaExpression": "length(angelData)"
+      }
+    }
+  ],
+  "elements": [
+    {
+      "type": "group",
+      "id": "header",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "# Alex Quantum Capital"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "profile",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "## Fatima Al-Fassi\n\n**Email:** fatima.alfassi@venture-capital.com\n\nA 42-year-old venture capitalist. Her portfolio is aggressive, focusing on high-risk, high-reward opportunities in angel investments and commodities."
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "summary",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Portfolio Summary"
+        },
+        {
+          "type": "text",
+          "markdown": "<div class=\"metric\"><span class=\"metric-value\">${{totalPortfolioValue | number | round}}</span><span class=\"metric-label\">Total Portfolio Value</span></div><div class=\"metric\"><span class=\"metric-value\">{{numberOfStartups}}</span><span class=\"metric-label\">Startup Investments</span></div>"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "angel",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Angel Investments"
+        },
+        {
+          "type": "chart",
+          "chartKey": "angelChart"
+        },
+        {
+          "type": "text",
+          "markdown": "**Total Angel Investment:** ${{totalAngelInvestment[0].total | number | round}}"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "commodities",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Commodities Portfolio"
+        },
+        {
+          "type": "chart",
+          "chartKey": "commoditiesChart"
+        },
+        {
+          "type": "text",
+          "markdown": "**Total Commodities Value:** ${{totalCommoditiesValue[0].total | number | round}}"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "portfolio",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Investment Scenario Simulator\n\nEdit values below to simulate different investment scenarios and see real-time portfolio adjustments."
+        },
+        {
+          "type": "tabulator",
+          "dataSourceName": "editableAngelInvestments",
+          "editable": true,
+          "options": {
+            "height": 200,
+            "layout": "fitColumns",
+            "columns": [
+              {
+                "title": "Startup",
+                "field": "StartupName",
+                "editor": false,
+                "width": 150
+              },
+              {
+                "title": "Investment",
+                "field": "InvestmentAmount",
+                "editor": "number",
+                "formatter": "money",
+                "formatterParams": {
+                  "precision": 0
+                }
+              },
+              {
+                "title": "Equity %",
+                "field": "EquityPercentage",
+                "editor": "number"
+              },
+              {
+                "title": "Investment Date",
+                "field": "InvestmentDate",
+                "editor": false
+              }
+            ]
+          }
+        },
+        {
+          "type": "text",
+          "markdown": " "
+        },
+        {
+          "type": "tabulator",
+          "dataSourceName": "editableCommodities",
+          "editable": true,
+          "options": {
+            "height": 200,
+            "layout": "fitColumns",
+            "columns": [
+              {
+                "title": "Commodity",
+                "field": "Commodity",
+                "editor": false
+              },
+              {
+                "title": "Quantity",
+                "field": "Quantity",
+                "editor": "number"
+              },
+              {
+                "title": "Unit",
+                "field": "Unit",
+                "editor": false
+              },
+              {
+                "title": "Purchase Price",
+                "field": "PurchasePrice",
+                "editor": "number",
+                "formatter": "money",
+                "formatterParams": {
+                  "precision": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "resources": {
+    "charts": {
+      "angelChart": {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {
+          "name": "angelData"
+        },
+        "mark": {
+          "type": "bar",
+          "cornerRadiusEnd": 5
+        },
+        "encoding": {
+          "x": {
+            "field": "StartupName",
+            "type": "nominal",
+            "axis": {
+              "title": "Startup",
+              "labelAngle": -45
+            }
+          },
+          "y": {
+            "field": "InvestmentAmount",
+            "type": "quantitative",
+            "axis": {
+              "title": "Investment Amount ($)",
+              "format": "$,.0f"
+            }
+          },
+          "color": {
+            "field": "EquityPercentage",
+            "type": "quantitative",
+            "scale": {
+              "scheme": "purples"
+            },
+            "legend": {
+              "title": "Equity %"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "StartupName",
+              "type": "nominal",
+              "title": "Startup"
+            },
+            {
+              "field": "InvestmentAmount",
+              "type": "quantitative",
+              "title": "Investment",
+              "format": "$,.0f"
+            },
+            {
+              "field": "EquityPercentage",
+              "type": "quantitative",
+              "title": "Equity %",
+              "format": ".0f"
+            },
+            {
+              "field": "InvestmentDate",
+              "type": "nominal",
+              "title": "Investment Date"
+            }
+          ]
+        },
+        "width": "container",
+        "height": 300
+      },
+      "commoditiesChart": {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {
+          "name": "commoditiesData"
+        },
+        "mark": {
+          "type": "arc",
+          "innerRadius": 50,
+          "padAngle": 0.02
+        },
+        "encoding": {
+          "theta": {
+            "field": "TotalValue",
+            "type": "quantitative"
+          },
+          "color": {
+            "field": "Commodity",
+            "type": "nominal",
+            "scale": {
+              "range": [
+                "#f59e0b",
+                "#c0c0c0",
+                "#000000"
+              ]
+            },
+            "legend": {
+              "title": "Commodity"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "Commodity",
+              "type": "nominal",
+              "title": "Commodity"
+            },
+            {
+              "field": "Quantity",
+              "type": "quantitative",
+              "title": "Quantity"
+            },
+            {
+              "field": "Unit",
+              "type": "nominal",
+              "title": "Unit"
+            },
+            {
+              "field": "PurchasePrice",
+              "type": "quantitative",
+              "title": "Price per Unit",
+              "format": "$,.2f"
+            },
+            {
+              "field": "TotalValue",
+              "type": "quantitative",
+              "title": "Total Value",
+              "format": "$,.0f"
+            }
+          ]
+        },
+        "width": "container",
+        "height": 300
+      }
+    }
+  }
+}

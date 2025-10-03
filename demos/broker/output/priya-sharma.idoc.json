@@ -1,0 +1,500 @@
+{
+  "$schema": "https://microsoft.github.io/chartifact/schema/idoc_v1.json",
+  "title": "Priya Sharma Investment Report",
+  "style": {
+    "css": [
+      "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
+      "body { display: grid; grid-template-areas: 'header header' 'profile profile' 'summary summary' 'realestate funds' 'portfolio portfolio'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+      ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
+      "#header { grid-area: header; background: linear-gradient(135deg, #44a08d 0%, #093637 100%); color: white; text-align: center; }",
+      "#profile { grid-area: profile; }",
+      "#summary { grid-area: summary; text-align: center; }",
+      "#realestate { grid-area: realestate; min-width: 0; overflow: hidden; }",
+      "#funds { grid-area: funds; min-width: 0; overflow: hidden; }",
+      "#portfolio { grid-area: portfolio; min-width: 0; overflow: hidden; }",
+      "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
+      "h2 { margin: 10px 0; font-size: 2em; color: #2d3748; font-weight: 600; }",
+      "h3 { margin: 0 0 15px 0; font-size: 1.2em; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
+      ".tabulator { max-width: 100%; overflow: auto; }",
+      ".tabulator .tabulator-table { min-width: fit-content; }",
+      ".metric { display: inline-block; margin: 0 20px; }",
+      ".metric-value { font-size: 2.5em; font-weight: bold; color: #2d3748; display: block; }",
+      ".metric-label { font-size: 0.9em; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; }",
+      ".positive { color: #10b981; }",
+      ".negative { color: #ef4444; }",
+      "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'profile' 'summary' 'realestate' 'funds' 'portfolio'; } }"
+    ]
+  },
+  "dataLoaders": [
+    {
+      "dataSourceName": "realEstate",
+      "type": "inline",
+      "format": "csv",
+      "content": [
+        "Address,City,State,Zip,PurchasePrice,EstimatedValue",
+        "123 Maple St,Pleasantville,CA,90210,500000,750000",
+        "456 Birch Rd,Springfield,IL,62704,300000,450000",
+        "789 Cedar Ln,Metropolis,NY,10001,1200000,1800000"
+      ]
+    },
+    {
+      "dataSourceName": "mutualFunds",
+      "type": "inline",
+      "format": "csv",
+      "content": [
+        "FundSymbol,FundName,Shares,NetAssetValue",
+        "VTSAX,Vanguard Total Stock Market Index Fund,500,108.23",
+        "VTIAX,Vanguard Total International Stock Index Fund,300,32.91",
+        "VBTLX,Vanguard Total Bond Market Index Fund,400,10.25"
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "variableId": "realEstateData",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "editableRealEstate"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "formula",
+            "as": "Appreciation",
+            "expr": "datum.EstimatedValue - datum.PurchasePrice"
+          },
+          {
+            "type": "formula",
+            "as": "ROI",
+            "expr": "round((datum.Appreciation / datum.PurchasePrice) * 100)"
+          },
+          {
+            "type": "formula",
+            "as": "PropertyLabel",
+            "expr": "datum.City + ', ' + datum.State"
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "mutualFundsData",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "editableMutualFunds"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "formula",
+            "as": "TotalValue",
+            "expr": "datum.Shares * datum.NetAssetValue"
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalRealEstateValue",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "realEstateData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "EstimatedValue"
+            ],
+            "as": [
+              "total"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalRealEstateGain",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "realEstateData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "Appreciation"
+            ],
+            "as": [
+              "total"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalFundsValue",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "mutualFundsData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "TotalValue"
+            ],
+            "as": [
+              "total"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalPortfolioValue",
+      "type": "number",
+      "initialValue": 0,
+      "calculation": {
+        "vegaExpression": "(length(totalRealEstateValue) > 0 ? totalRealEstateValue[0].total : 0) + (length(totalFundsValue) > 0 ? totalFundsValue[0].total : 0)"
+      }
+    },
+    {
+      "variableId": "totalAppreciation",
+      "type": "number",
+      "initialValue": 0,
+      "calculation": {
+        "vegaExpression": "length(totalRealEstateGain) > 0 ? totalRealEstateGain[0].total : 0"
+      }
+    }
+  ],
+  "elements": [
+    {
+      "type": "group",
+      "id": "header",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "# Alex Quantum Capital"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "profile",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "## Priya Sharma\n\n**Email:** priya.sharma@medical-investments.in\n\nA 45-year-old doctor with a moderate risk tolerance. She is focused on long-term growth and has a diversified portfolio of real estate and mutual funds."
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "summary",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Portfolio Summary"
+        },
+        {
+          "type": "text",
+          "markdown": "<div class=\"metric\"><span class=\"metric-value\">${{totalPortfolioValue | number | round}}</span><span class=\"metric-label\">Total Portfolio Value</span></div><div class=\"metric\"><span class=\"metric-value positive\">${{totalAppreciation | number | round}}</span><span class=\"metric-label\">Real Estate Appreciation</span></div>"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "realestate",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Real Estate Portfolio"
+        },
+        {
+          "type": "chart",
+          "chartKey": "realEstateChart"
+        },
+        {
+          "type": "text",
+          "markdown": "**Total Real Estate Value:** ${{totalRealEstateValue[0].total | number | round}}"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "funds",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Mutual Funds"
+        },
+        {
+          "type": "chart",
+          "chartKey": "mutualFundsChart"
+        },
+        {
+          "type": "text",
+          "markdown": "**Total Funds Value:** ${{totalFundsValue[0].total | number | round}}"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "portfolio",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Investment Scenario Simulator\n\nEdit values below to simulate different investment scenarios and see real-time portfolio adjustments."
+        },
+        {
+          "type": "tabulator",
+          "dataSourceName": "editableRealEstate",
+          "editable": true,
+          "options": {
+            "height": 200,
+            "layout": "fitColumns",
+            "columns": [
+              {
+                "title": "Address",
+                "field": "Address",
+                "editor": false,
+                "width": 150
+              },
+              {
+                "title": "City",
+                "field": "City",
+                "editor": false
+              },
+              {
+                "title": "State",
+                "field": "State",
+                "editor": false
+              },
+              {
+                "title": "Purchase Price",
+                "field": "PurchasePrice",
+                "editor": "number",
+                "formatter": "money",
+                "formatterParams": {
+                  "precision": 0
+                }
+              },
+              {
+                "title": "Estimated Value",
+                "field": "EstimatedValue",
+                "editor": "number",
+                "formatter": "money",
+                "formatterParams": {
+                  "precision": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "text",
+          "markdown": " "
+        },
+        {
+          "type": "tabulator",
+          "dataSourceName": "editableMutualFunds",
+          "editable": true,
+          "options": {
+            "height": 200,
+            "layout": "fitColumns",
+            "columns": [
+              {
+                "title": "Fund Symbol",
+                "field": "FundSymbol",
+                "editor": false
+              },
+              {
+                "title": "Fund Name",
+                "field": "FundName",
+                "editor": false,
+                "width": 250
+              },
+              {
+                "title": "Shares",
+                "field": "Shares",
+                "editor": "number"
+              },
+              {
+                "title": "NAV",
+                "field": "NetAssetValue",
+                "editor": "number",
+                "formatter": "money",
+                "formatterParams": {
+                  "precision": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "resources": {
+    "charts": {
+      "realEstateChart": {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {
+          "name": "realEstateData"
+        },
+        "mark": {
+          "type": "bar",
+          "cornerRadiusEnd": 5
+        },
+        "encoding": {
+          "x": {
+            "field": "PropertyLabel",
+            "type": "nominal",
+            "axis": {
+              "title": "Property Location",
+              "labelAngle": -45
+            }
+          },
+          "y": {
+            "field": "EstimatedValue",
+            "type": "quantitative",
+            "axis": {
+              "title": "Estimated Value ($)",
+              "format": "$,.0f"
+            }
+          },
+          "color": {
+            "field": "ROI",
+            "type": "quantitative",
+            "scale": {
+              "scheme": "greens"
+            },
+            "legend": {
+              "title": "ROI %"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "Address",
+              "type": "nominal",
+              "title": "Address"
+            },
+            {
+              "field": "PropertyLabel",
+              "type": "nominal",
+              "title": "Location"
+            },
+            {
+              "field": "PurchasePrice",
+              "type": "quantitative",
+              "title": "Purchase Price",
+              "format": "$,.0f"
+            },
+            {
+              "field": "EstimatedValue",
+              "type": "quantitative",
+              "title": "Estimated Value",
+              "format": "$,.0f"
+            },
+            {
+              "field": "Appreciation",
+              "type": "quantitative",
+              "title": "Appreciation",
+              "format": "$,.0f"
+            },
+            {
+              "field": "ROI",
+              "type": "quantitative",
+              "title": "ROI %",
+              "format": ".0f"
+            }
+          ]
+        },
+        "width": "container",
+        "height": 300
+      },
+      "mutualFundsChart": {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {
+          "name": "mutualFundsData"
+        },
+        "mark": {
+          "type": "arc",
+          "innerRadius": 50,
+          "padAngle": 0.02
+        },
+        "encoding": {
+          "theta": {
+            "field": "TotalValue",
+            "type": "quantitative"
+          },
+          "color": {
+            "field": "FundSymbol",
+            "type": "nominal",
+            "scale": {
+              "range": [
+                "#667eea",
+                "#764ba2",
+                "#f093fb"
+              ]
+            },
+            "legend": {
+              "title": "Fund"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "FundSymbol",
+              "type": "nominal",
+              "title": "Symbol"
+            },
+            {
+              "field": "FundName",
+              "type": "nominal",
+              "title": "Fund"
+            },
+            {
+              "field": "Shares",
+              "type": "quantitative",
+              "title": "Shares"
+            },
+            {
+              "field": "NetAssetValue",
+              "type": "quantitative",
+              "title": "NAV",
+              "format": "$,.2f"
+            },
+            {
+              "field": "TotalValue",
+              "type": "quantitative",
+              "title": "Total Value",
+              "format": "$,.2f"
+            }
+          ]
+        },
+        "width": "container",
+        "height": 300
+      }
+    }
+  }
+}

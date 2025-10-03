@@ -1,0 +1,579 @@
+{
+  "$schema": "https://microsoft.github.io/chartifact/schema/idoc_v1.json",
+  "title": "Kenji Tanaka Investment Report",
+  "style": {
+    "css": [
+      "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
+      "body { display: grid; grid-template-areas: 'header header' 'profile profile' 'summary summary' 'crypto stocks' 'portfolio portfolio'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+      ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
+      "#header { grid-area: header; background: linear-gradient(135deg, #44a08d 0%, #093637 100%); color: white; text-align: center; }",
+      "#profile { grid-area: profile; }",
+      "#summary { grid-area: summary; text-align: center; }",
+      "#crypto { grid-area: crypto; min-width: 0; overflow: hidden; }",
+      "#stocks { grid-area: stocks; min-width: 0; overflow: hidden; }",
+      "#portfolio { grid-area: portfolio; min-width: 0; overflow: hidden; }",
+      "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
+      "h2 { margin: 10px 0; font-size: 2em; color: #2d3748; font-weight: 600; }",
+      "h3 { margin: 0 0 15px 0; font-size: 1.2em; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
+      ".tabulator { max-width: 100%; overflow: auto; }",
+      ".tabulator .tabulator-table { min-width: fit-content; }",
+      ".metric { display: inline-block; margin: 0 20px; }",
+      ".metric-value { font-size: 2.5em; font-weight: bold; color: #2d3748; display: block; }",
+      ".metric-label { font-size: 0.9em; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; }",
+      ".positive { color: #10b981; }",
+      ".negative { color: #ef4444; }",
+      "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'profile' 'summary' 'crypto' 'stocks' 'portfolio'; } }"
+    ]
+  },
+  "dataLoaders": [
+    {
+      "dataSourceName": "cryptoHoldings",
+      "type": "inline",
+      "format": "csv",
+      "content": [
+        "CryptoSymbol,Quantity,PurchasePrice,CurrentPrice",
+        "BTC,2,30000,60000",
+        "ETH,10,2000,3500",
+        "SOL,50,50,150"
+      ]
+    },
+    {
+      "dataSourceName": "stockHoldings",
+      "type": "inline",
+      "format": "csv",
+      "content": [
+        "StockSymbol,Quantity,PurchasePrice,CurrentPrice",
+        "NVDA,50,450,900",
+        "AMD,100,100,160",
+        "TSMC,75,90,140",
+        "PLTR,200,15,25"
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "variableId": "cryptoData",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "editableCryptoHoldings"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "formula",
+            "as": "TotalCost",
+            "expr": "datum.Quantity * datum.PurchasePrice"
+          },
+          {
+            "type": "formula",
+            "as": "CurrentValue",
+            "expr": "datum.Quantity * datum.CurrentPrice"
+          },
+          {
+            "type": "formula",
+            "as": "GainLoss",
+            "expr": "datum.CurrentValue - datum.TotalCost"
+          },
+          {
+            "type": "formula",
+            "as": "ROI",
+            "expr": "round((datum.GainLoss / datum.TotalCost) * 100)"
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "stockData",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "editableStockHoldings"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "formula",
+            "as": "TotalCost",
+            "expr": "datum.Quantity * datum.PurchasePrice"
+          },
+          {
+            "type": "formula",
+            "as": "CurrentValue",
+            "expr": "datum.Quantity * datum.CurrentPrice"
+          },
+          {
+            "type": "formula",
+            "as": "GainLoss",
+            "expr": "datum.CurrentValue - datum.TotalCost"
+          },
+          {
+            "type": "formula",
+            "as": "ROI",
+            "expr": "round((datum.GainLoss / datum.TotalCost) * 100)"
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalCryptoValue",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "cryptoData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "CurrentValue"
+            ],
+            "as": [
+              "total"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalStockValue",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "stockData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "CurrentValue"
+            ],
+            "as": [
+              "total"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalCryptoGain",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "cryptoData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "GainLoss"
+            ],
+            "as": [
+              "total"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalStockGain",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "stockData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "GainLoss"
+            ],
+            "as": [
+              "total"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "portfolioData",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "cryptoData",
+          "stockData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "formula",
+            "as": "AssetType",
+            "expr": "datum.CryptoSymbol ? 'Crypto' : 'Stock'"
+          },
+          {
+            "type": "formula",
+            "as": "Symbol",
+            "expr": "datum.CryptoSymbol ? datum.CryptoSymbol : datum.StockSymbol"
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalPortfolioValue",
+      "type": "number",
+      "initialValue": 0,
+      "calculation": {
+        "vegaExpression": "(length(totalCryptoValue) > 0 ? totalCryptoValue[0].total : 0) + (length(totalStockValue) > 0 ? totalStockValue[0].total : 0)"
+      }
+    },
+    {
+      "variableId": "totalPortfolioGain",
+      "type": "number",
+      "initialValue": 0,
+      "calculation": {
+        "vegaExpression": "(length(totalCryptoGain) > 0 ? totalCryptoGain[0].total : 0) + (length(totalStockGain) > 0 ? totalStockGain[0].total : 0)"
+      }
+    }
+  ],
+  "elements": [
+    {
+      "type": "group",
+      "id": "header",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "# Alex Quantum Capital"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "profile",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "## Kenji Tanaka\n\n**Email:** kenji.tanaka@techventures.jp\n\nA 35-year-old software engineer with a high-risk tolerance and a passion for emerging technologies. His portfolio is heavily weighted in tech stocks and cryptocurrencies."
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "summary",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Portfolio Summary"
+        },
+        {
+          "type": "text",
+          "markdown": "<div class=\"metric\"><span class=\"metric-value\">${{totalPortfolioValue | number | round}}</span><span class=\"metric-label\">Total Portfolio Value</span></div><div class=\"metric\"><span class=\"metric-value positive\">${{totalPortfolioGain | number | round}}</span><span class=\"metric-label\">Total Gain</span></div>"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "crypto",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Cryptocurrency Holdings"
+        },
+        {
+          "type": "chart",
+          "chartKey": "cryptoChart"
+        },
+        {
+          "type": "text",
+          "markdown": "**Total Crypto Value:** ${{totalCryptoValue[0].total | number | round}}"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "stocks",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Stock Holdings"
+        },
+        {
+          "type": "chart",
+          "chartKey": "stockChart"
+        },
+        {
+          "type": "text",
+          "markdown": "**Total Stock Value:** ${{totalStockValue[0].total | number | round}}"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "portfolio",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Investment Scenario Simulator\n\nEdit values below to simulate different investment scenarios and see real-time portfolio adjustments."
+        },
+        {
+          "type": "tabulator",
+          "dataSourceName": "editableCryptoHoldings",
+          "editable": true,
+          "options": {
+            "height": 200,
+            "layout": "fitColumns",
+            "columns": [
+              {
+                "title": "Crypto",
+                "field": "CryptoSymbol",
+                "editor": false
+              },
+              {
+                "title": "Quantity",
+                "field": "Quantity",
+                "editor": "number"
+              },
+              {
+                "title": "Purchase Price",
+                "field": "PurchasePrice",
+                "editor": "number",
+                "formatter": "money",
+                "formatterParams": {
+                  "precision": 2
+                }
+              },
+              {
+                "title": "Current Price",
+                "field": "CurrentPrice",
+                "editor": "number",
+                "formatter": "money",
+                "formatterParams": {
+                  "precision": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "text",
+          "markdown": " "
+        },
+        {
+          "type": "tabulator",
+          "dataSourceName": "editableStockHoldings",
+          "editable": true,
+          "options": {
+            "height": 200,
+            "layout": "fitColumns",
+            "columns": [
+              {
+                "title": "Stock",
+                "field": "StockSymbol",
+                "editor": false
+              },
+              {
+                "title": "Quantity",
+                "field": "Quantity",
+                "editor": "number"
+              },
+              {
+                "title": "Purchase Price",
+                "field": "PurchasePrice",
+                "editor": "number",
+                "formatter": "money",
+                "formatterParams": {
+                  "precision": 2
+                }
+              },
+              {
+                "title": "Current Price",
+                "field": "CurrentPrice",
+                "editor": "number",
+                "formatter": "money",
+                "formatterParams": {
+                  "precision": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "resources": {
+    "charts": {
+      "cryptoChart": {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {
+          "name": "cryptoData"
+        },
+        "mark": {
+          "type": "bar",
+          "cornerRadiusEnd": 5
+        },
+        "encoding": {
+          "x": {
+            "field": "CryptoSymbol",
+            "type": "nominal",
+            "axis": {
+              "title": "Cryptocurrency",
+              "labelAngle": 0
+            }
+          },
+          "y": {
+            "field": "CurrentValue",
+            "type": "quantitative",
+            "axis": {
+              "title": "Current Value ($)",
+              "format": "$,.0f"
+            }
+          },
+          "color": {
+            "field": "GainLoss",
+            "type": "quantitative",
+            "scale": {
+              "scheme": "redyellowgreen",
+              "domain": [
+                -50000,
+                0,
+                100000
+              ]
+            },
+            "legend": {
+              "title": "Gain/Loss"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "CryptoSymbol",
+              "type": "nominal",
+              "title": "Crypto"
+            },
+            {
+              "field": "Quantity",
+              "type": "quantitative",
+              "title": "Quantity"
+            },
+            {
+              "field": "CurrentValue",
+              "type": "quantitative",
+              "title": "Current Value",
+              "format": "$,.2f"
+            },
+            {
+              "field": "GainLoss",
+              "type": "quantitative",
+              "title": "Gain/Loss",
+              "format": "$,.2f"
+            },
+            {
+              "field": "ROI",
+              "type": "quantitative",
+              "title": "ROI %",
+              "format": ".0f"
+            }
+          ]
+        },
+        "width": "container",
+        "height": 300
+      },
+      "stockChart": {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {
+          "name": "stockData"
+        },
+        "mark": {
+          "type": "bar",
+          "cornerRadiusEnd": 5
+        },
+        "encoding": {
+          "x": {
+            "field": "StockSymbol",
+            "type": "nominal",
+            "axis": {
+              "title": "Stock",
+              "labelAngle": 0
+            }
+          },
+          "y": {
+            "field": "CurrentValue",
+            "type": "quantitative",
+            "axis": {
+              "title": "Current Value ($)",
+              "format": "$,.0f"
+            }
+          },
+          "color": {
+            "field": "GainLoss",
+            "type": "quantitative",
+            "scale": {
+              "scheme": "redyellowgreen",
+              "domain": [
+                -10000,
+                0,
+                30000
+              ]
+            },
+            "legend": {
+              "title": "Gain/Loss"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "StockSymbol",
+              "type": "nominal",
+              "title": "Stock"
+            },
+            {
+              "field": "Quantity",
+              "type": "quantitative",
+              "title": "Shares"
+            },
+            {
+              "field": "CurrentValue",
+              "type": "quantitative",
+              "title": "Current Value",
+              "format": "$,.2f"
+            },
+            {
+              "field": "GainLoss",
+              "type": "quantitative",
+              "title": "Gain/Loss",
+              "format": "$,.2f"
+            },
+            {
+              "field": "ROI",
+              "type": "quantitative",
+              "title": "ROI %",
+              "format": ".0f"
+            }
+          ]
+        },
+        "width": "container",
+        "height": 300
+      }
+    }
+  }
+}

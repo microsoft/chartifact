@@ -1,0 +1,526 @@
+{
+  "$schema": "https://microsoft.github.io/chartifact/schema/idoc_v1.json",
+  "title": "Marcus Rodriguez Investment Report",
+  "style": {
+    "css": [
+      "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
+      "body { display: grid; grid-template-areas: 'header header' 'profile profile' 'summary summary' 'bonds stocks' 'portfolio portfolio'; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }",
+      ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
+      "#header { grid-area: header; background: linear-gradient(135deg, #44a08d 0%, #093637 100%); color: white; text-align: center; }",
+      "#profile { grid-area: profile; }",
+      "#summary { grid-area: summary; text-align: center; }",
+      "#bonds { grid-area: bonds; min-width: 0; overflow: hidden; }",
+      "#stocks { grid-area: stocks; min-width: 0; overflow: hidden; }",
+      "#portfolio { grid-area: portfolio; min-width: 0; overflow: hidden; }",
+      "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
+      "h2 { margin: 10px 0; font-size: 2em; color: #2d3748; font-weight: 600; }",
+      "h3 { margin: 0 0 15px 0; font-size: 1.2em; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
+      ".tabulator { max-width: 100%; overflow: auto; }",
+      ".tabulator .tabulator-table { min-width: fit-content; }",
+      ".metric { display: inline-block; margin: 0 20px; }",
+      ".metric-value { font-size: 2.5em; font-weight: bold; color: #2d3748; display: block; }",
+      ".metric-label { font-size: 0.9em; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; }",
+      ".positive { color: #10b981; }",
+      ".negative { color: #ef4444; }",
+      "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'profile' 'summary' 'bonds' 'stocks' 'portfolio'; } }"
+    ]
+  },
+  "dataLoaders": [
+    {
+      "dataSourceName": "bonds",
+      "type": "inline",
+      "format": "csv",
+      "content": [
+        "BondName,BondType,FaceValue,CouponRate,MaturityDate",
+        "US Treasury Bond,Government,100000,2.5,2033-12-31",
+        "AT&T Corp,Corporate,50000,4.2,2028-06-15",
+        "City of Austin,Municipal,75000,3.1,2030-09-01"
+      ]
+    },
+    {
+      "dataSourceName": "dividendStocks",
+      "type": "inline",
+      "format": "csv",
+      "content": [
+        "StockSymbol,Shares,PurchasePrice,DividendYield",
+        "JNJ,300,145,2.7",
+        "KO,1000,55,3.2",
+        "PG,500,140,2.5"
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "variableId": "bondsData",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "editableBonds"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "formula",
+            "as": "AnnualIncome",
+            "expr": "datum.FaceValue * (datum.CouponRate / 100)"
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "dividendStocksData",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "editableDividendStocks"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "formula",
+            "as": "TotalValue",
+            "expr": "datum.Shares * datum.PurchasePrice"
+          },
+          {
+            "type": "formula",
+            "as": "AnnualDividend",
+            "expr": "datum.TotalValue * (datum.DividendYield / 100)"
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalBondsValue",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "bondsData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "FaceValue"
+            ],
+            "as": [
+              "total"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalBondsIncome",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "bondsData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "AnnualIncome"
+            ],
+            "as": [
+              "total"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalStocksValue",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "dividendStocksData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "TotalValue"
+            ],
+            "as": [
+              "total"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalDividendIncome",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "dividendStocksData"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "AnnualDividend"
+            ],
+            "as": [
+              "total"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "totalPortfolioValue",
+      "type": "number",
+      "initialValue": 0,
+      "calculation": {
+        "vegaExpression": "(length(totalBondsValue) > 0 ? totalBondsValue[0].total : 0) + (length(totalStocksValue) > 0 ? totalStocksValue[0].total : 0)"
+      }
+    },
+    {
+      "variableId": "totalAnnualIncome",
+      "type": "number",
+      "initialValue": 0,
+      "calculation": {
+        "vegaExpression": "(length(totalBondsIncome) > 0 ? totalBondsIncome[0].total : 0) + (length(totalDividendIncome) > 0 ? totalDividendIncome[0].total : 0)"
+      }
+    }
+  ],
+  "elements": [
+    {
+      "type": "group",
+      "id": "header",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "# Alex Quantum Capital"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "profile",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "## Marcus Rodriguez\n\n**Email:** marcus.rodriguez@retirement-planning.com\n\nA 58-year-old nearing retirement. He has a low-risk tolerance and his portfolio is designed for capital preservation and income generation, focusing on bonds and high-dividend stocks."
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "summary",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Portfolio Summary"
+        },
+        {
+          "type": "text",
+          "markdown": "<div class=\"metric\"><span class=\"metric-value\">${{totalPortfolioValue | number | round}}</span><span class=\"metric-label\">Total Portfolio Value</span></div><div class=\"metric\"><span class=\"metric-value positive\">${{totalAnnualIncome | number | round}}</span><span class=\"metric-label\">Annual Income</span></div>"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "bonds",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Bond Portfolio"
+        },
+        {
+          "type": "chart",
+          "chartKey": "bondsChart"
+        },
+        {
+          "type": "text",
+          "markdown": "**Total Bond Value:** ${{totalBondsValue[0].total | number | round}}\n\n**Annual Interest Income:** ${{totalBondsIncome[0].total | number | round}}"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "stocks",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Dividend Stock Portfolio"
+        },
+        {
+          "type": "chart",
+          "chartKey": "stocksChart"
+        },
+        {
+          "type": "text",
+          "markdown": "**Total Stock Value:** ${{totalStocksValue[0].total | number | round}}\n\n**Annual Dividend Income:** ${{totalDividendIncome[0].total | number | round}}"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "portfolio",
+      "elements": [
+        {
+          "type": "text",
+          "markdown": "### Investment Scenario Simulator\n\nEdit values below to simulate different investment scenarios and see real-time portfolio adjustments."
+        },
+        {
+          "type": "tabulator",
+          "dataSourceName": "editableBonds",
+          "editable": true,
+          "options": {
+            "height": 200,
+            "layout": "fitColumns",
+            "columns": [
+              {
+                "title": "Bond Name",
+                "field": "BondName",
+                "editor": false,
+                "width": 200
+              },
+              {
+                "title": "Type",
+                "field": "BondType",
+                "editor": false
+              },
+              {
+                "title": "Face Value",
+                "field": "FaceValue",
+                "editor": "number",
+                "formatter": "money",
+                "formatterParams": {
+                  "precision": 0
+                }
+              },
+              {
+                "title": "Coupon Rate %",
+                "field": "CouponRate",
+                "editor": "number"
+              },
+              {
+                "title": "Maturity Date",
+                "field": "MaturityDate",
+                "editor": false
+              }
+            ]
+          }
+        },
+        {
+          "type": "text",
+          "markdown": " "
+        },
+        {
+          "type": "tabulator",
+          "dataSourceName": "editableDividendStocks",
+          "editable": true,
+          "options": {
+            "height": 200,
+            "layout": "fitColumns",
+            "columns": [
+              {
+                "title": "Stock",
+                "field": "StockSymbol",
+                "editor": false
+              },
+              {
+                "title": "Shares",
+                "field": "Shares",
+                "editor": "number"
+              },
+              {
+                "title": "Purchase Price",
+                "field": "PurchasePrice",
+                "editor": "number",
+                "formatter": "money",
+                "formatterParams": {
+                  "precision": 2
+                }
+              },
+              {
+                "title": "Dividend Yield %",
+                "field": "DividendYield",
+                "editor": "number"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "resources": {
+    "charts": {
+      "bondsChart": {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {
+          "name": "bondsData"
+        },
+        "mark": {
+          "type": "bar",
+          "cornerRadiusEnd": 5
+        },
+        "encoding": {
+          "x": {
+            "field": "BondName",
+            "type": "nominal",
+            "axis": {
+              "title": "Bond",
+              "labelAngle": -45
+            }
+          },
+          "y": {
+            "field": "FaceValue",
+            "type": "quantitative",
+            "axis": {
+              "title": "Face Value ($)",
+              "format": "$,.0f"
+            }
+          },
+          "color": {
+            "field": "BondType",
+            "type": "nominal",
+            "scale": {
+              "range": [
+                "#3b82f6",
+                "#10b981",
+                "#f59e0b"
+              ]
+            },
+            "legend": {
+              "title": "Bond Type"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "BondName",
+              "type": "nominal",
+              "title": "Bond"
+            },
+            {
+              "field": "BondType",
+              "type": "nominal",
+              "title": "Type"
+            },
+            {
+              "field": "FaceValue",
+              "type": "quantitative",
+              "title": "Face Value",
+              "format": "$,.0f"
+            },
+            {
+              "field": "CouponRate",
+              "type": "quantitative",
+              "title": "Coupon Rate",
+              "format": ".1f"
+            },
+            {
+              "field": "AnnualIncome",
+              "type": "quantitative",
+              "title": "Annual Income",
+              "format": "$,.2f"
+            },
+            {
+              "field": "MaturityDate",
+              "type": "nominal",
+              "title": "Maturity"
+            }
+          ]
+        },
+        "width": "container",
+        "height": 300
+      },
+      "stocksChart": {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {
+          "name": "dividendStocksData"
+        },
+        "mark": {
+          "type": "bar",
+          "cornerRadiusEnd": 5
+        },
+        "encoding": {
+          "x": {
+            "field": "StockSymbol",
+            "type": "nominal",
+            "axis": {
+              "title": "Stock",
+              "labelAngle": 0
+            }
+          },
+          "y": {
+            "field": "TotalValue",
+            "type": "quantitative",
+            "axis": {
+              "title": "Total Value ($)",
+              "format": "$,.0f"
+            }
+          },
+          "color": {
+            "field": "DividendYield",
+            "type": "quantitative",
+            "scale": {
+              "scheme": "blues"
+            },
+            "legend": {
+              "title": "Dividend Yield %"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "StockSymbol",
+              "type": "nominal",
+              "title": "Stock"
+            },
+            {
+              "field": "Shares",
+              "type": "quantitative",
+              "title": "Shares"
+            },
+            {
+              "field": "TotalValue",
+              "type": "quantitative",
+              "title": "Total Value",
+              "format": "$,.2f"
+            },
+            {
+              "field": "DividendYield",
+              "type": "quantitative",
+              "title": "Dividend Yield",
+              "format": ".1f"
+            },
+            {
+              "field": "AnnualDividend",
+              "type": "quantitative",
+              "title": "Annual Dividend",
+              "format": "$,.2f"
+            }
+          ]
+        },
+        "width": "container",
+        "height": 300
+      }
+    }
+  }
+}
