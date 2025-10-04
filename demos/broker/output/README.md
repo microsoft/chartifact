@@ -13,7 +13,7 @@ All reports have been successfully generated and are ready for viewing!
 - Cryptocurrency holdings (BTC, ETH, SOL)
 - Tech stocks (NVDA, AMD, TSMC, PLTR)
 
-**Preview Link:** [View Report](https://microsoft.github.io/chartifact/view/?load=https://raw.githubusercontent.com/microsoft/chartifact/dc307db/demos/broker/output/kenji-tanaka.idoc.json)
+**Preview Link:** [View Report](https://microsoft.github.io/chartifact/view/?load=https://raw.githubusercontent.com/microsoft/chartifact/263bf6b/demos/broker/output/kenji-tanaka.idoc.json)
 
 ---
 
@@ -24,7 +24,7 @@ All reports have been successfully generated and are ready for viewing!
 - Real estate properties in CA, IL, and NY
 - Mutual funds (VTSAX, VTIAX, VBTLX)
 
-**Preview Link:** [View Report](https://microsoft.github.io/chartifact/view/?load=https://raw.githubusercontent.com/microsoft/chartifact/dc307db/demos/broker/output/priya-sharma.idoc.json)
+**Preview Link:** [View Report](https://microsoft.github.io/chartifact/view/?load=https://raw.githubusercontent.com/microsoft/chartifact/263bf6b/demos/broker/output/priya-sharma.idoc.json)
 
 ---
 
@@ -35,7 +35,7 @@ All reports have been successfully generated and are ready for viewing!
 - Government, corporate, and municipal bonds
 - High-dividend stocks (JNJ, KO, PG)
 
-**Preview Link:** [View Report](https://microsoft.github.io/chartifact/view/?load=https://raw.githubusercontent.com/microsoft/chartifact/dc307db/demos/broker/output/marcus-rodriguez.idoc.json)
+**Preview Link:** [View Report](https://microsoft.github.io/chartifact/view/?load=https://raw.githubusercontent.com/microsoft/chartifact/263bf6b/demos/broker/output/marcus-rodriguez.idoc.json)
 
 ---
 
@@ -46,7 +46,7 @@ All reports have been successfully generated and are ready for viewing!
 - Angel investments in startups (InnovateAI, BioGenTech, QuantumLeap)
 - Commodities (Gold, Silver, Crude Oil)
 
-**Preview Link:** [View Report](https://microsoft.github.io/chartifact/view/?load=https://raw.githubusercontent.com/microsoft/chartifact/dc307db/demos/broker/output/fatima-al-fassi.idoc.json)
+**Preview Link:** [View Report](https://microsoft.github.io/chartifact/view/?load=https://raw.githubusercontent.com/microsoft/chartifact/263bf6b/demos/broker/output/fatima-al-fassi.idoc.json)
 
 ---
 
