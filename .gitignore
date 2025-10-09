@@ -136,10 +136,6 @@ dist
 .pnp.*
 
 !docs/dist/
-# Generated UMD bundles should not be committed
-docs/dist/v1/*.umd.js
-# Generated schema declaration files should not be committed
-docs/schema/*.d.ts
 
 # jekyll cache and generated files
 .jekyll-cache
