@@ -136,6 +136,9 @@ dist
 .pnp.*
 
 !docs/dist/
+# Generated files in docs should not be committed
+docs/dist/v1/*.umd.js
+docs/schema/*.d.ts
 
 # jekyll cache and generated files
 .jekyll-cache

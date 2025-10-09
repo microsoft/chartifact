@@ -12,7 +12,6 @@ const commonOutputConfig = {
     'vega-lite': 'vegaLite',
     'css-tree': 'csstree',
     'js-yaml': 'jsyaml',
-    'treebark': 'Treebark',
   },
   entryFileNames: 'chartifact.markdown.umd.js',
 };
@@ -26,7 +25,7 @@ export default defineConfig({
     emptyOutDir: false,
     rollupOptions: {
       // External dependencies that the library expects consumers to provide
-      external: ['markdown-it', 'vega', 'vega-lite', 'tabulator-tables', 'css-tree', 'mermaid', 'js-yaml', 'treebark'],
+      external: ['markdown-it', 'vega', 'vega-lite', 'tabulator-tables', 'css-tree', 'mermaid', 'js-yaml'],
       output: [
         {
           ...commonOutputConfig,
@@ -39,7 +38,10 @@ export default defineConfig({
       ],
       plugins: [
         resolve(),   // Resolves Node modules
-        commonjs(),  // Converts CommonJS to ES6
+        commonjs({
+          include: ['node_modules/**'],
+          requireReturnsDefault: 'auto',
+        }),  // Converts CommonJS to ES6
       ],
     },
   },

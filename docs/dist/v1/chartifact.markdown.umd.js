@@ -1,6 +1,6 @@
 (function(global, factory) {
-  typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require("js-yaml"), require("vega"), require("treebark"), require("vega-lite")) : typeof define === "function" && define.amd ? define(["exports", "js-yaml", "vega", "treebark", "vega-lite"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global.Chartifact = global.Chartifact || {}, global.jsyaml, global.vega, global.Treebark, global.vegaLite));
-})(this, (function(exports2, yaml, vega, treebark, vegaLite) {
+  typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require("js-yaml"), require("vega"), require("vega-lite")) : typeof define === "function" && define.amd ? define(["exports", "js-yaml", "vega", "vega-lite"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global.Chartifact = global.Chartifact || {}, global.jsyaml, global.vega, global.vegaLite));
+})(this, (function(exports2, yaml, vega, vegaLite) {
   "use strict";var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
@@ -2832,6 +2832,419 @@ ${reconstitutedRules.join("\n\n")}
       return instances;
     }
   };
+  var dist = {};
+  var string = {};
+  var common = {};
+  var hasRequiredCommon;
+  function requireCommon() {
+    if (hasRequiredCommon) return common;
+    hasRequiredCommon = 1;
+    (function(exports3) {
+      Object.defineProperty(exports3, "__esModule", { value: true });
+      exports3.TAG_SPECIFIC_ATTRS = exports3.GLOBAL_ATTRS = exports3.ALLOWED_TAGS = exports3.VOID_TAGS = exports3.CONTAINER_TAGS = void 0;
+      exports3.getProperty = getProperty;
+      exports3.escape = escape;
+      exports3.interpolate = interpolate;
+      exports3.validateAttribute = validateAttribute;
+      exports3.isTreebarkInput = isTreebarkInput;
+      exports3.hasBinding = hasBinding;
+      exports3.validateBindExpression = validateBindExpression;
+      exports3.templateHasCurrentObjectBinding = templateHasCurrentObjectBinding;
+      exports3.parseTemplateObject = parseTemplateObject;
+      exports3.CONTAINER_TAGS = /* @__PURE__ */ new Set([
+        "div",
+        "span",
+        "p",
+        "header",
+        "footer",
+        "main",
+        "section",
+        "article",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "strong",
+        "em",
+        "blockquote",
+        "code",
+        "pre",
+        "ul",
+        "ol",
+        "li",
+        "table",
+        "thead",
+        "tbody",
+        "tr",
+        "th",
+        "td",
+        "a",
+        "comment"
+      ]);
+      exports3.VOID_TAGS = /* @__PURE__ */ new Set([
+        "img"
+      ]);
+      exports3.ALLOWED_TAGS = /* @__PURE__ */ new Set([...exports3.CONTAINER_TAGS, ...exports3.VOID_TAGS]);
+      exports3.GLOBAL_ATTRS = /* @__PURE__ */ new Set(["id", "class", "style", "title", "role", "data-", "aria-"]);
+      exports3.TAG_SPECIFIC_ATTRS = {
+        "a": /* @__PURE__ */ new Set(["href", "target", "rel"]),
+        "img": /* @__PURE__ */ new Set(["src", "alt", "width", "height"]),
+        "table": /* @__PURE__ */ new Set(["summary"]),
+        "th": /* @__PURE__ */ new Set(["scope", "colspan", "rowspan"]),
+        "td": /* @__PURE__ */ new Set(["scope", "colspan", "rowspan"]),
+        "blockquote": /* @__PURE__ */ new Set(["cite"])
+      };
+      function getProperty(obj, path, parents = []) {
+        if (path === ".") {
+          return obj;
+        }
+        let currentObj = obj;
+        let remainingPath = path;
+        while (remainingPath.startsWith("..")) {
+          let parentLevels = 0;
+          let tempPath = remainingPath;
+          while (tempPath.startsWith("..")) {
+            parentLevels++;
+            tempPath = tempPath.substring(2);
+            if (tempPath.startsWith("/")) {
+              tempPath = tempPath.substring(1);
+            }
+          }
+          if (parentLevels <= parents.length) {
+            currentObj = parents[parents.length - parentLevels];
+            remainingPath = tempPath.startsWith(".") ? tempPath.substring(1) : tempPath;
+          } else {
+            return void 0;
+          }
+        }
+        if (remainingPath) {
+          return remainingPath.split(".").reduce((o, k2) => o && typeof o === "object" && o !== null ? o[k2] : void 0, currentObj);
+        }
+        return currentObj;
+      }
+      function escape(s) {
+        return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] || c);
+      }
+      function interpolate(tpl, data, escapeHtml = true, parents = []) {
+        return tpl.replace(/\{\{\{([^{]*?)\}\}\}|\{\{([^{]*?)\}\}/g, (match, escapedExpr, normalExpr) => {
+          if (escapedExpr !== void 0) {
+            const trimmed2 = escapedExpr.trim();
+            return `{{${trimmed2}}}`;
+          }
+          const trimmed = normalExpr.trim();
+          const val = getProperty(data, trimmed, parents);
+          return val == null ? "" : escapeHtml ? escape(String(val)) : String(val);
+        });
+      }
+      function validateAttribute(key, tag) {
+        const isGlobal = exports3.GLOBAL_ATTRS.has(key) || [...exports3.GLOBAL_ATTRS].some((p) => p.endsWith("-") && key.startsWith(p));
+        const tagAttrs = exports3.TAG_SPECIFIC_ATTRS[tag];
+        const isTagSpecific = tagAttrs && tagAttrs.has(key);
+        if (!isGlobal && !isTagSpecific) {
+          throw new Error(`Attribute "${key}" is not allowed on tag "${tag}"`);
+        }
+      }
+      function isTreebarkInput(input) {
+        return input !== null && typeof input === "object" && "template" in input;
+      }
+      function hasBinding(rest) {
+        return rest !== null && typeof rest === "object" && !Array.isArray(rest) && "$bind" in rest;
+      }
+      function validateBindExpression(bindValue) {
+        if (bindValue === ".") {
+          return;
+        }
+        if (bindValue.includes("..")) {
+          throw new Error(`$bind does not support parent context access (..) - use interpolation {{..prop}} in content/attributes instead. Invalid: $bind: "${bindValue}"`);
+        }
+        if (bindValue.includes("{{")) {
+          throw new Error(`$bind does not support interpolation {{...}} - use literal property paths only. Invalid: $bind: "${bindValue}"`);
+        }
+      }
+      function templateHasCurrentObjectBinding(template) {
+        if (Array.isArray(template) || typeof template !== "object" || template === null) {
+          return false;
+        }
+        const entries = Object.entries(template);
+        if (entries.length === 0) {
+          return false;
+        }
+        const [, rest] = entries[0];
+        if (!rest || typeof rest !== "object" || Array.isArray(rest)) {
+          return false;
+        }
+        return "$bind" in rest && rest.$bind === ".";
+      }
+      function parseTemplateObject(templateObj) {
+        if (!templateObj || typeof templateObj !== "object") {
+          throw new Error("Template object cannot be null, undefined, or non-object");
+        }
+        const entries = Object.entries(templateObj);
+        if (entries.length === 0) {
+          throw new Error("Template object must have at least one tag");
+        }
+        const firstEntry = entries[0];
+        if (!firstEntry) {
+          throw new Error("Template object must have at least one tag");
+        }
+        const [tag, rest] = firstEntry;
+        const children = typeof rest === "string" ? [rest] : Array.isArray(rest) ? rest : (rest == null ? void 0 : rest.$children) || [];
+        const attrs = rest && typeof rest === "object" && !Array.isArray(rest) ? Object.fromEntries(Object.entries(rest).filter(([k2]) => k2 !== "$children")) : {};
+        return { tag, rest, children, attrs };
+      }
+    })(common);
+    return common;
+  }
+  var hasRequiredString;
+  function requireString() {
+    if (hasRequiredString) return string;
+    hasRequiredString = 1;
+    Object.defineProperty(string, "__esModule", { value: true });
+    string.renderToString = renderToString;
+    const common_1 = requireCommon();
+    const flattenOutput = (output, indentStr) => {
+      var _a;
+      if (!indentStr) {
+        return output.length <= 1 ? ((_a = output[0]) == null ? void 0 : _a[1]) ?? "" : output.reduce((acc, [, content]) => acc + content, "");
+      }
+      if (output.length === 0)
+        return "";
+      if (output.length === 1 && !output[0][1].includes("<")) {
+        return output[0][1];
+      }
+      let result = "\n";
+      for (let i = 0; i < output.length; i++) {
+        result += indentStr.repeat(output[i][0]) + output[i][1];
+        if (i < output.length - 1)
+          result += "\n";
+      }
+      result += "\n";
+      return result;
+    };
+    function renderToString(input, options = {}) {
+      const data = Array.isArray(input.data) ? input.data : { ...input.data, ...options.data };
+      const context = options.indent ? {
+        indentStr: typeof options.indent === "number" ? " ".repeat(options.indent) : typeof options.indent === "string" ? options.indent : "  ",
+        level: 0
+      } : {};
+      if (!Array.isArray(input.template) && Array.isArray(input.data) && !(0, common_1.templateHasCurrentObjectBinding)(input.template)) {
+        const separator = context.indentStr ? "\n" : "";
+        return input.data.map((item) => render(input.template, { ...item, ...options.data }, context)).join(separator);
+      }
+      return render(input.template, data, context);
+    }
+    function renderTag(tag, attrs, data, childrenOutput, indentStr, level, parents = []) {
+      const formattedContent = flattenOutput(childrenOutput, indentStr);
+      const parentIndent = formattedContent.startsWith("\n") && indentStr ? indentStr.repeat(level || 0) : "";
+      if (tag === "comment") {
+        return `<!--${formattedContent}${parentIndent}-->`;
+      }
+      const openTag = `<${tag}${renderAttrs(attrs, data, tag, parents)}>`;
+      if (common_1.VOID_TAGS.has(tag)) {
+        return openTag;
+      }
+      return `${openTag}${formattedContent}${parentIndent}</${tag}>`;
+    }
+    function render(template, data, context = {}) {
+      const parents = context.parents || [];
+      if (typeof template === "string")
+        return (0, common_1.interpolate)(template, data, true, parents);
+      if (Array.isArray(template)) {
+        return template.map((t) => render(t, data, context)).join(context.indentStr ? "\n" : "");
+      }
+      const { tag, rest, children, attrs } = (0, common_1.parseTemplateObject)(template);
+      if (!common_1.ALLOWED_TAGS.has(tag)) {
+        throw new Error(`Tag "${tag}" is not allowed`);
+      }
+      if (tag === "comment" && context.insideComment) {
+        throw new Error("Nested comments are not allowed");
+      }
+      if (common_1.VOID_TAGS.has(tag) && children.length > 0) {
+        throw new Error(`Tag "${tag}" is a void element and cannot have children`);
+      }
+      const childContext = {
+        ...context,
+        insideComment: tag === "comment" || context.insideComment,
+        level: (context.level || 0) + 1
+      };
+      const processContent = (content) => {
+        if (context.indentStr && content.includes("\n") && !content.includes("<")) {
+          return content.split("\n").map((line) => [childContext.level, line]);
+        }
+        return [[childContext.level, content]];
+      };
+      let childrenOutput;
+      let contentAttrs;
+      if ((0, common_1.hasBinding)(rest)) {
+        (0, common_1.validateBindExpression)(rest.$bind);
+        const bound = (0, common_1.getProperty)(data, rest.$bind, []);
+        const { $bind, $children = [], ...bindAttrs } = rest;
+        if (!Array.isArray(bound)) {
+          const boundData = bound && typeof bound === "object" && bound !== null ? bound : {};
+          const newParents = [...parents, data];
+          return render({ [tag]: { ...bindAttrs, $children } }, boundData, { ...context, parents: newParents });
+        }
+        childrenOutput = [];
+        for (const item of bound) {
+          const newParents = [...parents, data];
+          for (const child of $children) {
+            const content = render(child, item, { ...childContext, parents: newParents });
+            childrenOutput.push(...processContent(content));
+          }
+        }
+        contentAttrs = bindAttrs;
+      } else {
+        childrenOutput = [];
+        for (const child of children) {
+          const content = render(child, data, { ...childContext, parents });
+          childrenOutput.push(...processContent(content));
+        }
+        contentAttrs = attrs;
+      }
+      return renderTag(tag, contentAttrs, data, childrenOutput, context.indentStr, context.level, parents);
+    }
+    function renderAttrs(attrs, data, tag, parents = []) {
+      const pairs = Object.entries(attrs).filter(([key]) => ((0, common_1.validateAttribute)(key, tag), true)).map(([k2, v2]) => `${k2}="${(0, common_1.escape)((0, common_1.interpolate)(String(v2), data, false, parents))}"`).join(" ");
+      return pairs ? " " + pairs : "";
+    }
+    return string;
+  }
+  var dom = {};
+  var hasRequiredDom;
+  function requireDom() {
+    if (hasRequiredDom) return dom;
+    hasRequiredDom = 1;
+    Object.defineProperty(dom, "__esModule", { value: true });
+    dom.renderToDOM = renderToDOM;
+    const common_1 = requireCommon();
+    const string_1 = requireString();
+    function renderToDOM(input, options = {}) {
+      const data = Array.isArray(input.data) ? input.data : { ...input.data, ...options.data };
+      const fragment = document.createDocumentFragment();
+      if (!Array.isArray(input.template) && Array.isArray(input.data) && !(0, common_1.templateHasCurrentObjectBinding)(input.template)) {
+        input.data.forEach((item) => {
+          const result2 = render(input.template, { ...item, ...options.data }, {});
+          if (Array.isArray(result2))
+            result2.forEach((n) => fragment.appendChild(n));
+          else
+            fragment.appendChild(result2);
+        });
+        return fragment;
+      }
+      const result = render(input.template, data, {});
+      if (Array.isArray(result))
+        result.forEach((n) => fragment.appendChild(n));
+      else
+        fragment.appendChild(result);
+      return fragment;
+    }
+    function render(template, data, context = {}) {
+      const parents = context.parents || [];
+      if (typeof template === "string")
+        return document.createTextNode((0, common_1.interpolate)(template, data, true, parents));
+      if (Array.isArray(template)) {
+        const results = [];
+        for (const t of template) {
+          const r = render(t, data, context);
+          if (Array.isArray(r))
+            results.push(...r);
+          else
+            results.push(r);
+        }
+        return results;
+      }
+      const { tag, rest, children, attrs } = (0, common_1.parseTemplateObject)(template);
+      if (!common_1.ALLOWED_TAGS.has(tag)) {
+        throw new Error(`Tag "${tag}" is not allowed`);
+      }
+      if (tag === "comment" && context.insideComment) {
+        throw new Error("Nested comments are not allowed");
+      }
+      const hasChildren = children.length > 0;
+      const isVoid = common_1.VOID_TAGS.has(tag);
+      if (isVoid && hasChildren) {
+        throw new Error(`Tag "${tag}" is a void element and cannot have children`);
+      }
+      if (tag === "comment") {
+        const stringResult = (0, string_1.renderToString)({ template, data }, {});
+        const commentContent = stringResult.slice(4, -3);
+        return document.createComment(commentContent);
+      }
+      const element = document.createElement(tag);
+      if ((0, common_1.hasBinding)(rest)) {
+        (0, common_1.validateBindExpression)(rest.$bind);
+        const bound = (0, common_1.getProperty)(data, rest.$bind, []);
+        const { $bind, $children = [], ...bindAttrs } = rest;
+        setAttrs(element, bindAttrs, data, tag, parents);
+        if (isVoid && $children.length > 0) {
+          throw new Error(`Tag "${tag}" is a void element and cannot have children`);
+        }
+        if (Array.isArray(bound)) {
+          for (const item of bound) {
+            const newParents2 = [...parents, data];
+            for (const c of $children) {
+              const nodes = render(c, item, { ...context, parents: newParents2 });
+              if (Array.isArray(nodes)) {
+                for (const n of nodes)
+                  element.appendChild(n);
+              } else {
+                element.appendChild(nodes);
+              }
+            }
+          }
+          return element;
+        }
+        const boundData = bound && typeof bound === "object" && bound !== null ? bound : {};
+        const newParents = [...parents, data];
+        const childNodes = render({ [tag]: { ...bindAttrs, $children } }, boundData, { ...context, parents: newParents });
+        return Array.isArray(childNodes) ? childNodes : [childNodes];
+      }
+      setAttrs(element, attrs, data, tag, parents);
+      for (const c of children) {
+        const nodes = render(c, data, context);
+        if (Array.isArray(nodes)) {
+          for (const n of nodes)
+            element.appendChild(n);
+        } else {
+          element.appendChild(nodes);
+        }
+      }
+      return element;
+    }
+    function setAttrs(element, attrs, data, tag, parents = []) {
+      Object.entries(attrs).forEach(([key, value]) => {
+        (0, common_1.validateAttribute)(key, tag);
+        element.setAttribute(key, (0, common_1.interpolate)(String(value), data, false, parents));
+      });
+    }
+    return dom;
+  }
+  var hasRequiredDist;
+  function requireDist() {
+    if (hasRequiredDist) return dist;
+    hasRequiredDist = 1;
+    (function(exports3) {
+      Object.defineProperty(exports3, "__esModule", { value: true });
+      exports3.renderToDOM = exports3.renderToString = void 0;
+      exports3.render = render;
+      const string_1 = requireString();
+      var string_2 = requireString();
+      Object.defineProperty(exports3, "renderToString", { enumerable: true, get: function() {
+        return string_2.renderToString;
+      } });
+      var dom_1 = requireDom();
+      Object.defineProperty(exports3, "renderToDOM", { enumerable: true, get: function() {
+        return dom_1.renderToDOM;
+      } });
+      function render(input, options = {}) {
+        return (0, string_1.renderToString)(input, options);
+      }
+    })(dist);
+    return dist;
+  }
+  var distExports = requireDist();
   const pluginName$2 = "treebark";
   const className$2 = pluginClassName(pluginName$2);
   const treebarkPlugin = {
@@ -2898,7 +3311,7 @@ ${reconstitutedRules.join("\n\n")}
       if (instance.lastRenderedData === dataKey) {
         return;
       }
-      const html = treebark.renderToString({
+      const html = distExports.renderToString({
         template: spec.template,
         data
       });
