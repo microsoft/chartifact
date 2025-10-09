@@ -24,6 +24,7 @@ The Chartifact GitHub repo has source code for these interoperating modules:
   * **Tables** – Sortable, selectable, and editable data grids
   * **Charts** – [Vega](https://vega.github.io/vega/) and [Vega-Lite](https://vega.github.io/vega-lite/) visualizations
   * **Diagrams** – [Mermaid](https://mermaid-js.github.io/mermaid/) diagrams (flowcharts, networks, and more) via the mermaid plugin, including tabular data-driven diagram generation
+  * **Cards** – Rich card layouts via the [Treebark](https://github.com/danmarshall/treebark) plugin for rendering structured HTML from safe templates
   * **Images** – Dynamic image URLs based on variables
   * **Presets** – Named sets of variable values for quick scenario switching
 
