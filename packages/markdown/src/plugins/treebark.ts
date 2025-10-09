@@ -46,7 +46,7 @@ import { flaggablePlugin } from './config.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { TreebarkElementProps } from '@microsoft/chartifact-schema';
-import { renderToString } from 'treebark';
+import { renderToString } from 'treebark/string';
 
 interface TreebarkInstance {
     id: string;

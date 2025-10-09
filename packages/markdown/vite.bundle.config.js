@@ -38,14 +38,7 @@ export default defineConfig({
       ],
       plugins: [
         resolve(),   // Resolves Node modules
-        commonjs({
-          include: ['node_modules/treebark/**'],
-          requireReturnsDefault: 'auto',
-          ignore: (id) => {
-            // Try to avoid pulling in DOM-related code
-            return id.includes('treebark/dist/dom');
-          },
-        }),  // Converts CommonJS to ES6
+        commonjs(),  // Converts CommonJS to ES6
       ],
     },
   },
