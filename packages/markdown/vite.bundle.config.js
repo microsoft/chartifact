@@ -41,6 +41,10 @@ export default defineConfig({
         commonjs({
           include: ['node_modules/**'],
           requireReturnsDefault: 'auto',
+          ignore: (id) => {
+            // Try to avoid pulling in DOM-related code
+            return id.includes('treebark/dist/dom');
+          },
         }),  // Converts CommonJS to ES6
       ],
     },
