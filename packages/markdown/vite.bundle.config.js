@@ -39,7 +39,7 @@ export default defineConfig({
       plugins: [
         resolve(),   // Resolves Node modules
         commonjs({
-          include: ['node_modules/**'],
+          include: ['node_modules/treebark/**'],
           requireReturnsDefault: 'auto',
           ignore: (id) => {
             // Try to avoid pulling in DOM-related code
