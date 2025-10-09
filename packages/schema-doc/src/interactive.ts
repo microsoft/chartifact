@@ -245,4 +245,5 @@ export type InteractiveElement =
   | SliderElement
   | TabulatorElement
   | TextboxElement
+  | TreebarkElement
   ;
