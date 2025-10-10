@@ -105,24 +105,10 @@ class ChartifactBuilder {
   // ... previous code ...
 
   /**
-   * Get the document title
-   */
-  getTitle(): string {
-    return this.doc.title;
-  }
-
-  /**
    * Set the document title
    */
   setTitle(title: string): ChartifactBuilder {
     return this.clone({ title });
-  }
-
-  /**
-   * Get the CSS styles
-   */
-  getCSS(): string | string[] | undefined {
-    return this.doc.style?.css;
   }
 
   /**
@@ -149,13 +135,6 @@ class ChartifactBuilder {
   }
 
   /**
-   * Get Google Fonts configuration
-   */
-  getGoogleFonts(): GoogleFontsSpec | undefined {
-    return this.doc.style?.googleFonts;
-  }
-
-  /**
    * Set Google Fonts configuration
    */
   setGoogleFonts(config: GoogleFontsSpec): ChartifactBuilder {
@@ -166,13 +145,6 @@ class ChartifactBuilder {
         googleFonts: config
       }
     });
-  }
-
-  /**
-   * Get all notes
-   */
-  getNotes(): string[] {
-    return this.doc.notes || [];
   }
 
   /**
@@ -198,27 +170,6 @@ class ChartifactBuilder {
 ```typescript
 class ChartifactBuilder {
   // ... previous code ...
-
-  /**
-   * Get all groups
-   */
-  getGroups(): ElementGroup[] {
-    return [...this.doc.groups];
-  }
-
-  /**
-   * Get a group by ID
-   */
-  getGroup(groupId: string): ElementGroup | undefined {
-    return this.doc.groups.find(g => g.groupId === groupId);
-  }
-
-  /**
-   * Check if a group exists
-   */
-  hasGroup(groupId: string): boolean {
-    return this.doc.groups.some(g => g.groupId === groupId);
-  }
 
   /**
    * Add a new group to the document
@@ -313,31 +264,6 @@ Users should construct element objects directly and use the generic operations.
 ```typescript
 class ChartifactBuilder {
   // ... previous code ...
-
-  /**
-   * Get all elements from a group
-   */
-  getElements(groupId: string): PageElement[] {
-    const group = this.doc.groups.find(g => g.groupId === groupId);
-    if (!group) {
-      throw new Error(`Group '${groupId}' not found`);
-    }
-    return [...group.elements];
-  }
-
-  /**
-   * Get a single element by index from a group
-   */
-  getElement(groupId: string, elementIndex: number): PageElement {
-    const group = this.doc.groups.find(g => g.groupId === groupId);
-    if (!group) {
-      throw new Error(`Group '${groupId}' not found`);
-    }
-    if (elementIndex < 0 || elementIndex >= group.elements.length) {
-      throw new Error(`Element index ${elementIndex} out of bounds in group '${groupId}'`);
-    }
-    return group.elements[elementIndex];
-  }
 
   /**
    * Add an element to a group
@@ -477,20 +403,6 @@ class ChartifactBuilder {
   // ... previous code ...
 
   /**
-   * Get all variables
-   */
-  getVariables(): Variable[] {
-    return [...(this.doc.variables || [])];
-  }
-
-  /**
-   * Get a specific variable by ID
-   */
-  getVariable(variableId: string): Variable | undefined {
-    return this.doc.variables?.find(v => v.variableId === variableId);
-  }
-
-  /**
    * Add a variable to the document
    */
   addVariable(variable: Variable): ChartifactBuilder {
@@ -537,22 +449,6 @@ class ChartifactBuilder {
   }
 
   /**
-   * Get all data loaders
-   */
-  getDataLoaders(): DataLoader[] {
-    return [...(this.doc.dataLoaders || [])];
-  }
-
-  /**
-   * Get a specific data loader by name
-   */
-  getDataLoader(dataSourceName: string): DataLoader | undefined {
-    return this.doc.dataLoaders?.find(
-      dl => 'dataSourceName' in dl && dl.dataSourceName === dataSourceName
-    );
-  }
-
-  /**
    * Add a data loader
    */
   addDataLoader(dataLoader: DataLoader): ChartifactBuilder {
@@ -592,27 +488,6 @@ Resources can contain charts and potentially other types in the future.
 ```typescript
 class ChartifactBuilder {
   // ... previous code ...
-
-  /**
-   * Get all resources
-   */
-  getResources(): InteractiveDocument['resources'] {
-    return this.doc.resources ? { ...this.doc.resources } : undefined;
-  }
-
-  /**
-   * Get all chart specifications
-   */
-  getCharts(): Record<string, object> {
-    return { ...(this.doc.resources?.charts || {}) };
-  }
-
-  /**
-   * Get a specific chart specification
-   */
-  getChart(chartKey: string): object | undefined {
-    return this.doc.resources?.charts?.[chartKey];
-  }
 
   /**
    * Add or update a chart specification in resources
@@ -767,25 +642,27 @@ const doc = new ChartifactBuilder({ title: 'My Report' })
   .toJSON();
 ```
 
-## Getter Strategy
+## Reading State Strategy
 
-**Strategy:** Provide getters for inspection without mutation.
+**Strategy:** Since the builder wraps a simple JSON object, the LLM can access the document directly when needed.
 
-- **For simple values:** Return the value directly (e.g., `getTitle()` returns string)
-- **For collections:** Return a shallow copy to prevent external mutation (e.g., `getGroups()` returns `[...groups]`)
-- **For nested objects:** Return a shallow copy of the top-level object
-- **Primary access:** Use `toJSON()` to get complete document when MCP needs full state
+- **Primary access:** Use `toJSON()` to get the complete document
+- **No individual getters:** Avoid maintenance overhead of getter methods for every property
+- **Direct inspection:** The LLM can read any part of the returned JSON object as needed
 
-**Getter Categories:**
-1. **Document-level:** `getTitle()`, `getCSS()`, `getGoogleFonts()`, `getNotes()`
-2. **Groups:** `getGroups()`, `getGroup(id)`, `hasGroup(id)`
-3. **Elements:** `getElements(groupId)`, `getElement(groupId, index)`
-4. **Variables:** `getVariables()`, `getVariable(id)`
-5. **Data:** `getDataLoaders()`, `getDataLoader(name)`
-6. **Resources:** `getResources()`, `getCharts()`, `getChart(key)`
-7. **Complete document:** `toJSON()` - returns full InteractiveDocument
+**Usage:**
+```typescript
+const doc = builder.toJSON();
+// Access any property directly from the JSON:
+const title = doc.title;
+const groups = doc.groups;
+const firstGroup = doc.groups[0];
+const css = doc.style?.css;
+const variables = doc.variables;
+// etc.
+```
 
-**MCP Usage:** MCP tools can call `toJSON()` after any operation to return the complete updated document to the LLM.
+**MCP Usage:** MCP tools call `toJSON()` after operations to return the updated document. The LLM can then inspect any part of the document it needs.
 
 ## Validation & Error Handling
 
@@ -806,36 +683,38 @@ try {
 
 ## MCP Tool Mapping
 
-Each builder method maps naturally to an MCP tool. Note the svelte approach - generic operations only:
+Each builder method maps naturally to an MCP tool. Note the svelte approach - generic operations only, no individual getters:
 
 | MCP Tool | Builder Method | Parameters |
 |----------|---------------|------------|
 | `create_document` | `new ChartifactBuilder()` | `{ title?, groups?, ... }` |
 | `from_json` | `ChartifactBuilder.fromJSON()` | `{ json }` |
 | `to_json` | `.toJSON()` | `{}` |
-| `get_title` | `.getTitle()` | `{}` |
 | `set_title` | `.setTitle()` | `{ title }` |
-| `get_css` | `.getCSS()` | `{}` |
 | `set_css` | `.setCSS()` | `{ css }` |
 | `add_css` | `.addCSS()` | `{ css }` |
-| `get_groups` | `.getGroups()` | `{}` |
-| `get_group` | `.getGroup()` | `{ groupId }` |
 | `add_group` | `.addGroup()` | `{ groupId, elements? }` |
+| `insert_group` | `.insertGroup()` | `{ index, groupId, elements? }` |
 | `delete_group` | `.deleteGroup()` | `{ groupId }` |
 | `rename_group` | `.renameGroup()` | `{ oldGroupId, newGroupId }` |
-| `get_elements` | `.getElements()` | `{ groupId }` |
+| `move_group` | `.moveGroup()` | `{ groupId, toIndex }` |
 | `add_element` | `.addElement()` | `{ groupId, element }` |
+| `add_elements` | `.addElements()` | `{ groupId, elements }` |
+| `insert_element` | `.insertElement()` | `{ groupId, index, element }` |
 | `delete_element` | `.deleteElement()` | `{ groupId, elementIndex }` |
 | `update_element` | `.updateElement()` | `{ groupId, elementIndex, element }` |
-| `get_variables` | `.getVariables()` | `{}` |
+| `clear_elements` | `.clearElements()` | `{ groupId }` |
 | `add_variable` | `.addVariable()` | `{ variable }` |
+| `update_variable` | `.updateVariable()` | `{ variableId, updates }` |
 | `delete_variable` | `.deleteVariable()` | `{ variableId }` |
-| `get_data_loaders` | `.getDataLoaders()` | `{}` |
 | `add_data_loader` | `.addDataLoader()` | `{ dataLoader }` |
 | `delete_data_loader` | `.deleteDataLoader()` | `{ dataSourceName }` |
-| `get_chart` | `.getChart()` | `{ chartKey }` |
 | `set_chart` | `.setChart()` | `{ chartKey, spec }` |
 | `delete_chart` | `.deleteChart()` | `{ chartKey }` |
+| `add_note` | `.addNote()` | `{ note }` |
+| `clear_notes` | `.clearNotes()` | `{}` |
+
+**Reading state:** MCP tools call `toJSON()` to get the complete document. The LLM can then inspect any part of the JSON directly.
 
 **Note on I/O:** File operations (save, load) are handled by a dedicated I/O MCP server, not the builder.
 
