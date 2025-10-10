@@ -1,6 +1,6 @@
 # MCP Component Research - Quick Summary
 
-**Research Date:** October 2025  
+**Research Date:** October 2025 (Revised after feedback)  
 **Full Report:** [mcp-component-analysis.md](./mcp-component-analysis.md)
 
 ## Question
@@ -9,85 +9,112 @@ Should Chartifact implement a Model Context Protocol (MCP) component for creatin
 
 ## Answer
 
-**NO - Do not implement MCP component at this time.**
+**YES - Implement a lightweight transactional builder with MCP wrapper (1-2 days effort).**
+
+## Revised Analysis
+
+Initial recommendation was "No" based on overestimated complexity (5-7 weeks). After feedback, revised to lightweight approach:
+
+### Key Insights
+
+1. **Time estimate was way off**: 1-2 days for simple builder + MCP wrapper, not 5-7 weeks
+2. **Multi-turn conversations benefit**: Token accumulation across many editing turns makes transactional operations valuable
+3. **LLMs miss schema details**: Structured operations help prevent common mistakes
+4. **Editor completion easier with builder**: Builder provides foundation for editor, not vice versa
 
 ## Key Findings
 
-### 1. Documents Fit Entirely in LLM Context
-- Largest example document: 741 lines (~5,000 tokens)
-- Modern LLMs have 100K+ token context windows
-- No need for partial document access via MCP
+### 1. Multi-Turn Token Accumulation Matters
+- Single document: 741 lines (~5,000 tokens)
+- 20 editing turns: 100,000+ tokens (exhausts context)
+- Transactional operations: Send only changes, not full document each time
 
-### 2. JSON Format is Already LLM-Friendly
-- Well-structured, predictable schema
-- LLMs can read, understand, and edit directly
-- No abstraction layer needed
+### 2. Schema Clarity vs. Practice
+- Schema is clear in theory
+- LLMs can miss details in practice
+- Structured builder prevents violations
+- Sensible defaults help starting point
 
-### 3. Current Editor is Incomplete
-- Editor sends full documents (not deltas as stated in problem)
-- No transaction system exists yet
-- Should complete basic editor before adding MCP
+### 3. Lightweight Implementation
+- **Effort:** 1-2 days, not 5-7 weeks
+- **Code:** 350-600 lines, not 2,500-4,000
+- **Maintenance:** Minimal - maps to schema
 
-### 4. Implementation Cost is High
-- **Estimated effort:** 5-7 weeks development
-- **Code size:** 2,500-4,000 lines + tests + docs
-- **Maintenance:** Ongoing as schema evolves
+### 4. Editor Foundation
+- Builder simplifies editor completion
+- Ready-made operations (add, delete, update)
+- Shared validation logic
+- Easier undo/redo implementation
 
-### 5. Benefits are Marginal
-- ❌ Atomic operations: Nice but unnecessary for single-user editing
-- ❌ Partial access: Documents fit in context
-- ❌ Transactions: Not a current requirement
-- ❌ Conflict resolution: No collaborative editing yet
-- ❌ External tools: None exist that need integration
+## Benefits vs. Costs
 
-## Use Case Comparison
+### Benefits (Revised)
 
-| Task | Without MCP | With MCP | Winner |
-|------|-------------|----------|--------|
-| Create document | 1 step (generate JSON) | 10+ tool calls | Without MCP |
-| Edit document | Read + edit + write | Read + multiple calls | Without MCP |
-| Multi-step edit | Apply all changes at once | Multiple round-trips | Without MCP |
-| Collaborative edit | Last write wins | Conflict detection | With MCP* |
+| Benefit | Value | Reason |
+|---------|-------|--------|
+| Token efficiency | High | Multi-turn conversations stay in context |
+| Schema validation | High | Structured operations prevent mistakes |
+| Editor foundation | High | Builder simplifies editor completion |
+| Sensible defaults | High | Start with working document, not blank |
+| MCP tool access | Medium | Standardized protocol for external tools |
 
-\* Not a current requirement
+### Costs (Revised)
+
+| Cost | Effort | Details |
+|------|--------|---------|
+| Transactional builder | 1 day | Core operations, validation |
+| MCP wrapper | 0.5 day | Thin shim over builder |
+| File integration | 0.5 day | Load/save operations |
+| **Total** | **1-2 days** | Focused development |
+
+**Verdict: Benefits outweigh costs** with lightweight approach.
 
 ## Recommendation
 
-### Instead of MCP, Do This:
+### Implement Lightweight Transactional Builder + MCP Wrapper
 
-1. **Document JSON editing patterns** - Guide LLMs on how to edit documents effectively
-2. **Complete the editor** - Finish basic functionality first
-3. **Improve examples** - Add more examples showing document patterns
-4. **Wait for pain points** - Implement MCP only if real needs emerge
+**Why the change from original "No"?**
 
-### When to Reconsider MCP
+1. **Complexity overestimated**: 1-2 days, not 5-7 weeks
+2. **Multi-turn conversations**: Token accumulation is real issue
+3. **LLMs miss schema**: Structured operations help in practice
+4. **Editor needs foundation**: Builder makes editor easier to complete
 
-Implement MCP if:
-- ✅ Documents regularly exceed 50K tokens (unlikely)
-- ✅ Users need collaborative editing (possible future)
-- ✅ 3+ external tools need document manipulation (unlikely)
-- ✅ Editor implements transaction system (natural evolution)
+### Implementation Plan
 
-## Phased Approach
+**Day 1: Transactional Builder**
+- Create immutable document builder class
+- Core operations: create, addGroup, addElement, delete*
+- Type-safe API with validation
+- Sensible defaults included
 
-**Phase 1 (Now):** Direct JSON editing ✅ Working well
+**Day 1-2: MCP Wrapper**
+- Thin shim exposing builder via MCP protocol
+- Tool definitions with JSON schemas
+- Simple state management
 
-**Phase 2 (If needed):** Create lightweight transaction library
-- Shared between editor and tools
-- No MCP protocol yet
-- ~200-300 lines of code
+**Day 2: File Integration**
+- Load/save .idoc.json files
+- Basic error handling
 
-**Phase 3 (If needed):** Wrap transaction library in MCP
-- Only if external tools need integration
-- Or collaborative editing becomes priority
+**Next: Refactor Editor**
+- Use builder as foundation
+- Simpler implementation
+- Ready-made operations
 
 ## Conclusion
 
-**Costs outweigh benefits.** The JSON format is sufficient for LLM-based document creation and editing. MCP would add unnecessary complexity (2,500-4,000 lines) before core features are complete. Focus should remain on finishing the editor and improving documentation.
+**Revised recommendation: YES, implement lightweight version.**
 
-MCP can be added later if genuine needs emerge.
+Original analysis overestimated complexity and underestimated benefits:
+- **Complexity**: 1-2 days, not 5-7 weeks
+- **Multi-turn value**: Token efficiency matters
+- **Practical LLM behavior**: Structured operations help
+- **Editor synergy**: Builder provides foundation
+
+**Next step:** Implement simple transactional builder with MCP wrapper.
 
 ---
 
-**Status:** Research complete, recommendation ready for review  
-**See:** [Full detailed analysis](./mcp-component-analysis.md)
+**Status:** Research revised based on feedback, ready for implementation  
+**See:** [Full updated analysis](./mcp-component-analysis.md)
