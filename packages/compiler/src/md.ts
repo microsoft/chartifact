@@ -52,7 +52,6 @@ export interface TargetMarkdownOptions {
 const defaultPluginFormat: Record<string, "json" | "yaml"> = {
     "*": "yaml",
     "tabulator": "json",
-    "treebark": "json",
     "vega": "json",
     "vega-lite": "json"
 };
