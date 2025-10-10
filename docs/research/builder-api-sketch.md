@@ -490,40 +490,53 @@ class ChartifactBuilder {
   // ... previous code ...
 
   /**
-   * Add or update a chart specification in resources
+   * Add or update a resource in the resources section.
+   * This includes charts (stored in resources.charts) and potentially other resource types in the future.
+   * 
+   * @param resourceType - The type of resource (e.g., 'charts')
+   * @param resourceKey - The key/name for this resource
+   * @param spec - The resource specification (e.g., Vega/Vega-Lite spec for charts)
    */
-  setChart(chartKey: string, spec: object): ChartifactBuilder {
-    const charts = {
-      ...(this.doc.resources?.charts || {}),
-      [chartKey]: spec
+  setResource(resourceType: string, resourceKey: string, spec: object): ChartifactBuilder {
+    const resources = {
+      ...(this.doc.resources?.[resourceType] || {}),
+      [resourceKey]: spec
     };
 
     return this.clone({
       resources: {
         ...this.doc.resources,
-        charts
+        [resourceType]: resources
       }
     });
   }
 
   /**
-   * Remove a chart specification from resources
+   * Remove a resource from the resources section
+   * 
+   * @param resourceType - The type of resource (e.g., 'charts')
+   * @param resourceKey - The key/name for this resource
    */
-  deleteChart(chartKey: string): ChartifactBuilder {
-    if (!this.doc.resources?.charts?.[chartKey]) {
-      throw new Error(`Chart '${chartKey}' not found`);
+  deleteResource(resourceType: string, resourceKey: string): ChartifactBuilder {
+    if (!this.doc.resources?.[resourceType]?.[resourceKey]) {
+      throw new Error(`Resource '${resourceKey}' not found in '${resourceType}'`);
     }
 
-    const { [chartKey]: _, ...charts } = this.doc.resources.charts;
+    const { [resourceKey]: _, ...resources } = this.doc.resources[resourceType];
 
     return this.clone({
       resources: {
         ...this.doc.resources,
-        charts
+        [resourceType]: resources
       }
     });
   }
 }
+
+// Convenience methods for charts (most common resource type)
+// Example usage:
+// builder.setResource('charts', 'myChart', vegaSpec)
+// builder.deleteResource('charts', 'myChart')
 ```
 
 ## Usage Examples
@@ -547,7 +560,7 @@ const builder = new ChartifactBuilder()
       { month: 'Mar', revenue: 15000, profit: 3000 }
     ]
   })
-  .setChart('revenueChart', {
+  .setResource('charts', 'revenueChart', {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     data: { name: 'sales' },
     mark: 'bar',
@@ -636,7 +649,7 @@ const doc = new ChartifactBuilder({ title: 'My Report' })
     editable: false
   })
   .addGroup('charts')
-  .setChart('trend', { /* vega spec */ })
+  .setResource('charts', 'trend', { /* vega spec */ })
   .addElement('charts', { type: 'chart', chartKey: 'trend' })
   .setCSS('.header { text-align: center; }')
   .toJSON();
@@ -709,14 +722,196 @@ Each builder method maps naturally to an MCP tool. Note the svelte approach - ge
 | `delete_variable` | `.deleteVariable()` | `{ variableId }` |
 | `add_data_loader` | `.addDataLoader()` | `{ dataLoader }` |
 | `delete_data_loader` | `.deleteDataLoader()` | `{ dataSourceName }` |
-| `set_chart` | `.setChart()` | `{ chartKey, spec }` |
-| `delete_chart` | `.deleteChart()` | `{ chartKey }` |
+| `set_resource` | `.setResource()` | `{ resourceType, resourceKey, spec }` |
+| `delete_resource` | `.deleteResource()` | `{ resourceType, resourceKey }` |
 | `add_note` | `.addNote()` | `{ note }` |
 | `clear_notes` | `.clearNotes()` | `{}` |
 
 **Reading state:** MCP tools call `toJSON()` to get the complete document. The LLM can then inspect any part of the JSON directly.
 
 **Note on I/O:** File operations (save, load) are handled by a dedicated I/O MCP server, not the builder.
+
+## Transactional API for MCP
+
+**Question:** Can MCP take advantage of chainability?
+
+**Answer:** MCP tools operate one at a time, so direct chainability isn't available. However, we can provide a transactional API that accepts an array of operations to apply atomically.
+
+### Transaction Types
+
+```typescript
+type Transaction = 
+  | { op: 'setTitle', title: string }
+  | { op: 'setCSS', css: string | string[] }
+  | { op: 'addCSS', css: string }
+  | { op: 'setGoogleFonts', config: GoogleFontsSpec }
+  | { op: 'addNote', note: string }
+  | { op: 'clearNotes' }
+  | { op: 'addGroup', groupId: string, elements?: PageElement[] }
+  | { op: 'insertGroup', index: number, groupId: string, elements?: PageElement[] }
+  | { op: 'deleteGroup', groupId: string }
+  | { op: 'renameGroup', oldGroupId: string, newGroupId: string }
+  | { op: 'moveGroup', groupId: string, toIndex: number }
+  | { op: 'addElement', groupId: string, element: PageElement }
+  | { op: 'addElements', groupId: string, elements: PageElement[] }
+  | { op: 'insertElement', groupId: string, index: number, element: PageElement }
+  | { op: 'deleteElement', groupId: string, elementIndex: number }
+  | { op: 'updateElement', groupId: string, elementIndex: number, element: PageElement }
+  | { op: 'clearElements', groupId: string }
+  | { op: 'addVariable', variable: Variable }
+  | { op: 'updateVariable', variableId: string, updates: Partial<Variable> }
+  | { op: 'deleteVariable', variableId: string }
+  | { op: 'addDataLoader', dataLoader: DataLoader }
+  | { op: 'deleteDataLoader', dataSourceName: string }
+  | { op: 'setResource', resourceType: string, resourceKey: string, spec: object }
+  | { op: 'deleteResource', resourceType: string, resourceKey: string };
+```
+
+### Apply Transactions Method
+
+```typescript
+class ChartifactBuilder {
+  // ... previous code ...
+
+  /**
+   * Apply an array of transactions atomically.
+   * This is useful for MCP where chainability isn't available,
+   * allowing multiple operations to be applied in a single call.
+   * 
+   * @param transactions - Array of transaction objects to apply
+   * @returns New builder instance with all transactions applied
+   */
+  applyTransactions(transactions: Transaction[]): ChartifactBuilder {
+    let builder: ChartifactBuilder = this;
+    
+    for (const tx of transactions) {
+      switch (tx.op) {
+        case 'setTitle':
+          builder = builder.setTitle(tx.title);
+          break;
+        case 'setCSS':
+          builder = builder.setCSS(tx.css);
+          break;
+        case 'addCSS':
+          builder = builder.addCSS(tx.css);
+          break;
+        case 'setGoogleFonts':
+          builder = builder.setGoogleFonts(tx.config);
+          break;
+        case 'addNote':
+          builder = builder.addNote(tx.note);
+          break;
+        case 'clearNotes':
+          builder = builder.clearNotes();
+          break;
+        case 'addGroup':
+          builder = builder.addGroup(tx.groupId, tx.elements);
+          break;
+        case 'insertGroup':
+          builder = builder.insertGroup(tx.index, tx.groupId, tx.elements);
+          break;
+        case 'deleteGroup':
+          builder = builder.deleteGroup(tx.groupId);
+          break;
+        case 'renameGroup':
+          builder = builder.renameGroup(tx.oldGroupId, tx.newGroupId);
+          break;
+        case 'moveGroup':
+          builder = builder.moveGroup(tx.groupId, tx.toIndex);
+          break;
+        case 'addElement':
+          builder = builder.addElement(tx.groupId, tx.element);
+          break;
+        case 'addElements':
+          builder = builder.addElements(tx.groupId, tx.elements);
+          break;
+        case 'insertElement':
+          builder = builder.insertElement(tx.groupId, tx.index, tx.element);
+          break;
+        case 'deleteElement':
+          builder = builder.deleteElement(tx.groupId, tx.elementIndex);
+          break;
+        case 'updateElement':
+          builder = builder.updateElement(tx.groupId, tx.elementIndex, tx.element);
+          break;
+        case 'clearElements':
+          builder = builder.clearElements(tx.groupId);
+          break;
+        case 'addVariable':
+          builder = builder.addVariable(tx.variable);
+          break;
+        case 'updateVariable':
+          builder = builder.updateVariable(tx.variableId, tx.updates);
+          break;
+        case 'deleteVariable':
+          builder = builder.deleteVariable(tx.variableId);
+          break;
+        case 'addDataLoader':
+          builder = builder.addDataLoader(tx.dataLoader);
+          break;
+        case 'deleteDataLoader':
+          builder = builder.deleteDataLoader(tx.dataSourceName);
+          break;
+        case 'setResource':
+          builder = builder.setResource(tx.resourceType, tx.resourceKey, tx.spec);
+          break;
+        case 'deleteResource':
+          builder = builder.deleteResource(tx.resourceType, tx.resourceKey);
+          break;
+      }
+    }
+    
+    return builder;
+  }
+}
+```
+
+### Transactional Usage Example
+
+```typescript
+// Instead of chaining (not available in MCP):
+// builder.setTitle('Dashboard').addGroup('main').addElement('main', '# Hello')
+
+// Use transactions (available in MCP):
+const updated = builder.applyTransactions([
+  { op: 'setTitle', title: 'Dashboard' },
+  { op: 'addGroup', groupId: 'main', elements: [] },
+  { op: 'addElement', groupId: 'main', element: '# Hello' },
+  { op: 'setResource', resourceType: 'charts', resourceKey: 'myChart', spec: { /* ... */ } },
+  { op: 'addElement', groupId: 'main', element: { type: 'chart', chartKey: 'myChart' } }
+]);
+
+const doc = updated.toJSON();
+```
+
+### MCP Tool for Transactions
+
+```typescript
+// MCP tool definition
+{
+  name: "apply_transactions",
+  description: "Apply multiple document operations atomically",
+  inputSchema: {
+    type: "object",
+    properties: {
+      transactions: {
+        type: "array",
+        items: {
+          // Transaction union type schema
+        }
+      }
+    }
+  }
+}
+```
+
+**Benefits of Transactional API:**
+- **Atomic operations** - All transactions succeed or fail together
+- **Efficient** - Single MCP call instead of multiple round-trips
+- **Flexible** - LLM can batch multiple edits
+- **Compatible with chainable API** - Both patterns coexist
+
+**MCP Usage:** The LLM can either call individual tools (one operation at a time) or use `apply_transactions` (multiple operations at once).
 
 ## Implementation Notes
 
