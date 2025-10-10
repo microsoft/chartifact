@@ -151,6 +151,9 @@ export interface TreebarkElementProps extends OptionalVariableControl {
   /** Static data object (optional) */
   data?: object;
 
+  /** Template to display when data is empty, null, or an error occurs (optional) */
+  emptyTemplate?: object;
+
   /** Dynamic option: variableId to intake a signal and behave as data */
 }
 

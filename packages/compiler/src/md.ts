@@ -306,12 +306,15 @@ function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: Ve
                     break;
                 }
                 case 'treebark': {
-                    const { template, data, variableId } = element;
+                    const { template, data, emptyTemplate, variableId } = element;
                     const treebarkSpec: Plugins.TreebarkSpec = {
                         template,
                     };
                     if (data) {
                         treebarkSpec.data = data;
+                    }
+                    if (emptyTemplate) {
+                        treebarkSpec.emptyTemplate = emptyTemplate;
                     }
                     if (variableId) {
                         treebarkSpec.variableId = variableId;

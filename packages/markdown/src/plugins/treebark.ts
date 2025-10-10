@@ -37,6 +37,25 @@
 *   "variableId": "movieData"
 * }
 * ```
+*
+* 3. With Empty State:
+* ```treebark
+* {
+*   "template": {
+*     "div": {
+*       "class": "card",
+*       "$children": ["{{name}}"]
+*     }
+*   },
+*   "emptyTemplate": {
+*     "div": {
+*       "class": "empty-state",
+*       "$children": ["No data available"]
+*     }
+*   },
+*   "variableId": "userData"
+* }
+* ```
 */
 
 import { Plugin, RawFlaggableSpec, IInstance } from '../factory.js';
@@ -143,8 +162,8 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
                         if (value) {
                             await renderTreebark(treebarkInstance, value, errorHandler, index);
                         } else {
-                            // Clear container if variable is empty
-                            treebarkInstance.container.innerHTML = '<div class="error">No data to display</div>';
+                            // Use emptyTemplate if provided, otherwise show default message
+                            await renderEmptyOrError(treebarkInstance, errorHandler, index);
                         }
                     }
                 }
@@ -181,13 +200,41 @@ async function renderTreebark(
         container.innerHTML = html;
         instance.lastRenderedData = dataKey;
     } catch (error) {
-        container.innerHTML = `<div class="error">Failed to render treebark template</div>`;
-        errorHandler(
-            error instanceof Error ? error : new Error(String(error)),
-            pluginName,
-            index,
-            'render',
-            container
-        );
+        // Use emptyTemplate if provided, otherwise show default error message
+        await renderEmptyOrError(instance, errorHandler, index, error as Error);
+    }
+}
+
+async function renderEmptyOrError(
+    instance: TreebarkInstance,
+    errorHandler: ErrorHandler,
+    index: number,
+    error?: Error
+) {
+    const { spec, container } = instance;
+
+    if (spec.emptyTemplate) {
+        try {
+            // Render the emptyTemplate
+            const html = renderToString({
+                template: spec.emptyTemplate as any,
+                data: {},
+            });
+            container.innerHTML = html;
+        } catch (emptyError) {
+            // If emptyTemplate fails, show default error
+            container.innerHTML = '<div class="error">Failed to render empty template</div>';
+            if (error) {
+                errorHandler(error, pluginName, index, 'render', container);
+            }
+        }
+    } else {
+        // No emptyTemplate provided, show default message
+        if (error) {
+            container.innerHTML = '<div class="error">Failed to render treebark template</div>';
+            errorHandler(error, pluginName, index, 'render', container);
+        } else {
+            container.innerHTML = '<div class="error">No data to display</div>';
+        }
     }
 }
