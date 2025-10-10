@@ -83,7 +83,7 @@ function inspectTreebarkSpec(spec: TreebarkSpec): RawFlaggableSpec<TreebarkSpec>
 }
 
 export const treebarkPlugin: Plugin<TreebarkSpec> = {
-    ...flaggablePlugin<TreebarkSpec>(pluginName, className),
+    ...flaggablePlugin<TreebarkSpec>(pluginName, className, inspectTreebarkSpec),
     hydrateComponent: async (renderer, errorHandler, specs) => {
         const { signalBus } = renderer;
         const treebarkInstances: TreebarkInstance[] = [];
