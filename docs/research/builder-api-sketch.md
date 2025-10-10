@@ -662,13 +662,17 @@ const builder = new ChartifactBuilder()
     body { font-family: sans-serif; }
     .container { max-width: 1200px; margin: 0 auto; }
   `)
-  .addMarkdown('main', '# Sales Dashboard\n\nView key metrics below.')
-  .addInlineData('sales', [
-    { month: 'Jan', revenue: 10000, profit: 2000 },
-    { month: 'Feb', revenue: 12000, profit: 2400 },
-    { month: 'Mar', revenue: 15000, profit: 3000 }
-  ])
-  .addChartSpec('revenueChart', {
+  .addElement('main', '# Sales Dashboard\n\nView key metrics below.')
+  .addDataLoader({
+    type: 'inline',
+    dataSourceName: 'sales',
+    content: [
+      { month: 'Jan', revenue: 10000, profit: 2000 },
+      { month: 'Feb', revenue: 12000, profit: 2400 },
+      { month: 'Mar', revenue: 15000, profit: 3000 }
+    ]
+  })
+  .setChart('revenueChart', {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     data: { name: 'sales' },
     mark: 'bar',
@@ -677,10 +681,11 @@ const builder = new ChartifactBuilder()
       y: { field: 'revenue', type: 'quantitative' }
     }
   })
-  .addChart('main', 'revenueChart');
+  .addElement('main', { type: 'chart', chartKey: 'revenueChart' });
 
-// Save to file
-await builder.toFile('./sales-dashboard.idoc.json');
+// Export to JSON string for saving (use external I/O utility)
+const json = builder.toString();
+// Or get as object: const doc = builder.toJSON();
 ```
 
 ### Example 2: Add Interactive Controls
@@ -688,13 +693,18 @@ await builder.toFile('./sales-dashboard.idoc.json');
 ```typescript
 const builder = ChartifactBuilder.fromDocument(existingDoc)
   .addGroup('controls', [])
-  .addMarkdown('controls', '## Settings')
+  .addElement('controls', '## Settings')
   .addVariable({
     variableId: 'yearFilter',
     type: 'number',
     initialValue: 2024
   })
-  .addSlider('controls', 'yearFilter', 2020, 2024, 1, {
+  .addElement('controls', {
+    type: 'slider',
+    variableId: 'yearFilter',
+    min: 2020,
+    max: 2024,
+    step: 1,
     label: 'Select Year'
   })
   .addVariable({
@@ -702,7 +712,9 @@ const builder = ChartifactBuilder.fromDocument(existingDoc)
     type: 'boolean',
     initialValue: false
   })
-  .addCheckbox('controls', 'showDetails', {
+  .addElement('controls', {
+    type: 'checkbox',
+    variableId: 'showDetails',
     label: 'Show detailed view'
   });
 ```
@@ -710,19 +722,21 @@ const builder = ChartifactBuilder.fromDocument(existingDoc)
 ### Example 3: Modify Existing Document
 
 ```typescript
-// Load from file
-const builder = await ChartifactBuilder.fromFile('./document.idoc.json');
+// Load from JSON string (external I/O handled separately)
+const jsonString = readFileSync('./document.idoc.json', 'utf-8');
+const builder = ChartifactBuilder.fromJSON(jsonString);
 
 // Make modifications
 const updated = builder
   .setTitle('Updated Title')
   .deleteElement('main', 0)
-  .addMarkdown('main', '# New Header')
+  .addElement('main', '# New Header')
   .addGroup('footer', ['Built with Chartifact'])
   .addNote('Updated on ' + new Date().toISOString());
 
-// Save back
-await updated.toFile('./document.idoc.json');
+// Export (external I/O handled separately)
+const updatedJson = updated.toString();
+// writeFileSync('./document.idoc.json', updatedJson);
 ```
 
 ### Example 4: Chaining Operations
@@ -730,20 +744,48 @@ await updated.toFile('./document.idoc.json');
 ```typescript
 const doc = new ChartifactBuilder({ title: 'My Report' })
   .addGroup('header')
-  .addMarkdown('header', '# Annual Report 2024')
-  .addMarkdown('header', 'Executive Summary')
+  .addElement('header', '# Annual Report 2024')
+  .addElement('header', 'Executive Summary')
   .addGroup('metrics')
-  .addInlineData('kpis', [
-    { name: 'Revenue', value: 1000000 },
-    { name: 'Growth', value: 15 }
-  ])
-  .addTable('metrics', 'kpis', { editable: false })
+  .addDataLoader({
+    type: 'inline',
+    dataSourceName: 'kpis',
+    content: [
+      { name: 'Revenue', value: 1000000 },
+      { name: 'Growth', value: 15 }
+    ]
+  })
+  .addElement('metrics', {
+    type: 'tabulator',
+    dataSourceName: 'kpis',
+    editable: false
+  })
   .addGroup('charts')
-  .addChartSpec('trend', { /* vega spec */ })
-  .addChart('charts', 'trend')
+  .setChart('trend', { /* vega spec */ })
+  .addElement('charts', { type: 'chart', chartKey: 'trend' })
   .setCSS('.header { text-align: center; }')
   .toJSON();
 ```
+
+## Getter Strategy
+
+**Strategy:** Provide getters for inspection without mutation.
+
+- **For simple values:** Return the value directly (e.g., `getTitle()` returns string)
+- **For collections:** Return a shallow copy to prevent external mutation (e.g., `getGroups()` returns `[...groups]`)
+- **For nested objects:** Return a shallow copy of the top-level object
+- **Primary access:** Use `toJSON()` to get complete document when MCP needs full state
+
+**Getter Categories:**
+1. **Document-level:** `getTitle()`, `getCSS()`, `getGoogleFonts()`, `getNotes()`
+2. **Groups:** `getGroups()`, `getGroup(id)`, `hasGroup(id)`
+3. **Elements:** `getElements(groupId)`, `getElement(groupId, index)`
+4. **Variables:** `getVariables()`, `getVariable(id)`
+5. **Data:** `getDataLoaders()`, `getDataLoader(name)`
+6. **Resources:** `getResources()`, `getCharts()`, `getChart(key)`
+7. **Complete document:** `toJSON()` - returns full InteractiveDocument
+
+**MCP Usage:** MCP tools can call `toJSON()` after any operation to return the complete updated document to the LLM.
 
 ## Validation & Error Handling
 
@@ -764,26 +806,47 @@ try {
 
 ## MCP Tool Mapping
 
-Each builder method maps naturally to an MCP tool:
+Each builder method maps naturally to an MCP tool. Note the svelte approach - generic operations only:
 
 | MCP Tool | Builder Method | Parameters |
 |----------|---------------|------------|
 | `create_document` | `new ChartifactBuilder()` | `{ title?, groups?, ... }` |
+| `from_json` | `ChartifactBuilder.fromJSON()` | `{ json }` |
+| `to_json` | `.toJSON()` | `{}` |
+| `get_title` | `.getTitle()` | `{}` |
 | `set_title` | `.setTitle()` | `{ title }` |
+| `get_css` | `.getCSS()` | `{}` |
 | `set_css` | `.setCSS()` | `{ css }` |
+| `add_css` | `.addCSS()` | `{ css }` |
+| `get_groups` | `.getGroups()` | `{}` |
+| `get_group` | `.getGroup()` | `{ groupId }` |
 | `add_group` | `.addGroup()` | `{ groupId, elements? }` |
 | `delete_group` | `.deleteGroup()` | `{ groupId }` |
+| `rename_group` | `.renameGroup()` | `{ oldGroupId, newGroupId }` |
+| `get_elements` | `.getElements()` | `{ groupId }` |
 | `add_element` | `.addElement()` | `{ groupId, element }` |
-| `add_markdown` | `.addMarkdown()` | `{ groupId, markdown }` |
-| `add_chart` | `.addChart()` | `{ groupId, chartKey }` |
+| `delete_element` | `.deleteElement()` | `{ groupId, elementIndex }` |
+| `update_element` | `.updateElement()` | `{ groupId, elementIndex, element }` |
+| `get_variables` | `.getVariables()` | `{}` |
 | `add_variable` | `.addVariable()` | `{ variable }` |
+| `delete_variable` | `.deleteVariable()` | `{ variableId }` |
+| `get_data_loaders` | `.getDataLoaders()` | `{}` |
 | `add_data_loader` | `.addDataLoader()` | `{ dataLoader }` |
-| `add_chart_spec` | `.addChartSpec()` | `{ chartKey, spec }` |
-| `to_json` | `.toJSON()` | `{}` |
-| `save_file` | `.toFile()` | `{ path }` |
-| `load_file` | `ChartifactBuilder.fromFile()` | `{ path }` |
+| `delete_data_loader` | `.deleteDataLoader()` | `{ dataSourceName }` |
+| `get_chart` | `.getChart()` | `{ chartKey }` |
+| `set_chart` | `.setChart()` | `{ chartKey, spec }` |
+| `delete_chart` | `.deleteChart()` | `{ chartKey }` |
+
+**Note on I/O:** File operations (save, load) are handled by a dedicated I/O MCP server, not the builder.
 
 ## Implementation Notes
+
+### Svelte Philosophy
+**Keep maintenance overhead minimal:**
+- Generic operations only (no type-specific helpers like `addMarkdown`, `addChart`, etc.)
+- Users construct element objects directly
+- Reduces API surface area
+- Less code to maintain as schema evolves
 
 ### Immutability
 All operations return new builder instances. This enables:
@@ -798,42 +861,54 @@ TypeScript types ensure:
 - Correct data structures
 - IDE autocomplete support
 
+### Getter Strategy
+- Getters return copies to prevent external mutation
+- `toJSON()` provides complete document snapshot
+- MCP can call `toJSON()` after operations to get updated state
+- No need for complex getter/setter parity
+
 ### Performance
 - Shallow copying for immutability
 - JSON serialization only when needed
 - Validation is O(n) or better
 - No deep cloning unless necessary
 
+### I/O Separation
+- Builder focuses on document manipulation
+- File I/O handled by dedicated utilities or MCP server
+- Cleaner separation of concerns
+- Easier to test builder in isolation
+
 ### Extension Points
 The builder can be extended:
 - Custom validators
-- Plugin operations
-- Custom element types
-- Lifecycle hooks
+- Plugin operations (if needed)
+- Lifecycle hooks (if needed)
 
 ## Next Steps
 
 1. **Implement core builder** (~1 day)
-   - Document operations
-   - Group operations
-   - Element operations
+   - Document operations (with getters)
+   - Group operations (with getters)
+   - Element operations (generic only)
+   - Variable operations (with getters)
+   - Data loader operations (with getters)
+   - Resources operations (with getters)
    - Validation
 
-2. **Add file I/O** (~0.5 day)
-   - Load from filesystem
-   - Save to filesystem
-   - Error handling
-
-3. **Create MCP wrapper** (~0.5 day)
-   - Tool definitions
-   - Parameter schemas
+2. **Create MCP wrapper** (~0.5-1 day)
+   - Tool definitions for each operation
+   - Parameter schemas (auto-generated from TypeScript)
    - Error mapping
-   - State management
+   - State management (builder instance per session)
+   - Return updated document via `toJSON()` after each operation
 
-4. **Testing & Documentation** (ongoing)
+3. **Testing & Documentation** (ongoing)
    - Unit tests for each operation
    - Integration examples
    - API documentation
    - Usage patterns
+
+**Note:** File I/O intentionally omitted - handled by separate I/O MCP server or external utilities.
 
 Total estimated effort: **1-2 days**
