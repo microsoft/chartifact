@@ -1,7 +1,7 @@
 # Chartifact Document Builder API Sketch
 
-**Date:** October 2025  
-**Status:** API Design Proposal
+**Date:** October 2025 (Revised)  
+**Status:** API Design Proposal - Svelte Version
 
 ## Overview
 
@@ -12,6 +12,7 @@ This document sketches out the API for a lightweight transactional builder for C
 3. **Sensible defaults** - Documents start with working structure
 4. **Chainable API** - Fluent interface for ergonomic usage
 5. **Validation** - Errors caught at operation time, not render time
+6. **Minimal surface area** - Generic operations only, no type-specific helpers to reduce maintenance overhead
 
 ## Core Builder Class
 
@@ -65,21 +66,10 @@ class ChartifactBuilder {
     return new ChartifactBuilder(JSON.parse(json));
   }
 
-  /**
-   * Load a document from a file path
-   */
-  static async fromFile(path: string): Promise<ChartifactBuilder> {
-    // Implementation would use fs.readFile
-    throw new Error('Not implemented');
-  }
-
-  /**
-   * Save the current document to a file path
-   */
-  async toFile(path: string): Promise<void> {
-    // Implementation would use fs.writeFile
-    throw new Error('Not implemented');
-  }
+  // Note: File I/O operations (fromFile, toFile) are intentionally omitted.
+  // These should be handled by a dedicated I/O MCP server or external utilities.
+  // To save: write builder.toString() or builder.toJSON() to file
+  // To load: read file and use ChartifactBuilder.fromJSON() or fromDocument()
 
   // Private helper to create default document structure
   private createDefault(partial?: Partial<InteractiveDocument>): InteractiveDocument {
@@ -115,10 +105,24 @@ class ChartifactBuilder {
   // ... previous code ...
 
   /**
+   * Get the document title
+   */
+  getTitle(): string {
+    return this.doc.title;
+  }
+
+  /**
    * Set the document title
    */
   setTitle(title: string): ChartifactBuilder {
     return this.clone({ title });
+  }
+
+  /**
+   * Get the CSS styles
+   */
+  getCSS(): string | string[] | undefined {
+    return this.doc.style?.css;
   }
 
   /**
@@ -145,6 +149,13 @@ class ChartifactBuilder {
   }
 
   /**
+   * Get Google Fonts configuration
+   */
+  getGoogleFonts(): GoogleFontsSpec | undefined {
+    return this.doc.style?.googleFonts;
+  }
+
+  /**
    * Set Google Fonts configuration
    */
   setGoogleFonts(config: GoogleFontsSpec): ChartifactBuilder {
@@ -155,6 +166,13 @@ class ChartifactBuilder {
         googleFonts: config
       }
     });
+  }
+
+  /**
+   * Get all notes
+   */
+  getNotes(): string[] {
+    return this.doc.notes || [];
   }
 
   /**
@@ -180,6 +198,27 @@ class ChartifactBuilder {
 ```typescript
 class ChartifactBuilder {
   // ... previous code ...
+
+  /**
+   * Get all groups
+   */
+  getGroups(): ElementGroup[] {
+    return [...this.doc.groups];
+  }
+
+  /**
+   * Get a group by ID
+   */
+  getGroup(groupId: string): ElementGroup | undefined {
+    return this.doc.groups.find(g => g.groupId === groupId);
+  }
+
+  /**
+   * Check if a group exists
+   */
+  hasGroup(groupId: string): boolean {
+    return this.doc.groups.some(g => g.groupId === groupId);
+  }
 
   /**
    * Add a new group to the document
@@ -262,28 +301,43 @@ class ChartifactBuilder {
 
     return this.clone({ groups });
   }
-
-  /**
-   * Get a group by ID (for inspection)
-   */
-  getGroup(groupId: string): ElementGroup | undefined {
-    return this.doc.groups.find(g => g.groupId === groupId);
-  }
-
-  /**
-   * Check if a group exists
-   */
-  hasGroup(groupId: string): boolean {
-    return this.doc.groups.some(g => g.groupId === groupId);
-  }
 }
 ```
 
 ## Element Operations
 
+**Philosophy: Keep it svelte.** We provide only generic element operations. 
+Type-specific helpers (addMarkdown, addChart, etc.) are intentionally omitted to minimize maintenance overhead.
+Users should construct element objects directly and use the generic operations.
+
 ```typescript
 class ChartifactBuilder {
   // ... previous code ...
+
+  /**
+   * Get all elements from a group
+   */
+  getElements(groupId: string): PageElement[] {
+    const group = this.doc.groups.find(g => g.groupId === groupId);
+    if (!group) {
+      throw new Error(`Group '${groupId}' not found`);
+    }
+    return [...group.elements];
+  }
+
+  /**
+   * Get a single element by index from a group
+   */
+  getElement(groupId: string, elementIndex: number): PageElement {
+    const group = this.doc.groups.find(g => g.groupId === groupId);
+    if (!group) {
+      throw new Error(`Group '${groupId}' not found`);
+    }
+    if (elementIndex < 0 || elementIndex >= group.elements.length) {
+      throw new Error(`Element index ${elementIndex} out of bounds in group '${groupId}'`);
+    }
+    return group.elements[elementIndex];
+  }
 
   /**
    * Add an element to a group
@@ -400,160 +454,20 @@ class ChartifactBuilder {
 
     return this.clone({ groups });
   }
-
-  /**
-   * Add markdown text as an element
-   */
-  addMarkdown(groupId: string, markdown: string): ChartifactBuilder {
-    return this.addElement(groupId, markdown);
-  }
-
-  /**
-   * Add a chart element
-   */
-  addChart(groupId: string, chartKey: string): ChartifactBuilder {
-    return this.addElement(groupId, {
-      type: 'chart',
-      chartKey
-    });
-  }
-
-  /**
-   * Add a checkbox element
-   */
-  addCheckbox(
-    groupId: string, 
-    variableId: string, 
-    options?: { label?: string }
-  ): ChartifactBuilder {
-    return this.addElement(groupId, {
-      type: 'checkbox',
-      variableId,
-      ...options
-    });
-  }
-
-  /**
-   * Add a dropdown element
-   */
-  addDropdown(
-    groupId: string,
-    variableId: string,
-    options: string[] | { dataSourceName: string; fieldName: string },
-    config?: { label?: string; multiple?: boolean; size?: number }
-  ): ChartifactBuilder {
-    const element: DropdownElement = {
-      type: 'dropdown',
-      variableId,
-      ...(Array.isArray(options) 
-        ? { options }
-        : { dynamicOptions: options }
-      ),
-      ...config
-    };
-    return this.addElement(groupId, element);
-  }
-
-  /**
-   * Add a slider element
-   */
-  addSlider(
-    groupId: string,
-    variableId: string,
-    min: number,
-    max: number,
-    step: number,
-    options?: { label?: string }
-  ): ChartifactBuilder {
-    return this.addElement(groupId, {
-      type: 'slider',
-      variableId,
-      min,
-      max,
-      step,
-      ...options
-    });
-  }
-
-  /**
-   * Add a textbox element
-   */
-  addTextbox(
-    groupId: string,
-    variableId: string,
-    options?: { label?: string; multiline?: boolean; placeholder?: string }
-  ): ChartifactBuilder {
-    return this.addElement(groupId, {
-      type: 'textbox',
-      variableId,
-      ...options
-    });
-  }
-
-  /**
-   * Add a number input element
-   */
-  addNumber(
-    groupId: string,
-    variableId: string,
-    options?: { label?: string; min?: number; max?: number; step?: number; placeholder?: string }
-  ): ChartifactBuilder {
-    return this.addElement(groupId, {
-      type: 'number',
-      variableId,
-      ...options
-    });
-  }
-
-  /**
-   * Add a tabulator (table) element
-   */
-  addTable(
-    groupId: string,
-    dataSourceName: string,
-    options?: { 
-      variableId?: string; 
-      editable?: boolean; 
-      tabulatorOptions?: object 
-    }
-  ): ChartifactBuilder {
-    return this.addElement(groupId, {
-      type: 'tabulator',
-      dataSourceName,
-      ...options
-    });
-  }
-
-  /**
-   * Add an image element
-   */
-  addImage(
-    groupId: string,
-    url: string,
-    options?: { alt?: string; height?: number; width?: number }
-  ): ChartifactBuilder {
-    return this.addElement(groupId, {
-      type: 'image',
-      url,
-      ...options
-    });
-  }
-
-  /**
-   * Add a mermaid diagram element
-   */
-  addMermaid(
-    groupId: string,
-    diagramText: string,
-    options?: { variableId?: string }
-  ): ChartifactBuilder {
-    return this.addElement(groupId, {
-      type: 'mermaid',
-      diagramText,
-      ...options
-    });
-  }
 }
+
+// Example usage with generic operations:
+// For markdown (string):
+builder.addElement('main', '# Hello World')
+
+// For a chart:
+builder.addElement('main', { type: 'chart', chartKey: 'myChart' })
+
+// For a checkbox:
+builder.addElement('main', { type: 'checkbox', variableId: 'showDetails', label: 'Show Details' })
+
+// For a slider:
+builder.addElement('main', { type: 'slider', variableId: 'year', min: 2020, max: 2024, step: 1 })
 ```
 
 ## Data & Variable Operations
@@ -561,6 +475,20 @@ class ChartifactBuilder {
 ```typescript
 class ChartifactBuilder {
   // ... previous code ...
+
+  /**
+   * Get all variables
+   */
+  getVariables(): Variable[] {
+    return [...(this.doc.variables || [])];
+  }
+
+  /**
+   * Get a specific variable by ID
+   */
+  getVariable(variableId: string): Variable | undefined {
+    return this.doc.variables?.find(v => v.variableId === variableId);
+  }
 
   /**
    * Add a variable to the document
@@ -609,6 +537,22 @@ class ChartifactBuilder {
   }
 
   /**
+   * Get all data loaders
+   */
+  getDataLoaders(): DataLoader[] {
+    return [...(this.doc.dataLoaders || [])];
+  }
+
+  /**
+   * Get a specific data loader by name
+   */
+  getDataLoader(dataSourceName: string): DataLoader | undefined {
+    return this.doc.dataLoaders?.find(
+      dl => 'dataSourceName' in dl && dl.dataSourceName === dataSourceName
+    );
+  }
+
+  /**
    * Add a data loader
    */
   addDataLoader(dataLoader: DataLoader): ChartifactBuilder {
@@ -620,38 +564,6 @@ class ChartifactBuilder {
 
     return this.clone({
       dataLoaders: [...(this.doc.dataLoaders || []), dataLoader]
-    });
-  }
-
-  /**
-   * Add an inline data source
-   */
-  addInlineData(
-    dataSourceName: string,
-    content: object[] | string | string[],
-    options?: { format?: 'json' | 'csv' | 'tsv' | 'dsv'; delimiter?: string }
-  ): ChartifactBuilder {
-    return this.addDataLoader({
-      type: 'inline',
-      dataSourceName,
-      content,
-      ...options
-    });
-  }
-
-  /**
-   * Add a URL-based data source
-   */
-  addURLData(
-    dataSourceName: string,
-    url: string,
-    options?: { format?: 'json' | 'csv' | 'tsv' | 'dsv' }
-  ): ChartifactBuilder {
-    return this.addDataLoader({
-      type: 'url',
-      dataSourceName,
-      url,
-      ...options
     });
   }
 
@@ -672,16 +584,40 @@ class ChartifactBuilder {
 }
 ```
 
-## Chart Resources Operations
+## Resources Operations
+
+**Note:** Renamed from "Chart Resources" to just "Resources" for generality.
+Resources can contain charts and potentially other types in the future.
 
 ```typescript
 class ChartifactBuilder {
   // ... previous code ...
 
   /**
-   * Add a chart specification to resources
+   * Get all resources
    */
-  addChartSpec(chartKey: string, spec: object): ChartifactBuilder {
+  getResources(): InteractiveDocument['resources'] {
+    return this.doc.resources ? { ...this.doc.resources } : undefined;
+  }
+
+  /**
+   * Get all chart specifications
+   */
+  getCharts(): Record<string, object> {
+    return { ...(this.doc.resources?.charts || {}) };
+  }
+
+  /**
+   * Get a specific chart specification
+   */
+  getChart(chartKey: string): object | undefined {
+    return this.doc.resources?.charts?.[chartKey];
+  }
+
+  /**
+   * Add or update a chart specification in resources
+   */
+  setChart(chartKey: string, spec: object): ChartifactBuilder {
     const charts = {
       ...(this.doc.resources?.charts || {}),
       [chartKey]: spec
@@ -696,20 +632,9 @@ class ChartifactBuilder {
   }
 
   /**
-   * Update an existing chart specification
+   * Remove a chart specification from resources
    */
-  updateChartSpec(chartKey: string, spec: object): ChartifactBuilder {
-    if (!this.doc.resources?.charts?.[chartKey]) {
-      throw new Error(`Chart '${chartKey}' not found`);
-    }
-
-    return this.addChartSpec(chartKey, spec);
-  }
-
-  /**
-   * Remove a chart specification
-   */
-  deleteChartSpec(chartKey: string): ChartifactBuilder {
+  deleteChart(chartKey: string): ChartifactBuilder {
     if (!this.doc.resources?.charts?.[chartKey]) {
       throw new Error(`Chart '${chartKey}' not found`);
     }
