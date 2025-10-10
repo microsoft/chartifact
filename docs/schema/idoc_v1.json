@@ -1826,6 +1826,9 @@
         },
         {
           "$ref": "#/definitions/TextboxElement"
+        },
+        {
+          "$ref": "#/definitions/TreebarkElement"
         }
       ],
       "description": "Union type for all possible interactive elements"
@@ -3270,6 +3273,36 @@
         }
       },
       "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "TreebarkElement": {
+      "additionalProperties": false,
+      "description": "Treebark use for rendering cards and structured HTML from templates",
+      "properties": {
+        "data": {
+          "description": "Static data object (optional)",
+          "type": "object"
+        },
+        "emptyTemplate": {
+          "description": "Template to display when data is empty, null, or an error occurs (optional)",
+          "type": "object"
+        },
+        "template": {
+          "description": "Treebark template object for rendering HTML structure",
+          "type": "object"
+        },
+        "type": {
+          "const": "treebark",
+          "type": "string"
+        },
+        "variableId": {
+          "$ref": "#/definitions/VariableID"
+        }
+      },
+      "required": [
+        "template",
         "type"
       ],
       "type": "object"
