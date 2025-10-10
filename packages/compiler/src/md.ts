@@ -203,7 +203,7 @@ function dataLoaderMarkdown(dataSources: DataSource[], variables: Variable[], ta
     return { vegaScope, inlineDataMd };
 }
 
-type pluginSpecs = Plugins.CheckboxSpec | Plugins.DropdownSpec | Plugins.ImageSpec | Plugins.MermaidSpec | Plugins.NumberSpec | Plugins.PresetsSpec | Plugins.SliderSpec | Plugins.TabulatorSpec | Plugins.TextboxSpec;
+type pluginSpecs = Plugins.CheckboxSpec | Plugins.DropdownSpec | Plugins.ImageSpec | Plugins.MermaidSpec | Plugins.NumberSpec | Plugins.PresetsSpec | Plugins.SliderSpec | Plugins.TabulatorSpec | Plugins.TextboxSpec | Plugins.TreebarkSpec;
 
 function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: VegaScope, resources: { charts?: { [chartKey: string]: VegaSpec | VegaLiteSpec } }, pluginFormat: Record<string, "json" | "yaml">) {
     const mdElements: string[] = [];
@@ -304,6 +304,20 @@ function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: Ve
                         };
                         addSpec('mermaid', mermaidSpec, false);
                     }
+                    break;
+                }
+                case 'treebark': {
+                    const { template, data, variableId } = element;
+                    const treebarkSpec: Plugins.TreebarkSpec = {
+                        template,
+                    };
+                    if (data) {
+                        treebarkSpec.data = data;
+                    }
+                    if (variableId) {
+                        treebarkSpec.variableId = variableId;
+                    }
+                    addSpec('treebark', treebarkSpec);
                     break;
                 }
                 case 'presets': {
