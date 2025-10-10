@@ -740,11 +740,11 @@ TypeScript types ensure:
 - Correct data structures
 - IDE autocomplete support
 
-### Getter Strategy
-- Getters return copies to prevent external mutation
-- `toJSON()` provides complete document snapshot
-- MCP can call `toJSON()` after operations to get updated state
-- No need for complex getter/setter parity
+### Reading State Strategy
+- **No individual getters** - Avoids maintenance overhead
+- **Use `toJSON()` for all reads** - Returns complete document as plain JSON
+- **LLM inspects JSON directly** - Can access any property from the returned object
+- **Simple and flexible** - No need to add getters as schema evolves
 
 ### Performance
 - Shallow copying for immutability
@@ -767,13 +767,14 @@ The builder can be extended:
 ## Next Steps
 
 1. **Implement core builder** (~1 day)
-   - Document operations (with getters)
-   - Group operations (with getters)
+   - Document operations
+   - Group operations
    - Element operations (generic only)
-   - Variable operations (with getters)
-   - Data loader operations (with getters)
-   - Resources operations (with getters)
+   - Variable operations
+   - Data loader operations
+   - Resources operations
    - Validation
+   - Single `toJSON()` method for reading state
 
 2. **Create MCP wrapper** (~0.5-1 day)
    - Tool definitions for each operation
