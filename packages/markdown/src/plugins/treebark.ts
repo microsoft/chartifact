@@ -139,13 +139,8 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
                 receiveBatch: async (batch) => {
                     if (variableId && batch[variableId]) {
                         const value = batch[variableId].value;
-
-                        if (value) {
-                            await renderTreebark(treebarkInstance, value, errorHandler, index);
-                        } else {
-                            // Clear container if variable is empty
-                            treebarkInstance.container.innerHTML = '<div class="error">No data to display</div>';
-                        }
+                        // Always render, even with falsy values, to support $if conditional tags
+                        await renderTreebark(treebarkInstance, value, errorHandler, index);
                     }
                 }
             };
