@@ -60,12 +60,12 @@
 
 import { Plugin, RawFlaggableSpec, IInstance } from '../factory.js';
 import { ErrorHandler } from '../renderer.js';
-import { sanitizedHTML } from '../sanitize.js';
 import { flaggablePlugin } from './config.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { TreebarkElementProps } from '@microsoft/chartifact-schema';
 import { renderToString } from 'treebark/string';
+import { Data } from 'treebark';
 
 interface TreebarkInstance {
     id: string;
@@ -160,7 +160,7 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
                         const value = batch[variableId].value;
 
                         if (value) {
-                            await renderTreebark(treebarkInstance, value, errorHandler, index);
+                            await renderTreebark(treebarkInstance, value as Data, errorHandler, index);
                         } else {
                             // Use emptyTemplate if provided, otherwise show default message
                             await renderEmptyOrError(treebarkInstance, errorHandler, index);
@@ -176,7 +176,7 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
 
 async function renderTreebark(
     instance: TreebarkInstance,
-    data: unknown,
+    data: Data,
     errorHandler: ErrorHandler,
     index: number
 ) {
@@ -193,8 +193,8 @@ async function renderTreebark(
 
         // Render using treebark
         const html = renderToString({
-            template: spec.template as any,
-            data: data as any,
+            template: spec.template,
+            data: data,
         });
 
         container.innerHTML = html;
