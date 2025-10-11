@@ -1,4 +1,4 @@
-import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, ImageElement, MermaidElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
+import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, ImageElement, MermaidElement, TreebarkElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
 import { getChartType } from "../util.js";
 import { validateVegaLite, validateVegaChart } from "./chart.js";
 import { validateVariableID, validateRequiredString, validateOptionalString, validateOptionalPositiveNumber, validateOptionalBoolean, validateOptionalObject, validateInputElementWithVariableId, validateMarkdownString } from "./common.js";
@@ -130,6 +130,28 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                     // Validate variableId if present (follows OptionalVariableControl)
                     if (mermaidElement.variableId) {
                         errors.push(...validateVariableID(mermaidElement.variableId));
+                    }
+
+                    break;
+                }
+                case 'treebark': {
+                    const treebarkElement = element as TreebarkElement;
+
+                    // Template is required
+                    if (!treebarkElement.template) {
+                        errors.push('Treebark element must have a template property');
+                    } else {
+                        errors.push(...validateOptionalObject(treebarkElement.template, 'template', 'Treebark'));
+                    }
+
+                    // Validate data if present
+                    if (treebarkElement.data !== undefined) {
+                        errors.push(...validateOptionalObject(treebarkElement.data, 'data', 'Treebark'));
+                    }
+
+                    // Validate variableId if present (follows OptionalVariableControl)
+                    if (treebarkElement.variableId) {
+                        errors.push(...validateVariableID(treebarkElement.variableId));
                     }
 
                     break;
