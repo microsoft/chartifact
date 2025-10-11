@@ -149,11 +149,6 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                         errors.push(...validateOptionalObject(treebarkElement.data, 'data', 'Treebark'));
                     }
 
-                    // Validate emptyTemplate if present
-                    if (treebarkElement.emptyTemplate !== undefined) {
-                        errors.push(...validateOptionalObject(treebarkElement.emptyTemplate, 'emptyTemplate', 'Treebark'));
-                    }
-
                     // Validate variableId if present (follows OptionalVariableControl)
                     if (treebarkElement.variableId) {
                         errors.push(...validateVariableID(treebarkElement.variableId));

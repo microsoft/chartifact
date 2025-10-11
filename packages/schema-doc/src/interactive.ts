@@ -3,7 +3,6 @@
 * Licensed under the MIT License.
 */
 import { VariableID, VariableControl, ElementBase, TemplatedUrl, OptionalVariableControl } from './common.js';
-import { Data, TemplateElement } from 'treebark';
 
 /**
  * Interactive Elements
@@ -146,14 +145,11 @@ export interface TreebarkElement extends TreebarkElementProps {
 }
 
 export interface TreebarkElementProps extends OptionalVariableControl {
-  /** Treebark template object for rendering HTML structure, see https://github.com/danmarshall/treebark */
-  template: TemplateElement | TemplateElement[];
+  /** Treebark template object for rendering HTML structure */
+  template: object;
 
   /** Static data object (optional) */
-  data?: Data;
-
-  /** Template to display when data is empty, null, or an error occurs (optional) */
-  emptyTemplate?: object;
+  data?: object;
 
   /** Dynamic option: variableId to intake a signal and behave as data */
 }

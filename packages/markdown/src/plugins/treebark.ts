@@ -37,35 +37,16 @@
 *   "variableId": "movieData"
 * }
 * ```
-*
-* 3. With Empty State:
-* ```treebark
-* {
-*   "template": {
-*     "div": {
-*       "class": "card",
-*       "$children": ["{{name}}"]
-*     }
-*   },
-*   "emptyTemplate": {
-*     "div": {
-*       "class": "empty-state",
-*       "$children": ["No data available"]
-*     }
-*   },
-*   "variableId": "userData"
-* }
-* ```
 */
 
 import { Plugin, RawFlaggableSpec, IInstance } from '../factory.js';
 import { ErrorHandler } from '../renderer.js';
+import { sanitizedHTML } from '../sanitize.js';
 import { flaggablePlugin } from './config.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { TreebarkElementProps } from '@microsoft/chartifact-schema';
 import { renderToString } from 'treebark/string';
-import { Data } from 'treebark';
 
 interface TreebarkInstance {
     id: string;
@@ -160,10 +141,10 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
                         const value = batch[variableId].value;
 
                         if (value) {
-                            await renderTreebark(treebarkInstance, value as Data, errorHandler, index);
+                            await renderTreebark(treebarkInstance, value, errorHandler, index);
                         } else {
-                            // Use emptyTemplate if provided, otherwise show default message
-                            await renderEmptyOrError(treebarkInstance, errorHandler, index);
+                            // Clear container if variable is empty
+                            treebarkInstance.container.innerHTML = '<div class="error">No data to display</div>';
                         }
                     }
                 }
@@ -176,7 +157,7 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
 
 async function renderTreebark(
     instance: TreebarkInstance,
-    data: Data,
+    data: unknown,
     errorHandler: ErrorHandler,
     index: number
 ) {
@@ -193,48 +174,20 @@ async function renderTreebark(
 
         // Render using treebark
         const html = renderToString({
-            template: spec.template,
-            data: data,
+            template: spec.template as any,
+            data: data as any,
         });
 
         container.innerHTML = html;
         instance.lastRenderedData = dataKey;
     } catch (error) {
-        // Use emptyTemplate if provided, otherwise show default error message
-        await renderEmptyOrError(instance, errorHandler, index, error as Error);
-    }
-}
-
-async function renderEmptyOrError(
-    instance: TreebarkInstance,
-    errorHandler: ErrorHandler,
-    index: number,
-    error?: Error
-) {
-    const { spec, container } = instance;
-
-    if (spec.emptyTemplate) {
-        try {
-            // Render the emptyTemplate
-            const html = renderToString({
-                template: spec.emptyTemplate as any,
-                data: {},
-            });
-            container.innerHTML = html;
-        } catch (emptyError) {
-            // If emptyTemplate fails, show default error
-            container.innerHTML = '<div class="error">Failed to render empty template</div>';
-            if (error) {
-                errorHandler(error, pluginName, index, 'render', container);
-            }
-        }
-    } else {
-        // No emptyTemplate provided, show default message
-        if (error) {
-            container.innerHTML = '<div class="error">Failed to render treebark template</div>';
-            errorHandler(error, pluginName, index, 'render', container);
-        } else {
-            container.innerHTML = '<div class="error">No data to display</div>';
-        }
+        container.innerHTML = `<div class="error">Failed to render treebark template</div>`;
+        errorHandler(
+            error instanceof Error ? error : new Error(String(error)),
+            pluginName,
+            index,
+            'render',
+            container
+        );
     }
 }

@@ -232,72 +232,95 @@
                     "variableId": "filteredByMpaaRating",
                     "template": {
                         "div": {
-                            "class": "movie-cards",
-                            "$bind": ".",
                             "$children": [
                                 {
-                                    "a": {
-                                        "href": "{{ImdbUrl}}",
-                                        "class": "movie-card",
+                                    "div": {
+                                        "$if": {
+                                            "$not": "."
+                                        },
+                                        "class": "results-header",
                                         "$children": [
                                             {
-                                                "h3": "🎬 {{Title}}"
+                                                "h3": "🎬 No movies found"
                                             },
                                             {
-                                                "p": {
+                                                "p": "Try adjusting your filters to see more results."
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "div": {
+                                        "$if": ".",
+                                        "class": "movie-cards",
+                                        "$bind": ".",
+                                        "$children": [
+                                            {
+                                                "a": {
+                                                    "href": "{{ImdbUrl}}",
+                                                    "class": "movie-card",
                                                     "$children": [
                                                         {
-                                                            "strong": "Director: "
+                                                            "h3": "🎬 {{Title}}"
                                                         },
-                                                        "{{Director}}"
-                                                    ]
-                                                }
-                                            },
-                                            {
-                                                "p": {
-                                                    "$children": [
                                                         {
-                                                            "strong": "Release: "
+                                                            "p": {
+                                                                "$children": [
+                                                                    {
+                                                                        "strong": "Director: "
+                                                                    },
+                                                                    "{{Director}}"
+                                                                ]
+                                                            }
                                                         },
-                                                        "{{Release Date}}"
-                                                    ]
-                                                }
-                                            },
-                                            {
-                                                "p": {
-                                                    "$children": [
                                                         {
-                                                            "strong": "Running Time: "
+                                                            "p": {
+                                                                "$children": [
+                                                                    {
+                                                                        "strong": "Release: "
+                                                                    },
+                                                                    "{{Release Date}}"
+                                                                ]
+                                                            }
                                                         },
-                                                        "{{Running Time min}} min"
-                                                    ]
-                                                }
-                                            },
-                                            {
-                                                "p": {
-                                                    "class": "rating",
-                                                    "$children": [
-                                                        "⭐ IMDB: {{IMDB Rating}}"
-                                                    ]
-                                                }
-                                            },
-                                            {
-                                                "p": {
-                                                    "$children": [
                                                         {
-                                                            "strong": "US Gross: "
+                                                            "p": {
+                                                                "$children": [
+                                                                    {
+                                                                        "strong": "Running Time: "
+                                                                    },
+                                                                    "{{Running Time min}} min"
+                                                                ]
+                                                            }
                                                         },
-                                                        "${{US Gross}}"
-                                                    ]
-                                                }
-                                            },
-                                            {
-                                                "p": {
-                                                    "$children": [
                                                         {
-                                                            "strong": "Worldwide: "
+                                                            "p": {
+                                                                "class": "rating",
+                                                                "$children": [
+                                                                    "⭐ IMDB: {{IMDB Rating}}"
+                                                                ]
+                                                            }
                                                         },
-                                                        "${{Worldwide Gross}}"
+                                                        {
+                                                            "p": {
+                                                                "$children": [
+                                                                    {
+                                                                        "strong": "US Gross: "
+                                                                    },
+                                                                    "${{US Gross}}"
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "p": {
+                                                                "$children": [
+                                                                    {
+                                                                        "strong": "Worldwide: "
+                                                                    },
+                                                                    "${{Worldwide Gross}}"
+                                                                ]
+                                                            }
+                                                        }
                                                     ]
                                                 }
                                             }
