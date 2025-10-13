@@ -262,75 +262,48 @@
     {
       "groupId": "header",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "# Alex Quantum Capital"
-        }
+        "# Alex Quantum Capital"
       ]
     },
     {
       "groupId": "profile",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "## Kenji Tanaka\n\n**Email:** kenji.tanaka@techventures.jp\n\nA 35-year-old software engineer with a high-risk tolerance and a passion for emerging technologies. His portfolio is heavily weighted in tech stocks and cryptocurrencies."
-        }
+        "## Kenji Tanaka\n\n**Email:** kenji.tanaka@techventures.jp\n\nA 35-year-old software engineer with a high-risk tolerance and a passion for emerging technologies. His portfolio is heavily weighted in tech stocks and cryptocurrencies."
       ]
     },
     {
       "groupId": "summary",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "### Portfolio Summary"
-        },
-        {
-          "type": "text",
-          "markdown": "<div class=\"metric\"><span class=\"metric-value\">${{totalPortfolioValue | number | round}}</span><span class=\"metric-label\">Total Portfolio Value</span></div><div class=\"metric\"><span class=\"metric-value positive\">${{totalPortfolioGain | number | round}}</span><span class=\"metric-label\">Total Gain</span></div>"
-        }
+        "### Portfolio Summary",
+        "<div class=\"metric\"><span class=\"metric-value\">${{totalPortfolioValue | number | round}}</span><span class=\"metric-label\">Total Portfolio Value</span></div><div class=\"metric\"><span class=\"metric-value positive\">${{totalPortfolioGain | number | round}}</span><span class=\"metric-label\">Total Gain</span></div>"
       ]
     },
     {
       "groupId": "crypto",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "### Cryptocurrency Holdings"
-        },
+        "### Cryptocurrency Holdings",
         {
           "type": "chart",
           "chartKey": "cryptoChart"
         },
-        {
-          "type": "text",
-          "markdown": "**Total Crypto Value:** ${{totalCryptoValue[0].total | number | round}}"
-        }
+        "**Total Crypto Value:** ${{totalCryptoValue[0].total | number | round}}"
       ]
     },
     {
       "groupId": "stocks",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "### Stock Holdings"
-        },
+        "### Stock Holdings",
         {
           "type": "chart",
           "chartKey": "stockChart"
         },
-        {
-          "type": "text",
-          "markdown": "**Total Stock Value:** ${{totalStockValue[0].total | number | round}}"
-        }
+        "**Total Stock Value:** ${{totalStockValue[0].total | number | round}}"
       ]
     },
     {
       "groupId": "portfolio",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "### Investment Scenario Simulator\n\nEdit values below to simulate different investment scenarios and see real-time portfolio adjustments."
-        },
+        "### Investment Scenario Simulator\n\nEdit values below to simulate different investment scenarios and see real-time portfolio adjustments.",
         {
           "type": "tabulator",
           "dataSourceName": "editableCryptoHoldings",
@@ -370,10 +343,7 @@
             ]
           }
         },
-        {
-          "type": "text",
-          "markdown": " "
-        },
+        " ",
         {
           "type": "tabulator",
           "dataSourceName": "editableStockHoldings",

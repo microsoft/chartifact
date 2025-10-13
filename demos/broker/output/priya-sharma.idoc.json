@@ -192,75 +192,48 @@
     {
       "groupId": "header",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "# Alex Quantum Capital"
-        }
+        "# Alex Quantum Capital"
       ]
     },
     {
       "groupId": "profile",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "## Priya Sharma\n\n**Email:** priya.sharma@medical-investments.in\n\nA 45-year-old doctor with a moderate risk tolerance. She is focused on long-term growth and has a diversified portfolio of real estate and mutual funds."
-        }
+        "## Priya Sharma\n\n**Email:** priya.sharma@medical-investments.in\n\nA 45-year-old doctor with a moderate risk tolerance. She is focused on long-term growth and has a diversified portfolio of real estate and mutual funds."
       ]
     },
     {
       "groupId": "summary",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "### Portfolio Summary"
-        },
-        {
-          "type": "text",
-          "markdown": "<div class=\"metric\"><span class=\"metric-value\">${{totalPortfolioValue | number | round}}</span><span class=\"metric-label\">Total Portfolio Value</span></div><div class=\"metric\"><span class=\"metric-value positive\">${{totalAppreciation | number | round}}</span><span class=\"metric-label\">Real Estate Appreciation</span></div>"
-        }
+        "### Portfolio Summary",
+        "<div class=\"metric\"><span class=\"metric-value\">${{totalPortfolioValue | number | round}}</span><span class=\"metric-label\">Total Portfolio Value</span></div><div class=\"metric\"><span class=\"metric-value positive\">${{totalAppreciation | number | round}}</span><span class=\"metric-label\">Real Estate Appreciation</span></div>"
       ]
     },
     {
       "groupId": "realestate",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "### Real Estate Portfolio"
-        },
+        "### Real Estate Portfolio",
         {
           "type": "chart",
           "chartKey": "realEstateChart"
         },
-        {
-          "type": "text",
-          "markdown": "**Total Real Estate Value:** ${{totalRealEstateValue[0].total | number | round}}"
-        }
+        "**Total Real Estate Value:** ${{totalRealEstateValue[0].total | number | round}}"
       ]
     },
     {
       "groupId": "funds",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "### Mutual Funds"
-        },
+        "### Mutual Funds",
         {
           "type": "chart",
           "chartKey": "mutualFundsChart"
         },
-        {
-          "type": "text",
-          "markdown": "**Total Funds Value:** ${{totalFundsValue[0].total | number | round}}"
-        }
+        "**Total Funds Value:** ${{totalFundsValue[0].total | number | round}}"
       ]
     },
     {
       "groupId": "portfolio",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "### Investment Scenario Simulator\n\nEdit values below to simulate different investment scenarios and see real-time portfolio adjustments."
-        },
+        "### Investment Scenario Simulator\n\nEdit values below to simulate different investment scenarios and see real-time portfolio adjustments.",
         {
           "type": "tabulator",
           "dataSourceName": "editableRealEstate",
@@ -306,10 +279,7 @@
             ]
           }
         },
-        {
-          "type": "text",
-          "markdown": " "
-        },
+        " ",
         {
           "type": "tabulator",
           "dataSourceName": "editableMutualFunds",

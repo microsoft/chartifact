@@ -151,75 +151,48 @@
     {
       "groupId": "header",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "# Alex Quantum Capital"
-        }
+        "# Alex Quantum Capital"
       ]
     },
     {
       "groupId": "profile",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "## Fatima Al-Fassi\n\n**Email:** fatima.alfassi@venture-capital.com\n\nA 42-year-old venture capitalist. Her portfolio is aggressive, focusing on high-risk, high-reward opportunities in angel investments and commodities."
-        }
+        "## Fatima Al-Fassi\n\n**Email:** fatima.alfassi@venture-capital.com\n\nA 42-year-old venture capitalist. Her portfolio is aggressive, focusing on high-risk, high-reward opportunities in angel investments and commodities."
       ]
     },
     {
       "groupId": "summary",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "### Portfolio Summary"
-        },
-        {
-          "type": "text",
-          "markdown": "<div class=\"metric\"><span class=\"metric-value\">${{totalPortfolioValue | number | round}}</span><span class=\"metric-label\">Total Portfolio Value</span></div><div class=\"metric\"><span class=\"metric-value\">{{numberOfStartups}}</span><span class=\"metric-label\">Startup Investments</span></div>"
-        }
+        "### Portfolio Summary",
+        "<div class=\"metric\"><span class=\"metric-value\">${{totalPortfolioValue | number | round}}</span><span class=\"metric-label\">Total Portfolio Value</span></div><div class=\"metric\"><span class=\"metric-value\">{{numberOfStartups}}</span><span class=\"metric-label\">Startup Investments</span></div>"
       ]
     },
     {
       "groupId": "angel",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "### Angel Investments"
-        },
+        "### Angel Investments",
         {
           "type": "chart",
           "chartKey": "angelChart"
         },
-        {
-          "type": "text",
-          "markdown": "**Total Angel Investment:** ${{totalAngelInvestment[0].total | number | round}}"
-        }
+        "**Total Angel Investment:** ${{totalAngelInvestment[0].total | number | round}}"
       ]
     },
     {
       "groupId": "commodities",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "### Commodities Portfolio"
-        },
+        "### Commodities Portfolio",
         {
           "type": "chart",
           "chartKey": "commoditiesChart"
         },
-        {
-          "type": "text",
-          "markdown": "**Total Commodities Value:** ${{totalCommoditiesValue[0].total | number | round}}"
-        }
+        "**Total Commodities Value:** ${{totalCommoditiesValue[0].total | number | round}}"
       ]
     },
     {
       "groupId": "portfolio",
       "elements": [
-        {
-          "type": "text",
-          "markdown": "### Investment Scenario Simulator\n\nEdit values below to simulate different investment scenarios and see real-time portfolio adjustments."
-        },
+        "### Investment Scenario Simulator\n\nEdit values below to simulate different investment scenarios and see real-time portfolio adjustments.",
         {
           "type": "tabulator",
           "dataSourceName": "editableAngelInvestments",
@@ -256,10 +229,7 @@
             ]
           }
         },
-        {
-          "type": "text",
-          "markdown": " "
-        },
+        " ",
         {
           "type": "tabulator",
           "dataSourceName": "editableCommodities",
