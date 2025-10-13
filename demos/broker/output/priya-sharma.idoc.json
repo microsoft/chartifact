@@ -17,11 +17,6 @@
       "h3 { margin: 0 0 15px 0; font-size: 1.2em; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }",
       ".tabulator { max-width: 100%; overflow: auto; }",
       ".tabulator .tabulator-table { min-width: fit-content; }",
-      ".metric { display: inline-block; margin: 0 20px; }",
-      ".metric-value { font-size: 2.5em; font-weight: bold; color: #2d3748; display: block; }",
-      ".metric-label { font-size: 0.9em; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; }",
-      ".positive { color: #10b981; }",
-      ".negative { color: #ef4444; }",
       "@media (max-width: 768px) { body { grid-template-columns: 1fr; grid-template-areas: 'header' 'profile' 'summary' 'realestate' 'funds' 'portfolio'; } }"
     ]
   },
@@ -205,7 +200,8 @@
       "groupId": "summary",
       "elements": [
         "### Portfolio Summary",
-        "<div class=\"metric\"><span class=\"metric-value\">${{totalPortfolioValue | number | round}}</span><span class=\"metric-label\">Total Portfolio Value</span></div><div class=\"metric\"><span class=\"metric-value positive\">${{totalAppreciation | number | round}}</span><span class=\"metric-label\">Real Estate Appreciation</span></div>"
+        "**Total Portfolio Value:** ${{totalPortfolioValue | number | round}}",
+        "**Real Estate Appreciation:** ${{totalAppreciation | number | round}}"
       ]
     },
     {
