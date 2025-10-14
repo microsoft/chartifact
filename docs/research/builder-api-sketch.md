@@ -409,6 +409,7 @@ class ChartifactBuilder {
 }
 
 // Example usage with generic operations:
+// Individual element operations (available but typically too granular):
 // For markdown (string):
 builder.addElement('main', '# Hello World')
 
@@ -421,7 +422,7 @@ builder.addElement('main', { type: 'checkbox', variableId: 'showDetails', label:
 // For a slider:
 builder.addElement('main', { type: 'slider', variableId: 'year', min: 2020, max: 2024, step: 1 })
 
-// Bulk operations (preferred for group content management):
+// Bulk operations (RECOMMENDED - preferred for group content management):
 // Create group with initial elements
 builder.addGroup('dashboard', [
   '# Sales Dashboard',
@@ -625,31 +626,33 @@ const json = builder.toString();
 
 ```typescript
 const builder = ChartifactBuilder.fromDocument(existingDoc)
-  .addGroup('controls', [])
-  .addElement('controls', '## Settings')
   .addVariable({
     variableId: 'yearFilter',
     type: 'number',
     initialValue: 2024
-  })
-  .addElement('controls', {
-    type: 'slider',
-    variableId: 'yearFilter',
-    min: 2020,
-    max: 2024,
-    step: 1,
-    label: 'Select Year'
   })
   .addVariable({
     variableId: 'showDetails',
     type: 'boolean',
     initialValue: false
   })
-  .addElement('controls', {
-    type: 'checkbox',
-    variableId: 'showDetails',
-    label: 'Show detailed view'
-  });
+  // Create group with all control elements at once (recommended pattern)
+  .addGroup('controls', [
+    '## Settings',
+    {
+      type: 'slider',
+      variableId: 'yearFilter',
+      min: 2020,
+      max: 2024,
+      step: 1,
+      label: 'Select Year'
+    },
+    {
+      type: 'checkbox',
+      variableId: 'showDetails',
+      label: 'Show detailed view'
+    }
+  ]);
 ```
 
 ### Example 3: Modify Existing Document
@@ -659,11 +662,14 @@ const builder = ChartifactBuilder.fromDocument(existingDoc)
 const jsonString = readFileSync('./document.idoc.json', 'utf-8');
 const builder = ChartifactBuilder.fromJSON(jsonString);
 
-// Make modifications
+// Get current document to inspect
+const doc = builder.toJSON();
+const mainElements = doc.groups.find(g => g.groupId === 'main')?.elements || [];
+
+// Make modifications - replace first element with new content
 const updated = builder
   .setTitle('Updated Title')
-  .deleteElement('main', 0)
-  .addElement('main', '# New Header')
+  .setGroupElements('main', ['# New Header', ...mainElements.slice(1)])
   .addGroup('footer', ['Built with Chartifact'])
   .addNote('Updated on ' + new Date().toISOString());
 
@@ -676,10 +682,6 @@ const updatedJson = updated.toString();
 
 ```typescript
 const doc = new ChartifactBuilder({ title: 'My Report' })
-  .addGroup('header')
-  .addElement('header', '# Annual Report 2024')
-  .addElement('header', 'Executive Summary')
-  .addGroup('metrics')
   .addDataLoader({
     type: 'inline',
     dataSourceName: 'kpis',
@@ -688,15 +690,23 @@ const doc = new ChartifactBuilder({ title: 'My Report' })
       { name: 'Growth', value: 15 }
     ]
   })
-  .addElement('metrics', {
-    type: 'tabulator',
-    dataSourceName: 'kpis',
-    editable: false
-  })
-  .addGroup('charts')
   .setResource('charts', 'trend', { /* vega spec */ })
-  .addElement('charts', { type: 'chart', chartKey: 'trend' })
   .setCSS('.header { text-align: center; }')
+  // Create all groups with their content at once (recommended pattern)
+  .addGroup('header', [
+    '# Annual Report 2024',
+    'Executive Summary'
+  ])
+  .addGroup('metrics', [
+    {
+      type: 'tabulator',
+      dataSourceName: 'kpis',
+      editable: false
+    }
+  ])
+  .addGroup('charts', [
+    { type: 'chart', chartKey: 'trend' }
+  ])
   .toJSON();
 ```
 
@@ -919,10 +929,10 @@ class ChartifactBuilder {
 ### Transactional Usage Example
 
 ```typescript
-// Instead of chaining (not available in MCP):
+// Individual element operations (available but typically too granular):
 // builder.setTitle('Dashboard').addGroup('main').addElement('main', '# Hello')
 
-// Use transactions (available in MCP):
+// Transactions support individual operations:
 const updated = builder.applyTransactions([
   { op: 'setTitle', title: 'Dashboard' },
   { op: 'addGroup', groupId: 'main', elements: [] },
@@ -931,7 +941,7 @@ const updated = builder.applyTransactions([
   { op: 'addElement', groupId: 'main', element: { type: 'chart', chartKey: 'myChart' } }
 ]);
 
-// Preferred: Use bulk element operations for group content management
+// RECOMMENDED: Use bulk element operations for group content management
 const updatedBulk = builder.applyTransactions([
   { op: 'setTitle', title: 'Sales Dashboard' },
   { 
