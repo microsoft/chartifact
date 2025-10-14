@@ -172,7 +172,11 @@ class ChartifactBuilder {
   // ... previous code ...
 
   /**
-   * Add a new group to the document
+   * Add a new group to the document with optional initial elements.
+   * This is the preferred way to create groups with content in bulk.
+   * 
+   * @param groupId - Unique identifier for the group
+   * @param elements - Array of elements to initialize the group with (default: empty array)
    */
   addGroup(groupId: string, elements: PageElement[] = []): ChartifactBuilder {
     // Validate groupId doesn't already exist
@@ -380,6 +384,28 @@ class ChartifactBuilder {
 
     return this.clone({ groups });
   }
+
+  /**
+   * Replace all elements in a group with a new array.
+   * This is the preferred way to update group content in bulk rather than 
+   * tracking individual element additions/deletions.
+   * 
+   * @param groupId - The group to update
+   * @param elements - New array of elements to replace existing content
+   */
+  setGroupElements(groupId: string, elements: PageElement[]): ChartifactBuilder {
+    const groups = this.doc.groups.map(g => 
+      g.groupId === groupId
+        ? { ...g, elements }
+        : g
+    );
+
+    if (groups === this.doc.groups) {
+      throw new Error(`Group '${groupId}' not found`);
+    }
+
+    return this.clone({ groups });
+  }
 }
 
 // Example usage with generic operations:
@@ -394,6 +420,20 @@ builder.addElement('main', { type: 'checkbox', variableId: 'showDetails', label:
 
 // For a slider:
 builder.addElement('main', { type: 'slider', variableId: 'year', min: 2020, max: 2024, step: 1 })
+
+// Bulk operations (preferred for group content management):
+// Create group with initial elements
+builder.addGroup('dashboard', [
+  '# Sales Dashboard',
+  '## Key Metrics',
+  { type: 'chart', chartKey: 'revenue' }
+])
+
+// Replace entire group content
+builder.setGroupElements('dashboard', [
+  '# Updated Dashboard',
+  { type: 'chart', chartKey: 'newChart' }
+])
 ```
 
 ## Data & Variable Operations
@@ -541,16 +581,16 @@ class ChartifactBuilder {
 
 ## Usage Examples
 
-### Example 1: Create a Simple Dashboard
+### Example 1: Create a Dashboard with Bulk Group Operations (Recommended)
 
 ```typescript
+// Preferred approach: Use bulk operations for group content
 const builder = new ChartifactBuilder()
   .setTitle('Sales Dashboard')
   .setCSS(`
     body { font-family: sans-serif; }
     .container { max-width: 1200px; margin: 0 auto; }
   `)
-  .addElement('main', '# Sales Dashboard\n\nView key metrics below.')
   .addDataLoader({
     type: 'inline',
     dataSourceName: 'sales',
@@ -569,7 +609,12 @@ const builder = new ChartifactBuilder()
       y: { field: 'revenue', type: 'quantitative' }
     }
   })
-  .addElement('main', { type: 'chart', chartKey: 'revenueChart' });
+  // Create group with all elements at once (recommended pattern)
+  .addGroup('main', [
+    '# Sales Dashboard',
+    '\n\nView key metrics below.\n',
+    { type: 'chart', chartKey: 'revenueChart' }
+  ]);
 
 // Export to JSON string for saving (use external I/O utility)
 const json = builder.toString();
@@ -717,6 +762,7 @@ Each builder method maps naturally to an MCP tool. Note the svelte approach - ge
 | `delete_element` | `.deleteElement()` | `{ groupId, elementIndex }` |
 | `update_element` | `.updateElement()` | `{ groupId, elementIndex, element }` |
 | `clear_elements` | `.clearElements()` | `{ groupId }` |
+| `set_group_elements` | `.setGroupElements()` | `{ groupId, elements }` |
 | `add_variable` | `.addVariable()` | `{ variable }` |
 | `update_variable` | `.updateVariable()` | `{ variableId, updates }` |
 | `delete_variable` | `.deleteVariable()` | `{ variableId }` |
@@ -758,6 +804,7 @@ type Transaction =
   | { op: 'deleteElement', groupId: string, elementIndex: number }
   | { op: 'updateElement', groupId: string, elementIndex: number, element: PageElement }
   | { op: 'clearElements', groupId: string }
+  | { op: 'setGroupElements', groupId: string, elements: PageElement[] }
   | { op: 'addVariable', variable: Variable }
   | { op: 'updateVariable', variableId: string, updates: Partial<Variable> }
   | { op: 'deleteVariable', variableId: string }
@@ -837,6 +884,9 @@ class ChartifactBuilder {
         case 'clearElements':
           builder = builder.clearElements(tx.groupId);
           break;
+        case 'setGroupElements':
+          builder = builder.setGroupElements(tx.groupId, tx.elements);
+          break;
         case 'addVariable':
           builder = builder.addVariable(tx.variable);
           break;
@@ -879,6 +929,41 @@ const updated = builder.applyTransactions([
   { op: 'addElement', groupId: 'main', element: '# Hello' },
   { op: 'setResource', resourceType: 'charts', resourceKey: 'myChart', spec: { /* ... */ } },
   { op: 'addElement', groupId: 'main', element: { type: 'chart', chartKey: 'myChart' } }
+]);
+
+// Preferred: Use bulk element operations for group content management
+const updatedBulk = builder.applyTransactions([
+  { op: 'setTitle', title: 'Sales Dashboard' },
+  { 
+    op: 'addGroup', 
+    groupId: 'header', 
+    elements: [
+      '# Sales Dashboard',
+      '## Q4 2024 Performance'
+    ]
+  },
+  {
+    op: 'addGroup',
+    groupId: 'charts',
+    elements: [
+      { type: 'chart', chartKey: 'revenue' },
+      { type: 'chart', chartKey: 'profit' }
+    ]
+  }
+]);
+
+// Update entire group content at once (typical pattern)
+const replaced = builder.applyTransactions([
+  {
+    op: 'setGroupElements',
+    groupId: 'dashboard',
+    elements: [
+      '# Updated Dashboard',
+      '## New Content',
+      { type: 'chart', chartKey: 'newChart' },
+      { type: 'tabulator', dataSourceName: 'metrics' }
+    ]
+  }
 ]);
 
 const doc = updated.toJSON();
@@ -940,6 +1025,13 @@ TypeScript types ensure:
 - **Use `toJSON()` for all reads** - Returns complete document as plain JSON
 - **LLM inspects JSON directly** - Can access any property from the returned object
 - **Simple and flexible** - No need to add getters as schema evolves
+
+### Bulk Operations Pattern (Recommended)
+- **Group-level management** - Prefer `addGroup(id, elements[])` and `setGroupElements(id, elements[])` over individual element operations
+- **Less granular tracking** - Individual element add/delete/update operations available but typically too granular
+- **Simpler mental model** - Think of groups as content units rather than managing elements individually
+- **Better for MCP** - Fewer transactions needed, more atomic updates
+- **Typical workflow**: Create group with initial content, then use `setGroupElements()` to replace content when needed
 
 ### Performance
 - Shallow copying for immutability
