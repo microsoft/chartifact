@@ -297,7 +297,8 @@
                             "$children": [
                                 {
                                     "$if": {
-                                        "$check": "score >= 90",
+                                        "$check": "score",
+                                        "$>=": 90,
                                         "$then": {
                                             "div": {
                                                 "$children": [
@@ -314,7 +315,9 @@
                                 },
                                 {
                                     "$if": {
-                                        "$check": "score >= 70 && score < 90",
+                                        "$check": "score",
+                                        "$>=": 70,
+                                        "$<": 90,
                                         "$then": {
                                             "div": {
                                                 "$children": [
@@ -331,7 +334,8 @@
                                 },
                                 {
                                     "$if": {
-                                        "$check": "score < 70",
+                                        "$check": "score",
+                                        "$<": 70,
                                         "$then": {
                                             "div": {
                                                 "$children": [
