@@ -296,43 +296,34 @@
                             "class": "info-box",
                             "$children": [
                                 {
-                                    "div": {
-                                        "$if": "score >= 90",
-                                        "$children": [
-                                            {
-                                                "strong": {
-                                                    "$children": ["Excellent Performance!"]
-                                                }
-                                            },
-                                            " Your score of {{score}} is outstanding."
-                                        ]
+                                    "$if": "score >= 90",
+                                    "strong": {
+                                        "$children": ["Excellent Performance!"]
                                     }
                                 },
                                 {
-                                    "div": {
-                                        "$if": "score >= 70 && score < 90",
-                                        "$children": [
-                                            {
-                                                "strong": {
-                                                    "$children": ["Good Performance"]
-                                                }
-                                            },
-                                            " Your score of {{score}} is above average."
-                                        ]
+                                    "$if": "score >= 90",
+                                    "$text": " Your score of {{score}} is outstanding."
+                                },
+                                {
+                                    "$if": "score >= 70 && score < 90",
+                                    "strong": {
+                                        "$children": ["Good Performance"]
                                     }
                                 },
                                 {
-                                    "div": {
-                                        "$if": "score < 70",
-                                        "$children": [
-                                            {
-                                                "strong": {
-                                                    "$children": ["Needs Improvement"]
-                                                }
-                                            },
-                                            " Your score of {{score}} could be better."
-                                        ]
+                                    "$if": "score >= 70 && score < 90",
+                                    "$text": " Your score of {{score}} is above average."
+                                },
+                                {
+                                    "$if": "score < 70",
+                                    "strong": {
+                                        "$children": ["Needs Improvement"]
                                     }
+                                },
+                                {
+                                    "$if": "score < 70",
+                                    "$text": " Your score of {{score}} could be better."
                                 }
                             ]
                         }
