@@ -225,39 +225,43 @@ dynamicOptions:
 
 ```yaml treebark
 template:
-  div:
-    class: movie-cards
-    $bind: .
-    $children:
-      - a:
-          href: '{{ImdbUrl}}'
-          class: movie-card
-          $children:
-            - h3: 🎬 {{Title}}
-            - p:
-                $children:
-                  - strong: 'Director: '
-                  - '{{Director}}'
-            - p:
-                $children:
-                  - strong: 'Release: '
-                  - '{{Release Date}}'
-            - p:
-                $children:
-                  - strong: 'Running Time: '
-                  - '{{Running Time min}} min'
-            - p:
-                class: rating
-                $children:
-                  - '⭐ IMDB: {{IMDB Rating}}'
-            - p:
-                $children:
-                  - strong: 'US Gross: '
-                  - ${{US Gross}}
-            - p:
-                $children:
-                  - strong: 'Worldwide: '
-                  - ${{Worldwide Gross}}
+  $if:
+    $check: length
+    $then:
+      div:
+        class: movie-cards
+        $bind: .
+        $children:
+          - a:
+              href: '{{ImdbUrl}}'
+              class: movie-card
+              $children:
+                - h3: 🎬 {{Title}}
+                - p:
+                    - strong: 'Director: '
+                    - '{{Director}}'
+                - p:
+                    - strong: 'Release: '
+                    - '{{Release Date}}'
+                - p:
+                    - strong: 'Running Time: '
+                    - '{{Running Time min}} min'
+                - p:
+                    class: rating
+                    $children:
+                      - '⭐ IMDB: {{IMDB Rating}}'
+                - p:
+                    - strong: 'US Gross: '
+                    - ${{US Gross}}
+                - p:
+                    - strong: 'Worldwide: '
+                    - ${{Worldwide Gross}}
+    $else:
+      div:
+        class: results-header
+        $children:
+          - h3: 🎬 No movies found
+          - p: Try adjusting your filters to see more results.
 variableId: filteredByMpaaRating
 ```
 
