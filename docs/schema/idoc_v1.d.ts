@@ -3,6 +3,7 @@
 * Licensed under the MIT License.
 */
 import { Transforms } from 'vega';
+import { TemplateElement } from 'treebark';
 /**
  * VariableID
  *
@@ -215,7 +216,7 @@ interface TreebarkElement extends TreebarkElementProps {
 }
 interface TreebarkElementProps extends OptionalVariableControl {
     /** Treebark template object for rendering HTML structure */
-    template: object;
+    template: TemplateElement;
     /** Static data object (optional) */
     data?: object;
 }
