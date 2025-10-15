@@ -47,6 +47,18 @@
                     "status": "active"
                 }
             ]
+        },
+        {
+            "variableId": "currentUserData",
+            "type": "object",
+            "initialValue": {
+                "name": "Alice Johnson",
+                "role": "Software Engineer",
+                "score": 85
+            },
+            "calculation": {
+                "vegaExpression": "{name: userName, role: userRole, score: userScore}"
+            }
         }
     ],
     "style": {
@@ -188,11 +200,7 @@
                             ]
                         }
                     },
-                    "data": {
-                        "name": "{{userName}}",
-                        "role": "{{userRole}}",
-                        "score": "{{userScore}}"
-                    }
+                    "variableId": "currentUserData"
                 }
             ]
         },
@@ -329,9 +337,7 @@
                             ]
                         }
                     },
-                    "data": {
-                        "score": "{{userScore}}"
-                    }
+                    "variableId": "currentUserData"
                 }
             ]
         },
