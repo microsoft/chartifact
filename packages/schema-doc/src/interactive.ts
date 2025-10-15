@@ -3,6 +3,7 @@
 * Licensed under the MIT License.
 */
 import { VariableID, VariableControl, ElementBase, TemplatedUrl, OptionalVariableControl } from './common.js';
+import { TemplateElement } from 'treebark';
 
 /**
  * Interactive Elements
@@ -137,6 +138,24 @@ export interface ImageElementProps {
 }
 
 /**
+ * Treebark
+ * use for rendering cards and structured HTML from templates
+ */
+export interface TreebarkElement extends TreebarkElementProps {
+  type: 'treebark';
+}
+
+export interface TreebarkElementProps extends OptionalVariableControl {
+  /** Treebark template object for rendering HTML structure */
+  template: TemplateElement ;
+
+  /** Static data object (optional) */
+  data?: object;
+
+  /** Dynamic option: variableId to intake a signal and behave as data */
+}
+
+/**
  * Presets
  * use for storing and applying preset batches of signal states
  */
@@ -227,4 +246,5 @@ export type InteractiveElement =
   | SliderElement
   | TabulatorElement
   | TextboxElement
+  | TreebarkElement
   ;

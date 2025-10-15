@@ -2,6 +2,80 @@
   "$ref": "#/definitions/InteractiveDocumentWithSchema",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
+    "ATag": {
+      "additionalProperties": false,
+      "properties": {
+        "a": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "href": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "rel": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "a"
+      ],
+      "type": "object"
+    },
     "AggregateOp": {
       "enum": [
         "argmax",
@@ -112,6 +186,71 @@
       ],
       "type": "string"
     },
+    "ArticleTag": {
+      "additionalProperties": false,
+      "properties": {
+        "article": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "article"
+      ],
+      "type": "object"
+    },
     "BinTransform": {
       "additionalProperties": false,
       "properties": {
@@ -185,6 +324,126 @@
       ],
       "type": "object"
     },
+    "BlockquoteTag": {
+      "additionalProperties": false,
+      "properties": {
+        "blockquote": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "cite": {
+                  "type": "string"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "blockquote"
+      ],
+      "type": "object"
+    },
+    "BrTag": {
+      "additionalProperties": false,
+      "properties": {
+        "br": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "br"
+      ],
+      "type": "object"
+    },
     "Calculation": {
       "anyOf": [
         {
@@ -236,6 +495,71 @@
       ],
       "type": "object"
     },
+    "CodeTag": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "code"
+      ],
+      "type": "object"
+    },
     "CollectTransform": {
       "additionalProperties": false,
       "properties": {
@@ -250,6 +574,71 @@
       "required": [
         "type",
         "sort"
+      ],
+      "type": "object"
+    },
+    "CommentTag": {
+      "additionalProperties": false,
+      "properties": {
+        "$comment": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$comment"
       ],
       "type": "object"
     },
@@ -306,6 +695,73 @@
           "type": "object"
         }
       ]
+    },
+    "ConditionalBase<(string|TemplateObject)>": {
+      "additionalProperties": false,
+      "properties": {
+        "$<": {
+          "type": "number"
+        },
+        "$<=": {
+          "type": "number"
+        },
+        "$=": {
+          "$ref": "#/definitions/PrimitiveValue"
+        },
+        "$>": {
+          "type": "number"
+        },
+        "$>=": {
+          "type": "number"
+        },
+        "$check": {
+          "type": "string"
+        },
+        "$else": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/TemplateObject"
+            }
+          ]
+        },
+        "$in": {
+          "items": {
+            "$ref": "#/definitions/PrimitiveValue"
+          },
+          "type": "array"
+        },
+        "$join": {
+          "enum": [
+            "AND",
+            "OR"
+          ],
+          "type": "string"
+        },
+        "$not": {
+          "type": "boolean"
+        },
+        "$then": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/TemplateObject"
+            }
+          ]
+        }
+      },
+      "required": [
+        "$check",
+        "$then"
+      ],
+      "type": "object"
+    },
+    "ConditionalValueOrTemplate": {
+      "$ref": "#/definitions/ConditionalBase%3C(string%7CTemplateObject)%3E"
     },
     "ContourTransform": {
       "anyOf": [
@@ -879,6 +1335,71 @@
       ],
       "type": "object"
     },
+    "DivTag": {
+      "additionalProperties": false,
+      "properties": {
+        "div": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "div"
+      ],
+      "type": "object"
+    },
     "DotBinTransform": {
       "additionalProperties": false,
       "properties": {
@@ -988,6 +1509,71 @@
       "required": [
         "groupId",
         "elements"
+      ],
+      "type": "object"
+    },
+    "EmTag": {
+      "additionalProperties": false,
+      "properties": {
+        "em": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "em"
       ],
       "type": "object"
     },
@@ -1143,6 +1729,71 @@
         "string",
         "number"
       ]
+    },
+    "FooterTag": {
+      "additionalProperties": false,
+      "properties": {
+        "footer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "footer"
+      ],
+      "type": "object"
     },
     "Force": {
       "anyOf": [
@@ -1594,6 +2245,461 @@
       ],
       "type": "object"
     },
+    "H1Tag": {
+      "additionalProperties": false,
+      "properties": {
+        "h1": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "h1"
+      ],
+      "type": "object"
+    },
+    "H2Tag": {
+      "additionalProperties": false,
+      "properties": {
+        "h2": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "h2"
+      ],
+      "type": "object"
+    },
+    "H3Tag": {
+      "additionalProperties": false,
+      "properties": {
+        "h3": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "h3"
+      ],
+      "type": "object"
+    },
+    "H4Tag": {
+      "additionalProperties": false,
+      "properties": {
+        "h4": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "h4"
+      ],
+      "type": "object"
+    },
+    "H5Tag": {
+      "additionalProperties": false,
+      "properties": {
+        "h5": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "h5"
+      ],
+      "type": "object"
+    },
+    "H6Tag": {
+      "additionalProperties": false,
+      "properties": {
+        "h6": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "h6"
+      ],
+      "type": "object"
+    },
+    "HeaderTag": {
+      "additionalProperties": false,
+      "properties": {
+        "header": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "header"
+      ],
+      "type": "object"
+    },
     "HeatmapTransform": {
       "additionalProperties": false,
       "properties": {
@@ -1647,6 +2753,58 @@
       ],
       "type": "object"
     },
+    "HrTag": {
+      "additionalProperties": false,
+      "properties": {
+        "hr": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "hr"
+      ],
+      "type": "object"
+    },
     "IdentifierTransform": {
       "additionalProperties": false,
       "properties": {
@@ -1661,6 +2819,18 @@
       "required": [
         "type",
         "as"
+      ],
+      "type": "object"
+    },
+    "IfTag": {
+      "additionalProperties": false,
+      "properties": {
+        "$if": {
+          "$ref": "#/definitions/ConditionalValueOrTemplate"
+        }
+      },
+      "required": [
+        "$if"
       ],
       "type": "object"
     },
@@ -1688,6 +2858,70 @@
       "required": [
         "type",
         "url"
+      ],
+      "type": "object"
+    },
+    "ImgTag": {
+      "additionalProperties": false,
+      "properties": {
+        "img": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "alt": {
+                  "type": "string"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "height": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "src": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "width": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "img"
       ],
       "type": "object"
     },
@@ -1826,6 +3060,9 @@
         },
         {
           "$ref": "#/definitions/TextboxElement"
+        },
+        {
+          "$ref": "#/definitions/TreebarkElement"
         }
       ],
       "description": "Union type for all possible interactive elements"
@@ -2178,6 +3415,71 @@
       ],
       "type": "object"
     },
+    "LiTag": {
+      "additionalProperties": false,
+      "properties": {
+        "li": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "li"
+      ],
+      "type": "object"
+    },
     "LineLabelAnchor": {
       "enum": [
         "start",
@@ -2311,6 +3613,71 @@
       ],
       "type": "object"
     },
+    "MainTag": {
+      "additionalProperties": false,
+      "properties": {
+        "main": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "main"
+      ],
+      "type": "object"
+    },
     "MarkdownElement": {
       "description": "Use markdown elements to be verbose and descriptive. Do not use as labels for interactive elements. Embed dynamic variables in markdown using double curly braces {{variableId}} as a placeholder for their values.",
       "type": "string"
@@ -2415,6 +3782,136 @@
       "required": [
         "type",
         "variableId"
+      ],
+      "type": "object"
+    },
+    "OlTag": {
+      "additionalProperties": false,
+      "properties": {
+        "ol": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ol"
+      ],
+      "type": "object"
+    },
+    "PTag": {
+      "additionalProperties": false,
+      "properties": {
+        "p": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "p"
       ],
       "type": "object"
     },
@@ -2588,6 +4085,71 @@
       ],
       "type": "object"
     },
+    "PreTag": {
+      "additionalProperties": false,
+      "properties": {
+        "pre": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "pre"
+      ],
+      "type": "object"
+    },
     "Preset": {
       "additionalProperties": false,
       "properties": {
@@ -2628,6 +4190,13 @@
         "type"
       ],
       "type": "object"
+    },
+    "PrimitiveValue": {
+      "type": [
+        "string",
+        "number",
+        "boolean"
+      ]
     },
     "ProjectTransform": {
       "additionalProperties": false,
@@ -2756,6 +4325,109 @@
       ],
       "type": "object"
     },
+    "RegularTags": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/DivTag"
+        },
+        {
+          "$ref": "#/definitions/SpanTag"
+        },
+        {
+          "$ref": "#/definitions/PTag"
+        },
+        {
+          "$ref": "#/definitions/HeaderTag"
+        },
+        {
+          "$ref": "#/definitions/FooterTag"
+        },
+        {
+          "$ref": "#/definitions/MainTag"
+        },
+        {
+          "$ref": "#/definitions/SectionTag"
+        },
+        {
+          "$ref": "#/definitions/ArticleTag"
+        },
+        {
+          "$ref": "#/definitions/H1Tag"
+        },
+        {
+          "$ref": "#/definitions/H2Tag"
+        },
+        {
+          "$ref": "#/definitions/H3Tag"
+        },
+        {
+          "$ref": "#/definitions/H4Tag"
+        },
+        {
+          "$ref": "#/definitions/H5Tag"
+        },
+        {
+          "$ref": "#/definitions/H6Tag"
+        },
+        {
+          "$ref": "#/definitions/StrongTag"
+        },
+        {
+          "$ref": "#/definitions/EmTag"
+        },
+        {
+          "$ref": "#/definitions/BlockquoteTag"
+        },
+        {
+          "$ref": "#/definitions/CodeTag"
+        },
+        {
+          "$ref": "#/definitions/PreTag"
+        },
+        {
+          "$ref": "#/definitions/UlTag"
+        },
+        {
+          "$ref": "#/definitions/OlTag"
+        },
+        {
+          "$ref": "#/definitions/LiTag"
+        },
+        {
+          "$ref": "#/definitions/TableTag"
+        },
+        {
+          "$ref": "#/definitions/TheadTag"
+        },
+        {
+          "$ref": "#/definitions/TbodyTag"
+        },
+        {
+          "$ref": "#/definitions/TrTag"
+        },
+        {
+          "$ref": "#/definitions/ThTag"
+        },
+        {
+          "$ref": "#/definitions/TdTag"
+        },
+        {
+          "$ref": "#/definitions/ATag"
+        },
+        {
+          "$ref": "#/definitions/ImgTag"
+        },
+        {
+          "$ref": "#/definitions/BrTag"
+        },
+        {
+          "$ref": "#/definitions/HrTag"
+        },
+        {
+          "$ref": "#/definitions/CommentTag"
+        }
+      ]
+    },
     "ReturnType": {
       "additionalProperties": false,
       "properties": {
@@ -2800,6 +4472,71 @@
       },
       "required": [
         "vegaExpression"
+      ],
+      "type": "object"
+    },
+    "SectionTag": {
+      "additionalProperties": false,
+      "properties": {
+        "section": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "section"
       ],
       "type": "object"
     },
@@ -2874,6 +4611,71 @@
       ],
       "type": "string"
     },
+    "SpanTag": {
+      "additionalProperties": false,
+      "properties": {
+        "span": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "span"
+      ],
+      "type": "object"
+    },
     "StackOffset": {
       "enum": [
         "zero",
@@ -2934,6 +4736,139 @@
       ],
       "type": "object"
     },
+    "StrongTag": {
+      "additionalProperties": false,
+      "properties": {
+        "strong": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "strong"
+      ],
+      "type": "object"
+    },
+    "TableTag": {
+      "additionalProperties": false,
+      "properties": {
+        "table": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "table"
+      ],
+      "type": "object"
+    },
     "TabulatorElement": {
       "additionalProperties": false,
       "description": "Tabulator use for tabular data",
@@ -2962,6 +4897,165 @@
         "type"
       ],
       "type": "object"
+    },
+    "TbodyTag": {
+      "additionalProperties": false,
+      "properties": {
+        "tbody": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "tbody"
+      ],
+      "type": "object"
+    },
+    "TdTag": {
+      "additionalProperties": false,
+      "properties": {
+        "td": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "colspan": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "rowspan": {
+                  "type": "string"
+                },
+                "scope": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "td"
+      ],
+      "type": "object"
+    },
+    "TemplateElement": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/definitions/TemplateObject"
+        }
+      ]
+    },
+    "TemplateObject": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/IfTag"
+        },
+        {
+          "$ref": "#/definitions/RegularTags"
+        }
+      ]
     },
     "TemplatedUrl": {
       "description": "A url, it may contain template variables, e.g. https://example.com/{{category}}/{{item}}",
@@ -2992,6 +5086,145 @@
       "required": [
         "type",
         "variableId"
+      ],
+      "type": "object"
+    },
+    "ThTag": {
+      "additionalProperties": false,
+      "properties": {
+        "th": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "colspan": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "rowspan": {
+                  "type": "string"
+                },
+                "scope": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "th"
+      ],
+      "type": "object"
+    },
+    "TheadTag": {
+      "additionalProperties": false,
+      "properties": {
+        "thead": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "thead"
       ],
       "type": "object"
     },
@@ -3055,6 +5288,71 @@
         "utc"
       ],
       "type": "string"
+    },
+    "TrTag": {
+      "additionalProperties": false,
+      "properties": {
+        "tr": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "tr"
+      ],
+      "type": "object"
     },
     "TransformField": {
       "anyOf": [
@@ -3274,6 +5572,32 @@
       ],
       "type": "object"
     },
+    "TreebarkElement": {
+      "additionalProperties": false,
+      "description": "Treebark use for rendering cards and structured HTML from templates",
+      "properties": {
+        "data": {
+          "description": "Static data object (optional)",
+          "type": "object"
+        },
+        "template": {
+          "$ref": "#/definitions/TemplateElement",
+          "description": "Treebark template object for rendering HTML structure"
+        },
+        "type": {
+          "const": "treebark",
+          "type": "string"
+        },
+        "variableId": {
+          "$ref": "#/definitions/VariableID"
+        }
+      },
+      "required": [
+        "template",
+        "type"
+      ],
+      "type": "object"
+    },
     "TreemapMethod": {
       "enum": [
         "squarify",
@@ -3337,6 +5661,71 @@
       },
       "required": [
         "type"
+      ],
+      "type": "object"
+    },
+    "UlTag": {
+      "additionalProperties": false,
+      "properties": {
+        "ul": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/TemplateObject"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "properties": {
+                "$bind": {
+                  "type": "string"
+                },
+                "$children": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/definitions/TemplateObject"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                },
+                "class": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ul"
       ],
       "type": "object"
     },

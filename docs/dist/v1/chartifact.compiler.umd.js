@@ -852,6 +852,21 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
             }
             break;
           }
+          case "treebark": {
+            const treebarkElement = element;
+            if (!treebarkElement.template) {
+              errors.push("Treebark element must have a template property");
+            } else {
+              errors.push(...validateOptionalObject(treebarkElement.template, "template", "Treebark"));
+            }
+            if (treebarkElement.data !== void 0) {
+              errors.push(...validateOptionalObject(treebarkElement.data, "data", "Treebark"));
+            }
+            if (treebarkElement.variableId) {
+              errors.push(...validateVariableID(treebarkElement.variableId));
+            }
+            break;
+          }
           case "number": {
             errors.push(...validateInputElementWithVariableId(element));
             break;
@@ -1345,6 +1360,20 @@ ${content}
               };
               addSpec("mermaid", mermaidSpec, false);
             }
+            break;
+          }
+          case "treebark": {
+            const { template, data, variableId } = element;
+            const treebarkSpec = {
+              template
+            };
+            if (data) {
+              treebarkSpec.data = data;
+            }
+            if (variableId) {
+              treebarkSpec.variableId = variableId;
+            }
+            addSpec("treebark", treebarkSpec);
             break;
           }
           case "presets": {
