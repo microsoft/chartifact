@@ -862,9 +862,6 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
             if (treebarkElement.data !== void 0) {
               errors.push(...validateOptionalObject(treebarkElement.data, "data", "Treebark"));
             }
-            if (treebarkElement.emptyTemplate !== void 0) {
-              errors.push(...validateOptionalObject(treebarkElement.emptyTemplate, "emptyTemplate", "Treebark"));
-            }
             if (treebarkElement.variableId) {
               errors.push(...validateVariableID(treebarkElement.variableId));
             }
@@ -1366,15 +1363,12 @@ ${content}
             break;
           }
           case "treebark": {
-            const { template, data, emptyTemplate, variableId } = element;
+            const { template, data, variableId } = element;
             const treebarkSpec = {
               template
             };
             if (data) {
               treebarkSpec.data = data;
-            }
-            if (emptyTemplate) {
-              treebarkSpec.emptyTemplate = emptyTemplate;
             }
             if (variableId) {
               treebarkSpec.variableId = variableId;

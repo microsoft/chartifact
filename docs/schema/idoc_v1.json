@@ -3285,10 +3285,6 @@
           "description": "Static data object (optional)",
           "type": "object"
         },
-        "emptyTemplate": {
-          "description": "Template to display when data is empty, null, or an error occurs (optional)",
-          "type": "object"
-        },
         "template": {
           "description": "Treebark template object for rendering HTML structure",
           "type": "object"

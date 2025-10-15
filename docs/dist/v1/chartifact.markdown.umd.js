@@ -2861,13 +2861,18 @@ ${reconstitutedRules.join("\n\n")}
     "tr",
     "th",
     "td",
-    "a",
-    "comment"
+    "a"
+  ]);
+  const SPECIAL_TAGS = /* @__PURE__ */ new Set([
+    "$comment",
+    "$if"
   ]);
   const VOID_TAGS = /* @__PURE__ */ new Set([
-    "img"
+    "img",
+    "br",
+    "hr"
   ]);
-  const ALLOWED_TAGS = /* @__PURE__ */ new Set([...CONTAINER_TAGS, ...VOID_TAGS]);
+  const ALLOWED_TAGS = /* @__PURE__ */ new Set([...CONTAINER_TAGS, ...SPECIAL_TAGS, ...VOID_TAGS]);
   const GLOBAL_ATTRS = /* @__PURE__ */ new Set(["id", "class", "style", "title", "role", "data-", "aria-"]);
   const TAG_SPECIFIC_ATTRS = {
     "a": /* @__PURE__ */ new Set(["href", "target", "rel"]),
@@ -2877,6 +2882,8 @@ ${reconstitutedRules.join("\n\n")}
     "td": /* @__PURE__ */ new Set(["scope", "colspan", "rowspan"]),
     "blockquote": /* @__PURE__ */ new Set(["cite"])
   };
+  const OPERATORS = /* @__PURE__ */ new Set(["$<", "$>", "$<=", "$>=", "$=", "$in"]);
+  const CONDITIONALKEYS = /* @__PURE__ */ new Set(["$check", "$then", "$else", "$not", "$join", ...OPERATORS]);
   function getProperty(obj, path, parents = []) {
     if (path === ".") {
       return obj;
@@ -2930,30 +2937,67 @@ ${reconstitutedRules.join("\n\n")}
   function hasBinding(rest) {
     return rest !== null && typeof rest === "object" && !Array.isArray(rest) && "$bind" in rest;
   }
-  function validateBindExpression(bindValue) {
-    if (bindValue === ".") {
+  function validatePathExpression(value, label) {
+    if (value === ".") {
       return;
     }
-    if (bindValue.includes("..")) {
-      throw new Error(`$bind does not support parent context access (..) - use interpolation {{..prop}} in content/attributes instead. Invalid: $bind: "${bindValue}"`);
+    if (value.includes("..")) {
+      throw new Error(`${label} does not support parent context access (..) - use interpolation {{..prop}} in content/attributes instead. Invalid: ${label}: "${value}"`);
     }
-    if (bindValue.includes("{{")) {
-      throw new Error(`$bind does not support interpolation {{...}} - use literal property paths only. Invalid: $bind: "${bindValue}"`);
+    if (value.includes("{{")) {
+      throw new Error(`${label} does not support interpolation {{...}} - use literal property paths only. Invalid: ${label}: "${value}"`);
     }
   }
-  function templateHasCurrentObjectBinding(template) {
-    if (Array.isArray(template) || typeof template !== "object" || template === null) {
-      return false;
+  function evaluateCondition(checkValue, attrs) {
+    const operators = [];
+    for (const op of OPERATORS) {
+      if (op in attrs) {
+        operators.push({ key: op, value: attrs[op] });
+      }
     }
-    const entries = Object.entries(template);
-    if (entries.length === 0) {
-      return false;
+    if (operators.length === 0) {
+      const result = Boolean(checkValue);
+      return attrs.$not ? !result : result;
     }
-    const [, rest] = entries[0];
-    if (!rest || typeof rest !== "object" || Array.isArray(rest)) {
-      return false;
+    const results = operators.map((op) => {
+      switch (op.key) {
+        case "$<":
+          return typeof checkValue === "number" && typeof op.value === "number" && checkValue < op.value;
+        case "$>":
+          return typeof checkValue === "number" && typeof op.value === "number" && checkValue > op.value;
+        case "$<=":
+          return typeof checkValue === "number" && typeof op.value === "number" && checkValue <= op.value;
+        case "$>=":
+          return typeof checkValue === "number" && typeof op.value === "number" && checkValue >= op.value;
+        case "$=":
+          return checkValue === op.value;
+        case "$in":
+          return Array.isArray(op.value) && op.value.includes(checkValue);
+        default:
+          return false;
+      }
+    });
+    const useOr = attrs.$join === "OR";
+    let finalResult;
+    if (useOr) {
+      finalResult = results.some((r) => r);
+    } else {
+      finalResult = results.every((r) => r);
     }
-    return "$bind" in rest && rest.$bind === ".";
+    return attrs.$not ? !finalResult : finalResult;
+  }
+  function isConditionalValue(value) {
+    return value !== null && typeof value === "object" && !Array.isArray(value) && "$check" in value && typeof value.$check === "string";
+  }
+  function evaluateConditionalValue(value, data, parents = []) {
+    validatePathExpression(value.$check, "$check");
+    const checkValue = getProperty(data, value.$check, parents);
+    const condition = evaluateCondition(checkValue, value);
+    if (condition) {
+      return value.$then !== void 0 ? value.$then : "";
+    } else {
+      return value.$else !== void 0 ? value.$else : "";
+    }
   }
   function parseTemplateObject(templateObj) {
     if (!templateObj || typeof templateObj !== "object") {
@@ -2972,110 +3016,142 @@ ${reconstitutedRules.join("\n\n")}
     const attrs = rest && typeof rest === "object" && !Array.isArray(rest) ? Object.fromEntries(Object.entries(rest).filter(([k2]) => k2 !== "$children")) : {};
     return { tag, rest, children, attrs };
   }
-  const flattenOutput = (output, indentStr) => {
-    var _a;
-    if (!indentStr) {
-      return output.length <= 1 ? ((_a = output[0]) == null ? void 0 : _a[1]) ?? "" : output.reduce((acc, [, content]) => acc + content, "");
+  function processConditional(rest, data, parents = []) {
+    const conditional = rest;
+    if (!conditional.$check) {
+      throw new Error('"$if" tag requires $check attribute to specify the condition');
     }
-    if (output.length === 0)
-      return "";
-    if (output.length === 1 && !output[0][1].includes("<")) {
-      return output[0][1];
+    validatePathExpression(conditional.$check, "$check");
+    const checkValue = getProperty(data, conditional.$check, parents);
+    if (typeof rest === "object" && rest !== null && !Array.isArray(rest) && "$children" in rest) {
+      throw new Error('"$if" tag does not support $children, use $then and $else instead');
     }
-    let result = "\n";
-    for (let i = 0; i < output.length; i++) {
-      result += indentStr.repeat(output[i][0]) + output[i][1];
-      if (i < output.length - 1)
-        result += "\n";
+    const { $then, $else } = conditional;
+    if ($then !== void 0 && Array.isArray($then)) {
+      throw new Error('"$if" tag $then must be a string or single element object, not an array');
     }
-    result += "\n";
-    return result;
-  };
-  function renderToString(input, options = {}) {
-    const data = Array.isArray(input.data) ? input.data : { ...input.data, ...options.data };
-    const context = options.indent ? {
-      indentStr: typeof options.indent === "number" ? " ".repeat(options.indent) : typeof options.indent === "string" ? options.indent : "  ",
-      level: 0
-    } : {};
-    if (!Array.isArray(input.template) && Array.isArray(input.data) && !templateHasCurrentObjectBinding(input.template)) {
-      const separator = context.indentStr ? "\n" : "";
-      return input.data.map((item) => render(input.template, { ...item, ...options.data }, context)).join(separator);
+    if ($else !== void 0 && Array.isArray($else)) {
+      throw new Error('"$if" tag $else must be a string or single element object, not an array');
     }
-    return render(input.template, data, context);
+    const allKeys = typeof rest === "object" && rest !== null && !Array.isArray(rest) ? Object.keys(rest) : [];
+    const nonConditionalAttrs = allKeys.filter((k2) => !CONDITIONALKEYS.has(k2));
+    if (nonConditionalAttrs.length > 0) {
+      throw new Error(`"$if" tag does not support attributes: ${nonConditionalAttrs.join(", ")}. Allowed: ${[...CONDITIONALKEYS].join(", ")}`);
+    }
+    const condition = evaluateCondition(checkValue, conditional);
+    const valueToRender = condition ? $then : $else;
+    return { valueToRender };
   }
-  function renderTag(tag, attrs, data, childrenOutput, indentStr, level, parents = []) {
-    const formattedContent = flattenOutput(childrenOutput, indentStr);
-    const parentIndent = formattedContent.startsWith("\n") && indentStr ? indentStr.repeat(level || 0) : "";
-    if (tag === "comment") {
-      return `<!--${formattedContent}${parentIndent}-->`;
-    }
-    const openTag = `<${tag}${renderAttrs(attrs, data, tag, parents)}>`;
-    if (VOID_TAGS.has(tag)) {
-      return openTag;
-    }
-    return `${openTag}${formattedContent}${parentIndent}</${tag}>`;
+  function renderToDOM(input, options = {}) {
+    const data = Array.isArray(input.data) ? input.data : { ...input.data, ...options.data };
+    const fragment = document.createDocumentFragment();
+    const result = render(input.template, data, {});
+    if (Array.isArray(result))
+      result.forEach((n) => fragment.appendChild(n));
+    else
+      fragment.appendChild(result);
+    return fragment;
   }
   function render(template, data, context = {}) {
     const parents = context.parents || [];
     if (typeof template === "string")
-      return interpolate(template, data, true, parents);
+      return document.createTextNode(interpolate(template, data, true, parents));
     if (Array.isArray(template)) {
-      return template.map((t) => render(t, data, context)).join(context.indentStr ? "\n" : "");
+      const results = [];
+      for (const t of template) {
+        const r = render(t, data, context);
+        if (Array.isArray(r))
+          results.push(...r);
+        else
+          results.push(r);
+      }
+      return results;
     }
     const { tag, rest, children, attrs } = parseTemplateObject(template);
     if (!ALLOWED_TAGS.has(tag)) {
       throw new Error(`Tag "${tag}" is not allowed`);
     }
-    if (tag === "comment" && context.insideComment) {
+    if (tag === "$comment" && context.insideComment) {
       throw new Error("Nested comments are not allowed");
     }
-    if (VOID_TAGS.has(tag) && children.length > 0) {
+    if (tag === "$if") {
+      const { valueToRender } = processConditional(rest, data, parents);
+      if (valueToRender === void 0) {
+        return [];
+      }
+      const nodes = render(valueToRender, data, context);
+      return Array.isArray(nodes) ? nodes : [nodes];
+    }
+    const hasChildren = children.length > 0;
+    const isVoid = VOID_TAGS.has(tag);
+    if (isVoid && hasChildren) {
       throw new Error(`Tag "${tag}" is a void element and cannot have children`);
     }
-    const childContext = {
-      ...context,
-      insideComment: tag === "comment" || context.insideComment,
-      level: (context.level || 0) + 1
-    };
-    const processContent = (content) => {
-      if (context.indentStr && content.includes("\n") && !content.includes("<")) {
-        return content.split("\n").map((line) => [childContext.level, line]);
-      }
-      return [[childContext.level, content]];
-    };
-    let childrenOutput;
-    let contentAttrs;
-    if (hasBinding(rest)) {
-      validateBindExpression(rest.$bind);
-      const bound = getProperty(data, rest.$bind, []);
-      const { $bind, $children = [], ...bindAttrs } = rest;
-      if (!Array.isArray(bound)) {
-        const boundData = bound && typeof bound === "object" && bound !== null ? bound : {};
-        const newParents = [...parents, data];
-        return render({ [tag]: { ...bindAttrs, $children } }, boundData, { ...context, parents: newParents });
-      }
-      childrenOutput = [];
-      for (const item of bound) {
-        const newParents = [...parents, data];
-        for (const child of $children) {
-          const content = render(child, item, { ...childContext, parents: newParents });
-          childrenOutput.push(...processContent(content));
+    if (tag === "$comment") {
+      const tempContainer = document.createElement("div");
+      const commentContext = { ...context, insideComment: true };
+      for (const c of children) {
+        const nodes = render(c, data, commentContext);
+        if (Array.isArray(nodes)) {
+          for (const n of nodes)
+            tempContainer.appendChild(n);
+        } else {
+          tempContainer.appendChild(nodes);
         }
       }
-      contentAttrs = bindAttrs;
-    } else {
-      childrenOutput = [];
-      for (const child of children) {
-        const content = render(child, data, { ...childContext, parents });
-        childrenOutput.push(...processContent(content));
-      }
-      contentAttrs = attrs;
+      return document.createComment(tempContainer.innerHTML);
     }
-    return renderTag(tag, contentAttrs, data, childrenOutput, context.indentStr, context.level, parents);
+    const element = document.createElement(tag);
+    if (hasBinding(rest)) {
+      validatePathExpression(rest.$bind, "$bind");
+      const bound = getProperty(data, rest.$bind, []);
+      const { $bind, $children = [], ...bindAttrs } = rest;
+      setAttrs(element, bindAttrs, data, tag, parents);
+      if (isVoid && $children.length > 0) {
+        throw new Error(`Tag "${tag}" is a void element and cannot have children`);
+      }
+      if (Array.isArray(bound)) {
+        for (const item of bound) {
+          const newParents2 = [...parents, data];
+          for (const c of $children) {
+            const nodes = render(c, item, { ...context, parents: newParents2 });
+            if (Array.isArray(nodes)) {
+              for (const n of nodes)
+                element.appendChild(n);
+            } else {
+              element.appendChild(nodes);
+            }
+          }
+        }
+        return element;
+      }
+      const boundData = bound && typeof bound === "object" && bound !== null ? bound : {};
+      const newParents = [...parents, data];
+      const childNodes = render({ [tag]: { ...bindAttrs, $children } }, boundData, { ...context, parents: newParents });
+      return Array.isArray(childNodes) ? childNodes : [childNodes];
+    }
+    setAttrs(element, attrs, data, tag, parents);
+    for (const c of children) {
+      const nodes = render(c, data, context);
+      if (Array.isArray(nodes)) {
+        for (const n of nodes)
+          element.appendChild(n);
+      } else {
+        element.appendChild(nodes);
+      }
+    }
+    return element;
   }
-  function renderAttrs(attrs, data, tag, parents = []) {
-    const pairs = Object.entries(attrs).filter(([key]) => (validateAttribute(key, tag), true)).map(([k2, v2]) => `${k2}="${escape(interpolate(String(v2), data, false, parents))}"`).join(" ");
-    return pairs ? " " + pairs : "";
+  function setAttrs(element, attrs, data, tag, parents = []) {
+    Object.entries(attrs).forEach(([key, value]) => {
+      validateAttribute(key, tag);
+      if (isConditionalValue(value)) {
+        const evaluatedValue = evaluateConditionalValue(value, data, parents);
+        element.setAttribute(key, interpolate(String(evaluatedValue), data, false, parents));
+      } else {
+        element.setAttribute(key, interpolate(String(value), data, false, parents));
+      }
+    });
   }
   const pluginName$2 = "treebark";
   const className$2 = pluginClassName(pluginName$2);
@@ -3138,11 +3214,7 @@ ${reconstitutedRules.join("\n\n")}
           receiveBatch: async (batch) => {
             if (variableId && batch[variableId]) {
               const value = batch[variableId].value;
-              if (value) {
-                await renderTreebark(treebarkInstance, value, errorHandler, index2);
-              } else {
-                await renderEmptyOrError(treebarkInstance, errorHandler, index2);
-              }
+              await renderTreebark(treebarkInstance, value, errorHandler, index2);
             }
           }
         };
@@ -3157,38 +3229,22 @@ ${reconstitutedRules.join("\n\n")}
       if (instance.lastRenderedData === dataKey) {
         return;
       }
-      const html = renderToString({
+      const html = renderToDOM({
         template: spec.template,
         data
       });
-      container.innerHTML = html;
+      container.innerHTML = "";
+      container.appendChild(html);
       instance.lastRenderedData = dataKey;
     } catch (error) {
-      await renderEmptyOrError(instance, errorHandler, index2, error);
-    }
-  }
-  async function renderEmptyOrError(instance, errorHandler, index2, error) {
-    const { spec, container } = instance;
-    if (spec.emptyTemplate) {
-      try {
-        const html = renderToString({
-          template: spec.emptyTemplate,
-          data: {}
-        });
-        container.innerHTML = html;
-      } catch (emptyError) {
-        container.innerHTML = '<div class="error">Failed to render empty template</div>';
-        if (error) {
-          errorHandler(error, pluginName$2, index2, "render", container);
-        }
-      }
-    } else {
-      if (error) {
-        container.innerHTML = '<div class="error">Failed to render treebark template</div>';
-        errorHandler(error, pluginName$2, index2, "render", container);
-      } else {
-        container.innerHTML = '<div class="error">No data to display</div>';
-      }
+      container.innerHTML = `<div class="error">Failed to render treebark template</div>`;
+      errorHandler(
+        error instanceof Error ? error : new Error(String(error)),
+        pluginName$2,
+        index2,
+        "render",
+        container
+      );
     }
   }
   const tsvPlugin = {

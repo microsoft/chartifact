@@ -218,8 +218,6 @@ interface TreebarkElementProps extends OptionalVariableControl {
     template: object;
     /** Static data object (optional) */
     data?: object;
-    /** Template to display when data is empty, null, or an error occurs (optional) */
-    emptyTemplate?: object;
 }
 /**
  * Presets
