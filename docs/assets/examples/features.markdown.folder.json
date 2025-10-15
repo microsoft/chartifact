@@ -53,6 +53,10 @@
         {
             "title": "Images",
             "href": "markdown/features/10.images.idoc.md"
+        },
+        {
+            "title": "Treebark",
+            "href": "markdown/features/11.treebark.idoc.md"
         }
     ]
 }
