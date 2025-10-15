@@ -3,6 +3,7 @@
 * Licensed under the MIT License.
 */
 import { VariableID, VariableControl, ElementBase, TemplatedUrl, OptionalVariableControl } from './common.js';
+import { TemplateElement } from 'treebark';
 
 /**
  * Interactive Elements
@@ -146,7 +147,7 @@ export interface TreebarkElement extends TreebarkElementProps {
 
 export interface TreebarkElementProps extends OptionalVariableControl {
   /** Treebark template object for rendering HTML structure */
-  template: object;
+  template: TemplateElement ;
 
   /** Static data object (optional) */
   data?: object;

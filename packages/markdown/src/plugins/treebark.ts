@@ -168,7 +168,7 @@ async function renderTreebark(
 
         // Render using treebark
         const html = renderToDOM({
-            template: spec.template as any,
+            template: spec.template,
             data: data as any,
         });
 
