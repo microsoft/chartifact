@@ -45,7 +45,7 @@ import { flaggablePlugin } from './config.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { TreebarkElementProps } from '@microsoft/chartifact-schema';
-import { renderToString } from 'treebark/string';
+import { renderToDOM } from 'treebark';
 
 interface TreebarkInstance {
     id: string;
@@ -160,19 +160,20 @@ async function renderTreebark(
     try {
         // Create a stable key for caching based on data content
         const dataKey = JSON.stringify(data);
-        
+
         // Only re-render if data has changed
         if (instance.lastRenderedData === dataKey) {
             return;
         }
 
         // Render using treebark
-        const html = renderToString({
+        const html = renderToDOM({
             template: spec.template as any,
             data: data as any,
         });
 
-        container.innerHTML = html;
+        container.innerHTML = '';
+        container.appendChild(html);
         instance.lastRenderedData = dataKey;
     } catch (error) {
         container.innerHTML = `<div class="error">Failed to render treebark template</div>`;
