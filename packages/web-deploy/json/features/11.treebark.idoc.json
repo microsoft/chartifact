@@ -103,7 +103,9 @@
                                 {
                                     "div": {
                                         "class": "card-header",
-                                        "$children": ["Welcome to Treebark"]
+                                        "$children": [
+                                            "Welcome to Treebark"
+                                        ]
                                     }
                                 },
                                 {
@@ -117,91 +119,15 @@
                                 {
                                     "div": {
                                         "class": "card-footer",
-                                        "$children": ["Created with Treebark plugin"]
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "data": {}
-                }
-            ]
-        },
-        {
-            "groupId": "dynamic-card",
-            "elements": [
-                "## Dynamic Card with Variables",
-                "This card uses variables for dynamic content. Try changing the values below:",
-                {
-                    "type": "textbox",
-                    "variableId": "userName",
-                    "label": "Name"
-                },
-                {
-                    "type": "textbox",
-                    "variableId": "userRole",
-                    "label": "Role"
-                },
-                {
-                    "type": "slider",
-                    "variableId": "userScore",
-                    "label": "Performance Score",
-                    "min": 0,
-                    "max": 100,
-                    "step": 1
-                },
-                {
-                    "type": "treebark",
-                    "template": {
-                        "div": {
-                            "class": "card",
-                            "$children": [
-                                {
-                                    "div": {
-                                        "class": "card-header",
-                                        "$children": ["{{name}}"]
-                                    }
-                                },
-                                {
-                                    "div": {
-                                        "class": "card-body",
                                         "$children": [
-                                            {
-                                                "p": {
-                                                    "$children": [
-                                                        {
-                                                            "strong": {
-                                                                "$children": ["Role: "]
-                                                            }
-                                                        },
-                                                        "{{role}}"
-                                                    ]
-                                                }
-                                            },
-                                            {
-                                                "p": {
-                                                    "$children": [
-                                                        {
-                                                            "strong": {
-                                                                "$children": ["Performance Score: "]
-                                                            }
-                                                        },
-                                                        {
-                                                            "span": {
-                                                                "class": "score-high",
-                                                                "$children": ["{{score}}"]
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            }
+                                            "Created with Treebark plugin"
                                         ]
                                     }
                                 }
                             ]
                         }
                     },
-                    "variableId": "currentUserData"
+                    "data": {}
                 }
             ]
         },
@@ -215,16 +141,18 @@
                     "template": {
                         "div": {
                             "class": "cards-grid",
+                            "$bind": ".",
                             "$children": [
                                 {
                                     "div": {
                                         "class": "card",
-                                        "$bind": ".",
                                         "$children": [
                                             {
                                                 "div": {
                                                     "class": "card-header",
-                                                    "$children": ["{{name}}"]
+                                                    "$children": [
+                                                        "{{name}}"
+                                                    ]
                                                 }
                                             },
                                             {
@@ -236,7 +164,9 @@
                                                                 "$children": [
                                                                     {
                                                                         "strong": {
-                                                                            "$children": ["Role: "]
+                                                                            "$children": [
+                                                                                "Role: "
+                                                                            ]
                                                                         }
                                                                     },
                                                                     "{{role}}"
@@ -248,13 +178,17 @@
                                                                 "$children": [
                                                                     {
                                                                         "strong": {
-                                                                            "$children": ["Score: "]
+                                                                            "$children": [
+                                                                                "Score: "
+                                                                            ]
                                                                         }
                                                                     },
                                                                     {
                                                                         "span": {
                                                                             "class": "score-{{status}}",
-                                                                            "$children": ["{{score}}"]
+                                                                            "$children": [
+                                                                                "{{score}}"
+                                                                            ]
                                                                         }
                                                                     }
                                                                 ]
@@ -266,7 +200,9 @@
                                                                     {
                                                                         "span": {
                                                                             "class": "badge badge-{{status}}",
-                                                                            "$children": ["{{status}}"]
+                                                                            "$children": [
+                                                                                "{{status}}"
+                                                                            ]
                                                                         }
                                                                     }
                                                                 ]
@@ -291,16 +227,6 @@
                 "## Conditional Rendering",
                 "Treebark supports conditional rendering with the `$if` tag. This example shows different messages based on the score:",
                 {
-                    "type": "textbox",
-                    "variableId": "userName",
-                    "label": "Name"
-                },
-                {
-                    "type": "textbox",
-                    "variableId": "userRole",
-                    "label": "Role"
-                },
-                {
                     "type": "slider",
                     "variableId": "userScore",
                     "label": "Performance Score",
@@ -316,17 +242,19 @@
                             "$children": [
                                 {
                                     "$if": {
-                                        "$check": "score",
+                                        "$check": ".",
                                         "$>=": 90,
                                         "$then": {
                                             "div": {
                                                 "$children": [
                                                     {
                                                         "strong": {
-                                                            "$children": ["Excellent Performance!"]
+                                                            "$children": [
+                                                                "Excellent Performance!"
+                                                            ]
                                                         }
                                                     },
-                                                    " Your score of {{score}} is outstanding."
+                                                    " Your score of {{.}} is outstanding."
                                                 ]
                                             }
                                         }
@@ -334,7 +262,7 @@
                                 },
                                 {
                                     "$if": {
-                                        "$check": "score",
+                                        "$check": ".",
                                         "$>=": 70,
                                         "$<": 90,
                                         "$then": {
@@ -342,10 +270,12 @@
                                                 "$children": [
                                                     {
                                                         "strong": {
-                                                            "$children": ["Good Performance"]
+                                                            "$children": [
+                                                                "Good Performance"
+                                                            ]
                                                         }
                                                     },
-                                                    " Your score of {{score}} is above average."
+                                                    " Your score of {{.}} is above average."
                                                 ]
                                             }
                                         }
@@ -353,17 +283,19 @@
                                 },
                                 {
                                     "$if": {
-                                        "$check": "score",
+                                        "$check": ".",
                                         "$<": 70,
                                         "$then": {
                                             "div": {
                                                 "$children": [
                                                     {
                                                         "strong": {
-                                                            "$children": ["Needs Improvement"]
+                                                            "$children": [
+                                                                "Needs Improvement"
+                                                            ]
                                                         }
                                                     },
-                                                    " Your score of {{score}} could be better."
+                                                    " Your score of {{.}} could be better."
                                                 ]
                                             }
                                         }
@@ -372,7 +304,7 @@
                             ]
                         }
                     },
-                    "variableId": "currentUserData"
+                    "variableId": "userScore"
                 }
             ]
         },
