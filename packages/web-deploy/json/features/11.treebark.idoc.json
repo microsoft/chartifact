@@ -232,7 +232,16 @@
                                                             ]
                                                         }
                                                     },
-                                                    " Your score of {{.}} is outstanding."
+                                                    " Your score of ",
+                                                    {
+                                                        "span": {
+                                                            "style": "color: #28a745; font-weight: bold;",
+                                                            "$children": [
+                                                                "{{.}}"
+                                                            ]
+                                                        }
+                                                    },
+                                                    " is outstanding."
                                                 ]
                                             }
                                         }
@@ -253,7 +262,16 @@
                                                             ]
                                                         }
                                                     },
-                                                    " Your score of {{.}} is above average."
+                                                    " Your score of ",
+                                                    {
+                                                        "span": {
+                                                            "style": "color: #ffc107; font-weight: bold;",
+                                                            "$children": [
+                                                                "{{.}}"
+                                                            ]
+                                                        }
+                                                    },
+                                                    " is above average."
                                                 ]
                                             }
                                         }
@@ -273,7 +291,16 @@
                                                             ]
                                                         }
                                                     },
-                                                    " Your score of {{.}} could be better."
+                                                    " Your score of ",
+                                                    {
+                                                        "span": {
+                                                            "style": "color: #dc3545; font-weight: bold;",
+                                                            "$children": [
+                                                                "{{.}}"
+                                                            ]
+                                                        }
+                                                    },
+                                                    " could be better."
                                                 ]
                                             }
                                         }
