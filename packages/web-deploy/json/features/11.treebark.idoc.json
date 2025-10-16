@@ -3,16 +3,6 @@
     "title": "Feature: Treebark Plugin",
     "variables": [
         {
-            "variableId": "userName",
-            "type": "string",
-            "initialValue": "Alice Johnson"
-        },
-        {
-            "variableId": "userRole",
-            "type": "string",
-            "initialValue": "Software Engineer"
-        },
-        {
             "variableId": "userScore",
             "type": "number",
             "initialValue": 85
@@ -47,18 +37,6 @@
                     "status": "active"
                 }
             ]
-        },
-        {
-            "variableId": "currentUserData",
-            "type": "object",
-            "initialValue": {
-                "name": "Alice Johnson",
-                "role": "Software Engineer",
-                "score": 85
-            },
-            "calculation": {
-                "vegaExpression": "{name: userName, role: userRole, score: userScore}"
-            }
         }
     ],
     "style": {
