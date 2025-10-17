@@ -13,25 +13,25 @@
             "isArray": true,
             "initialValue": [
                 {
-                    "name": "Alice Johnson",
+                    "name": "Aisha Patel",
                     "role": "Software Engineer",
                     "score": 85,
                     "status": "active"
                 },
                 {
-                    "name": "Bob Smith",
+                    "name": "Miguel Rodriguez",
                     "role": "Product Manager",
                     "score": 92,
                     "status": "active"
                 },
                 {
-                    "name": "Carol White",
+                    "name": "Jin Park",
                     "role": "UX Designer",
                     "score": 78,
                     "status": "inactive"
                 },
                 {
-                    "name": "David Brown",
+                    "name": "Fatima Al-Mansouri",
                     "role": "Data Analyst",
                     "score": 88,
                     "status": "active"
