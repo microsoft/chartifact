@@ -223,27 +223,23 @@
                                         "$check": ".",
                                         "$>=": 90,
                                         "$then": {
-                                            "div": {
-                                                "$children": [
-                                                    {
-                                                        "strong": {
-                                                            "$children": [
-                                                                "Excellent Performance!"
-                                                            ]
-                                                        }
-                                                    },
-                                                    {
-                                                        "span": {
-                                                            "$children": [
-                                                                "Your score of {{.}} is outstanding."
-                                                            ],
-                                                            "style": {
-                                                                "color": "#28a745"
-                                                            }
+                                            "div": [
+                                                {
+                                                    "strong": [
+                                                        "Excellent Performance!"
+                                                    ]
+                                                },
+                                                {
+                                                    "span": {
+                                                        "$children": [
+                                                            "Your score of {{.}} is outstanding."
+                                                        ],
+                                                        "style": {
+                                                            "color": "#28a745"
                                                         }
                                                     }
-                                                ]
-                                            }
+                                                }
+                                            ]
                                         }
                                     }
                                 },
@@ -253,27 +249,23 @@
                                         "$>=": 70,
                                         "$<": 90,
                                         "$then": {
-                                            "div": {
-                                                "$children": [
-                                                    {
-                                                        "strong": {
-                                                            "$children": [
-                                                                "Good Performance"
-                                                            ]
-                                                        }
-                                                    },
-                                                    {
-                                                        "span": {
-                                                            "$children": [
-                                                                " Your score of {{.}} is above average."
-                                                            ],
-                                                            "style": {
-                                                                "color": "#ffc107"
-                                                            }
+                                            "div": [
+                                                {
+                                                    "strong": [
+                                                        "Good Performance"
+                                                    ]
+                                                },
+                                                {
+                                                    "span": {
+                                                        "$children": [
+                                                            " Your score of {{.}} is above average."
+                                                        ],
+                                                        "style": {
+                                                            "color": "#ffc107"
                                                         }
                                                     }
-                                                ]
-                                            }
+                                                }
+                                            ]
                                         }
                                     }
                                 },
@@ -282,27 +274,23 @@
                                         "$check": ".",
                                         "$<": 70,
                                         "$then": {
-                                            "div": {
-                                                "$children": [
-                                                    {
-                                                        "strong": {
-                                                            "$children": [
-                                                                "Needs Improvement"
-                                                            ]
-                                                        }
-                                                    },
-                                                    {
-                                                        "span": {
-                                                            "$children": [
-                                                                " Your score of {{.}} could be better."
-                                                            ],
-                                                            "style": {
-                                                                "color": "#dc3545"
-                                                            }
+                                            "div": [
+                                                {
+                                                    "strong": [
+                                                        "Needs Improvement"
+                                                    ]
+                                                },
+                                                {
+                                                    "span": {
+                                                        "$children": [
+                                                            " Your score of {{.}} could be better."
+                                                        ],
+                                                        "style": {
+                                                            "color": "#dc3545"
                                                         }
                                                     }
-                                                ]
-                                            }
+                                                }
+                                            ]
                                         }
                                     }
                                 }
