@@ -24,6 +24,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -42,28 +45,28 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "href": {
                   "type": "string"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "rel": {
                   "type": "string"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "target": {
                   "type": "string"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -208,6 +211,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -226,19 +232,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -250,6 +256,16 @@
         "article"
       ],
       "type": "object"
+    },
+    "AttributeValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/definitions/ConditionalValue"
+        }
+      ]
     },
     "BinTransform": {
       "additionalProperties": false,
@@ -346,6 +362,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -367,19 +386,19 @@
                   "type": "string"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -414,24 +433,27 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -442,6 +464,12 @@
       "required": [
         "br"
       ],
+      "type": "object"
+    },
+    "CSSProperties": {
+      "additionalProperties": {
+        "type": "string"
+      },
       "type": "object"
     },
     "Calculation": {
@@ -517,6 +545,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -535,19 +566,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -599,6 +630,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -617,19 +651,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -759,6 +793,109 @@
         "$then"
       ],
       "type": "object"
+    },
+    "ConditionalBase<CSSProperties>": {
+      "additionalProperties": false,
+      "properties": {
+        "$<": {
+          "type": "number"
+        },
+        "$<=": {
+          "type": "number"
+        },
+        "$=": {
+          "$ref": "#/definitions/PrimitiveValue"
+        },
+        "$>": {
+          "type": "number"
+        },
+        "$>=": {
+          "type": "number"
+        },
+        "$check": {
+          "type": "string"
+        },
+        "$else": {
+          "$ref": "#/definitions/CSSProperties"
+        },
+        "$in": {
+          "items": {
+            "$ref": "#/definitions/PrimitiveValue"
+          },
+          "type": "array"
+        },
+        "$join": {
+          "enum": [
+            "AND",
+            "OR"
+          ],
+          "type": "string"
+        },
+        "$not": {
+          "type": "boolean"
+        },
+        "$then": {
+          "$ref": "#/definitions/CSSProperties"
+        }
+      },
+      "required": [
+        "$check",
+        "$then"
+      ],
+      "type": "object"
+    },
+    "ConditionalBase<string>": {
+      "additionalProperties": false,
+      "properties": {
+        "$<": {
+          "type": "number"
+        },
+        "$<=": {
+          "type": "number"
+        },
+        "$=": {
+          "$ref": "#/definitions/PrimitiveValue"
+        },
+        "$>": {
+          "type": "number"
+        },
+        "$>=": {
+          "type": "number"
+        },
+        "$check": {
+          "type": "string"
+        },
+        "$else": {
+          "type": "string"
+        },
+        "$in": {
+          "items": {
+            "$ref": "#/definitions/PrimitiveValue"
+          },
+          "type": "array"
+        },
+        "$join": {
+          "enum": [
+            "AND",
+            "OR"
+          ],
+          "type": "string"
+        },
+        "$not": {
+          "type": "boolean"
+        },
+        "$then": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$check",
+        "$then"
+      ],
+      "type": "object"
+    },
+    "ConditionalValue": {
+      "$ref": "#/definitions/ConditionalBase%3Cstring%3E"
     },
     "ConditionalValueOrTemplate": {
       "$ref": "#/definitions/ConditionalBase%3C(string%7CTemplateObject)%3E"
@@ -1357,6 +1494,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -1375,19 +1515,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -1534,6 +1674,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -1552,19 +1695,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -1752,6 +1895,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -1770,19 +1916,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -2267,6 +2413,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -2285,19 +2434,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -2332,6 +2481,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -2350,19 +2502,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -2397,6 +2549,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -2415,19 +2570,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -2462,6 +2617,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -2480,19 +2638,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -2527,6 +2685,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -2545,19 +2706,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -2592,6 +2753,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -2610,19 +2774,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -2657,6 +2821,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -2675,19 +2842,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -2775,24 +2942,27 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -2883,6 +3053,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -2891,25 +3064,25 @@
                   "type": "string"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "height": {
                   "type": "string"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "src": {
                   "type": "string"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "width": {
                   "type": "string"
@@ -3437,6 +3610,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -3455,19 +3631,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -3635,6 +3811,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -3653,19 +3832,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -3807,6 +3986,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -3825,19 +4007,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -3872,6 +4054,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -3890,19 +4075,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -4107,6 +4292,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -4125,19 +4313,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -4497,6 +4685,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -4515,19 +4706,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -4633,6 +4824,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -4651,19 +4845,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -4758,6 +4952,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -4776,19 +4973,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -4800,6 +4997,16 @@
         "strong"
       ],
       "type": "object"
+    },
+    "StyleValue": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/CSSProperties"
+        },
+        {
+          "$ref": "#/definitions/ConditionalBase%3CCSSProperties%3E"
+        }
+      ]
     },
     "TableTag": {
       "additionalProperties": false,
@@ -4823,6 +5030,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -4841,22 +5051,22 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "summary": {
                   "type": "string"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -4920,6 +5130,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -4938,19 +5151,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -4985,6 +5198,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -5003,16 +5219,16 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "colspan": {
                   "type": "string"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "rowspan": {
                   "type": "string"
@@ -5021,10 +5237,10 @@
                   "type": "string"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -5111,6 +5327,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -5129,16 +5348,16 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "colspan": {
                   "type": "string"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "rowspan": {
                   "type": "string"
@@ -5147,10 +5366,10 @@
                   "type": "string"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -5185,6 +5404,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -5203,19 +5425,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -5311,6 +5533,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -5329,19 +5554,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"
@@ -5686,6 +5911,9 @@
               "type": "array"
             },
             {
+              "additionalProperties": {
+                "$ref": "#/definitions/AttributeValue"
+              },
               "properties": {
                 "$bind": {
                   "type": "string"
@@ -5704,19 +5932,19 @@
                   "type": "array"
                 },
                 "class": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "id": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "role": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 },
                 "style": {
-                  "type": "string"
+                  "$ref": "#/definitions/StyleValue"
                 },
                 "title": {
-                  "type": "string"
+                  "$ref": "#/definitions/AttributeValue"
                 }
               },
               "type": "object"

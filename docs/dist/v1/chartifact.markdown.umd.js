@@ -2884,6 +2884,10 @@ ${reconstitutedRules.join("\n\n")}
   };
   const OPERATORS = /* @__PURE__ */ new Set(["$<", "$>", "$<=", "$>=", "$=", "$in"]);
   const CONDITIONALKEYS = /* @__PURE__ */ new Set(["$check", "$then", "$else", "$not", "$join", ...OPERATORS]);
+  const BLOCKED_CSS_PROPERTIES = /* @__PURE__ */ new Set([
+    "behavior",
+    "-moz-binding"
+  ]);
   function getProperty(data, path, parents = [], logger) {
     if (path === ".") {
       return data;
@@ -2929,6 +2933,65 @@ ${reconstitutedRules.join("\n\n")}
       const val = getProperty(data, trimmed, parents, logger);
       return val == null ? "" : escapeHtml ? escape(String(val)) : String(val);
     });
+  }
+  function styleObjectToString(styleObj, logger) {
+    const cssDeclarations = [];
+    for (const [prop, value] of Object.entries(styleObj)) {
+      const cssProp = prop;
+      if (!/^[a-z]([a-z0-9-]*[a-z0-9])?$/.test(cssProp)) {
+        logger.warn(`CSS property "${prop}" has invalid format (must be kebab-case)`);
+        continue;
+      }
+      if (BLOCKED_CSS_PROPERTIES.has(cssProp)) {
+        logger.warn(`CSS property "${prop}" is blocked for security reasons`);
+        continue;
+      }
+      if (value == null) {
+        continue;
+      }
+      let cssValue = String(value).trim();
+      if (cssValue.includes(";")) {
+        const originalValue = cssValue;
+        cssValue = cssValue.split(";")[0].trim();
+        if (cssValue && cssValue !== originalValue.trim()) {
+          logger.warn(`CSS value for "${prop}" contained semicolon - using only first part: "${cssValue}"`);
+        }
+      }
+      if (!cssValue) {
+        continue;
+      }
+      const hasUrl = /url\s*\(/i.test(cssValue);
+      const hasDataUri = /url\s*\(\s*['"]?data:/i.test(cssValue);
+      if (hasUrl && !hasDataUri || /expression\s*\(/i.test(cssValue) || /javascript:/i.test(cssValue) || /@import/i.test(cssValue)) {
+        logger.warn(`CSS value for "${prop}" contains potentially dangerous pattern: "${cssValue}"`);
+        continue;
+      }
+      cssDeclarations.push(`${cssProp}: ${cssValue}`);
+    }
+    return cssDeclarations.join("; ").trim();
+  }
+  function processStyleAttribute(value, data, parents, logger) {
+    if (value !== null && typeof value === "object" && !Array.isArray(value) && "$check" in value && typeof value.$check === "string") {
+      const conditional = value;
+      if (!validatePathExpression(conditional.$check, "$check", logger)) {
+        return "";
+      }
+      const checkValue = getProperty(data, conditional.$check, parents);
+      const condition = evaluateCondition(checkValue, conditional);
+      const resultValue = condition ? conditional.$then : conditional.$else;
+      if (resultValue === void 0) {
+        return "";
+      }
+      if (typeof resultValue === "object" && resultValue !== null && !Array.isArray(resultValue)) {
+        return styleObjectToString(resultValue, logger);
+      }
+      return "";
+    }
+    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+      return styleObjectToString(value, logger);
+    }
+    logger.error(`Style attribute must be an object with CSS properties, not ${typeof value}. Example: style: { "color": "red", "font-size": "14px" }`);
+    return "";
   }
   function validateAttribute(key, tag, logger) {
     const isGlobal = GLOBAL_ATTRS.has(key) || [...GLOBAL_ATTRS].some((p) => p.endsWith("-") && key.startsWith(p));
@@ -3184,12 +3247,21 @@ ${reconstitutedRules.join("\n\n")}
       if (!validateAttribute(key, tag, logger)) {
         return;
       }
-      if (isConditionalValue(value)) {
-        const evaluatedValue = evaluateConditionalValue(value, data, parents, logger);
-        element.setAttribute(key, interpolate(String(evaluatedValue), data, false, parents, logger));
+      let attrValue;
+      if (key === "style") {
+        attrValue = processStyleAttribute(value, data, parents, logger);
+        if (!attrValue) {
+          return;
+        }
       } else {
-        element.setAttribute(key, interpolate(String(value), data, false, parents, logger));
+        if (isConditionalValue(value)) {
+          const evaluatedValue = evaluateConditionalValue(value, data, parents, logger);
+          attrValue = interpolate(String(evaluatedValue), data, false, parents, logger);
+        } else {
+          attrValue = interpolate(String(value), data, false, parents, logger);
+        }
       }
+      element.setAttribute(key, attrValue);
     });
   }
   const pluginName$2 = "treebark";
