@@ -1,0 +1,319 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "Feature: Treebark Plugin",
+    "variables": [
+        {
+            "variableId": "userScore",
+            "type": "number",
+            "initialValue": 85
+        },
+        {
+            "variableId": "teamMembers",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [
+                {
+                    "name": "Aisha Patel",
+                    "role": "Software Engineer",
+                    "score": 85,
+                    "status": "active"
+                },
+                {
+                    "name": "Miguel Rodriguez",
+                    "role": "Product Manager",
+                    "score": 92,
+                    "status": "active"
+                },
+                {
+                    "name": "Jin Park",
+                    "role": "UX Designer",
+                    "score": 78,
+                    "status": "inactive"
+                },
+                {
+                    "name": "Fatima Al-Mansouri",
+                    "role": "Data Analyst",
+                    "score": 88,
+                    "status": "active"
+                }
+            ]
+        }
+    ],
+    "style": {
+        "css": [
+            ".card { background: white; border: 2px solid #ddd; border-radius: 8px; padding: 20px; margin: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }",
+            ".card-header { font-size: 1.5em; font-weight: bold; color: #2c3e50; margin-bottom: 10px; }",
+            ".card-body { color: #555; }",
+            ".card-footer { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; font-size: 0.9em; color: #888; }",
+            ".badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.85em; font-weight: 600; }",
+            ".badge-active { background-color: #d4edda; color: #155724; }",
+            ".badge-inactive { background-color: #f8d7da; color: #721c24; }",
+            ".score-high { color: #28a745; font-weight: bold; }",
+            ".score-medium { color: #ffc107; font-weight: bold; }",
+            ".score-low { color: #dc3545; font-weight: bold; }",
+            ".cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 20px 0; }",
+            ".cards-grid .card { margin: 0; }",
+            ".info-box { background: #e8f4f8; border-left: 4px solid #0288d1; padding: 15px; margin: 20px 0; border-radius: 4px; }",
+            ".info-box strong { color: #0288d1; }"
+        ]
+    },
+    "groups": [
+        {
+            "groupId": "intro",
+            "elements": [
+                "# Treebark Plugin Examples",
+                "The Treebark plugin enables rendering of HTML structures using templates and data binding. It's perfect for creating cards, lists, and other structured UI components.",
+                "",
+                "For comprehensive documentation and more examples, visit [Treebark Documentation](https://danmarshall.github.io/treebark/)."
+            ]
+        },
+        {
+            "groupId": "static-card",
+            "elements": [
+                "## Static Card Example",
+                "A simple card with static data:",
+                {
+                    "type": "treebark",
+                    "template": {
+                        "div": {
+                            "class": "card",
+                            "$children": [
+                                {
+                                    "div": {
+                                        "class": "card-header",
+                                        "$children": [
+                                            "Welcome to Treebark"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "div": {
+                                        "class": "card-body",
+                                        "$children": [
+                                            "Treebark allows you to create structured HTML templates with data binding. This example shows a basic card component."
+                                        ]
+                                    }
+                                },
+                                {
+                                    "div": {
+                                        "class": "card-footer",
+                                        "$children": [
+                                            "Created with Treebark plugin"
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "data": {}
+                }
+            ]
+        },
+        {
+            "groupId": "data-driven-cards",
+            "elements": [
+                "## Data-Driven Cards",
+                "Generate multiple cards from an array of data. The template uses `$bind` to iterate over array items:",
+                {
+                    "type": "treebark",
+                    "template": {
+                        "div": {
+                            "class": "cards-grid",
+                            "$bind": ".",
+                            "$children": [
+                                {
+                                    "div": {
+                                        "class": "card",
+                                        "$children": [
+                                            {
+                                                "div": {
+                                                    "class": "card-header",
+                                                    "$children": [
+                                                        "{{name}}"
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "div": {
+                                                    "class": "card-body",
+                                                    "$children": [
+                                                        {
+                                                            "p": {
+                                                                "$children": [
+                                                                    {
+                                                                        "strong": {
+                                                                            "$children": [
+                                                                                "Role: "
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "{{role}}"
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "p": {
+                                                                "$children": [
+                                                                    {
+                                                                        "strong": {
+                                                                            "$children": [
+                                                                                "Score: "
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "span": {
+                                                                            "class": "score-{{status}}",
+                                                                            "$children": [
+                                                                                "{{score}}"
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "p": {
+                                                                "$children": [
+                                                                    {
+                                                                        "span": {
+                                                                            "class": "badge badge-{{status}}",
+                                                                            "$children": [
+                                                                                "{{status}}"
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "variableId": "teamMembers"
+                }
+            ]
+        },
+        {
+            "groupId": "conditional-rendering",
+            "elements": [
+                "## Conditional Rendering",
+                "Treebark supports conditional rendering with the `$if` tag. This example shows different messages based on the score:",
+                {
+                    "type": "slider",
+                    "variableId": "userScore",
+                    "label": "Performance Score",
+                    "min": 0,
+                    "max": 100,
+                    "step": 1
+                },
+                {
+                    "type": "treebark",
+                    "template": {
+                        "div": {
+                            "class": "info-box",
+                            "$children": [
+                                {
+                                    "$if": {
+                                        "$check": ".",
+                                        "$>=": 90,
+                                        "$then": {
+                                            "div": [
+                                                {
+                                                    "strong": [
+                                                        "Excellent Performance!"
+                                                    ]
+                                                },
+                                                {
+                                                    "span": {
+                                                        "$children": [
+                                                            "Your score of {{.}} is outstanding."
+                                                        ],
+                                                        "style": {
+                                                            "color": "#28a745"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "$if": {
+                                        "$check": ".",
+                                        "$>=": 70,
+                                        "$<": 90,
+                                        "$then": {
+                                            "div": [
+                                                {
+                                                    "strong": [
+                                                        "Good Performance"
+                                                    ]
+                                                },
+                                                {
+                                                    "span": {
+                                                        "$children": [
+                                                            " Your score of {{.}} is above average."
+                                                        ],
+                                                        "style": {
+                                                            "color": "#ffc107"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "$if": {
+                                        "$check": ".",
+                                        "$<": 70,
+                                        "$then": {
+                                            "div": [
+                                                {
+                                                    "strong": [
+                                                        "Needs Improvement"
+                                                    ]
+                                                },
+                                                {
+                                                    "span": {
+                                                        "$children": [
+                                                            " Your score of {{.}} could be better."
+                                                        ],
+                                                        "style": {
+                                                            "color": "#dc3545"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "variableId": "userScore"
+                }
+            ]
+        },
+        {
+            "groupId": "learn-more",
+            "elements": [
+                "## Learn More",
+                "Visit the [Treebark Documentation](https://danmarshall.github.io/treebark/) to explore:",
+                "- Advanced template syntax",
+                "- More conditional rendering options",
+                "- Nested data binding",
+                "- Event handling",
+                "- Custom attributes and classes",
+                "",
+                "The Treebark plugin in Chartifact makes it easy to create rich, interactive UI components with minimal code."
+            ]
+        }
+    ]
+}
