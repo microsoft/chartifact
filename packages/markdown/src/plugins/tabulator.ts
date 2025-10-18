@@ -89,7 +89,7 @@ export const tabulatorPlugin: Plugin<TabulatorSpec> = {
 
             // Build all buttons in one HTML string
             let buttonsHtml = '';
-            if (spec.editable || selectableRows || spec.downloadFormats) {
+            if (spec.editable || selectableRows || spec.enableDownload) {
                 buttonsHtml = '<div class="tabulator-buttons">';
                 
                 if (spec.editable) {
@@ -101,10 +101,10 @@ export const tabulatorPlugin: Plugin<TabulatorSpec> = {
                     buttonsHtml += '<button type="button" class="tabulator-invert-selection">Invert Selection</button>';
                 }
                 
-                if (spec.downloadFormats && spec.downloadFormats.length > 0) {
-                    spec.downloadFormats.forEach(format => {
-                        buttonsHtml += `<button type="button" class="tabulator-download" data-format="${format}">Download ${format.toUpperCase()}</button>`;
-                    });
+                if (spec.enableDownload) {
+                    buttonsHtml += '<button type="button" class="tabulator-download" data-format="csv">Download CSV</button>';
+                    buttonsHtml += '<button type="button" class="tabulator-download" data-format="json">Download JSON</button>';
+                    buttonsHtml += '<button type="button" class="tabulator-download" data-format="html">Download HTML</button>';
                 }
                 
                 buttonsHtml += '</div>';
@@ -281,7 +281,7 @@ export const tabulatorPlugin: Plugin<TabulatorSpec> = {
                 }
             }
 
-            if (spec.downloadFormats && spec.downloadFormats.length > 0) {
+            if (spec.enableDownload) {
                 const downloadBtns = container.querySelectorAll('.tabulator-download') as NodeListOf<HTMLButtonElement>;
                 downloadBtns.forEach(btn => {
                     btn.onclick = () => {

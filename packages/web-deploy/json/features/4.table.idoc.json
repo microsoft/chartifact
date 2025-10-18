@@ -47,7 +47,7 @@
                 {
                     "type": "tabulator",
                     "dataSourceName": "sampleData",
-                    "downloadFormats": ["csv", "json", "html"],
+                    "enableDownload": true,
                     "tabulatorOptions": {
                         "autoColumns": true,
                         "layout": "fitColumns",
