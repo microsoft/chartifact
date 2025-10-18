@@ -547,7 +547,7 @@
                     {
                         "type": "formula",
                         "as": "dayName",
-                        "expr": "datum.dayOfWeek === 0 ? 'Sun' : datum.dayOfWeek === 1 ? 'Mon' : datum.dayOfWeek === 2 ? 'Tue' : datum.dayOfWeek === 3 ? 'Wed' : datum.dayOfWeek === 4 ? 'Thu' : datum.dayOfWeek === 5 ? 'Fri' : 'Sat'"
+                        "expr": "datum.dayOfWeek === 0 ? 'sun' : datum.dayOfWeek === 1 ? 'mon' : datum.dayOfWeek === 2 ? 'tue' : datum.dayOfWeek === 3 ? 'wed' : datum.dayOfWeek === 4 ? 'thu' : datum.dayOfWeek === 5 ? 'fri' : 'sat'"
                     },
                     {
                         "type": "formula",
@@ -919,97 +919,34 @@
                                             },
                                             {
                                                 "tbody": {
-                                                    "$children": {
-                                                        "tr": {
-                                                            "$bind": ".",
-                                                            "$children": [
+                                                    "$bind": ".",
+                                                    "$children": [
+                                                        {
+                                                            "tr": [
                                                                 {
-                                                                    "td": {
-                                                                        "$children": [
-                                                                            {
-                                                                                "span": {
-                                                                                    "class": "day-number",
-                                                                                    "$text": "{{Sun}}"
-                                                                                }
-                                                                            }
-                                                                        ]
-                                                                    }
+                                                                    "td": "{{sun}}"
                                                                 },
                                                                 {
-                                                                    "td": {
-                                                                        "$children": [
-                                                                            {
-                                                                                "span": {
-                                                                                    "class": "day-number",
-                                                                                    "$text": "{{Mon}}"
-                                                                                }
-                                                                            }
-                                                                        ]
-                                                                    }
+                                                                    "td": "{{mon}}"
                                                                 },
                                                                 {
-                                                                    "td": {
-                                                                        "$children": [
-                                                                            {
-                                                                                "span": {
-                                                                                    "class": "day-number",
-                                                                                    "$text": "{{Tue}}"
-                                                                                }
-                                                                            }
-                                                                        ]
-                                                                    }
+                                                                    "td": "{{tue}}"
                                                                 },
                                                                 {
-                                                                    "td": {
-                                                                        "$children": [
-                                                                            {
-                                                                                "span": {
-                                                                                    "class": "day-number",
-                                                                                    "$text": "{{Wed}}"
-                                                                                }
-                                                                            }
-                                                                        ]
-                                                                    }
+                                                                    "td": "{{wed}}"
                                                                 },
                                                                 {
-                                                                    "td": {
-                                                                        "$children": [
-                                                                            {
-                                                                                "span": {
-                                                                                    "class": "day-number",
-                                                                                    "$text": "{{Thu}}"
-                                                                                }
-                                                                            }
-                                                                        ]
-                                                                    }
+                                                                    "td": "{{thu}}"
                                                                 },
                                                                 {
-                                                                    "td": {
-                                                                        "$children": [
-                                                                            {
-                                                                                "span": {
-                                                                                    "class": "day-number",
-                                                                                    "$text": "{{Fri}}"
-                                                                                }
-                                                                            }
-                                                                        ]
-                                                                    }
+                                                                    "td": "{{fri}}"
                                                                 },
                                                                 {
-                                                                    "td": {
-                                                                        "$children": [
-                                                                            {
-                                                                                "span": {
-                                                                                    "class": "day-number",
-                                                                                    "$text": "{{Sat}}"
-                                                                                }
-                                                                            }
-                                                                        ]
-                                                                    }
+                                                                    "td": "{{sat}}"
                                                                 }
                                                             ]
                                                         }
-                                                    }
+                                                    ]
                                                 }
                                             }
                                         ]
