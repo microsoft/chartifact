@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.8]
+
+Added Treebark plugin and examples
+
 ## [1.0.7]
 
 Added json validation
