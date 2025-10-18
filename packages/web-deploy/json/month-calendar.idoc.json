@@ -684,6 +684,32 @@
             ]
         },
         {
+            "groupId": "step4b",
+            "elements": [
+                "## Step 4b: Padded 42-Cell Grid",
+                "Expanded to 42 cells (6 weeks × 7 days) including previous/next month days for padding. Each cell has its day number, events, and metadata.",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "paddedDays",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "350px",
+                        "pagination": "local",
+                        "paginationSize": 15,
+                        "columns": [
+                            {"title": "Cell #", "field": "cellIdx", "width": 70},
+                            {"title": "Day", "field": "cellDay", "width": 60},
+                            {"title": "Current Month?", "field": "isCurrentMonth", "width": 120, "formatter": "tickCross"},
+                            {"title": "Weekend?", "field": "isWeekend", "width": 100, "formatter": "tickCross"},
+                            {"title": "Event Count", "field": "cellEventCount", "width": 100},
+                            {"title": "Event 1", "field": "event1"},
+                            {"title": "Event 2", "field": "event2"}
+                        ]
+                    }
+                }
+            ]
+        },
+        {
             "groupId": "step5",
             "elements": [
                 "## Step 5: Calendar Grid by Week",
