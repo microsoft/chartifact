@@ -276,33 +276,44 @@
                     },
                     {
                         "type": "sequence",
-                        "start": 1,
-                        "stop": 32,
-                        "as": "dayOfMonth"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "daysInMonth",
-                        "expr": "selectedMonth === 2 ? (selectedYear % 4 === 0 && (selectedYear % 100 !== 0 || selectedYear % 400 === 0) ? 29 : 28) : (selectedMonth === 4 || selectedMonth === 6 || selectedMonth === 9 || selectedMonth === 11) ? 30 : 31"
-                    },
-                    {
-                        "type": "filter",
-                        "expr": "datum.dayOfMonth <= datum.daysInMonth"
+                        "start": -7,
+                        "stop": 39,
+                        "as": "dayOffset"
                     },
                     {
                         "type": "formula",
                         "as": "date",
-                        "expr": "datetime(selectedYear, selectedMonth - 1, datum.dayOfMonth)"
+                        "expr": "datetime(selectedYear, selectedMonth - 1, datum.dayOffset)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "dayOfMonth",
+                        "expr": "date(datum.date)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "month",
+                        "expr": "month(datum.date) + 1"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "year",
+                        "expr": "year(datum.date)"
                     },
                     {
                         "type": "formula",
                         "as": "dateKey",
-                        "expr": "selectedYear + '-' + (selectedMonth < 10 ? '0' + selectedMonth : selectedMonth) + '-' + (datum.dayOfMonth < 10 ? '0' + datum.dayOfMonth : datum.dayOfMonth)"
+                        "expr": "datum.year + '-' + (datum.month < 10 ? '0' + datum.month : datum.month) + '-' + (datum.dayOfMonth < 10 ? '0' + datum.dayOfMonth : datum.dayOfMonth)"
                     },
                     {
                         "type": "formula",
                         "as": "weekday",
                         "expr": "day(datum.date)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "dayName",
+                        "expr": "datum.weekday === 0 ? 'sun' : datum.weekday === 1 ? 'mon' : datum.weekday === 2 ? 'tue' : datum.weekday === 3 ? 'wed' : datum.weekday === 4 ? 'thu' : datum.weekday === 5 ? 'fri' : 'sat'"
                     },
                     {
                         "type": "formula",
@@ -312,7 +323,12 @@
                     {
                         "type": "formula",
                         "as": "week",
-                        "expr": "floor((datum.dayOfMonth + datum.firstDayWeekday - 1) / 7)"
+                        "expr": "floor((datum.dayOffset + datum.firstDayWeekday + 7) / 7)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "isCurrentMonth",
+                        "expr": "datum.month === selectedMonth"
                     }
                 ]
             }
