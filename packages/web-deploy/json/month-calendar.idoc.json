@@ -300,8 +300,12 @@
                 "dataFrameTransformations": [
                     {
                         "type": "aggregate",
-                        "ops": ["count"],
-                        "as": ["count"]
+                        "ops": [
+                            "count"
+                        ],
+                        "as": [
+                            "count"
+                        ]
                     },
                     {
                         "type": "sequence",
@@ -400,8 +404,12 @@
                 "dataFrameTransformations": [
                     {
                         "type": "aggregate",
-                        "ops": ["count"],
-                        "as": ["count"]
+                        "ops": [
+                            "count"
+                        ],
+                        "as": [
+                            "count"
+                        ]
                     },
                     {
                         "type": "sequence",
@@ -548,7 +556,9 @@
                     },
                     {
                         "type": "pivot",
-                        "groupby": ["weekNum"],
+                        "groupby": [
+                            "weekNum"
+                        ],
                         "field": "dayName",
                         "value": "cellDayStr"
                     }
@@ -560,7 +570,7 @@
         {
             "groupId": "header",
             "elements": [
-                "# 📅 Month View Events Calendar",
+                "# \ud83d\udcc5 Month View Events Calendar",
                 "Track your events, meetings, and important dates",
                 "",
                 "This example demonstrates how to shape data for a calendar view using Vega transforms. Scroll down to see each step of the data transformation pipeline.",
@@ -609,10 +619,25 @@
                         "pagination": "local",
                         "paginationSize": 10,
                         "columns": [
-                            {"title": "Date", "field": "date", "width": 120},
-                            {"title": "Time", "field": "time", "width": 100},
-                            {"title": "Title", "field": "title"},
-                            {"title": "Category", "field": "category", "width": 100}
+                            {
+                                "title": "Date",
+                                "field": "date",
+                                "width": 120
+                            },
+                            {
+                                "title": "Time",
+                                "field": "time",
+                                "width": 100
+                            },
+                            {
+                                "title": "Title",
+                                "field": "title"
+                            },
+                            {
+                                "title": "Category",
+                                "field": "category",
+                                "width": 100
+                            }
                         ]
                     }
                 }
@@ -632,10 +657,26 @@
                         "pagination": "local",
                         "paginationSize": 10,
                         "columns": [
-                            {"title": "Date", "field": "date", "width": 120},
-                            {"title": "Times", "field": "times", "formatter": "textarea"},
-                            {"title": "Titles", "field": "titles", "formatter": "textarea"},
-                            {"title": "Categories", "field": "categories", "formatter": "textarea"}
+                            {
+                                "title": "Date",
+                                "field": "date",
+                                "width": 120
+                            },
+                            {
+                                "title": "Times",
+                                "field": "times",
+                                "formatter": "textarea"
+                            },
+                            {
+                                "title": "Titles",
+                                "field": "titles",
+                                "formatter": "textarea"
+                            },
+                            {
+                                "title": "Categories",
+                                "field": "categories",
+                                "formatter": "textarea"
+                            }
                         ]
                     }
                 }
@@ -655,10 +696,26 @@
                         "pagination": "local",
                         "paginationSize": 15,
                         "columns": [
-                            {"title": "Day", "field": "dayOfMonth", "width": 80},
-                            {"title": "Date Key", "field": "dateKey", "width": 120},
-                            {"title": "Weekday", "field": "weekday", "width": 100},
-                            {"title": "Week", "field": "week", "width": 80}
+                            {
+                                "title": "Day",
+                                "field": "dayOfMonth",
+                                "width": 80
+                            },
+                            {
+                                "title": "Date Key",
+                                "field": "dateKey",
+                                "width": 120
+                            },
+                            {
+                                "title": "Weekday",
+                                "field": "weekday",
+                                "width": 100
+                            },
+                            {
+                                "title": "Week",
+                                "field": "week",
+                                "width": 80
+                            }
                         ]
                     }
                 }
@@ -678,11 +735,31 @@
                         "pagination": "local",
                         "paginationSize": 15,
                         "columns": [
-                            {"title": "Day", "field": "dayOfMonth", "width": 80},
-                            {"title": "Date", "field": "dateKey", "width": 120},
-                            {"title": "Event Count", "field": "eventCount", "width": 100},
-                            {"title": "Event Times", "field": "eventTimes", "formatter": "textarea"},
-                            {"title": "Event Titles", "field": "eventTitles", "formatter": "textarea"}
+                            {
+                                "title": "Day",
+                                "field": "dayOfMonth",
+                                "width": 80
+                            },
+                            {
+                                "title": "Date",
+                                "field": "dateKey",
+                                "width": 120
+                            },
+                            {
+                                "title": "Event Count",
+                                "field": "eventCount",
+                                "width": 100
+                            },
+                            {
+                                "title": "Event Times",
+                                "field": "eventTimes",
+                                "formatter": "textarea"
+                            },
+                            {
+                                "title": "Event Titles",
+                                "field": "eventTitles",
+                                "formatter": "textarea"
+                            }
                         ]
                     }
                 }
@@ -692,7 +769,7 @@
             "groupId": "step4b",
             "elements": [
                 "## Step 4b: Padded 42-Cell Grid",
-                "Expanded to 42 cells (6 weeks × 7 days) including previous/next month days for padding. Each cell has its day number, events, and metadata.",
+                "Expanded to 42 cells (6 weeks \u00d7 7 days) including previous/next month days for padding. Each cell has its day number, events, and metadata.",
                 {
                     "type": "tabulator",
                     "dataSourceName": "paddedDays",
@@ -702,13 +779,41 @@
                         "pagination": "local",
                         "paginationSize": 15,
                         "columns": [
-                            {"title": "Cell #", "field": "cellIdx", "width": 70},
-                            {"title": "Day", "field": "cellDay", "width": 60},
-                            {"title": "Current Month?", "field": "isCurrentMonth", "width": 120, "formatter": "tickCross"},
-                            {"title": "Weekend?", "field": "isWeekend", "width": 100, "formatter": "tickCross"},
-                            {"title": "Event Count", "field": "cellEventCount", "width": 100},
-                            {"title": "Event 1", "field": "event1"},
-                            {"title": "Event 2", "field": "event2"}
+                            {
+                                "title": "Cell #",
+                                "field": "cellIdx",
+                                "width": 70
+                            },
+                            {
+                                "title": "Day",
+                                "field": "cellDay",
+                                "width": 60
+                            },
+                            {
+                                "title": "Current Month?",
+                                "field": "isCurrentMonth",
+                                "width": 120,
+                                "formatter": "tickCross"
+                            },
+                            {
+                                "title": "Weekend?",
+                                "field": "isWeekend",
+                                "width": 100,
+                                "formatter": "tickCross"
+                            },
+                            {
+                                "title": "Event Count",
+                                "field": "cellEventCount",
+                                "width": 100
+                            },
+                            {
+                                "title": "Event 1",
+                                "field": "event1"
+                            },
+                            {
+                                "title": "Event 2",
+                                "field": "event2"
+                            }
                         ]
                     }
                 }
@@ -726,14 +831,39 @@
                         "layout": "fitColumns",
                         "maxHeight": "400px",
                         "columns": [
-                            {"title": "Week", "field": "weekNum", "width": 60},
-                            {"title": "Sun", "field": "Sun"},
-                            {"title": "Mon", "field": "Mon"},
-                            {"title": "Tue", "field": "Tue"},
-                            {"title": "Wed", "field": "Wed"},
-                            {"title": "Thu", "field": "Thu"},
-                            {"title": "Fri", "field": "Fri"},
-                            {"title": "Sat", "field": "Sat"}
+                            {
+                                "title": "Week",
+                                "field": "weekNum",
+                                "width": 60
+                            },
+                            {
+                                "title": "Sun",
+                                "field": "Sun"
+                            },
+                            {
+                                "title": "Mon",
+                                "field": "Mon"
+                            },
+                            {
+                                "title": "Tue",
+                                "field": "Tue"
+                            },
+                            {
+                                "title": "Wed",
+                                "field": "Wed"
+                            },
+                            {
+                                "title": "Thu",
+                                "field": "Thu"
+                            },
+                            {
+                                "title": "Fri",
+                                "field": "Fri"
+                            },
+                            {
+                                "title": "Sat",
+                                "field": "Sat"
+                            }
                         ]
                     }
                 }
@@ -745,7 +875,7 @@
                 "## {{monthName}} {{selectedYear}} - Final Calendar View",
                 {
                     "type": "treebark",
-                    "variableId": "paddedDays",
+                    "variableId": "calendarWeeks",
                     "template": {
                         "div": {
                             "class": "calendar-wrapper",
@@ -792,468 +922,28 @@
                                                     "$children": [
                                                         {
                                                             "tr": {
-                                                                "$bind": ".[0:7]",
+                                                                "$bind": ".",
                                                                 "$children": [
                                                                     {
-                                                                        "td": {
-                                                                            "class": "{{isCurrentMonth ? '' : 'other-month'}} {{isWeekend ? 'weekend' : ''}}",
-                                                                            "$children": [
-                                                                                {
-                                                                                    "span": {
-                                                                                        "class": "day-number",
-                                                                                        "$children": [
-                                                                                            "{{cellDay}}"
-                                                                                        ]
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event1",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event1Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event1}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event2",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event2Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event2}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event3",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event3Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event3}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "moreEvents",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge",
-                                                                                                "style": {
-                                                                                                    "background": "#95a5a6",
-                                                                                                    "font-size": "0.7em"
-                                                                                                },
-                                                                                                "$children": [
-                                                                                                    "{{moreEvents}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    }
-                                                                ]
-                                                            }
-                                                        },
-                                                        {
-                                                            "tr": {
-                                                                "$bind": ".[7:14]",
-                                                                "$children": [
+                                                                        "td": "{{Sun}}"
+                                                                    },
                                                                     {
-                                                                        "td": {
-                                                                            "class": "{{isCurrentMonth ? '' : 'other-month'}} {{isWeekend ? 'weekend' : ''}}",
-                                                                            "$children": [
-                                                                                {
-                                                                                    "span": {
-                                                                                        "class": "day-number",
-                                                                                        "$children": [
-                                                                                            "{{cellDay}}"
-                                                                                        ]
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event1",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event1Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event1}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event2",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event2Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event2}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event3",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event3Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event3}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "moreEvents",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge",
-                                                                                                "style": {
-                                                                                                    "background": "#95a5a6",
-                                                                                                    "font-size": "0.7em"
-                                                                                                },
-                                                                                                "$children": [
-                                                                                                    "{{moreEvents}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    }
-                                                                ]
-                                                            }
-                                                        },
-                                                        {
-                                                            "tr": {
-                                                                "$bind": ".[14:21]",
-                                                                "$children": [
+                                                                        "td": "{{Mon}}"
+                                                                    },
                                                                     {
-                                                                        "td": {
-                                                                            "class": "{{isCurrentMonth ? '' : 'other-month'}} {{isWeekend ? 'weekend' : ''}}",
-                                                                            "$children": [
-                                                                                {
-                                                                                    "span": {
-                                                                                        "class": "day-number",
-                                                                                        "$children": [
-                                                                                            "{{cellDay}}"
-                                                                                        ]
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event1",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event1Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event1}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event2",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event2Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event2}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event3",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event3Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event3}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "moreEvents",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge",
-                                                                                                "style": {
-                                                                                                    "background": "#95a5a6",
-                                                                                                    "font-size": "0.7em"
-                                                                                                },
-                                                                                                "$children": [
-                                                                                                    "{{moreEvents}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    }
-                                                                ]
-                                                            }
-                                                        },
-                                                        {
-                                                            "tr": {
-                                                                "$bind": ".[21:28]",
-                                                                "$children": [
+                                                                        "td": "{{Tue}}"
+                                                                    },
                                                                     {
-                                                                        "td": {
-                                                                            "class": "{{isCurrentMonth ? '' : 'other-month'}} {{isWeekend ? 'weekend' : ''}}",
-                                                                            "$children": [
-                                                                                {
-                                                                                    "span": {
-                                                                                        "class": "day-number",
-                                                                                        "$children": [
-                                                                                            "{{cellDay}}"
-                                                                                        ]
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event1",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event1Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event1}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event2",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event2Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event2}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event3",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event3Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event3}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "moreEvents",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge",
-                                                                                                "style": {
-                                                                                                    "background": "#95a5a6",
-                                                                                                    "font-size": "0.7em"
-                                                                                                },
-                                                                                                "$children": [
-                                                                                                    "{{moreEvents}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    }
-                                                                ]
-                                                            }
-                                                        },
-                                                        {
-                                                            "tr": {
-                                                                "$bind": ".[28:35]",
-                                                                "$children": [
+                                                                        "td": "{{Wed}}"
+                                                                    },
                                                                     {
-                                                                        "td": {
-                                                                            "class": "{{isCurrentMonth ? '' : 'other-month'}} {{isWeekend ? 'weekend' : ''}}",
-                                                                            "$children": [
-                                                                                {
-                                                                                    "span": {
-                                                                                        "class": "day-number",
-                                                                                        "$children": [
-                                                                                            "{{cellDay}}"
-                                                                                        ]
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event1",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event1Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event1}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event2",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event2Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event2}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event3",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event3Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event3}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "moreEvents",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge",
-                                                                                                "style": {
-                                                                                                    "background": "#95a5a6",
-                                                                                                    "font-size": "0.7em"
-                                                                                                },
-                                                                                                "$children": [
-                                                                                                    "{{moreEvents}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    }
-                                                                ]
-                                                            }
-                                                        },
-                                                        {
-                                                            "tr": {
-                                                                "$bind": ".[35:42]",
-                                                                "$children": [
+                                                                        "td": "{{Thu}}"
+                                                                    },
                                                                     {
-                                                                        "td": {
-                                                                            "class": "{{isCurrentMonth ? '' : 'other-month'}} {{isWeekend ? 'weekend' : ''}}",
-                                                                            "$children": [
-                                                                                {
-                                                                                    "span": {
-                                                                                        "class": "day-number",
-                                                                                        "$children": [
-                                                                                            "{{cellDay}}"
-                                                                                        ]
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event1",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event1Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event1}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event2",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event2Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event2}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "event3",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge {{event3Cat}}",
-                                                                                                "$children": [
-                                                                                                    "{{event3}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "$if": {
-                                                                                        "$check": "moreEvents",
-                                                                                        "$then": {
-                                                                                            "span": {
-                                                                                                "class": "event-badge",
-                                                                                                "style": {
-                                                                                                    "background": "#95a5a6",
-                                                                                                    "font-size": "0.7em"
-                                                                                                },
-                                                                                                "$children": [
-                                                                                                    "{{moreEvents}}"
-                                                                                                ]
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            ]
-                                                                        }
+                                                                        "td": "{{Fri}}"
+                                                                    },
+                                                                    {
+                                                                        "td": "{{Sat}}"
                                                                     }
                                                                 ]
                                                             }
@@ -1269,7 +959,7 @@
                     }
                 },
                 "### Event Legend",
-                "🟠 **Meeting** • 🔴 **Work** • 🟣 **Personal** • 🟢 **Holiday**",
+                "\ud83d\udfe0 **Meeting** \u2022 \ud83d\udd34 **Work** \u2022 \ud83d\udfe3 **Personal** \u2022 \ud83d\udfe2 **Holiday**",
                 "",
                 "**Data Shaping:** This calendar uses Vega transforms to create a complete calendar grid (42 cells) and join events onto it. Each cell can display up to 3 events, with an indicator for additional events."
             ]
