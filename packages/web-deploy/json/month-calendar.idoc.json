@@ -507,10 +507,12 @@
     ],
     "groups": [
         {
-            "groupId": "main",
+            "groupId": "header",
             "elements": [
                 "# 📅 Month View Events Calendar",
                 "Track your events, meetings, and important dates",
+                "",
+                "This example demonstrates how to shape data for a calendar view using Vega transforms. Scroll down to see each step of the data transformation pipeline.",
                 {
                     "type": "dropdown",
                     "variableId": "selectedMonth",
@@ -539,8 +541,132 @@
                         "2025",
                         "2026"
                     ]
-                },
-                "## {{monthName}} {{selectedYear}}",
+                }
+            ]
+        },
+        {
+            "groupId": "step1",
+            "elements": [
+                "## Step 1: Raw Events Data",
+                "This is the source data - a flat list of events with dates, times, titles, and categories.",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "eventsRaw",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "300px",
+                        "pagination": "local",
+                        "paginationSize": 10,
+                        "columns": [
+                            {"title": "Date", "field": "date", "width": 120},
+                            {"title": "Time", "field": "time", "width": 100},
+                            {"title": "Title", "field": "title"},
+                            {"title": "Category", "field": "category", "width": 100}
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "step2",
+            "elements": [
+                "## Step 2: Events Grouped by Date",
+                "Using `aggregate` transform to group multiple events per day into arrays. Each row now represents one date with arrays of times, titles, and categories.",
+                {
+                    "type": "tabulator",
+                    "variableId": "eventsGrouped",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "300px",
+                        "pagination": "local",
+                        "paginationSize": 10,
+                        "columns": [
+                            {"title": "Date", "field": "date", "width": 120},
+                            {"title": "Times", "field": "times", "formatter": "textarea"},
+                            {"title": "Titles", "field": "titles", "formatter": "textarea"},
+                            {"title": "Categories", "field": "categories", "formatter": "textarea"}
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "step3",
+            "elements": [
+                "## Step 3: All Days of Month",
+                "Using `sequence` transform to generate all days in the selected month (not just days with events). Computed weekday and week for calendar positioning.",
+                {
+                    "type": "tabulator",
+                    "variableId": "allDaysOfMonth",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "300px",
+                        "pagination": "local",
+                        "paginationSize": 15,
+                        "columns": [
+                            {"title": "Day", "field": "dayOfMonth", "width": 80},
+                            {"title": "Date Key", "field": "dateKey", "width": 120},
+                            {"title": "Weekday", "field": "weekday", "width": 100},
+                            {"title": "Week", "field": "week", "width": 80}
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "step4",
+            "elements": [
+                "## Step 4: Days with Events Joined",
+                "Using `lookup` transform to join events arrays to each day. Days without events have empty arrays.",
+                {
+                    "type": "tabulator",
+                    "variableId": "daysWithEvents",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "300px",
+                        "pagination": "local",
+                        "paginationSize": 15,
+                        "columns": [
+                            {"title": "Day", "field": "dayOfMonth", "width": 80},
+                            {"title": "Date", "field": "dateKey", "width": 120},
+                            {"title": "Event Count", "field": "eventCount", "width": 100},
+                            {"title": "Event Times", "field": "eventTimes", "formatter": "textarea"},
+                            {"title": "Event Titles", "field": "eventTitles", "formatter": "textarea"}
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "step5",
+            "elements": [
+                "## Step 5: Padded Calendar Grid (42 cells)",
+                "Final transform adds padding days from previous/next months to create a complete 6-week grid (42 cells = 6 weeks × 7 days). This is the data that feeds the calendar visualization below.",
+                {
+                    "type": "tabulator",
+                    "variableId": "paddedDays",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "maxHeight": "400px",
+                        "pagination": "local",
+                        "paginationSize": 21,
+                        "columns": [
+                            {"title": "Cell", "field": "cellIdx", "width": 60},
+                            {"title": "Day", "field": "cellDay", "width": 60},
+                            {"title": "Current Month?", "field": "isCurrentMonth", "width": 100, "formatter": "tickCross"},
+                            {"title": "Weekend?", "field": "isWeekend", "width": 90, "formatter": "tickCross"},
+                            {"title": "Event 1", "field": "event1"},
+                            {"title": "Event 2", "field": "event2"},
+                            {"title": "Event 3", "field": "event3"}
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "calendar",
+            "elements": [
+                "## {{monthName}} {{selectedYear}} - Final Calendar View",
                 {
                     "type": "treebark",
                     "variableId": "paddedDays",
