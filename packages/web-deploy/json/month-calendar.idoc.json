@@ -395,7 +395,7 @@
             "initialValue": [],
             "calculation": {
                 "dataSourceNames": [
-                    "eventsRaw"
+                    "daysWithEvents"
                 ],
                 "dataFrameTransformations": [
                     {
