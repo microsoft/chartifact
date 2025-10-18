@@ -574,7 +574,7 @@
                 "Using `aggregate` transform to group multiple events per day into arrays. Each row now represents one date with arrays of times, titles, and categories.",
                 {
                     "type": "tabulator",
-                    "variableId": "eventsGrouped",
+                    "dataSourceName": "eventsGrouped",
                     "tabulatorOptions": {
                         "layout": "fitColumns",
                         "maxHeight": "300px",
@@ -597,7 +597,7 @@
                 "Using `sequence` transform to generate all days in the selected month (not just days with events). Computed weekday and week for calendar positioning.",
                 {
                     "type": "tabulator",
-                    "variableId": "allDaysOfMonth",
+                    "dataSourceName": "allDaysOfMonth",
                     "tabulatorOptions": {
                         "layout": "fitColumns",
                         "maxHeight": "300px",
@@ -620,7 +620,7 @@
                 "Using `lookup` transform to join events arrays to each day. Days without events have empty arrays.",
                 {
                     "type": "tabulator",
-                    "variableId": "daysWithEvents",
+                    "dataSourceName": "daysWithEvents",
                     "tabulatorOptions": {
                         "layout": "fitColumns",
                         "maxHeight": "300px",
@@ -644,7 +644,7 @@
                 "Final transform adds padding days from previous/next months to create a complete 6-week grid (42 cells = 6 weeks × 7 days). This is the data that feeds the calendar visualization below.",
                 {
                     "type": "tabulator",
-                    "variableId": "paddedDays",
+                    "dataSourceName": "paddedDays",
                     "tabulatorOptions": {
                         "layout": "fitColumns",
                         "maxHeight": "400px",
