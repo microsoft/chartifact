@@ -304,15 +304,19 @@
                         "as": ["count"]
                     },
                     {
+                        "type": "sequence",
+                        "start": 1,
+                        "stop": 32,
+                        "as": "dayOfMonth"
+                    },
+                    {
                         "type": "formula",
                         "as": "daysInMonth",
                         "expr": "selectedMonth === 2 ? (selectedYear % 4 === 0 && (selectedYear % 100 !== 0 || selectedYear % 400 === 0) ? 29 : 28) : (selectedMonth === 4 || selectedMonth === 6 || selectedMonth === 9 || selectedMonth === 11) ? 30 : 31"
                     },
                     {
-                        "type": "sequence",
-                        "start": 1,
-                        "stop": {"signal": "datum.daysInMonth + 1"},
-                        "as": "dayOfMonth"
+                        "type": "filter",
+                        "expr": "datum.dayOfMonth <= datum.daysInMonth"
                     },
                     {
                         "type": "formula",
