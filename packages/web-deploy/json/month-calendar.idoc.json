@@ -1,0 +1,548 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Month View Events Calendar",
+    "style": {
+        "css": [
+            "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f5f7fa; }",
+            ".container { max-width: 1200px; margin: 0 auto; }",
+            "h1 { text-align: center; color: #2c3e50; margin-bottom: 10px; }",
+            ".subtitle { text-align: center; color: #7f8c8d; margin-bottom: 30px; }",
+            ".controls { display: flex; justify-content: center; gap: 20px; margin-bottom: 30px; align-items: center; }",
+            ".controls label { font-weight: 600; margin-right: 8px; }",
+            ".controls select { padding: 8px 15px; font-size: 1em; border: 2px solid #3498db; border-radius: 6px; background: white; cursor: pointer; }",
+            ".month-title { text-align: center; color: #2c3e50; font-size: 2em; margin: 20px 0; font-weight: 600; }",
+            ".calendar-table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }",
+            ".calendar-table th { background: #3498db; color: white; padding: 12px; text-align: center; font-weight: 600; border: 1px solid #2980b9; }",
+            ".calendar-table td { border: 1px solid #ddd; padding: 8px; vertical-align: top; height: 100px; min-height: 100px; background: white; }",
+            ".calendar-table td.other-month { background: #f8f9fa; opacity: 0.6; }",
+            ".calendar-table td.weekend { background: #f0f8ff; }",
+            ".day-number { font-weight: bold; color: #2c3e50; margin-bottom: 6px; font-size: 1.1em; }",
+            ".other-month .day-number { color: #95a5a6; }",
+            ".events-list { display: flex; flex-direction: column; gap: 3px; }",
+            ".event-item { background: #3498db; color: white; padding: 4px 6px; border-radius: 3px; font-size: 0.8em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; transition: all 0.2s; }",
+            ".event-item:hover { transform: translateX(2px); opacity: 0.9; }",
+            ".event-time { font-weight: 600; margin-right: 4px; }",
+            ".event-work { background: #e74c3c; }",
+            ".event-personal { background: #9b59b6; }",
+            ".event-meeting { background: #f39c12; }",
+            ".event-holiday { background: #1abc9c; }",
+            ".legend { display: flex; justify-content: center; gap: 25px; margin-top: 20px; flex-wrap: wrap; }",
+            ".legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.95em; }",
+            ".legend-box { width: 18px; height: 18px; border-radius: 3px; }",
+            "@media (max-width: 768px) { .calendar-table td { height: 80px; padding: 4px; font-size: 0.9em; } .event-item { font-size: 0.7em; padding: 3px 4px; } }"
+        ]
+    },
+    "dataLoaders": [
+        {
+            "dataSourceName": "eventsData",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"date": "2025-01-01", "time": "All Day", "title": "New Year's Day", "category": "holiday"},
+                {"date": "2025-01-06", "time": "09:00", "title": "Team Standup", "category": "meeting"},
+                {"date": "2025-01-06", "time": "14:00", "title": "Project Review", "category": "work"},
+                {"date": "2025-01-08", "time": "10:30", "title": "Client Meeting", "category": "meeting"},
+                {"date": "2025-01-10", "time": "15:00", "title": "Dentist Appointment", "category": "personal"},
+                {"date": "2025-01-13", "time": "09:00", "title": "Team Standup", "category": "meeting"},
+                {"date": "2025-01-13", "time": "11:00", "title": "Design Review", "category": "work"},
+                {"date": "2025-01-15", "time": "13:00", "title": "Lunch with Sarah", "category": "personal"},
+                {"date": "2025-01-17", "time": "16:00", "title": "Code Review", "category": "work"},
+                {"date": "2025-01-20", "time": "All Day", "title": "MLK Jr. Day", "category": "holiday"},
+                {"date": "2025-01-20", "time": "09:00", "title": "Team Standup", "category": "meeting"},
+                {"date": "2025-01-22", "time": "10:00", "title": "Sprint Planning", "category": "meeting"},
+                {"date": "2025-01-22", "time": "14:00", "title": "Feature Demo", "category": "work"},
+                {"date": "2025-01-24", "time": "18:00", "title": "Gym Session", "category": "personal"},
+                {"date": "2025-01-27", "time": "09:00", "title": "Team Standup", "category": "meeting"},
+                {"date": "2025-01-27", "time": "13:00", "title": "Budget Review", "category": "work"},
+                {"date": "2025-01-29", "time": "11:00", "title": "1-on-1 with Manager", "category": "meeting"},
+                {"date": "2025-01-31", "time": "15:00", "title": "Month End Review", "category": "work"},
+                {"date": "2025-02-03", "time": "09:00", "title": "Team Standup", "category": "meeting"},
+                {"date": "2025-02-05", "time": "10:00", "title": "Quarterly Planning", "category": "meeting"},
+                {"date": "2025-02-07", "time": "14:00", "title": "Training Session", "category": "work"},
+                {"date": "2025-02-10", "time": "09:00", "title": "Team Standup", "category": "meeting"},
+                {"date": "2025-02-12", "time": "12:00", "title": "Team Lunch", "category": "personal"},
+                {"date": "2025-02-14", "time": "All Day", "title": "Valentine's Day", "category": "holiday"},
+                {"date": "2025-02-14", "time": "19:00", "title": "Dinner Date", "category": "personal"},
+                {"date": "2025-02-17", "time": "All Day", "title": "Presidents' Day", "category": "holiday"},
+                {"date": "2025-02-17", "time": "09:00", "title": "Team Standup", "category": "meeting"},
+                {"date": "2025-02-19", "time": "10:30", "title": "Architecture Review", "category": "work"},
+                {"date": "2025-02-21", "time": "15:00", "title": "Doctor Appointment", "category": "personal"},
+                {"date": "2025-02-24", "time": "09:00", "title": "Team Standup", "category": "meeting"},
+                {"date": "2025-02-26", "time": "11:00", "title": "Product Launch", "category": "work"},
+                {"date": "2025-02-28", "time": "14:00", "title": "Sprint Retro", "category": "meeting"}
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "variableId": "selectedYear",
+            "type": "number",
+            "initialValue": 2025
+        },
+        {
+            "variableId": "selectedMonth",
+            "type": "number",
+            "initialValue": 1
+        },
+        {
+            "variableId": "monthName",
+            "type": "string",
+            "initialValue": "January",
+            "calculation": {
+                "vegaExpression": "selectedMonth === 1 ? 'January' : selectedMonth === 2 ? 'February' : selectedMonth === 3 ? 'March' : selectedMonth === 4 ? 'April' : selectedMonth === 5 ? 'May' : selectedMonth === 6 ? 'June' : selectedMonth === 7 ? 'July' : selectedMonth === 8 ? 'August' : selectedMonth === 9 ? 'September' : selectedMonth === 10 ? 'October' : selectedMonth === 11 ? 'November' : 'December'"
+            }
+        },
+        {
+            "variableId": "eventsWithMeta",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["eventsData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "as": "dateStr",
+                        "expr": "datum.date"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "eventInfo",
+                        "expr": "{time: datum.time, title: datum.title, category: datum.category}"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "eventsByDateAgg",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["eventsWithMeta"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "groupby": ["dateStr"],
+                        "ops": ["values"],
+                        "fields": ["eventInfo"],
+                        "as": ["events"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "calendarData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["eventsByDateAgg"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "as": "firstDay",
+                        "expr": "datetime(selectedYear, selectedMonth - 1, 1)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "startWeekday",
+                        "expr": "day(datum.firstDay)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "daysInMonth",
+                        "expr": "selectedMonth === 2 ? (selectedYear % 4 === 0 && (selectedYear % 100 !== 0 || selectedYear % 400 === 0) ? 29 : 28) : (selectedMonth === 4 || selectedMonth === 6 || selectedMonth === 9 || selectedMonth === 11) ? 30 : 31"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "prevMonth",
+                        "expr": "selectedMonth === 1 ? 12 : selectedMonth - 1"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "prevMonthYear",
+                        "expr": "selectedMonth === 1 ? selectedYear - 1 : selectedYear"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "nextMonth",
+                        "expr": "selectedMonth === 12 ? 1 : selectedMonth + 1"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "nextMonthYear",
+                        "expr": "selectedMonth === 12 ? selectedYear + 1 : selectedYear"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "prevMonthDays",
+                        "expr": "datum.prevMonth === 2 ? (datum.prevMonthYear % 4 === 0 && (datum.prevMonthYear % 100 !== 0 || datum.prevMonthYear % 400 === 0) ? 29 : 28) : (datum.prevMonth === 4 || datum.prevMonth === 6 || datum.prevMonth === 9 || datum.prevMonth === 11) ? 30 : 31"
+                    },
+                    {
+                        "type": "sequence",
+                        "start": 0,
+                        "stop": 42,
+                        "as": "cellIdx"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "day",
+                        "expr": "datum.cellIdx < datum.startWeekday ? datum.prevMonthDays - datum.startWeekday + datum.cellIdx + 1 : datum.cellIdx >= datum.startWeekday + datum.daysInMonth ? datum.cellIdx - datum.startWeekday - datum.daysInMonth + 1 : datum.cellIdx - datum.startWeekday + 1"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "month",
+                        "expr": "datum.cellIdx < datum.startWeekday ? datum.prevMonth : datum.cellIdx >= datum.startWeekday + datum.daysInMonth ? datum.nextMonth : selectedMonth"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "year",
+                        "expr": "datum.cellIdx < datum.startWeekday ? datum.prevMonthYear : datum.cellIdx >= datum.startWeekday + datum.daysInMonth ? datum.nextMonthYear : selectedYear"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "isCurrentMonth",
+                        "expr": "datum.month === selectedMonth"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "isWeekend",
+                        "expr": "datum.cellIdx % 7 === 0 || datum.cellIdx % 7 === 6"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "dateStr",
+                        "expr": "datum.year + '-' + (datum.month < 10 ? '0' + datum.month : datum.month) + '-' + (datum.day < 10 ? '0' + datum.day : datum.day)"
+                    },
+                    {
+                        "type": "lookup",
+                        "from": "eventsByDateAgg",
+                        "key": "dateStr",
+                        "fields": ["dateStr"],
+                        "values": ["events"],
+                        "as": ["eventsArray"]
+                    },
+                    {
+                        "type": "formula",
+                        "as": "events",
+                        "expr": "datum.eventsArray || []"
+                    }
+                ]
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "main",
+            "elements": [
+                "# 📅 Month View Events Calendar",
+                "Track your events, meetings, and important dates throughout the month",
+                "",
+                {
+                    "type": "dropdown",
+                    "variableId": "selectedMonth",
+                    "label": "Month:",
+                    "options": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+                },
+                {
+                    "type": "dropdown",
+                    "variableId": "selectedYear",
+                    "label": "Year:",
+                    "options": ["2024", "2025", "2026"]
+                },
+                "## {{monthName}} {{selectedYear}}",
+                {
+                    "type": "treebark",
+                    "variableId": "calendarData",
+                    "template": {
+                        "table": {
+                            "class": "calendar-table",
+                            "$children": [
+                                {
+                                    "thead": {
+                                        "$children": [
+                                            {
+                                                "tr": {
+                                                    "$children": [
+                                                        {"th": "Sunday"},
+                                                        {"th": "Monday"},
+                                                        {"th": "Tuesday"},
+                                                        {"th": "Wednesday"},
+                                                        {"th": "Thursday"},
+                                                        {"th": "Friday"},
+                                                        {"th": "Saturday"}
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "tbody": {
+                                        "$children": [
+                                            {
+                                                "tr": {
+                                                    "$bind": ".[0:7]",
+                                                    "$children": [
+                                                        {
+                                                            "td": {
+                                                                "class": "{{isCurrentMonth ? '' : 'other-month'}} {{isWeekend ? 'weekend' : ''}}",
+                                                                "$children": [
+                                                                    {
+                                                                        "div": {
+                                                                            "class": "day-number",
+                                                                            "$children": ["{{day}}"]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "div": {
+                                                                            "class": "events-list",
+                                                                            "$bind": "events",
+                                                                            "$children": [
+                                                                                {
+                                                                                    "div": {
+                                                                                        "class": "event-item event-{{category}}",
+                                                                                        "$children": [
+                                                                                            {
+                                                                                                "span": {
+                                                                                                    "class": "event-time",
+                                                                                                    "$children": ["{{time}}"]
+                                                                                                }
+                                                                                            },
+                                                                                            "{{title}}"
+                                                                                        ]
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "tr": {
+                                                    "$bind": ".[7:14]",
+                                                    "$children": [
+                                                        {
+                                                            "td": {
+                                                                "class": "{{isCurrentMonth ? '' : 'other-month'}} {{isWeekend ? 'weekend' : ''}}",
+                                                                "$children": [
+                                                                    {
+                                                                        "div": {
+                                                                            "class": "day-number",
+                                                                            "$children": ["{{day}}"]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "div": {
+                                                                            "class": "events-list",
+                                                                            "$bind": "events",
+                                                                            "$children": [
+                                                                                {
+                                                                                    "div": {
+                                                                                        "class": "event-item event-{{category}}",
+                                                                                        "$children": [
+                                                                                            {
+                                                                                                "span": {
+                                                                                                    "class": "event-time",
+                                                                                                    "$children": ["{{time}}"]
+                                                                                                }
+                                                                                            },
+                                                                                            "{{title}}"
+                                                                                        ]
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "tr": {
+                                                    "$bind": ".[14:21]",
+                                                    "$children": [
+                                                        {
+                                                            "td": {
+                                                                "class": "{{isCurrentMonth ? '' : 'other-month'}} {{isWeekend ? 'weekend' : ''}}",
+                                                                "$children": [
+                                                                    {
+                                                                        "div": {
+                                                                            "class": "day-number",
+                                                                            "$children": ["{{day}}"]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "div": {
+                                                                            "class": "events-list",
+                                                                            "$bind": "events",
+                                                                            "$children": [
+                                                                                {
+                                                                                    "div": {
+                                                                                        "class": "event-item event-{{category}}",
+                                                                                        "$children": [
+                                                                                            {
+                                                                                                "span": {
+                                                                                                    "class": "event-time",
+                                                                                                    "$children": ["{{time}}"]
+                                                                                                }
+                                                                                            },
+                                                                                            "{{title}}"
+                                                                                        ]
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "tr": {
+                                                    "$bind": ".[21:28]",
+                                                    "$children": [
+                                                        {
+                                                            "td": {
+                                                                "class": "{{isCurrentMonth ? '' : 'other-month'}} {{isWeekend ? 'weekend' : ''}}",
+                                                                "$children": [
+                                                                    {
+                                                                        "div": {
+                                                                            "class": "day-number",
+                                                                            "$children": ["{{day}}"]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "div": {
+                                                                            "class": "events-list",
+                                                                            "$bind": "events",
+                                                                            "$children": [
+                                                                                {
+                                                                                    "div": {
+                                                                                        "class": "event-item event-{{category}}",
+                                                                                        "$children": [
+                                                                                            {
+                                                                                                "span": {
+                                                                                                    "class": "event-time",
+                                                                                                    "$children": ["{{time}}"]
+                                                                                                }
+                                                                                            },
+                                                                                            "{{title}}"
+                                                                                        ]
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "tr": {
+                                                    "$bind": ".[28:35]",
+                                                    "$children": [
+                                                        {
+                                                            "td": {
+                                                                "class": "{{isCurrentMonth ? '' : 'other-month'}} {{isWeekend ? 'weekend' : ''}}",
+                                                                "$children": [
+                                                                    {
+                                                                        "div": {
+                                                                            "class": "day-number",
+                                                                            "$children": ["{{day}}"]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "div": {
+                                                                            "class": "events-list",
+                                                                            "$bind": "events",
+                                                                            "$children": [
+                                                                                {
+                                                                                    "div": {
+                                                                                        "class": "event-item event-{{category}}",
+                                                                                        "$children": [
+                                                                                            {
+                                                                                                "span": {
+                                                                                                    "class": "event-time",
+                                                                                                    "$children": ["{{time}}"]
+                                                                                                }
+                                                                                            },
+                                                                                            "{{title}}"
+                                                                                        ]
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "tr": {
+                                                    "$bind": ".[35:42]",
+                                                    "$children": [
+                                                        {
+                                                            "td": {
+                                                                "class": "{{isCurrentMonth ? '' : 'other-month'}} {{isWeekend ? 'weekend' : ''}}",
+                                                                "$children": [
+                                                                    {
+                                                                        "div": {
+                                                                            "class": "day-number",
+                                                                            "$children": ["{{day}}"]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "div": {
+                                                                            "class": "events-list",
+                                                                            "$bind": "events",
+                                                                            "$children": [
+                                                                                {
+                                                                                    "div": {
+                                                                                        "class": "event-item event-{{category}}",
+                                                                                        "$children": [
+                                                                                            {
+                                                                                                "span": {
+                                                                                                    "class": "event-time",
+                                                                                                    "$children": ["{{time}}"]
+                                                                                                }
+                                                                                            },
+                                                                                            "{{title}}"
+                                                                                        ]
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                "### Event Legend",
+                "🟠 **Meeting** • 🔴 **Work** • 🟣 **Personal** • 🟢 **Holiday**"
+            ]
+        }
+    ]
+}
