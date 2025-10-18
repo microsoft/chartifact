@@ -395,9 +395,20 @@
             "initialValue": [],
             "calculation": {
                 "dataSourceNames": [
-                    "daysWithEvents"
+                    "eventsRaw"
                 ],
                 "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "ops": ["count"],
+                        "as": ["count"]
+                    },
+                    {
+                        "type": "sequence",
+                        "start": 0,
+                        "stop": 42,
+                        "as": "cellIdx"
+                    },
                     {
                         "type": "formula",
                         "as": "firstDayWeekday",
@@ -422,12 +433,6 @@
                         "type": "formula",
                         "as": "prevMonthDays",
                         "expr": "datum.prevMonth === 2 ? (datum.prevMonthYear % 4 === 0 && (datum.prevMonthYear % 100 !== 0 || datum.prevMonthYear % 400 === 0) ? 29 : 28) : (datum.prevMonth === 4 || datum.prevMonth === 6 || datum.prevMonth === 9 || datum.prevMonth === 11) ? 30 : 31"
-                    },
-                    {
-                        "type": "sequence",
-                        "start": 0,
-                        "stop": 42,
-                        "as": "cellIdx"
                     },
                     {
                         "type": "formula",
