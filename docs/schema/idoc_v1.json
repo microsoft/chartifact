@@ -5090,6 +5090,10 @@
         "editable": {
           "type": "boolean"
         },
+        "enableDownload": {
+          "description": "Enable download buttons for CSV, JSON, and HTML formats",
+          "type": "boolean"
+        },
         "tabulatorOptions": {
           "description": "Tabulator options (must be JSON stringify-able, so no callbacks allowed)",
           "type": "object"

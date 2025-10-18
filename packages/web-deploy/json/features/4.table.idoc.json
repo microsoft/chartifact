@@ -42,6 +42,17 @@
                             "width": 40
                         }
                     }
+                },
+                "### Table with Download Buttons",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "sampleData",
+                    "enableDownload": true,
+                    "tabulatorOptions": {
+                        "autoColumns": true,
+                        "layout": "fitColumns",
+                        "maxHeight": "200px"
+                    }
                 }
             ]
         }

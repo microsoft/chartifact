@@ -2727,8 +2727,8 @@ ${content}
             break;
           }
           case "tabulator": {
-            const { dataSourceName, variableId, tabulatorOptions, editable } = element;
-            const tabulatorSpec = { dataSourceName, tabulatorOptions, editable };
+            const { dataSourceName, variableId, tabulatorOptions, editable, enableDownload } = element;
+            const tabulatorSpec = { dataSourceName, tabulatorOptions, editable, enableDownload };
             if (variableId) {
               tabulatorSpec.variableId = variableId;
             }
@@ -2927,7 +2927,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const htmlBlob = new Blob([html], { type: "text/html" });
       const blobUrl = URL.createObjectURL(htmlBlob);
       const iframe = document.createElement("iframe");
-      iframe.sandbox = "allow-scripts allow-popups";
+      iframe.sandbox = "allow-scripts allow-popups allow-downloads";
       iframe.src = blobUrl;
       iframe.style.width = "100%";
       iframe.style.height = "100%";

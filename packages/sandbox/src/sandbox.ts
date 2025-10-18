@@ -78,7 +78,7 @@ export class Sandbox {
         const blobUrl = URL.createObjectURL(htmlBlob);
 
         const iframe = document.createElement('iframe');
-        iframe.sandbox = 'allow-scripts allow-popups';
+        iframe.sandbox = 'allow-scripts allow-popups allow-downloads';
         iframe.src = blobUrl;
         iframe.style.width = '100%';
         iframe.style.height = '100%';
