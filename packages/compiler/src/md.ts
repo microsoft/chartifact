@@ -339,8 +339,8 @@ function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: Ve
                     break;
                 }
                 case 'tabulator': {
-                    const { dataSourceName, variableId, tabulatorOptions, editable } = element;
-                    const tabulatorSpec: Plugins.TabulatorSpec = { dataSourceName, tabulatorOptions, editable };
+                    const { dataSourceName, variableId, tabulatorOptions, editable, enableDownload } = element;
+                    const tabulatorSpec: Plugins.TabulatorSpec = { dataSourceName, tabulatorOptions, editable, enableDownload };
                     if (variableId) {
                         tabulatorSpec.variableId = variableId;
                     }
