@@ -2552,7 +2552,7 @@ ${reconstitutedRules.join("\n\n")}
           delete options.selectableRows;
         }
         let buttonsHtml = "";
-        if (spec.editable || selectableRows) {
+        if (spec.editable || selectableRows || spec.enableDownload) {
           buttonsHtml = '<div class="tabulator-buttons">';
           if (spec.editable) {
             buttonsHtml += '<button type="button" class="tabulator-add-row">Add Row</button>';
@@ -2560,6 +2560,11 @@ ${reconstitutedRules.join("\n\n")}
           }
           if (selectableRows) {
             buttonsHtml += '<button type="button" class="tabulator-invert-selection">Invert Selection</button>';
+          }
+          if (spec.enableDownload) {
+            buttonsHtml += '<button type="button" class="tabulator-download" data-format="csv">Download CSV</button>';
+            buttonsHtml += '<button type="button" class="tabulator-download" data-format="json">Download JSON</button>';
+            buttonsHtml += '<button type="button" class="tabulator-download" data-format="html">Download HTML</button>';
           }
           buttonsHtml += "</div>";
         }
@@ -2701,6 +2706,18 @@ ${reconstitutedRules.join("\n\n")}
               });
             };
           }
+        }
+        if (spec.enableDownload) {
+          const downloadBtns = container.querySelectorAll(".tabulator-download");
+          downloadBtns.forEach((btn) => {
+            btn.onclick = () => {
+              const format = btn.getAttribute("data-format");
+              if (format) {
+                const filename = `table_${spec.dataSourceName || "data"}.${format}`;
+                table.download(format, filename);
+              }
+            };
+          });
         }
         return {
           ...tabulatorInstance,
