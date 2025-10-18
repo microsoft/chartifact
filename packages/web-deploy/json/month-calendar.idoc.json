@@ -540,7 +540,8 @@
                         "type": "pivot",
                         "groupby": ["weekNum"],
                         "field": "dayName",
-                        "value": "cellDay"
+                        "value": "cellDay",
+                        "op": "max"
                     }
                 ]
             }
