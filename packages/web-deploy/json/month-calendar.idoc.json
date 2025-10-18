@@ -538,6 +538,13 @@
                         "expr": "'' + datum.cellDay"
                     },
                     {
+                        "type": "collect",
+                        "sort": {
+                            "field": ["weekNum", "dayOfWeek"],
+                            "order": ["ascending", "ascending"]
+                        }
+                    },
+                    {
                         "type": "pivot",
                         "groupby": [
                             "weekNum"
@@ -650,7 +657,8 @@
                 "Final step groups the 42 cells into 6 weeks with 7 columns (Sun-Sat). Each row represents one week of the calendar.",
                 {
                     "type": "tabulator",
-                    "dataSourceName": "calendarWeeks"
+                    "dataSourceName": "calendarWeeks",
+                    "enableDownload": true
                 }
             ]
         },
