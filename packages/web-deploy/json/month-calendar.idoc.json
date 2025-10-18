@@ -537,16 +537,10 @@
                         "expr": "datum.dayOfWeek === 0 ? 'Sun' : datum.dayOfWeek === 1 ? 'Mon' : datum.dayOfWeek === 2 ? 'Tue' : datum.dayOfWeek === 3 ? 'Wed' : datum.dayOfWeek === 4 ? 'Thu' : datum.dayOfWeek === 5 ? 'Fri' : 'Sat'"
                     },
                     {
-                        "type": "formula",
-                        "as": "cellInfo",
-                        "expr": "datum.cellDay + (datum.event1 ? ' [' + datum.event1 + ']' : '')"
-                    },
-                    {
                         "type": "pivot",
                         "groupby": ["weekNum"],
                         "field": "dayName",
-                        "value": "cellInfo",
-                        "op": "min"
+                        "value": "cellDay"
                     }
                 ]
             }
