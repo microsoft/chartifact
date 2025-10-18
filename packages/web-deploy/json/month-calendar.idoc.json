@@ -546,7 +546,7 @@
                         "groupby": ["weekNum"],
                         "field": "dayName",
                         "value": "cellInfo",
-                        "op": "max"
+                        "op": "min"
                     }
                 ]
             }
