@@ -510,6 +510,46 @@
                     }
                 ]
             }
+        },
+        {
+            "variableId": "calendarWeeks",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": [
+                    "paddedDays"
+                ],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "as": "weekNum",
+                        "expr": "floor(datum.cellIdx / 7)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "dayOfWeek",
+                        "expr": "datum.cellIdx % 7"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "dayName",
+                        "expr": "datum.dayOfWeek === 0 ? 'Sun' : datum.dayOfWeek === 1 ? 'Mon' : datum.dayOfWeek === 2 ? 'Tue' : datum.dayOfWeek === 3 ? 'Wed' : datum.dayOfWeek === 4 ? 'Thu' : datum.dayOfWeek === 5 ? 'Fri' : 'Sat'"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "cellInfo",
+                        "expr": "datum.cellDay + (datum.event1 ? ' [' + datum.event1 + ']' : '')"
+                    },
+                    {
+                        "type": "pivot",
+                        "groupby": ["weekNum"],
+                        "field": "dayName",
+                        "value": "cellInfo",
+                        "op": "values"
+                    }
+                ]
+            }
         }
     ],
     "groups": [
@@ -647,24 +687,23 @@
         {
             "groupId": "step5",
             "elements": [
-                "## Step 5: Padded Calendar Grid (42 cells)",
-                "Final transform adds padding days from previous/next months to create a complete 6-week grid (42 cells = 6 weeks × 7 days). This is the data that feeds the calendar visualization below.",
+                "## Step 5: Calendar Grid by Week",
+                "Final step groups the 42 cells into 6 weeks with 7 columns (Sun-Sat). Each row represents one week of the calendar.",
                 {
                     "type": "tabulator",
-                    "dataSourceName": "paddedDays",
+                    "dataSourceName": "calendarWeeks",
                     "tabulatorOptions": {
                         "layout": "fitColumns",
                         "maxHeight": "400px",
-                        "pagination": "local",
-                        "paginationSize": 21,
                         "columns": [
-                            {"title": "Cell", "field": "cellIdx", "width": 60},
-                            {"title": "Day", "field": "cellDay", "width": 60},
-                            {"title": "Current Month?", "field": "isCurrentMonth", "width": 100, "formatter": "tickCross"},
-                            {"title": "Weekend?", "field": "isWeekend", "width": 90, "formatter": "tickCross"},
-                            {"title": "Event 1", "field": "event1"},
-                            {"title": "Event 2", "field": "event2"},
-                            {"title": "Event 3", "field": "event3"}
+                            {"title": "Week", "field": "weekNum", "width": 60},
+                            {"title": "Sun", "field": "Sun"},
+                            {"title": "Mon", "field": "Mon"},
+                            {"title": "Tue", "field": "Tue"},
+                            {"title": "Wed", "field": "Wed"},
+                            {"title": "Thu", "field": "Thu"},
+                            {"title": "Fri", "field": "Fri"},
+                            {"title": "Sat", "field": "Sat"}
                         ]
                     }
                 }
