@@ -5087,6 +5087,18 @@
           "description": "Name of the data source to use for incoming data (output data is available via the variableId of this table element)",
           "type": "string"
         },
+        "downloadFormats": {
+          "description": "Enable download buttons for the specified formats. Supported formats: 'csv', 'json', 'html'",
+          "items": {
+            "enum": [
+              "csv",
+              "json",
+              "html"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
         "editable": {
           "type": "boolean"
         },

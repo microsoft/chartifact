@@ -189,6 +189,9 @@ export interface TabulatorElementProps extends OptionalVariableControl {
   /** Tabulator options (must be JSON stringify-able, so no callbacks allowed) */
   tabulatorOptions?: object;
 
+  /** Enable download buttons for the specified formats. Supported formats: 'csv', 'json', 'html' */
+  downloadFormats?: ('csv' | 'json' | 'html')[];
+
   /**
    * Example table options
     

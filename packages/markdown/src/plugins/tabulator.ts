@@ -89,7 +89,7 @@ export const tabulatorPlugin: Plugin<TabulatorSpec> = {
 
             // Build all buttons in one HTML string
             let buttonsHtml = '';
-            if (spec.editable || selectableRows) {
+            if (spec.editable || selectableRows || spec.downloadFormats) {
                 buttonsHtml = '<div class="tabulator-buttons">';
                 
                 if (spec.editable) {
@@ -99,6 +99,12 @@ export const tabulatorPlugin: Plugin<TabulatorSpec> = {
                 
                 if (selectableRows) {
                     buttonsHtml += '<button type="button" class="tabulator-invert-selection">Invert Selection</button>';
+                }
+                
+                if (spec.downloadFormats && spec.downloadFormats.length > 0) {
+                    spec.downloadFormats.forEach(format => {
+                        buttonsHtml += `<button type="button" class="tabulator-download" data-format="${format}">Download ${format.toUpperCase()}</button>`;
+                    });
                 }
                 
                 buttonsHtml += '</div>';
@@ -273,6 +279,19 @@ export const tabulatorPlugin: Plugin<TabulatorSpec> = {
                         });
                     };
                 }
+            }
+
+            if (spec.downloadFormats && spec.downloadFormats.length > 0) {
+                const downloadBtns = container.querySelectorAll('.tabulator-download') as NodeListOf<HTMLButtonElement>;
+                downloadBtns.forEach(btn => {
+                    btn.onclick = () => {
+                        const format = btn.getAttribute('data-format') as 'csv' | 'json' | 'html';
+                        if (format) {
+                            const filename = `table_${spec.dataSourceName || 'data'}.${format}`;
+                            table.download(format, filename);
+                        }
+                    };
+                });
             }
 
             return {

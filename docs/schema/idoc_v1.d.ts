@@ -250,6 +250,8 @@ interface TabulatorElementProps extends OptionalVariableControl {
     editable?: boolean;
     /** Tabulator options (must be JSON stringify-able, so no callbacks allowed) */
     tabulatorOptions?: object;
+    /** Enable download buttons for the specified formats. Supported formats: 'csv', 'json', 'html' */
+    downloadFormats?: ('csv' | 'json' | 'html')[];
 }
 /**
  * Union type for all possible interactive elements
