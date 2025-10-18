@@ -328,7 +328,7 @@
                     {
                         "type": "formula",
                         "as": "isCurrentMonth",
-                        "expr": "datum.month === selectedMonth"
+                        "expr": "datum.month === selectedMonth ? 1 : 0"
                     }
                 ]
             }
@@ -529,11 +529,6 @@
                     },
                     {
                         "type": "formula",
-                        "as": "dayName",
-                        "expr": "datum.dayOfWeek === 0 ? 'sun' : datum.dayOfWeek === 1 ? 'mon' : datum.dayOfWeek === 2 ? 'tue' : datum.dayOfWeek === 3 ? 'wed' : datum.dayOfWeek === 4 ? 'thu' : datum.dayOfWeek === 5 ? 'fri' : 'sat'"
-                    },
-                    {
-                        "type": "formula",
                         "as": "cellDayStr",
                         "expr": "'' + datum.cellDay"
                     },
@@ -546,11 +541,17 @@
                     },
                     {
                         "type": "pivot",
-                        "groupby": [
-                            "weekNum"
-                        ],
-                        "field": "dayName",
-                        "value": "cellDayStr"
+                        "groupby": ["weekNum", "isCurrentMonth"],
+                        "field": "dayOfWeek",
+                        "value": "cellDayStr",
+                        "op": "max"
+                    },
+                    {
+                        "type": "aggregate",
+                        "groupby": ["weekNum"],
+                        "ops": ["max", "max", "max", "max", "max", "max", "max", "sum"],
+                        "fields": ["0", "1", "2", "3", "4", "5", "6", "isCurrentMonth"],
+                        "as": ["0", "1", "2", "3", "4", "5", "6", "currentMonthDays"]
                     }
                 ]
             }
