@@ -266,15 +266,6 @@
                 ],
                 "dataFrameTransformations": [
                     {
-                        "type": "aggregate",
-                        "ops": [
-                            "count"
-                        ],
-                        "as": [
-                            "count"
-                        ]
-                    },
-                    {
                         "type": "sequence",
                         "start": -7,
                         "stop": 39,
@@ -334,224 +325,47 @@
             }
         },
         {
-            "variableId": "daysWithEvents",
-            "type": "object",
-            "isArray": true,
-            "initialValue": [],
-            "calculation": {
-                "dataSourceNames": [
-                    "allDaysOfMonth",
-                    "eventsGrouped"
-                ],
-                "dataFrameTransformations": [
-                    {
-                        "type": "lookup",
-                        "from": "eventsGrouped",
-                        "key": "date",
-                        "fields": [
-                            "dateKey"
-                        ],
-                        "values": [
-                            "times",
-                            "titles",
-                            "categories"
-                        ],
-                        "as": [
-                            "eventTimes",
-                            "eventTitles",
-                            "eventCategories"
-                        ]
-                    },
-                    {
-                        "type": "formula",
-                        "as": "events",
-                        "expr": "datum.eventTimes == null ? [] : datum.eventTimes"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "eventCount",
-                        "expr": "datum.events.length"
-                    }
-                ]
-            }
-        },
-        {
-            "variableId": "paddedDays",
-            "type": "object",
-            "isArray": true,
-            "initialValue": [],
-            "calculation": {
-                "dataSourceNames": [
-                    "daysWithEvents"
-                ],
-                "dataFrameTransformations": [
-                    {
-                        "type": "aggregate",
-                        "ops": [
-                            "count"
-                        ],
-                        "as": [
-                            "count"
-                        ]
-                    },
-                    {
-                        "type": "sequence",
-                        "start": 0,
-                        "stop": 42,
-                        "as": "cellIdx"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "firstDayWeekday",
-                        "expr": "day(datetime(selectedYear, selectedMonth - 1, 1))"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "daysInMonth",
-                        "expr": "selectedMonth === 2 ? (selectedYear % 4 === 0 && (selectedYear % 100 !== 0 || selectedYear % 400 === 0) ? 29 : 28) : (selectedMonth === 4 || selectedMonth === 6 || selectedMonth === 9 || selectedMonth === 11) ? 30 : 31"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "prevMonth",
-                        "expr": "selectedMonth === 1 ? 12 : selectedMonth - 1"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "prevMonthYear",
-                        "expr": "selectedMonth === 1 ? selectedYear - 1 : selectedYear"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "prevMonthDays",
-                        "expr": "datum.prevMonth === 2 ? (datum.prevMonthYear % 4 === 0 && (datum.prevMonthYear % 100 !== 0 || datum.prevMonthYear % 400 === 0) ? 29 : 28) : (datum.prevMonth === 4 || datum.prevMonth === 6 || datum.prevMonth === 9 || datum.prevMonth === 11) ? 30 : 31"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "cellDay",
-                        "expr": "datum.cellIdx < datum.firstDayWeekday ? datum.prevMonthDays - datum.firstDayWeekday + datum.cellIdx + 1 : datum.cellIdx >= datum.firstDayWeekday + datum.daysInMonth ? datum.cellIdx - datum.firstDayWeekday - datum.daysInMonth + 1 : datum.cellIdx - datum.firstDayWeekday + 1"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "isCurrentMonth",
-                        "expr": "datum.cellIdx >= datum.firstDayWeekday && datum.cellIdx < datum.firstDayWeekday + datum.daysInMonth"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "isWeekend",
-                        "expr": "datum.cellIdx % 7 === 0 || datum.cellIdx % 7 === 6"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "lookupKey",
-                        "expr": "datum.isCurrentMonth ? (selectedYear + '-' + (selectedMonth < 10 ? '0' + selectedMonth : selectedMonth) + '-' + (datum.cellDay < 10 ? '0' + datum.cellDay : datum.cellDay)) : null"
-                    },
-                    {
-                        "type": "lookup",
-                        "from": "daysWithEvents",
-                        "key": "dateKey",
-                        "fields": [
-                            "lookupKey"
-                        ],
-                        "values": [
-                            "eventTimes",
-                            "eventTitles",
-                            "eventCategories",
-                            "eventCount"
-                        ],
-                        "as": [
-                            "cellEventTimes",
-                            "cellEventTitles",
-                            "cellEventCats",
-                            "cellEventCount"
-                        ]
-                    },
-                    {
-                        "type": "formula",
-                        "as": "event1",
-                        "expr": "datum.cellEventTimes && datum.cellEventTimes.length > 0 ? datum.cellEventTimes[0] + ' ' + datum.cellEventTitles[0] : null"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "event1Cat",
-                        "expr": "datum.cellEventCats && datum.cellEventCats.length > 0 ? datum.cellEventCats[0] : null"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "event2",
-                        "expr": "datum.cellEventTimes && datum.cellEventTimes.length > 1 ? datum.cellEventTimes[1] + ' ' + datum.cellEventTitles[1] : null"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "event2Cat",
-                        "expr": "datum.cellEventCats && datum.cellEventCats.length > 1 ? datum.cellEventCats[1] : null"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "event3",
-                        "expr": "datum.cellEventTimes && datum.cellEventTimes.length > 2 ? datum.cellEventTimes[2] + ' ' + datum.cellEventTitles[2] : null"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "event3Cat",
-                        "expr": "datum.cellEventCats && datum.cellEventCats.length > 2 ? datum.cellEventCats[2] : null"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "moreEvents",
-                        "expr": "datum.cellEventCount && datum.cellEventCount > 3 ? '+' + (datum.cellEventCount - 3) + ' more' : null"
-                    },
-                    {
-                        "type": "filter",
-                        "expr": "datum.cellIdx < 42"
-                    }
-                ]
-            }
-        },
-        {
             "variableId": "calendarWeeks",
             "type": "object",
             "isArray": true,
             "initialValue": [],
             "calculation": {
                 "dataSourceNames": [
-                    "paddedDays"
+                    "allDaysOfMonth"
                 ],
                 "dataFrameTransformations": [
                     {
                         "type": "formula",
-                        "as": "weekNum",
-                        "expr": "floor(datum.cellIdx / 7)"
-                    },
-                    {
-                        "type": "formula",
-                        "as": "dayOfWeek",
-                        "expr": "datum.cellIdx % 7"
-                    },
-                    {
-                        "type": "formula",
                         "as": "cellDayStr",
-                        "expr": "'' + datum.cellDay"
+                        "expr": "'' + datum.dayOfMonth"
                     },
                     {
                         "type": "collect",
                         "sort": {
-                            "field": ["weekNum", "dayOfWeek"],
+                            "field": ["week", "weekday"],
                             "order": ["ascending", "ascending"]
                         }
                     },
                     {
                         "type": "pivot",
-                        "groupby": ["weekNum", "isCurrentMonth"],
-                        "field": "dayOfWeek",
+                        "groupby": ["week", "isCurrentMonth"],
+                        "field": "weekday",
                         "value": "cellDayStr",
                         "op": "max"
                     },
                     {
                         "type": "aggregate",
-                        "groupby": ["weekNum"],
+                        "groupby": ["week"],
                         "ops": ["max", "max", "max", "max", "max", "max", "max", "sum"],
                         "fields": ["0", "1", "2", "3", "4", "5", "6", "isCurrentMonth"],
                         "as": ["0", "1", "2", "3", "4", "5", "6", "currentMonthDays"]
+                    },
+                    {
+                        "type": "collect",
+                        "sort": {
+                            "field": ["week"],
+                            "order": ["ascending"]
+                        }
                     }
                 ]
             }
@@ -630,28 +444,6 @@
             ]
         },
         {
-            "groupId": "step4",
-            "elements": [
-                "## Step 4: Days with Events Joined",
-                "Using `lookup` transform to join events arrays to each day. Days without events have empty arrays.",
-                {
-                    "type": "tabulator",
-                    "dataSourceName": "daysWithEvents"
-                }
-            ]
-        },
-        {
-            "groupId": "step4b",
-            "elements": [
-                "## Step 4b: Padded 42-Cell Grid",
-                "Expanded to 42 cells (6 weeks \u00d7 7 days) including previous/next month days for padding. Each cell has its day number, events, and metadata.",
-                {
-                    "type": "tabulator",
-                    "dataSourceName": "paddedDays"
-                }
-            ]
-        },
-        {
             "groupId": "step5",
             "elements": [
                 "## Step 5: Calendar Grid by Week",
@@ -718,25 +510,25 @@
                                                         {
                                                             "tr": [
                                                                 {
-                                                                    "td": "{{sun}}"
+                                                                    "td": "{{0}}"
                                                                 },
                                                                 {
-                                                                    "td": "{{mon}}"
+                                                                    "td": "{{1}}"
                                                                 },
                                                                 {
-                                                                    "td": "{{tue}}"
+                                                                    "td": "{{2}}"
                                                                 },
                                                                 {
-                                                                    "td": "{{wed}}"
+                                                                    "td": "{{3}}"
                                                                 },
                                                                 {
-                                                                    "td": "{{thu}}"
+                                                                    "td": "{{4}}"
                                                                 },
                                                                 {
-                                                                    "td": "{{fri}}"
+                                                                    "td": "{{5}}"
                                                                 },
                                                                 {
-                                                                    "td": "{{sat}}"
+                                                                    "td": "{{6}}"
                                                                 }
                                                             ]
                                                         }
