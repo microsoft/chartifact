@@ -206,6 +206,16 @@
             "type": "formula",
             "as": "event1",
             "expr": "datum.eventTimes && datum.eventTimes.length > 0 ? datum.eventTimes[0] + ' ' + datum.eventTitles[0] : null"
+          },
+          {
+            "type": "formula",
+            "as": "firstEventTitle",
+            "expr": "datum.eventTitles && datum.eventTitles.length > 0 ? datum.eventTitles[0] : null"
+          },
+          {
+            "type": "formula",
+            "as": "firstEventTime",
+            "expr": "datum.eventTimes && datum.eventTimes.length > 0 ? datum.eventTimes[0] : null"
           }
         ]
       }
@@ -407,7 +417,7 @@
                                                 "$then": {
                                                   "div": {
                                                     "$attr": {
-                                                      "style": "font-size: 0.75em; color: #666"
+                                                      "style": "font-size: 0.75em; color: #666; margin-top: 2px"
                                                     },
                                                     "$children": [
                                                       "{{eventCount}} event(s)"
@@ -418,16 +428,31 @@
                                             },
                                             {
                                               "$if": {
-                                                "$check": "eventTitles",
+                                                "$check": "firstEventTitle",
                                                 "$then": {
-                                                  "div": {
-                                                    "$attr": {
-                                                      "style": "font-size: 0.7em; margin-top: 2px; color: #333"
+                                                  "div": [
+                                                    {
+                                                      "span": {
+                                                        "$attr": {
+                                                          "style": "font-size: 0.7em; color: #999"
+                                                        },
+                                                        "$children": [
+                                                          "{{firstEventTime}}"
+                                                        ]
+                                                      }
                                                     },
-                                                    "$children": [
-                                                      "{{eventTitles.0}}"
-                                                    ]
-                                                  }
+                                                    " ",
+                                                    {
+                                                      "span": {
+                                                        "$attr": {
+                                                          "style": "font-size: 0.7em; color: #333"
+                                                        },
+                                                        "$children": [
+                                                          "{{firstEventTitle}}"
+                                                        ]
+                                                      }
+                                                    }
+                                                  ]
                                                 }
                                               }
                                             }
