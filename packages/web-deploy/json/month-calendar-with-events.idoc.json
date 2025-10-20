@@ -271,9 +271,25 @@
       ]
     },
     {
+      "groupId": "rawEvents",
+      "elements": [
+        "## Raw Events Data",
+        "This is the source data - a list of events with dates, times, titles, and categories.",
+        {
+          "type": "tabulator",
+          "dataSourceName": "eventsRaw",
+          "tabulatorOptions": {
+            "autoColumns": true,
+            "layout": "fitColumns",
+            "maxHeight": "300px"
+          }
+        }
+      ]
+    },
+    {
       "groupId": "step1",
       "elements": [
-        "## Step 1: All Days of Calendar Surrounding the Selected Month",
+        "## Step 2: All Days of Calendar Surrounding the Selected Month",
         "Using `sequence` transform to generate all days in the selected month (7 days before and 7 after, then filtered to show Sunday to Saturday).",
         {
           "type": "tabulator",
@@ -289,7 +305,7 @@
     {
       "groupId": "step2",
       "elements": [
-        "## Step 2: Events Grouped by Date",
+        "## Step 3: Events Grouped by Date",
         "Using `aggregate` transform to group multiple events per day into arrays.",
         {
           "type": "tabulator",
@@ -305,7 +321,7 @@
     {
       "groupId": "step3",
       "elements": [
-        "## Step 3: Calendar with Events Joined",
+        "## Step 4: Calendar with Events Joined",
         "Using `lookup` transform to join events arrays to each calendar day.",
         {
           "type": "tabulator",
@@ -321,7 +337,7 @@
     {
       "groupId": "calendar",
       "elements": [
-        "## Step 4: Calendar View (Treebark / HTML table)",
+        "## Step 5: Calendar View (Treebark / HTML table)",
         {
           "type": "treebark",
           "variableId": "calendarMonthByWeek",
