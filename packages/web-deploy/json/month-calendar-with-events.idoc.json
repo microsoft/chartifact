@@ -378,7 +378,7 @@
                                             {
                                               "div": {
                                                 "$attr": {
-                                                  "style": "font-weight: bold"
+                                                  "style": "font-weight: bold; margin-bottom: 4px"
                                                 },
                                                 "$children": [
                                                   "{{dayOfMonth}}"
@@ -387,14 +387,29 @@
                                             },
                                             {
                                               "$if": {
-                                                "$check": "event1",
+                                                "$check": "eventCount",
                                                 "$then": {
                                                   "div": {
                                                     "$attr": {
-                                                      "style": "font-size: 0.8em; margin-top: 2px"
+                                                      "style": "font-size: 0.75em; color: #666"
                                                     },
                                                     "$children": [
-                                                      "{{event1}}"
+                                                      "{{eventCount}} event(s)"
+                                                    ]
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            {
+                                              "$if": {
+                                                "$check": "eventTitles",
+                                                "$then": {
+                                                  "div": {
+                                                    "$attr": {
+                                                      "style": "font-size: 0.7em; margin-top: 2px; color: #333"
+                                                    },
+                                                    "$children": [
+                                                      "{{eventTitles.0}}"
                                                     ]
                                                   }
                                                 }
