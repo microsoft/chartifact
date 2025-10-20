@@ -1,0 +1,212 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "Variable Inspector Demo",
+    "variables": [
+        {
+            "variableId": "userName",
+            "type": "string",
+            "initialValue": "Alice"
+        },
+        {
+            "variableId": "temperature",
+            "type": "number",
+            "initialValue": 20
+        },
+        {
+            "variableId": "isEnabled",
+            "type": "boolean",
+            "initialValue": true
+        },
+        {
+            "variableId": "selectedItems",
+            "type": "string",
+            "isArray": true,
+            "initialValue": ["apple", "banana", "cherry"]
+        },
+        {
+            "variableId": "config",
+            "type": "object",
+            "initialValue": {
+                "theme": "dark",
+                "fontSize": 14,
+                "features": {
+                    "autosave": true,
+                    "notifications": false
+                }
+            }
+        },
+        {
+            "variableId": "doubledTemp",
+            "type": "number",
+            "initialValue": 40,
+            "calculation": {
+                "vegaExpression": "temperature * 2"
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "main",
+            "elements": [
+                "# Variable Inspector",
+                "",
+                "The inspector plugin allows you to examine the current values of variables in real-time. This is useful for debugging and understanding how variables change as you interact with the document.",
+                "",
+                "---",
+                "",
+                "## String Variable",
+                "Use the textbox below to change the value:",
+                {
+                    "type": "textbox",
+                    "variableId": "userName",
+                    "label": "User Name"
+                },
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "userName",
+                    "label": "userName"
+                },
+                "",
+                "---",
+                "",
+                "## Number Variable",
+                "Adjust the slider to see the value change:",
+                {
+                    "type": "slider",
+                    "variableId": "temperature",
+                    "label": "Temperature (°C)",
+                    "min": -10,
+                    "max": 50,
+                    "step": 1
+                },
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "temperature",
+                    "label": "temperature"
+                },
+                "",
+                "---",
+                "",
+                "## Boolean Variable",
+                "Toggle the checkbox:",
+                {
+                    "type": "checkbox",
+                    "variableId": "isEnabled",
+                    "label": "Enable Feature"
+                },
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "isEnabled",
+                    "label": "isEnabled"
+                },
+                "",
+                "---",
+                "",
+                "## Array Variable",
+                "Select multiple items:",
+                {
+                    "type": "dropdown",
+                    "variableId": "selectedItems",
+                    "label": "Selected Items",
+                    "options": ["apple", "banana", "cherry", "date", "elderberry"],
+                    "multiple": true,
+                    "size": 5
+                },
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "selectedItems",
+                    "label": "selectedItems"
+                },
+                "",
+                "---",
+                "",
+                "## Object Variable",
+                "This is a complex object with nested properties:",
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "config",
+                    "label": "config"
+                },
+                "",
+                "---",
+                "",
+                "## Calculated Variable",
+                "This variable is calculated from the temperature (temperature × 2):",
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "doubledTemp",
+                    "label": "doubledTemp (calculated)"
+                },
+                "",
+                "---",
+                "",
+                "## Use Cases",
+                "",
+                "The inspector is particularly useful for:",
+                "- **Debugging**: See exactly what values variables have at any moment",
+                "- **Development**: Verify that calculations and data transformations work correctly",
+                "- **Documentation**: Show users the current state of the system",
+                "- **Learning**: Understand how variables change when interacting with controls"
+            ]
+        }
+    ],
+    "style": {
+        "css": [
+            "body {",
+            "  max-width: 800px;",
+            "  margin: 0 auto;",
+            "  padding: 2em;",
+            "  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;",
+            "}",
+            "",
+            ".inspector {",
+            "  background-color: #f5f5f5;",
+            "  border: 1px solid #ddd;",
+            "  border-radius: 4px;",
+            "  padding: 12px;",
+            "  margin: 10px 0;",
+            "}",
+            "",
+            ".inspector-label {",
+            "  font-weight: 600;",
+            "  color: #333;",
+            "  margin-bottom: 8px;",
+            "  font-size: 0.9em;",
+            "}",
+            "",
+            ".inspector-value {",
+            "  background-color: #fff;",
+            "  border: 1px solid #ccc;",
+            "  border-radius: 3px;",
+            "  padding: 8px;",
+            "  margin: 0;",
+            "  font-family: 'Courier New', Courier, monospace;",
+            "  font-size: 0.9em;",
+            "  color: #0066cc;",
+            "  overflow-x: auto;",
+            "}",
+            "",
+            ".vega-bindings {",
+            "  margin: 15px 0;",
+            "}",
+            "",
+            "hr {",
+            "  margin: 2em 0;",
+            "  border: none;",
+            "  border-top: 1px solid #e0e0e0;",
+            "}"
+        ]
+    }
+}

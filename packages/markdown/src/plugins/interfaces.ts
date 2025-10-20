@@ -7,6 +7,7 @@ export { CsvSpec } from './csv.js';
 export { DropdownSpec } from './dropdown.js';
 export { DsvSpec } from './dsv.js';
 export { ImageSpec } from './image.js';
+export { InspectorSpec } from './inspector.js';
 export { MermaidSpec } from './mermaid.js';
 export { NumberSpec } from './number.js';
 export { PresetsSpec } from './presets.js';
@@ -25,6 +26,7 @@ export type PluginNames =
     'dsv' |
     'image' |
     'google-fonts' |
+    'inspector' |
     'mermaid' |
     'number' |
     'placeholders' |
