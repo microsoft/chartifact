@@ -169,6 +169,53 @@
       }
     },
     {
+      "variableId": "eventsAsObjects",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "eventsGrouped"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "formula",
+            "as": "events",
+            "expr": "datum.times ? sequence(0, length(datum.times) - 1) : []"
+          },
+          {
+            "type": "flatten",
+            "fields": [
+              "events"
+            ],
+            "as": [
+              "eventIndex"
+            ]
+          },
+          {
+            "type": "formula",
+            "as": "event",
+            "expr": "{time: datum.times[datum.eventIndex], title: datum.titles[datum.eventIndex], category: datum.categories[datum.eventIndex]}"
+          },
+          {
+            "type": "aggregate",
+            "groupby": [
+              "date"
+            ],
+            "ops": [
+              "values"
+            ],
+            "fields": [
+              "event"
+            ],
+            "as": [
+              "eventObjects"
+            ]
+          }
+        ]
+      }
+    },
+    {
       "variableId": "calendarWithEvents",
       "type": "object",
       "isArray": true,
@@ -176,46 +223,27 @@
       "calculation": {
         "dataSourceNames": [
           "calendarMonthList",
-          "eventsGrouped"
+          "eventsAsObjects"
         ],
         "dataFrameTransformations": [
           {
             "type": "lookup",
-            "from": "eventsGrouped",
+            "from": "eventsAsObjects",
             "key": "date",
             "fields": [
               "dateKey"
             ],
             "values": [
-              "times",
-              "titles",
-              "categories"
+              "eventObjects"
             ],
             "as": [
-              "eventTimes",
-              "eventTitles",
-              "eventCategories"
+              "events"
             ]
           },
           {
             "type": "formula",
             "as": "eventCount",
-            "expr": "datum.eventTimes ? datum.eventTimes.length : 0"
-          },
-          {
-            "type": "formula",
-            "as": "event1",
-            "expr": "datum.eventTimes && datum.eventTimes.length > 0 ? datum.eventTimes[0] + ' ' + datum.eventTitles[0] : null"
-          },
-          {
-            "type": "formula",
-            "as": "firstEventTitle",
-            "expr": "datum.eventTitles && datum.eventTitles.length > 0 ? datum.eventTitles[0] : null"
-          },
-          {
-            "type": "formula",
-            "as": "firstEventTime",
-            "expr": "datum.eventTimes && datum.eventTimes.length > 0 ? datum.eventTimes[0] : null"
+            "expr": "datum.events ? datum.events.length : 0"
           }
         ]
       }
@@ -299,7 +327,7 @@
     {
       "groupId": "step1",
       "elements": [
-        "## Step 2: All Days of Calendar Surrounding the Selected Month",
+        "## Step 1: All Days of Calendar Surrounding the Selected Month",
         "Using `sequence` transform to generate all days in the selected month (7 days before and 7 after, then filtered to show Sunday to Saturday).",
         {
           "type": "tabulator",
@@ -315,11 +343,27 @@
     {
       "groupId": "step2",
       "elements": [
-        "## Step 3: Events Grouped by Date",
+        "## Step 2: Events Grouped by Date",
         "Using `aggregate` transform to group multiple events per day into arrays.",
         {
           "type": "tabulator",
           "dataSourceName": "eventsGrouped",
+          "tabulatorOptions": {
+            "autoColumns": true,
+            "layout": "fitColumns",
+            "maxHeight": "300px"
+          }
+        }
+      ]
+    },
+    {
+      "groupId": "step2b",
+      "elements": [
+        "## Step 3: Events as Objects",
+        "Converting the grouped events into an array of event objects for easier iteration.",
+        {
+          "type": "tabulator",
+          "dataSourceName": "eventsAsObjects",
           "tabulatorOptions": {
             "autoColumns": true,
             "layout": "fitColumns",
@@ -420,15 +464,15 @@
                                             },
                                             {
                                               "$if": {
-                                                "$check": "eventTitles",
+                                                "$check": "events",
                                                 "$then": {
                                                   "div": {
-                                                    "$bind": "eventTitles",
+                                                    "$bind": "events",
                                                     "$children": [
                                                       {
                                                         "div": {
                                                           "small": [
-                                                            "{{.}}"
+                                                            "{{time}} - {{title}}"
                                                           ]
                                                         }
                                                       }
@@ -450,8 +494,7 @@
                       ]
                     }
                   }
-                ],
-                "class": "calendar-wrapper"
+                ]
               }
             ]
           }
@@ -779,16 +822,5 @@
         }
       ]
     }
-  ],
-  "style": {
-    "css": [
-      "body { font-family: system-ui, -apple-system, sans-serif; }",
-      ".calendar-wrapper table { border-collapse: collapse; width: 100%; }",
-      ".calendar-wrapper th, .calendar-wrapper td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: top; }",
-      ".calendar-wrapper th { background-color: #f5f5f5; font-weight: bold; text-align: center; }",
-      ".calendar-wrapper td { min-height: 80px; }",
-      ".calendar-wrapper strong { font-size: 1.2em; display: block; margin-bottom: 4px; }",
-      ".calendar-wrapper small { font-size: 0.75em; color: #666; display: block; margin-top: 2px; }"
-    ]
-  }
+  ]
 }
