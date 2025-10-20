@@ -1,0 +1,826 @@
+{
+  "$schema": "../../../docs/schema/idoc_v1.json",
+  "title": "Month View Events Calendar",
+  "variables": [
+    {
+      "variableId": "selectedYear",
+      "type": "number",
+      "initialValue": 2025
+    },
+    {
+      "variableId": "selectedMonth",
+      "type": "number",
+      "initialValue": 1
+    },
+    {
+      "variableId": "calendarMonthList",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [],
+        "dataFrameTransformations": [
+          {
+            "type": "sequence",
+            "start": -7,
+            "stop": 38,
+            "as": "dayOffset"
+          },
+          {
+            "type": "formula",
+            "as": "selectedDate",
+            "expr": "datetime(selectedYear, selectedMonth - 1)"
+          },
+          {
+            "type": "formula",
+            "as": "date",
+            "expr": "timeOffset('day', datum.selectedDate, datum.dayOffset)"
+          },
+          {
+            "type": "formula",
+            "expr": "day(datum.selectedDate)",
+            "as": "firstWeekdayOffset"
+          },
+          {
+            "type": "formula",
+            "as": "dayOfMonth",
+            "expr": "date(datum.date)"
+          },
+          {
+            "type": "formula",
+            "as": "year",
+            "expr": "year(datum.date)"
+          },
+          {
+            "type": "formula",
+            "as": "weekday",
+            "expr": "day(datum.date)"
+          },
+          {
+            "type": "formula",
+            "as": "month",
+            "expr": "month(datum.date) + 1"
+          },
+          {
+            "type": "formula",
+            "as": "dateKey",
+            "expr": "datum.year + '-' + (datum.month < 10 ? '0' + datum.month : datum.month) + '-' + (datum.dayOfMonth < 10 ? '0' + datum.dayOfMonth : datum.dayOfMonth)"
+          },
+          {
+            "type": "formula",
+            "as": "isSunday",
+            "expr": "datum.weekday === 0 ? 1 : 0"
+          },
+          {
+            "type": "window",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "isSunday"
+            ],
+            "as": [
+              "sundayCount"
+            ],
+            "frame": [
+              null,
+              0
+            ]
+          },
+          {
+            "type": "formula",
+            "as": "inCurrentMonth",
+            "expr": "month(datum.date) === selectedMonth - 1"
+          },
+          {
+            "type": "formula",
+            "as": "precedingWeek",
+            "expr": "datum.weekday - datum.firstWeekdayOffset > datum.dayOffset"
+          },
+          {
+            "type": "formula",
+            "as": "nextMonth",
+            "expr": "datum.dayOfMonth < 32 && datum.dayOffset > 0 && !datum.inCurrentMonth"
+          },
+          {
+            "type": "formula",
+            "expr": "datum.nextMonth && datum.weekday === 0",
+            "as": "succeedingSunday"
+          },
+          {
+            "type": "window",
+            "ops": [
+              "sum"
+            ],
+            "fields": [
+              "succeedingSunday"
+            ],
+            "as": [
+              "succeedingWeek"
+            ],
+            "frame": [
+              null,
+              0
+            ]
+          },
+          {
+            "type": "filter",
+            "expr": "!datum.precedingWeek"
+          },
+          {
+            "type": "filter",
+            "expr": "!datum.succeedingWeek"
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "eventsGrouped",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "eventsRaw"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "aggregate",
+            "groupby": [
+              "date"
+            ],
+            "ops": [
+              "values",
+              "values",
+              "values"
+            ],
+            "fields": [
+              "time",
+              "title",
+              "category"
+            ],
+            "as": [
+              "times",
+              "titles",
+              "categories"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "eventsAsObjects",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "eventsGrouped"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "formula",
+            "as": "events",
+            "expr": "datum.times ? sequence(0, length(datum.times) - 1) : []"
+          },
+          {
+            "type": "flatten",
+            "fields": [
+              "events"
+            ],
+            "as": [
+              "eventIndex"
+            ]
+          },
+          {
+            "type": "formula",
+            "as": "event",
+            "expr": "{time: datum.times[datum.eventIndex], title: datum.titles[datum.eventIndex], category: datum.categories[datum.eventIndex]}"
+          },
+          {
+            "type": "aggregate",
+            "groupby": [
+              "date"
+            ],
+            "ops": [
+              "values"
+            ],
+            "fields": [
+              "event"
+            ],
+            "as": [
+              "eventObjects"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "calendarWithEvents",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "calendarMonthList",
+          "eventsAsObjects"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "lookup",
+            "from": "eventsAsObjects",
+            "key": "date",
+            "fields": [
+              "dateKey"
+            ],
+            "values": [
+              "eventObjects"
+            ],
+            "as": [
+              "events"
+            ]
+          },
+          {
+            "type": "formula",
+            "as": "eventCount",
+            "expr": "datum.events ? datum.events.length : 0"
+          }
+        ]
+      }
+    },
+    {
+      "variableId": "calendarMonthByWeek",
+      "type": "object",
+      "isArray": true,
+      "initialValue": [],
+      "calculation": {
+        "dataSourceNames": [
+          "calendarWithEvents"
+        ],
+        "dataFrameTransformations": [
+          {
+            "type": "nest",
+            "keys": [
+              "sundayCount",
+              "weekday"
+            ],
+            "generate": true
+          }
+        ]
+      }
+    }
+  ],
+  "groups": [
+    {
+      "groupId": "header",
+      "elements": [
+        "# 📅 Month Calendar",
+        "",
+        "This example demonstrates how to shape data for a calendar view using Vega transforms. Scroll down to see each step of the data transformation pipeline.",
+        {
+          "type": "dropdown",
+          "variableId": "selectedMonth",
+          "label": "Month:",
+          "options": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ]
+        },
+        {
+          "type": "dropdown",
+          "variableId": "selectedYear",
+          "label": "Year:",
+          "options": [
+            "2024",
+            "2025",
+            "2026"
+          ]
+        }
+      ]
+    },
+    {
+      "groupId": "rawEvents",
+      "elements": [
+        "## Raw Events Data",
+        "This is the source data - a list of events with dates, times, titles, and categories.",
+        {
+          "type": "tabulator",
+          "dataSourceName": "eventsRaw",
+          "tabulatorOptions": {
+            "autoColumns": true,
+            "layout": "fitColumns",
+            "maxHeight": "300px"
+          }
+        }
+      ]
+    },
+    {
+      "groupId": "step1",
+      "elements": [
+        "## Step 1: All Days of Calendar Surrounding the Selected Month",
+        "Using `sequence` transform to generate all days in the selected month (7 days before and 7 after, then filtered to show Sunday to Saturday).",
+        {
+          "type": "tabulator",
+          "dataSourceName": "calendarMonthList",
+          "tabulatorOptions": {
+            "autoColumns": true,
+            "layout": "fitColumns",
+            "maxHeight": "300px"
+          }
+        }
+      ]
+    },
+    {
+      "groupId": "step2",
+      "elements": [
+        "## Step 2: Events Grouped by Date",
+        "Using `aggregate` transform to group multiple events per day into arrays.",
+        {
+          "type": "tabulator",
+          "dataSourceName": "eventsGrouped",
+          "tabulatorOptions": {
+            "autoColumns": true,
+            "layout": "fitColumns",
+            "maxHeight": "300px"
+          }
+        }
+      ]
+    },
+    {
+      "groupId": "step2b",
+      "elements": [
+        "## Step 3: Events as Objects",
+        "Converting the grouped events into an array of event objects for easier iteration.",
+        {
+          "type": "tabulator",
+          "dataSourceName": "eventsAsObjects",
+          "tabulatorOptions": {
+            "autoColumns": true,
+            "layout": "fitColumns",
+            "maxHeight": "300px"
+          }
+        }
+      ]
+    },
+    {
+      "groupId": "step3",
+      "elements": [
+        "## Step 4: Calendar with Events Joined",
+        "Using `lookup` transform to join events arrays to each calendar day.",
+        {
+          "type": "tabulator",
+          "dataSourceName": "calendarWithEvents",
+          "tabulatorOptions": {
+            "autoColumns": true,
+            "layout": "fitColumns",
+            "maxHeight": "300px"
+          }
+        }
+      ]
+    },
+    {
+      "groupId": "calendar",
+      "elements": [
+        "## Step 5: Calendar View (Treebark / HTML table)",
+        {
+          "type": "treebark",
+          "variableId": "calendarMonthByWeek",
+          "template": {
+            "div": [
+              {
+                "table": [
+                  {
+                    "thead": [
+                      {
+                        "tr": [
+                          {
+                            "th": "Sun"
+                          },
+                          {
+                            "th": "Mon"
+                          },
+                          {
+                            "th": "Tue"
+                          },
+                          {
+                            "th": "Wed"
+                          },
+                          {
+                            "th": "Thu"
+                          },
+                          {
+                            "th": "Fri"
+                          },
+                          {
+                            "th": "Sat"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "tbody": {
+                      "$bind": "root.children",
+                      "$children": [
+                        {
+                          "tr": {
+                            "$bind": "children",
+                            "$children": [
+                              {
+                                "td": {
+                                  "$bind": "data.values",
+                                  "$children": [
+                                    {
+                                      "$if": {
+                                        "$check": "inCurrentMonth",
+                                        "$then": {
+                                          "div": [
+                                            {
+                                              "strong": [
+                                                "{{dayOfMonth}}"
+                                              ]
+                                            },
+                                            {
+                                              "$if": {
+                                                "$check": "eventCount",
+                                                "$then": {
+                                                  "div": {
+                                                    "small": [
+                                                      "{{eventCount}} event(s)"
+                                                    ]
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            {
+                                              "$if": {
+                                                "$check": "events",
+                                                "$then": {
+                                                  "div": {
+                                                    "$bind": "events",
+                                                    "$children": [
+                                                      {
+                                                        "div": {
+                                                          "small": [
+                                                            "{{time}} - {{title}}"
+                                                          ]
+                                                        }
+                                                      }
+                                                    ]
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "dataLoaders": [
+    {
+      "dataSourceName": "eventsRaw",
+      "type": "inline",
+      "format": "json",
+      "content": [
+        {
+          "date": "2025-01-02",
+          "time": "09:00",
+          "title": "Morning Standup",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-01-02",
+          "time": "14:00",
+          "title": "Code Review",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-03",
+          "time": "10:00",
+          "title": "Client Call",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-01-04",
+          "time": "All Day",
+          "title": "Team Offsite",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-05",
+          "time": "11:00",
+          "title": "Dentist Appointment",
+          "category": "personal"
+        },
+        {
+          "date": "2025-01-07",
+          "time": "13:00",
+          "title": "Design Review",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-08",
+          "time": "09:00",
+          "title": "Sprint Planning",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-01-09",
+          "time": "15:00",
+          "title": "Doctor Visit",
+          "category": "personal"
+        },
+        {
+          "date": "2025-01-10",
+          "time": "10:30",
+          "title": "Project Kickoff",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-01-11",
+          "time": "All Day",
+          "title": "Weekend Hike",
+          "category": "personal"
+        },
+        {
+          "date": "2025-01-12",
+          "time": "14:00",
+          "title": "Brunch with Friends",
+          "category": "personal"
+        },
+        {
+          "date": "2025-01-14",
+          "time": "09:00",
+          "title": "Team Sync",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-01-15",
+          "time": "11:00",
+          "title": "Architecture Review",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-16",
+          "time": "16:00",
+          "title": "Performance Review",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-17",
+          "time": "10:00",
+          "title": "Training Session",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-18",
+          "time": "All Day",
+          "title": "Gym",
+          "category": "personal"
+        },
+        {
+          "date": "2025-01-19",
+          "time": "13:00",
+          "title": "Family Dinner",
+          "category": "personal"
+        },
+        {
+          "date": "2025-01-20",
+          "time": "All Day",
+          "title": "MLK Jr. Day",
+          "category": "holiday"
+        },
+        {
+          "date": "2025-01-21",
+          "time": "09:00",
+          "title": "Weekly Standup",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-01-21",
+          "time": "14:00",
+          "title": "Product Demo",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-22",
+          "time": "10:00",
+          "title": "Budget Meeting",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-01-23",
+          "time": "15:00",
+          "title": "1-on-1 with Manager",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-01-24",
+          "time": "11:00",
+          "title": "Tech Talk",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-25",
+          "time": "All Day",
+          "title": "Volunteer Work",
+          "category": "personal"
+        },
+        {
+          "date": "2025-01-26",
+          "time": "12:00",
+          "title": "Team Lunch",
+          "category": "personal"
+        },
+        {
+          "date": "2025-01-28",
+          "time": "09:00",
+          "title": "Sprint Retrospective",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-01-29",
+          "time": "14:00",
+          "title": "Customer Presentation",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-30",
+          "time": "10:00",
+          "title": "Feature Planning",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-31",
+          "time": "15:00",
+          "title": "Month End Review",
+          "category": "work"
+        },
+        {
+          "date": "2025-02-01",
+          "time": "All Day",
+          "title": "Weekend Project",
+          "category": "personal"
+        },
+        {
+          "date": "2025-02-03",
+          "time": "09:00",
+          "title": "Q1 Planning",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-02-04",
+          "time": "14:00",
+          "title": "Security Training",
+          "category": "work"
+        },
+        {
+          "date": "2025-02-05",
+          "time": "10:00",
+          "title": "Vendor Meeting",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-02-06",
+          "time": "11:00",
+          "title": "Code Walkthrough",
+          "category": "work"
+        },
+        {
+          "date": "2025-02-07",
+          "time": "16:00",
+          "title": "Team Happy Hour",
+          "category": "personal"
+        },
+        {
+          "date": "2025-02-08",
+          "time": "All Day",
+          "title": "Skiing Trip",
+          "category": "personal"
+        },
+        {
+          "date": "2025-02-10",
+          "time": "09:00",
+          "title": "All Hands Meeting",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-02-11",
+          "time": "13:00",
+          "title": "Infrastructure Review",
+          "category": "work"
+        },
+        {
+          "date": "2025-02-12",
+          "time": "10:00",
+          "title": "Pair Programming",
+          "category": "work"
+        },
+        {
+          "date": "2025-02-13",
+          "time": "14:00",
+          "title": "Release Planning",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-02-14",
+          "time": "All Day",
+          "title": "Valentine's Day",
+          "category": "holiday"
+        },
+        {
+          "date": "2025-02-14",
+          "time": "19:00",
+          "title": "Dinner Date",
+          "category": "personal"
+        },
+        {
+          "date": "2025-02-17",
+          "time": "All Day",
+          "title": "Presidents' Day",
+          "category": "holiday"
+        },
+        {
+          "date": "2025-02-18",
+          "time": "09:00",
+          "title": "Standup",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-02-19",
+          "time": "11:00",
+          "title": "Stakeholder Update",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-02-20",
+          "time": "14:00",
+          "title": "Tech Debt Review",
+          "category": "work"
+        },
+        {
+          "date": "2025-02-21",
+          "time": "10:00",
+          "title": "Onboarding Session",
+          "category": "work"
+        },
+        {
+          "date": "2025-02-24",
+          "time": "09:00",
+          "title": "Weekly Sync",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-02-25",
+          "time": "15:00",
+          "title": "Product Roadmap",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-02-26",
+          "time": "11:00",
+          "title": "Launch Preparation",
+          "category": "work"
+        },
+        {
+          "date": "2025-02-27",
+          "time": "14:00",
+          "title": "Performance Testing",
+          "category": "work"
+        },
+        {
+          "date": "2025-02-28",
+          "time": "10:00",
+          "title": "Sprint Review",
+          "category": "meeting"
+        }
+      ]
+    }
+  ]
+}

@@ -248,6 +248,7 @@ interface TabulatorElementProps extends OptionalVariableControl {
     /** Name of the data source to use for incoming data (output data is available via the variableId of this table element) */
     dataSourceName: string;
     editable?: boolean;
+    enableDownload?: boolean;
     /** Tabulator options (must be JSON stringify-able, so no callbacks allowed) */
     tabulatorOptions?: object;
 }
