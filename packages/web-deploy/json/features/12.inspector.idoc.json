@@ -196,6 +196,8 @@
             "  font-size: 0.9em;",
             "  color: #0066cc;",
             "  overflow-x: auto;",
+            "  white-space: pre-wrap;",
+            "  word-wrap: break-word;",
             "}",
             "",
             ".inspector-array {",

@@ -37,7 +37,7 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
 
             const html = `<div class="inspector">
                     <div class="inspector-label">${spec.label || spec.variableId}</div>
-                    <pre class="inspector-value" id="${spec.variableId}-value"></pre>
+                    <div class="inspector-value" id="${spec.variableId}-value"></div>
                 </div>`;
             container.innerHTML = html;
             const element = container.querySelector('.inspector-value') as HTMLElement;
