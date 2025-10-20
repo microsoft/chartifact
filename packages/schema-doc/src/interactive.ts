@@ -138,6 +138,16 @@ export interface ImageElementProps {
 }
 
 /**
+ * Inspector
+ * use for examining and displaying the current value of a variable
+ */
+export interface InspectorElement extends InspectorElementProps {
+  type: 'inspector';
+}
+export interface InspectorElementProps extends VariableControl {
+}
+
+/**
  * Treebark
  * use for rendering cards and structured HTML from templates
  */
@@ -243,6 +253,7 @@ export type InteractiveElement =
   | CheckboxElement
   | DropdownElement
   | ImageElement
+  | InspectorElement
   | MermaidElement
   | NumberElement
   | PresetsElement
