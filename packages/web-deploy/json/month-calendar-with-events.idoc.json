@@ -459,58 +459,106 @@
       "format": "json",
       "content": [
         {
-          "date": "2025-01-01",
-          "time": "All Day",
-          "title": "New Year's Day",
-          "category": "holiday"
-        },
-        {
-          "date": "2025-01-06",
+          "date": "2025-01-02",
           "time": "09:00",
-          "title": "Team Standup",
+          "title": "Morning Standup",
           "category": "meeting"
         },
         {
-          "date": "2025-01-06",
+          "date": "2025-01-02",
           "time": "14:00",
-          "title": "Project Review",
+          "title": "Code Review",
           "category": "work"
         },
         {
-          "date": "2025-01-08",
-          "time": "10:30",
-          "title": "Client Meeting",
+          "date": "2025-01-03",
+          "time": "10:00",
+          "title": "Client Call",
           "category": "meeting"
         },
         {
-          "date": "2025-01-10",
-          "time": "15:00",
-          "title": "Dentist",
+          "date": "2025-01-04",
+          "time": "All Day",
+          "title": "Team Offsite",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-05",
+          "time": "11:00",
+          "title": "Dentist Appointment",
           "category": "personal"
         },
         {
-          "date": "2025-01-13",
-          "time": "09:00",
-          "title": "Standup",
-          "category": "meeting"
-        },
-        {
-          "date": "2025-01-13",
-          "time": "11:00",
+          "date": "2025-01-07",
+          "time": "13:00",
           "title": "Design Review",
           "category": "work"
         },
         {
-          "date": "2025-01-15",
-          "time": "13:00",
-          "title": "Lunch w/ Sarah",
+          "date": "2025-01-08",
+          "time": "09:00",
+          "title": "Sprint Planning",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-01-09",
+          "time": "15:00",
+          "title": "Doctor Visit",
           "category": "personal"
         },
         {
-          "date": "2025-01-17",
-          "time": "16:00",
-          "title": "Code Review",
+          "date": "2025-01-10",
+          "time": "10:30",
+          "title": "Project Kickoff",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-01-11",
+          "time": "All Day",
+          "title": "Weekend Hike",
+          "category": "personal"
+        },
+        {
+          "date": "2025-01-12",
+          "time": "14:00",
+          "title": "Brunch with Friends",
+          "category": "personal"
+        },
+        {
+          "date": "2025-01-14",
+          "time": "09:00",
+          "title": "Team Sync",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-01-15",
+          "time": "11:00",
+          "title": "Architecture Review",
           "category": "work"
+        },
+        {
+          "date": "2025-01-16",
+          "time": "16:00",
+          "title": "Performance Review",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-17",
+          "time": "10:00",
+          "title": "Training Session",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-18",
+          "time": "All Day",
+          "title": "Gym",
+          "category": "personal"
+        },
+        {
+          "date": "2025-01-19",
+          "time": "13:00",
+          "title": "Family Dinner",
+          "category": "personal"
         },
         {
           "date": "2025-01-20",
@@ -519,82 +567,136 @@
           "category": "holiday"
         },
         {
-          "date": "2025-01-20",
+          "date": "2025-01-21",
           "time": "09:00",
-          "title": "Standup",
+          "title": "Weekly Standup",
           "category": "meeting"
+        },
+        {
+          "date": "2025-01-21",
+          "time": "14:00",
+          "title": "Product Demo",
+          "category": "work"
         },
         {
           "date": "2025-01-22",
           "time": "10:00",
-          "title": "Sprint Planning",
+          "title": "Budget Meeting",
           "category": "meeting"
         },
         {
-          "date": "2025-01-22",
-          "time": "14:00",
-          "title": "Feature Demo",
-          "category": "work"
+          "date": "2025-01-23",
+          "time": "15:00",
+          "title": "1-on-1 with Manager",
+          "category": "meeting"
         },
         {
           "date": "2025-01-24",
-          "time": "18:00",
-          "title": "Gym",
-          "category": "personal"
-        },
-        {
-          "date": "2025-01-27",
-          "time": "09:00",
-          "title": "Standup",
-          "category": "meeting"
-        },
-        {
-          "date": "2025-01-27",
-          "time": "13:00",
-          "title": "Budget Review",
+          "time": "11:00",
+          "title": "Tech Talk",
           "category": "work"
         },
         {
-          "date": "2025-01-29",
-          "time": "11:00",
-          "title": "1-on-1",
+          "date": "2025-01-25",
+          "time": "All Day",
+          "title": "Volunteer Work",
+          "category": "personal"
+        },
+        {
+          "date": "2025-01-26",
+          "time": "12:00",
+          "title": "Team Lunch",
+          "category": "personal"
+        },
+        {
+          "date": "2025-01-28",
+          "time": "09:00",
+          "title": "Sprint Retrospective",
           "category": "meeting"
+        },
+        {
+          "date": "2025-01-29",
+          "time": "14:00",
+          "title": "Customer Presentation",
+          "category": "work"
+        },
+        {
+          "date": "2025-01-30",
+          "time": "10:00",
+          "title": "Feature Planning",
+          "category": "work"
         },
         {
           "date": "2025-01-31",
           "time": "15:00",
-          "title": "Month End",
+          "title": "Month End Review",
           "category": "work"
+        },
+        {
+          "date": "2025-02-01",
+          "time": "All Day",
+          "title": "Weekend Project",
+          "category": "personal"
         },
         {
           "date": "2025-02-03",
           "time": "09:00",
-          "title": "Standup",
-          "category": "meeting"
-        },
-        {
-          "date": "2025-02-05",
-          "time": "10:00",
           "title": "Q1 Planning",
           "category": "meeting"
         },
         {
-          "date": "2025-02-07",
+          "date": "2025-02-04",
           "time": "14:00",
-          "title": "Training",
+          "title": "Security Training",
           "category": "work"
+        },
+        {
+          "date": "2025-02-05",
+          "time": "10:00",
+          "title": "Vendor Meeting",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-02-06",
+          "time": "11:00",
+          "title": "Code Walkthrough",
+          "category": "work"
+        },
+        {
+          "date": "2025-02-07",
+          "time": "16:00",
+          "title": "Team Happy Hour",
+          "category": "personal"
+        },
+        {
+          "date": "2025-02-08",
+          "time": "All Day",
+          "title": "Skiing Trip",
+          "category": "personal"
         },
         {
           "date": "2025-02-10",
           "time": "09:00",
-          "title": "Standup",
+          "title": "All Hands Meeting",
           "category": "meeting"
         },
         {
+          "date": "2025-02-11",
+          "time": "13:00",
+          "title": "Infrastructure Review",
+          "category": "work"
+        },
+        {
           "date": "2025-02-12",
-          "time": "12:00",
-          "title": "Team Lunch",
-          "category": "personal"
+          "time": "10:00",
+          "title": "Pair Programming",
+          "category": "work"
+        },
+        {
+          "date": "2025-02-13",
+          "time": "14:00",
+          "title": "Release Planning",
+          "category": "meeting"
         },
         {
           "date": "2025-02-14",
@@ -615,39 +717,57 @@
           "category": "holiday"
         },
         {
-          "date": "2025-02-17",
+          "date": "2025-02-18",
           "time": "09:00",
           "title": "Standup",
           "category": "meeting"
         },
         {
           "date": "2025-02-19",
-          "time": "10:30",
-          "title": "Arch Review",
+          "time": "11:00",
+          "title": "Stakeholder Update",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-02-20",
+          "time": "14:00",
+          "title": "Tech Debt Review",
           "category": "work"
         },
         {
           "date": "2025-02-21",
-          "time": "15:00",
-          "title": "Doctor Appt",
-          "category": "personal"
+          "time": "10:00",
+          "title": "Onboarding Session",
+          "category": "work"
         },
         {
           "date": "2025-02-24",
           "time": "09:00",
-          "title": "Standup",
+          "title": "Weekly Sync",
+          "category": "meeting"
+        },
+        {
+          "date": "2025-02-25",
+          "time": "15:00",
+          "title": "Product Roadmap",
           "category": "meeting"
         },
         {
           "date": "2025-02-26",
           "time": "11:00",
-          "title": "Product Launch",
+          "title": "Launch Preparation",
+          "category": "work"
+        },
+        {
+          "date": "2025-02-27",
+          "time": "14:00",
+          "title": "Performance Testing",
           "category": "work"
         },
         {
           "date": "2025-02-28",
-          "time": "14:00",
-          "title": "Sprint Retro",
+          "time": "10:00",
+          "title": "Sprint Review",
           "category": "meeting"
         }
       ]
