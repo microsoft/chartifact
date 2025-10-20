@@ -402,24 +402,16 @@
                                         "$then": {
                                           "div": [
                                             {
-                                              "div": {
-                                                "$attr": {
-                                                  "style": "font-weight: bold; margin-bottom: 4px"
-                                                },
-                                                "$children": [
-                                                  "{{dayOfMonth}}"
-                                                ]
-                                              }
+                                              "strong": [
+                                                "{{dayOfMonth}}"
+                                              ]
                                             },
                                             {
                                               "$if": {
                                                 "$check": "eventCount",
                                                 "$then": {
                                                   "div": {
-                                                    "$attr": {
-                                                      "style": "font-size: 0.75em; color: #666; margin-top: 2px"
-                                                    },
-                                                    "$children": [
+                                                    "small": [
                                                       "{{eventCount}} event(s)"
                                                     ]
                                                   }
@@ -428,31 +420,20 @@
                                             },
                                             {
                                               "$if": {
-                                                "$check": "firstEventTitle",
+                                                "$check": "eventTitles",
                                                 "$then": {
-                                                  "div": [
-                                                    {
-                                                      "span": {
-                                                        "$attr": {
-                                                          "style": "font-size: 0.7em; color: #999"
-                                                        },
-                                                        "$children": [
-                                                          "{{firstEventTime}}"
-                                                        ]
+                                                  "div": {
+                                                    "$bind": "eventTitles",
+                                                    "$children": [
+                                                      {
+                                                        "div": {
+                                                          "small": [
+                                                            "{{.}}"
+                                                          ]
+                                                        }
                                                       }
-                                                    },
-                                                    " ",
-                                                    {
-                                                      "span": {
-                                                        "$attr": {
-                                                          "style": "font-size: 0.7em; color: #333"
-                                                        },
-                                                        "$children": [
-                                                          "{{firstEventTitle}}"
-                                                        ]
-                                                      }
-                                                    }
-                                                  ]
+                                                    ]
+                                                  }
                                                 }
                                               }
                                             }
@@ -469,7 +450,8 @@
                       ]
                     }
                   }
-                ]
+                ],
+                "class": "calendar-wrapper"
               }
             ]
           }
@@ -797,5 +779,16 @@
         }
       ]
     }
-  ]
+  ],
+  "style": {
+    "css": [
+      "body { font-family: system-ui, -apple-system, sans-serif; }",
+      ".calendar-wrapper table { border-collapse: collapse; width: 100%; }",
+      ".calendar-wrapper th, .calendar-wrapper td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: top; }",
+      ".calendar-wrapper th { background-color: #f5f5f5; font-weight: bold; text-align: center; }",
+      ".calendar-wrapper td { min-height: 80px; }",
+      ".calendar-wrapper strong { font-size: 1.2em; display: block; margin-bottom: 4px; }",
+      ".calendar-wrapper small { font-size: 0.75em; color: #666; display: block; margin-top: 2px; }"
+    ]
+  }
 }
