@@ -204,7 +204,6 @@
                 "**Inspector output:**",
                 {
                     "type": "inspector",
-                    "variableId": "*",
                     "label": "All Variables (signalDeps)"
                 },
                 "",

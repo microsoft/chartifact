@@ -3,7 +3,6 @@
 * Licensed under the MIT License.
 */
 
-import { VariableControl } from '@microsoft/chartifact-schema';
 import { Batch, IInstance, Plugin } from '../factory.js';
 import { pluginClassName } from './util.js';
 import { flaggablePlugin } from './config.js';
@@ -15,7 +14,9 @@ interface InspectorInstance {
     element: HTMLElement;
 }
 
-export interface InspectorSpec extends VariableControl {
+export interface InspectorSpec {
+    variableId?: string;
+    label?: string;
     raw?: boolean;
 }
 
@@ -37,8 +38,8 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
             const spec: InspectorSpec = specReview.approvedSpec;
 
             const html = `<div class="inspector">
-                    <div class="inspector-label">${spec.label || spec.variableId}</div>
-                    <div class="inspector-value" id="${spec.variableId}-value"></div>
+                    <div class="inspector-label">${spec.label || spec.variableId || 'All Variables'}</div>
+                    <div class="inspector-value" id="${spec.variableId || 'all'}-value"></div>
                 </div>`;
             container.innerHTML = html;
             const element = container.querySelector('.inspector-value') as HTMLElement;
@@ -50,8 +51,8 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
         const instances = inspectorInstances.map((inspectorInstance): IInstance => {
             const { element, spec } = inspectorInstance;
             
-            // Special case: if variableId is "*", inspect all variables from signalDeps
-            const isInspectAll = spec.variableId === '*';
+            // Special case: if variableId is undefined/omitted, inspect all variables from signalDeps
+            const isInspectAll = !spec.variableId;
             
             const initialSignals = isInspectAll ? [] : [{
                 name: spec.variableId,

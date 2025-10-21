@@ -95,7 +95,10 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                     break;
                 }
                 case 'inspector': {
-                    errors.push(...validateInputElementWithVariableId(element));
+                    // Inspector has optional variableId (if omitted, inspects all variables)
+                    if (element.variableId) {
+                        errors.push(...validateInputElementWithVariableId(element));
+                    }
                     break;
                 }
                 case 'mermaid': {
