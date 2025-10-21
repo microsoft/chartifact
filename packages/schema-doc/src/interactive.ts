@@ -147,8 +147,6 @@ export interface InspectorElement extends InspectorElementProps {
 export interface InspectorElementProps extends OptionalVariableControl {
   /** When true, displays raw JSON output without interactive elements (for copy/paste). Default is false. */
   raw?: boolean;
-  /** optional label if the variableId is not descriptive enough */
-  label?: string;
 }
 
 /**

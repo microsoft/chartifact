@@ -3,10 +3,11 @@
 * Licensed under the MIT License.
 */
 
-import { Batch, IInstance, Plugin } from '../factory.js';
+import { IInstance, Plugin } from '../factory.js';
 import { pluginClassName } from './util.js';
 import { flaggablePlugin } from './config.js';
 import { PluginNames } from './interfaces.js';
+import { InspectorElementProps } from '@microsoft/chartifact-schema';
 
 interface InspectorInstance {
     id: string;
@@ -14,10 +15,7 @@ interface InspectorInstance {
     element: HTMLElement;
 }
 
-export interface InspectorSpec {
-    variableId?: string;
-    label?: string;
-    raw?: boolean;
+export interface InspectorSpec extends InspectorElementProps {
 }
 
 const pluginName: PluginNames = 'inspector';
@@ -38,7 +36,7 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
             const spec: InspectorSpec = specReview.approvedSpec;
 
             const html = `<div class="inspector">
-                    <div class="inspector-label">${spec.label || spec.variableId || 'All Variables'}</div>
+                    <div class="inspector-label">${spec.variableId || 'All Variables'}</div>
                     <div class="inspector-value" id="${spec.variableId || 'all'}-value"></div>
                 </div>`;
             container.innerHTML = html;
