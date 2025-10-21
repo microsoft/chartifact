@@ -105,7 +105,7 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                 
                 const toggleIcon = document.createElement('span');
                 toggleIcon.className = 'inspector-toggle';
-                toggleIcon.textContent = '▼ ';
+                toggleIcon.textContent = '▶ ';
                 toggleIcon.style.display = 'inline-block';
                 toggleIcon.style.width = '1em';
                 
@@ -157,8 +157,9 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                     content.appendChild(itemDiv);
                 });
                 
-                // Toggle functionality
-                let isExpanded = true;
+                // Toggle functionality - start collapsed
+                let isExpanded = false;
+                content.style.display = 'none';
                 const toggle = () => {
                     isExpanded = !isExpanded;
                     content.style.display = isExpanded ? 'block' : 'none';
