@@ -49,7 +49,11 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
 
         const instances = inspectorInstances.map((inspectorInstance): IInstance => {
             const { element, spec } = inspectorInstance;
-            const initialSignals = [{
+            
+            // Special case: if variableId is "*", inspect all variables from signalDeps
+            const isInspectAll = spec.variableId === '*';
+            
+            const initialSignals = isInspectAll ? [] : [{
                 name: spec.variableId,
                 value: null,
                 priority: -1,
@@ -151,13 +155,28 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                 ...inspectorInstance,
                 initialSignals,
                 receiveBatch: async (batch) => {
-                    if (batch[spec.variableId]) {
+                    if (isInspectAll) {
+                        // Extract all variable values from signalDeps
+                        const allVars: { [key: string]: unknown } = {};
+                        for (const signalName in signalBus.signalDeps) {
+                            allVars[signalName] = signalBus.signalDeps[signalName].value;
+                        }
+                        updateDisplay(allVars);
+                    } else if (batch[spec.variableId]) {
                         const value = batch[spec.variableId].value;
                         updateDisplay(value);
                     }
                 },
                 beginListening() {
                     // Inspector is read-only, no event listeners needed
+                    // For inspect-all mode, do initial display
+                    if (isInspectAll) {
+                        const allVars: { [key: string]: unknown } = {};
+                        for (const signalName in signalBus.signalDeps) {
+                            allVars[signalName] = signalBus.signalDeps[signalName].value;
+                        }
+                        updateDisplay(allVars);
+                    }
                 },
                 getCurrentSignalValue: () => {
                     // Inspector doesn't modify the signal, return undefined
