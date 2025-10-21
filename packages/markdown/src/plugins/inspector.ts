@@ -51,19 +51,14 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
             // Special case: if variableId is undefined/omitted, inspect all variables from signalDeps
             const isInspectAll = !spec.variableId;
             
-            const initialSignals = isInspectAll ? [{
-                name: '*',
-                value: null,
-                priority: -1,
-                isData: false,
-            }] : [{
-                name: spec.variableId,
+            const initialSignals = [{
+                name: isInspectAll ? '*' : spec.variableId,
                 value: null,
                 priority: -1,
                 isData: false,
             }];
 
-            const updateDisplay = (value: unknown) => {
+            const displayValue = (value: unknown) => {
                 element.innerHTML = ''; // Clear previous content
                 
                 // If raw mode is enabled, always use JSON.stringify without interactivity
@@ -154,36 +149,30 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                 container.appendChild(arrayWrapper);
             };
 
+            const getAllVariables = () => {
+                const allVars: { [key: string]: unknown } = {};
+                for (const signalName in signalBus.signalDeps) {
+                    allVars[signalName] = signalBus.signalDeps[signalName].value;
+                }
+                return allVars;
+            };
+
             return {
                 ...inspectorInstance,
                 initialSignals,
                 receiveBatch: async (batch) => {
                     if (isInspectAll) {
-                        // Extract all variable values from signalDeps
-                        const allVars: { [key: string]: unknown } = {};
-                        for (const signalName in signalBus.signalDeps) {
-                            allVars[signalName] = signalBus.signalDeps[signalName].value;
-                        }
-                        updateDisplay(allVars);
+                        displayValue(getAllVariables());
                     } else if (batch[spec.variableId]) {
-                        const value = batch[spec.variableId].value;
-                        updateDisplay(value);
+                        displayValue(batch[spec.variableId].value);
                     }
                 },
                 beginListening() {
                     // Inspector is read-only, no event listeners needed
                     // For inspect-all mode, do initial display
                     if (isInspectAll) {
-                        const allVars: { [key: string]: unknown } = {};
-                        for (const signalName in signalBus.signalDeps) {
-                            allVars[signalName] = signalBus.signalDeps[signalName].value;
-                        }
-                        updateDisplay(allVars);
+                        displayValue(getAllVariables());
                     }
-                },
-                getCurrentSignalValue: () => {
-                    // Inspector doesn't modify the signal, return undefined
-                    return undefined;
                 },
                 destroy: () => {
                     // No cleanup needed
