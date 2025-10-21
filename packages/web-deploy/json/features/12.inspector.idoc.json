@@ -24,6 +24,15 @@
             "initialValue": ["apple", "banana", "cherry"]
         },
         {
+            "variableId": "nestedArray",
+            "type": "object",
+            "initialValue": [
+                ["row1-col1", "row1-col2"],
+                ["row2-col1", "row2-col2"],
+                ["row3-col1", "row3-col2"]
+            ]
+        },
+        {
             "variableId": "config",
             "type": "object",
             "initialValue": {
@@ -136,6 +145,18 @@
                 "",
                 "---",
                 "",
+                "## Nested Array Variable",
+                "This is a 2D array (array of arrays):",
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "nestedArray",
+                    "label": "nestedArray"
+                },
+                "",
+                "---",
+                "",
                 "## Object Variable",
                 "This is a complex object with nested properties:",
                 "",
@@ -169,62 +190,5 @@
                 "- **Learning**: Understand how variables change when interacting with controls"
             ]
         }
-    ],
-    "style": {
-        "css": [
-            "body {",
-            "  max-width: 800px;",
-            "  margin: 0 auto;",
-            "  padding: 2em;",
-            "  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;",
-            "}",
-            "",
-            ".inspector {",
-            "  border: 1px solid #ddd;",
-            "  padding: 12px;",
-            "  margin: 10px 0;",
-            "}",
-            "",
-            ".inspector-label {",
-            "  font-weight: 600;",
-            "  margin-bottom: 8px;",
-            "}",
-            "",
-            ".inspector-value {",
-            "  border: 1px solid #ccc;",
-            "  padding: 8px;",
-            "  margin: 0;",
-            "  font-family: 'Courier New', Courier, monospace;",
-            "  overflow-x: auto;",
-            "  white-space: pre-wrap;",
-            "  word-wrap: break-word;",
-            "}",
-            "",
-            ".inspector-array {",
-            "  margin: 0;",
-            "}",
-            "",
-            ".inspector-array-header {",
-            "  padding: 2px 0;",
-            "}",
-            "",
-            ".inspector-array-content {",
-            "  margin: 2px 0;",
-            "}",
-            "",
-            ".inspector-array-item {",
-            "  padding: 1px 0;",
-            "}",
-            "",
-            ".vega-bindings {",
-            "  margin: 15px 0;",
-            "}",
-            "",
-            "hr {",
-            "  margin: 2em 0;",
-            "  border: none;",
-            "  border-top: 1px solid #e0e0e0;",
-            "}"
-        ]
-    }
+    ]
 }
