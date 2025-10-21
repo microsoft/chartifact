@@ -16,6 +16,7 @@ interface InspectorInstance {
 }
 
 export interface InspectorSpec extends VariableControl {
+    raw?: boolean;
 }
 
 const pluginName: PluginNames = 'inspector';
@@ -58,6 +59,22 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
             const updateDisplay = (value: unknown) => {
                 element.innerHTML = ''; // Clear previous content
                 
+                // If raw mode is enabled, always use JSON.stringify without interactivity
+                if (spec.raw) {
+                    if (value === null || value === undefined) {
+                        element.textContent = String(value);
+                    } else if (typeof value === 'string') {
+                        element.textContent = `"${value}"`;
+                    } else if (typeof value === 'object') {
+                        // For arrays and objects, use JSON.stringify with indentation
+                        element.textContent = JSON.stringify(value, null, 2);
+                    } else {
+                        element.textContent = String(value);
+                    }
+                    return;
+                }
+                
+                // Interactive mode (default)
                 if (value === null || value === undefined) {
                     element.textContent = String(value);
                 } else if (typeof value === 'string') {

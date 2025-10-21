@@ -215,6 +215,8 @@ interface InspectorElement extends InspectorElementProps {
     type: 'inspector';
 }
 interface InspectorElementProps extends VariableControl {
+    /** When true, displays raw JSON output without interactive elements (for copy/paste). Default is false. */
+    raw?: boolean;
 }
 /**
  * Treebark

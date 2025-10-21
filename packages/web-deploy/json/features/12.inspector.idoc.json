@@ -119,11 +119,19 @@
                     "size": 5
                 },
                 "",
-                "**Inspector output:**",
+                "**Inspector output (interactive):**",
                 {
                     "type": "inspector",
                     "variableId": "selectedItems",
                     "label": "selectedItems"
+                },
+                "",
+                "**Inspector output (raw mode for copy/paste):**",
+                {
+                    "type": "inspector",
+                    "variableId": "selectedItems",
+                    "label": "selectedItems (raw)",
+                    "raw": true
                 },
                 "",
                 "---",
