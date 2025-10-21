@@ -1,11 +1,12 @@
 {
     "$schema": "../../../../docs/schema/idoc_v1.json",
     "title": "Variable Inspector Demo with Data Transforms",
-    "dataSources": [
+    "dataLoaders": [
         {
             "dataSourceName": "salesData",
+            "type": "inline",
             "format": "json",
-            "data": [
+            "content": [
                 {"category": "Electronics", "product": "Laptop", "region": "North", "sales": 1200, "quantity": 3},
                 {"category": "Electronics", "product": "Phone", "region": "North", "sales": 800, "quantity": 5},
                 {"category": "Electronics", "product": "Laptop", "region": "South", "sales": 1500, "quantity": 4},
