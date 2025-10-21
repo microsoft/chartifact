@@ -173,22 +173,9 @@
                 "",
                 "---",
                 "",
-                "## Raw Source Data",
-                "",
-                "Original sales data (raw mode for copy/paste):",
-                "",
-                "**Inspector output:**",
-                {
-                    "type": "inspector",
-                    "variableId": "salesData",
-                    "raw": true
-                },
-                "",
-                "---",
-                "",
                 "## All Variables (Debug Inspector)",
                 "",
-                "Using `variableId: \"*\"` to inspect all variables in the document:",
+                "Omitting `variableId` to inspect all variables in the document:",
                 "",
                 "**Inspector output:**",
                 {
