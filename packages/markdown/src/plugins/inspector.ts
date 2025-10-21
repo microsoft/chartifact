@@ -59,8 +59,19 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
             }];
 
             const renderValue = (container: HTMLElement, value: unknown, depth: number = 0) => {
+                // Clear previous content when rendering at root level
+                if (depth === 0) {
+                    container.innerHTML = '';
+                }
+                
+                // If raw mode is enabled, always use JSON.stringify without interactivity
+                if (spec.raw) {
+                    container.textContent = JSON.stringify(value, null, 2);
+                    return;
+                }
+                
+                // Interactive mode (default)
                 if (Array.isArray(value)) {
-                    // Nested array
                     renderArray(container, value, depth);
                 } else if (typeof value === 'object') {
                     container.textContent = JSON.stringify(value, null, 2);
@@ -68,19 +79,6 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                 } else {
                     container.textContent = JSON.stringify(value);
                 }
-            };
-
-            const displayValue = (value: unknown) => {
-                element.innerHTML = ''; // Clear previous content
-                
-                // If raw mode is enabled, always use JSON.stringify without interactivity
-                if (spec.raw) {
-                    element.textContent = JSON.stringify(value, null, 2);
-                    return;
-                }
-                
-                // Interactive mode (default)
-                renderValue(element, value);
             };
 
             const renderArray = (container: HTMLElement, arr: unknown[], depth: number = 0) => {
@@ -157,16 +155,16 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                 initialSignals,
                 receiveBatch: async (batch) => {
                     if (isInspectAll) {
-                        displayValue(getAllVariables());
+                        renderValue(element, getAllVariables());
                     } else if (batch[spec.variableId]) {
-                        displayValue(batch[spec.variableId].value);
+                        renderValue(element, batch[spec.variableId].value);
                     }
                 },
                 beginListening() {
                     // Inspector is read-only, no event listeners needed
                     // For inspect-all mode, do initial display
                     if (isInspectAll) {
-                        displayValue(getAllVariables());
+                        renderValue(element, getAllVariables());
                     }
                 },
                 destroy: () => {
