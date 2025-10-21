@@ -1,55 +1,100 @@
 {
     "$schema": "../../../../docs/schema/idoc_v1.json",
-    "title": "Variable Inspector Demo",
+    "title": "Variable Inspector Demo with Data Transforms",
+    "dataSources": [
+        {
+            "dataSourceName": "salesData",
+            "format": "json",
+            "data": [
+                {"category": "Electronics", "product": "Laptop", "region": "North", "sales": 1200, "quantity": 3},
+                {"category": "Electronics", "product": "Phone", "region": "North", "sales": 800, "quantity": 5},
+                {"category": "Electronics", "product": "Laptop", "region": "South", "sales": 1500, "quantity": 4},
+                {"category": "Furniture", "product": "Desk", "region": "North", "sales": 600, "quantity": 2},
+                {"category": "Furniture", "product": "Chair", "region": "South", "sales": 300, "quantity": 6},
+                {"category": "Furniture", "product": "Desk", "region": "South", "sales": 700, "quantity": 3}
+            ]
+        }
+    ],
     "variables": [
         {
-            "variableId": "userName",
+            "variableId": "selectedRegion",
             "type": "string",
-            "initialValue": "Alice"
+            "initialValue": "North"
         },
         {
-            "variableId": "temperature",
+            "variableId": "minSales",
             "type": "number",
-            "initialValue": 20
+            "initialValue": 500
         },
         {
-            "variableId": "isEnabled",
-            "type": "boolean",
-            "initialValue": true
-        },
-        {
-            "variableId": "selectedItems",
-            "type": "string",
+            "variableId": "salesData",
+            "type": "object",
             "isArray": true,
-            "initialValue": ["apple", "banana", "cherry"]
+            "initialValue": []
         },
         {
-            "variableId": "nestedArray",
+            "variableId": "filteredData",
             "type": "object",
-            "initialValue": [
-                ["row1-col1", "row1-col2"],
-                ["row2-col1", "row2-col2"],
-                ["row3-col1", "row3-col2"]
-            ]
-        },
-        {
-            "variableId": "config",
-            "type": "object",
-            "initialValue": {
-                "theme": "dark",
-                "fontSize": 14,
-                "features": {
-                    "autosave": true,
-                    "notifications": false
-                }
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["salesData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.region == selectedRegion && datum.sales >= minSales"
+                    }
+                ]
             }
         },
         {
-            "variableId": "doubledTemp",
-            "type": "number",
-            "initialValue": 40,
+            "variableId": "aggregatedByCategory",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
             "calculation": {
-                "vegaExpression": "temperature * 2"
+                "dataSourceNames": ["filteredData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "groupby": ["category"],
+                        "ops": ["sum", "sum", "count"],
+                        "fields": ["sales", "quantity", null],
+                        "as": ["totalSales", "totalQuantity", "productCount"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "pivotedData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["salesData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "pivot",
+                        "groupby": ["product"],
+                        "field": "region",
+                        "value": "sales",
+                        "op": "sum"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "nestedByCategory",
+            "type": "object",
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["salesData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "nest",
+                        "keys": ["category"]
+                    }
+                ]
             }
         }
     ],
@@ -57,126 +102,96 @@
         {
             "groupId": "main",
             "elements": [
-                "# Variable Inspector",
+                "# Variable Inspector with Data Transforms",
                 "",
-                "The inspector plugin allows you to examine the current values of variables in real-time. This is useful for debugging and understanding how variables change as you interact with the document.",
-                "",
-                "---",
-                "",
-                "## String Variable",
-                "Use the textbox below to change the value:",
-                {
-                    "type": "textbox",
-                    "variableId": "userName",
-                    "label": "User Name"
-                },
-                "",
-                "**Inspector output:**",
-                {
-                    "type": "inspector",
-                    "variableId": "userName",
-                    "label": "userName"
-                },
+                "The inspector plugin is particularly useful for examining transformed data. This example demonstrates Vega data transforms like **filter**, **aggregate**, **pivot**, and **nest**.",
                 "",
                 "---",
                 "",
-                "## Number Variable",
-                "Adjust the slider to see the value change:",
-                {
-                    "type": "slider",
-                    "variableId": "temperature",
-                    "label": "Temperature (°C)",
-                    "min": -10,
-                    "max": 50,
-                    "step": 1
-                },
+                "## Filter Controls",
                 "",
-                "**Inspector output:**",
-                {
-                    "type": "inspector",
-                    "variableId": "temperature",
-                    "label": "temperature"
-                },
+                "Select a region and minimum sales threshold to filter the data:",
                 "",
-                "---",
-                "",
-                "## Boolean Variable",
-                "Toggle the checkbox:",
-                {
-                    "type": "checkbox",
-                    "variableId": "isEnabled",
-                    "label": "Enable Feature"
-                },
-                "",
-                "**Inspector output:**",
-                {
-                    "type": "inspector",
-                    "variableId": "isEnabled",
-                    "label": "isEnabled"
-                },
-                "",
-                "---",
-                "",
-                "## Array Variable",
-                "Select multiple items:",
                 {
                     "type": "dropdown",
-                    "variableId": "selectedItems",
-                    "label": "Selected Items",
-                    "options": ["apple", "banana", "cherry", "date", "elderberry"],
-                    "multiple": true,
-                    "size": 5
+                    "variableId": "selectedRegion",
+                    "label": "Region",
+                    "options": ["North", "South"]
                 },
                 "",
-                "**Inspector output (interactive):**",
                 {
-                    "type": "inspector",
-                    "variableId": "selectedItems",
-                    "label": "selectedItems"
+                    "type": "slider",
+                    "variableId": "minSales",
+                    "label": "Minimum Sales",
+                    "min": 0,
+                    "max": 2000,
+                    "step": 100
                 },
                 "",
-                "**Inspector output (raw mode for copy/paste):**",
+                "---",
+                "",
+                "## Filtered Data",
+                "",
+                "Filtered by selected region and minimum sales using Vega **filter** transform:",
+                "",
+                "**Inspector output:**",
                 {
                     "type": "inspector",
-                    "variableId": "selectedItems",
-                    "label": "selectedItems (raw)",
+                    "variableId": "filteredData",
+                    "label": "filteredData"
+                },
+                "",
+                "---",
+                "",
+                "## Aggregated by Category",
+                "",
+                "Data grouped by category with totals using Vega **aggregate** transform:",
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "aggregatedByCategory",
+                    "label": "aggregatedByCategory"
+                },
+                "",
+                "---",
+                "",
+                "## Pivoted Data",
+                "",
+                "Sales pivoted by product and region using Vega **pivot** transform:",
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "pivotedData",
+                    "label": "pivotedData"
+                },
+                "",
+                "---",
+                "",
+                "## Nested by Category",
+                "",
+                "Data nested by category using Vega **nest** transform:",
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "nestedByCategory",
+                    "label": "nestedByCategory"
+                },
+                "",
+                "---",
+                "",
+                "## Raw Source Data",
+                "",
+                "Original sales data (raw mode for copy/paste):",
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "salesData",
+                    "label": "salesData (raw)",
                     "raw": true
-                },
-                "",
-                "---",
-                "",
-                "## Nested Array Variable",
-                "This is a 2D array (array of arrays):",
-                "",
-                "**Inspector output:**",
-                {
-                    "type": "inspector",
-                    "variableId": "nestedArray",
-                    "label": "nestedArray"
-                },
-                "",
-                "---",
-                "",
-                "## Object Variable",
-                "This is a complex object with nested properties:",
-                "",
-                "**Inspector output:**",
-                {
-                    "type": "inspector",
-                    "variableId": "config",
-                    "label": "config"
-                },
-                "",
-                "---",
-                "",
-                "## Calculated Variable",
-                "This variable is calculated from the temperature (temperature × 2):",
-                "",
-                "**Inspector output:**",
-                {
-                    "type": "inspector",
-                    "variableId": "doubledTemp",
-                    "label": "doubledTemp (calculated)"
                 },
                 "",
                 "---",
@@ -184,10 +199,10 @@
                 "## Use Cases",
                 "",
                 "The inspector is particularly useful for:",
-                "- **Debugging**: See exactly what values variables have at any moment",
-                "- **Development**: Verify that calculations and data transformations work correctly",
-                "- **Documentation**: Show users the current state of the system",
-                "- **Learning**: Understand how variables change when interacting with controls"
+                "- **Debugging transforms**: See exactly how filter, aggregate, pivot, and nest operations transform your data",
+                "- **Verifying calculations**: Ensure data transformations produce expected results",
+                "- **Understanding data flow**: Trace how data changes through the pipeline",
+                "- **Development**: Build and test complex data transformations interactively"
             ]
         }
     ]
