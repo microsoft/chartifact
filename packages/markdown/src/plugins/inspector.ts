@@ -111,7 +111,6 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                 
                 const arrayLabel = document.createElement('span');
                 arrayLabel.textContent = `Array(${arr.length})`;
-                arrayLabel.style.color = '#0066cc';
                 
                 header.appendChild(toggleIcon);
                 header.appendChild(arrayLabel);
@@ -127,7 +126,6 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                     
                     const indexLabel = document.createElement('span');
                     indexLabel.textContent = `[${index}]: `;
-                    indexLabel.style.color = '#666';
                     itemDiv.appendChild(indexLabel);
                     
                     const valueSpan = document.createElement('span');
@@ -136,13 +134,10 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                         valueSpan.textContent = String(item);
                     } else if (typeof item === 'string') {
                         valueSpan.textContent = `"${item}"`;
-                        valueSpan.style.color = '#008000';
                     } else if (typeof item === 'number') {
                         valueSpan.textContent = String(item);
-                        valueSpan.style.color = '#0066cc';
                     } else if (typeof item === 'boolean') {
                         valueSpan.textContent = String(item);
-                        valueSpan.style.color = '#d73a49';
                     } else if (Array.isArray(item)) {
                         // Nested array
                         renderArray(valueSpan, item, depth + 1);
