@@ -1,6 +1,6 @@
 {
     "$schema": "../../../../docs/schema/idoc_v1.json",
-    "title": "Variable Inspector Demo with Data Transforms",
+    "title": "Inspector",
     "dataLoaders": [
         {
             "dataSourceName": "salesData",
