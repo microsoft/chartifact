@@ -109,16 +109,7 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                 content.className = 'inspector-array-content';
                 content.style.paddingLeft = '1.5em';
                 
-                arr.forEach((item, index) => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'inspector-array-item';
-                    
-                    const indexLabel = document.createElement('span');
-                    indexLabel.textContent = `[${index}]: `;
-                    itemDiv.appendChild(indexLabel);
-                    
-                    const valueSpan = document.createElement('span');
-                    
+                const renderValue = (valueSpan: HTMLSpanElement, item: unknown, depth: number) => {
                     if (Array.isArray(item)) {
                         // Nested array
                         renderArray(valueSpan, item, depth + 1);
@@ -128,6 +119,18 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                     } else {
                         valueSpan.textContent = JSON.stringify(item);
                     }
+                };
+
+                arr.forEach((item, index) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'inspector-array-item';
+                    
+                    const indexLabel = document.createElement('span');
+                    indexLabel.textContent = `[${index}]: `;
+                    itemDiv.appendChild(indexLabel);
+                    
+                    const valueSpan = document.createElement('span');
+                    renderValue(valueSpan, item, depth);
                     
                     itemDiv.appendChild(valueSpan);
                     content.appendChild(itemDiv);
