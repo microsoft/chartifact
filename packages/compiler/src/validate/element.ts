@@ -97,7 +97,7 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                 case 'inspector': {
                     // Inspector has optional variableId (if omitted, inspects all variables)
                     if (element.variableId) {
-                        errors.push(...validateInputElementWithVariableId(element));
+                        errors.push(...validateInputElementWithVariableId(element as { type: string; variableId: string }));
                     }
                     break;
                 }
