@@ -138,8 +138,7 @@
                 "**Inspector output:**",
                 {
                     "type": "inspector",
-                    "variableId": "filteredData",
-                    "label": "filteredData"
+                    "variableId": "filteredData"
                 },
                 "",
                 "---",
@@ -151,8 +150,7 @@
                 "**Inspector output:**",
                 {
                     "type": "inspector",
-                    "variableId": "aggregatedByCategory",
-                    "label": "aggregatedByCategory"
+                    "variableId": "aggregatedByCategory"
                 },
                 "",
                 "---",
@@ -164,8 +162,7 @@
                 "**Inspector output:**",
                 {
                     "type": "inspector",
-                    "variableId": "pivotedData",
-                    "label": "pivotedData"
+                    "variableId": "pivotedData"
                 },
                 "",
                 "---",
@@ -177,8 +174,7 @@
                 "**Inspector output:**",
                 {
                     "type": "inspector",
-                    "variableId": "nestedByCategory",
-                    "label": "nestedByCategory"
+                    "variableId": "nestedByCategory"
                 },
                 "",
                 "---",
@@ -191,7 +187,6 @@
                 {
                     "type": "inspector",
                     "variableId": "salesData",
-                    "label": "salesData (raw)",
                     "raw": true
                 },
                 "",
@@ -203,8 +198,7 @@
                 "",
                 "**Inspector output:**",
                 {
-                    "type": "inspector",
-                    "label": "All Variables (signalDeps)"
+                    "type": "inspector"
                 },
                 "",
                 "---",
