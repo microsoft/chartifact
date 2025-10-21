@@ -282,13 +282,10 @@ function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: Ve
                     break;
                 }
                 case 'inspector': {
-                    const { variableId, label, raw } = element;
+                    const { variableId, raw } = element;
                     const inspectorSpec: Plugins.InspectorSpec = {} as any;
                     if (variableId) {
                         inspectorSpec.variableId = variableId;
-                    }
-                    if (label) {
-                        inspectorSpec.label = label;
                     }
                     if (raw) {
                         inspectorSpec.raw = raw;
