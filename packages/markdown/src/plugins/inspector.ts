@@ -58,6 +58,18 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                 isData: false,
             }];
 
+            const renderValue = (container: HTMLElement, value: unknown, depth: number = 0) => {
+                if (Array.isArray(value)) {
+                    // Nested array
+                    renderArray(container, value, depth);
+                } else if (typeof value === 'object') {
+                    container.textContent = JSON.stringify(value, null, 2);
+                    container.style.whiteSpace = 'pre';
+                } else {
+                    container.textContent = JSON.stringify(value);
+                }
+            };
+
             const displayValue = (value: unknown) => {
                 element.innerHTML = ''; // Clear previous content
                 
@@ -68,15 +80,7 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                 }
                 
                 // Interactive mode (default)
-                if (Array.isArray(value)) {
-                    // Create interactive collapsible array display
-                    renderArray(element, value);
-                } else if (typeof value === 'object') {
-                    // For objects, use JSON.stringify with indentation
-                    element.textContent = JSON.stringify(value, null, 2);
-                } else {
-                    element.textContent = JSON.stringify(value);
-                }
+                renderValue(element, value);
             };
 
             const renderArray = (container: HTMLElement, arr: unknown[], depth: number = 0) => {
@@ -108,18 +112,6 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                 const content = document.createElement('div');
                 content.className = 'inspector-array-content';
                 content.style.paddingLeft = '1.5em';
-                
-                const renderValue = (valueSpan: HTMLSpanElement, item: unknown, depth: number) => {
-                    if (Array.isArray(item)) {
-                        // Nested array
-                        renderArray(valueSpan, item, depth + 1);
-                    } else if (typeof item === 'object') {
-                        valueSpan.textContent = JSON.stringify(item, null, 2);
-                        valueSpan.style.whiteSpace = 'pre';
-                    } else {
-                        valueSpan.textContent = JSON.stringify(item);
-                    }
-                };
 
                 arr.forEach((item, index) => {
                     const itemDiv = document.createElement('div');
@@ -130,7 +122,7 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                     itemDiv.appendChild(indexLabel);
                     
                     const valueSpan = document.createElement('span');
-                    renderValue(valueSpan, item, depth);
+                    renderValue(valueSpan, item, depth + 1);
                     
                     itemDiv.appendChild(valueSpan);
                     content.appendChild(itemDiv);
