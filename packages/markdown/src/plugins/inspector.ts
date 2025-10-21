@@ -61,32 +61,19 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                 
                 // If raw mode is enabled, always use JSON.stringify without interactivity
                 if (spec.raw) {
-                    if (value === null || value === undefined) {
-                        element.textContent = String(value);
-                    } else if (typeof value === 'string') {
-                        element.textContent = `"${value}"`;
-                    } else if (typeof value === 'object') {
-                        // For arrays and objects, use JSON.stringify with indentation
-                        element.textContent = JSON.stringify(value, null, 2);
-                    } else {
-                        element.textContent = String(value);
-                    }
+                    element.textContent = JSON.stringify(value, null, 2);
                     return;
                 }
                 
                 // Interactive mode (default)
-                if (value === null || value === undefined) {
-                    element.textContent = String(value);
-                } else if (typeof value === 'string') {
-                    element.textContent = `"${value}"`;
-                } else if (Array.isArray(value)) {
+                if (Array.isArray(value)) {
                     // Create interactive collapsible array display
                     renderArray(element, value);
                 } else if (typeof value === 'object') {
                     // For objects, use JSON.stringify with indentation
                     element.textContent = JSON.stringify(value, null, 2);
                 } else {
-                    element.textContent = String(value);
+                    element.textContent = JSON.stringify(value);
                 }
             };
 
@@ -130,22 +117,14 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                     
                     const valueSpan = document.createElement('span');
                     
-                    if (item === null || item === undefined) {
-                        valueSpan.textContent = String(item);
-                    } else if (typeof item === 'string') {
-                        valueSpan.textContent = `"${item}"`;
-                    } else if (typeof item === 'number') {
-                        valueSpan.textContent = String(item);
-                    } else if (typeof item === 'boolean') {
-                        valueSpan.textContent = String(item);
-                    } else if (Array.isArray(item)) {
+                    if (Array.isArray(item)) {
                         // Nested array
                         renderArray(valueSpan, item, depth + 1);
                     } else if (typeof item === 'object') {
                         valueSpan.textContent = JSON.stringify(item, null, 2);
                         valueSpan.style.whiteSpace = 'pre';
                     } else {
-                        valueSpan.textContent = String(item);
+                        valueSpan.textContent = JSON.stringify(item);
                     }
                     
                     itemDiv.appendChild(valueSpan);
