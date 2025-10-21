@@ -28,12 +28,6 @@
             "initialValue": 500
         },
         {
-            "variableId": "salesData",
-            "type": "object",
-            "isArray": true,
-            "initialValue": []
-        },
-        {
             "variableId": "filteredData",
             "type": "object",
             "isArray": true,

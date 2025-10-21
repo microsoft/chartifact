@@ -214,7 +214,9 @@ interface ImageElementProps {
 interface InspectorElement extends InspectorElementProps {
     type: 'inspector';
 }
-interface InspectorElementProps extends VariableControl {
+interface InspectorElementProps {
+    /** Optional variable ID. If omitted, inspects all variables from signalBus.signalDeps */
+    variableId?: VariableID;
     /** When true, displays raw JSON output without interactive elements (for copy/paste). Default is false. */
     raw?: boolean;
 }

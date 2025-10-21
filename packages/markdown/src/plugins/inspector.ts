@@ -36,7 +36,6 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
             const spec: InspectorSpec = specReview.approvedSpec;
 
             const html = `<div class="inspector">
-                    <div class="inspector-label">${spec.variableId || 'All Variables'}</div>
                     <div class="inspector-value" id="${spec.variableId || 'all'}-value"></div>
                 </div>`;
             container.innerHTML = html;
@@ -52,7 +51,12 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
             // Special case: if variableId is undefined/omitted, inspect all variables from signalDeps
             const isInspectAll = !spec.variableId;
             
-            const initialSignals = isInspectAll ? [] : [{
+            const initialSignals = isInspectAll ? [{
+                name: '*',
+                value: null,
+                priority: -1,
+                isData: false,
+            }] : [{
                 name: spec.variableId,
                 value: null,
                 priority: -1,
