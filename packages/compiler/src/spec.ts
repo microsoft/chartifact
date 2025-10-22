@@ -45,6 +45,17 @@ export function createSpecWithVariables(variables: Variable[], tabulatorElements
     }
 
     topologicalSort(variables).forEach((v) => {
+        // If variable has a loader, it will be processed separately during markdown generation
+        // For validation purposes, we just add a stub data source
+        if (v.loader) {
+            spec.signals.push(dataAsSignal(v.variableId));
+            spec.data.push({
+                name: v.variableId,
+                values: [],
+            });
+            return; // Skip normal variable processing
+        }
+
         const calculation = calculationType(v);
         if (calculation?.dfCalc) {
             const { dataFrameTransformations } = calculation.dfCalc;

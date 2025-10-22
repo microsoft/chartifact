@@ -246,6 +246,14 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       });
     }
     topologicalSort(variables).forEach((v) => {
+      if (v.loader) {
+        spec.signals.push(dataAsSignal(v.variableId));
+        spec.data.push({
+          name: v.variableId,
+          values: []
+        });
+        return;
+      }
       const calculation = calculationType(v);
       if (calculation == null ? void 0 : calculation.dfCalc) {
         const { dataFrameTransformations } = calculation.dfCalc;
@@ -616,6 +624,41 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       const calculationErrors = validateCalculation(variable.calculation, otherVariables, tabulatorElements, dataLoaders);
       if (calculationErrors.length > 0) {
         errors.push(...calculationErrors.map((error) => `Calculation error: ${error}`));
+      }
+    }
+    if (variable.loader) {
+      const loader = variable.loader;
+      if (variable.type !== "object" || !variable.isArray) {
+        errors.push('Variable with loader must have type "object" and isArray set to true.');
+      }
+      if (loader.type) {
+        switch (loader.type) {
+          case "inline":
+            if (!loader.content) {
+              errors.push('Variable loader of type "inline" must have content.');
+            }
+            break;
+          case "file":
+            if (!loader.filename) {
+              errors.push('Variable loader of type "file" must have filename.');
+            }
+            if (!loader.content) {
+              errors.push('Variable loader of type "file" must have content.');
+            }
+            break;
+          case "url":
+            if (!loader.url) {
+              errors.push('Variable loader of type "url" must have url.');
+            }
+            break;
+          default:
+            errors.push(`Variable loader has unsupported type: ${loader.type}`);
+        }
+      } else {
+        errors.push("Variable loader must have a type property.");
+      }
+      if (loader.dataFrameTransformations) {
+        errors.push("Variable loader should not have dataFrameTransformations. Use Variable.calculation instead.");
       }
     }
     const existingVariable = otherVariables.find((v) => v.variableId === variable.variableId);
@@ -2523,7 +2566,15 @@ ${content}
       }
     }
     const tabulatorElements = page.groups.flatMap((group) => group.elements.filter((e) => typeof e !== "string" && e.type === "tabulator"));
-    const { vegaScope, inlineDataMd } = dataLoaderMarkdown(dataLoaders.filter((dl) => dl.type !== "spec"), variables, tabulatorElements);
+    const variableLoaders = variables.filter((v) => v.loader).map((v) => {
+      const loader = v.loader;
+      return {
+        ...loader,
+        dataSourceName: v.variableId
+      };
+    });
+    const allDataSources = [...dataLoaders.filter((dl) => dl.type !== "spec"), ...variableLoaders];
+    const { vegaScope, inlineDataMd } = dataLoaderMarkdown(allDataSources, variables, tabulatorElements);
     for (const dataLoader of dataLoaders.filter((dl) => dl.type === "spec")) {
       const useYaml = getPluginFormat("vega", finalPluginFormat) === "yaml";
       mdSections.push(useYaml ? chartWrapYaml(dataLoader.spec) : chartWrap(dataLoader.spec));

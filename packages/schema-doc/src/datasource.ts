@@ -89,12 +89,5 @@ export interface LoaderByDynamicURL extends LoaderBase {
   docString?: string;
 }
 
-/** LLM Should not use this type */
-export interface LoaderBySpec {
-  type: 'spec';
-  /** Vega Specification - Not Vega-Lite */
-  spec: object;
-}
-
 /** Union type for Loader - used in Variable.loader property */
-export type Loader = LoaderInline | LoaderByFile | LoaderByDynamicURL | LoaderBySpec;
+export type Loader = LoaderInline | LoaderByFile | LoaderByDynamicURL;

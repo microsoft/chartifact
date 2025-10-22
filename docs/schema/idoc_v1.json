@@ -3725,9 +3725,6 @@
         },
         {
           "$ref": "#/definitions/LoaderByDynamicURL"
-        },
-        {
-          "$ref": "#/definitions/LoaderBySpec"
         }
       ],
       "description": "Union type for Loader - used in Variable.loader property"
@@ -3792,25 +3789,6 @@
         "type",
         "filename",
         "content"
-      ],
-      "type": "object"
-    },
-    "LoaderBySpec": {
-      "additionalProperties": false,
-      "description": "LLM Should not use this type",
-      "properties": {
-        "spec": {
-          "description": "Vega Specification - Not Vega-Lite",
-          "type": "object"
-        },
-        "type": {
-          "const": "spec",
-          "type": "string"
-        }
-      },
-      "required": [
-        "type",
-        "spec"
       ],
       "type": "object"
     },
