@@ -4,62 +4,6 @@
 */
 import { Transforms } from 'vega';
 import { TemplateElement } from 'treebark';
-/**
- * VariableID
- *
- * - The VariableID is an identifier for a variable.
- * - Do NOT use operator characters in the VariableID, such as /|\\\'"`,.;:~-=+?!@#$%^&*()[]{}<>
- * - Do NOT use space characters in the VariableID, but you may use underscores.
- * - Do NOT prefix the VariableID with a digit.
- * - Do NOT prefix/suffix the VariableID with the type, e.g. "value_number" is bad.
- * - The following names are not allowed as VariableIDs: "width", "height", "padding", "autosize", "background", "style", "parent", "datum", "item", "event", "cursor", "encodeUriComponent"
- */
-type VariableID = string;
-type VariableType = 'number' | 'string' | 'boolean' | 'object';
-type VariableValuePrimitive = string | number | boolean | object;
-type VariableValueArray = string[] | number[] | boolean[] | object[];
-type VariableValue = VariableValuePrimitive | VariableValueArray;
-interface Variable {
-    variableId: VariableID;
-    type: VariableType;
-    isArray?: boolean;
-    initialValue: VariableValue;
-    calculation?: Calculation;
-}
-/** Scalar calculation for primitive values. Not for object arrays. */
-interface ScalarCalculation {
-    /** Vega expression language, used to calculate the value based on other variables. */
-    vegaExpression: string;
-}
-/** DataFrame calculation for object arrays. Not for primitive/scalar values. */
-interface DataFrameCalculation {
-    /** The upstream object array source dataSourceName(s) the dataFrameTransformations depends on. */
-    dataSourceNames: VariableID[];
-    dataFrameTransformations: Transforms[];
-}
-type Calculation = ScalarCalculation | DataFrameCalculation;
-/** A url, it may contain template variables, e.g. https://example.com/{{category}}/{{item}} */
-type TemplatedUrl = string;
-interface DataSourceBase {
-    /** name of the data source, used to reference it in the UI, has same constraints as VariableID */
-    dataSourceName: VariableID;
-    /** optional, default is 'json' */
-    format?: DataSourceBaseFormat;
-    /** only if format = dsv */
-    delimiter?: string;
-    dataFrameTransformations?: Transforms[];
-}
-type DataSourceBaseFormat = 'csv' | 'json' | 'tsv' | 'dsv';
-interface ElementBase {
-}
-interface VariableControl extends ElementBase {
-    variableId: VariableID;
-    /** optional label if the variableId is not descriptive enough */
-    label?: string;
-}
-interface OptionalVariableControl extends ElementBase {
-    variableId?: VariableID;
-}
 interface ReturnType {
     type: VariableType;
     /** in our system, a pandas dataframe is an array of objects */
@@ -95,6 +39,104 @@ interface DataLoaderBySpec {
     spec: object;
 }
 type DataLoader = DataSource | DataLoaderBySpec;
+/**
+ * Loader types for Variable.loader property
+ * These are copies of the DataSource types but without dataFrameTransformations
+ * (transforms can be added via Variable.calculation instead)
+ */
+/** Base interface for loaders - excludes dataFrameTransformations */
+interface LoaderBase {
+    /** optional, default is 'json' */
+    format?: DataSourceBaseFormat;
+    /** only if format = dsv */
+    delimiter?: string;
+}
+/** JSON data or CSV / TSV / DSV for Variable.loader */
+interface LoaderInline extends LoaderBase {
+    type: 'inline';
+    /** object array or a string or string array of CSV / TSV / DSV */
+    content: object[] | string | string[];
+}
+/** User uploaded their own data file for Variable.loader */
+interface LoaderByFile extends LoaderBase {
+    type: 'file';
+    filename: string;
+    content: string;
+}
+/** User references a data source by URL for Variable.loader */
+interface LoaderByDynamicURL extends LoaderBase {
+    type: 'url';
+    url: TemplatedUrl;
+    returnType?: ReturnType;
+    /** Assistant should not populate this. */
+    docString?: string;
+}
+/** LLM Should not use this type */
+interface LoaderBySpec {
+    type: 'spec';
+    /** Vega Specification - Not Vega-Lite */
+    spec: object;
+}
+/** Union type for Loader - used in Variable.loader property */
+type Loader = LoaderInline | LoaderByFile | LoaderByDynamicURL | LoaderBySpec;
+/**
+ * VariableID
+ *
+ * - The VariableID is an identifier for a variable.
+ * - Do NOT use operator characters in the VariableID, such as /|\\\'"`,.;:~-=+?!@#$%^&*()[]{}<>
+ * - Do NOT use space characters in the VariableID, but you may use underscores.
+ * - Do NOT prefix the VariableID with a digit.
+ * - Do NOT prefix/suffix the VariableID with the type, e.g. "value_number" is bad.
+ * - The following names are not allowed as VariableIDs: "width", "height", "padding", "autosize", "background", "style", "parent", "datum", "item", "event", "cursor", "encodeUriComponent"
+ */
+type VariableID = string;
+type VariableType = 'number' | 'string' | 'boolean' | 'object';
+type VariableValuePrimitive = string | number | boolean | object;
+type VariableValueArray = string[] | number[] | boolean[] | object[];
+type VariableValue = VariableValuePrimitive | VariableValueArray;
+interface Variable {
+    variableId: VariableID;
+    type: VariableType;
+    isArray?: boolean;
+    initialValue: VariableValue;
+    calculation?: Calculation;
+    /** Optional loader to populate this variable with data. Replaces the deprecated dataLoaders array. */
+    loader?: Loader;
+}
+/** Scalar calculation for primitive values. Not for object arrays. */
+interface ScalarCalculation {
+    /** Vega expression language, used to calculate the value based on other variables. */
+    vegaExpression: string;
+}
+/** DataFrame calculation for object arrays. Not for primitive/scalar values. */
+interface DataFrameCalculation {
+    /** The upstream object array source dataSourceName(s) the dataFrameTransformations depends on. */
+    dataSourceNames: VariableID[];
+    dataFrameTransformations: Transforms[];
+}
+type Calculation = ScalarCalculation | DataFrameCalculation;
+/** A url, it may contain template variables, e.g. https://example.com/{{category}}/{{item}} */
+type TemplatedUrl = string;
+interface DataSourceBase {
+    /** name of the data source, used to reference it in the UI, has same constraints as VariableID */
+    dataSourceName: VariableID;
+    /** optional, default is 'json' */
+    format?: DataSourceBaseFormat;
+    /** only if format = dsv */
+    delimiter?: string;
+    dataFrameTransformations?: Transforms[];
+}
+type DataSourceBaseFormat = 'csv' | 'json' | 'tsv' | 'dsv';
+interface ElementBase {
+}
+interface VariableControl extends ElementBase {
+    variableId: VariableID;
+    /** optional label if the variableId is not descriptive enough */
+    label?: string;
+}
+interface OptionalVariableControl extends ElementBase {
+    variableId?: VariableID;
+}
 /**
  * Interactive Elements
  */
@@ -268,6 +310,7 @@ interface InteractiveDocument {
     /** the first groupId should be 'main' */
     groups: ElementGroup[];
     /**
+     * @deprecated Use Variable.loader instead. DataLoaders will be removed in a future version.
      * DataLoaders populate variables for tables and charts
      * Note: 'image' is not a valid type for a variable, do not provide a dataLoader if returnType.type = 'image',
      * (ImageElements can load images from URLs directly without a DataLoader.)
@@ -316,4 +359,4 @@ interface GoogleFontsSpec {
 type InteractiveDocumentWithSchema = InteractiveDocument & {
     $schema?: string;
 };
-export type { Calculation, ChartElement, CheckboxElement, CheckboxProps, DataFrameCalculation, DataLoader, DataLoaderBySpec, DataSource, DataSourceBase, DataSourceBaseFormat, DataSourceByDynamicURL, DataSourceByFile, DataSourceInline, DropdownElement, DropdownElementProps, DynamicDropdownOptions, ElementBase, ElementGroup, GoogleFontsSpec, ImageElement, ImageElementProps, InteractiveDocument, InteractiveDocumentWithSchema, InteractiveElement, MarkdownElement, MermaidElement, MermaidElementProps, MermaidTemplate, NumberElement, NumberElementProps, OptionalVariableControl, PageElement, PageStyle, Preset, PresetsElement, PresetsElementProps, ReturnType, ScalarCalculation, SliderElement, SliderElementProps, TabulatorElement, TabulatorElementProps, TemplatedUrl, TextboxElement, TextboxElementProps, TreebarkElement, TreebarkElementProps, Variable, VariableControl, VariableID, VariableType, VariableValue, VariableValueArray, VariableValuePrimitive, Vega_or_VegaLite_spec };
+export type { Calculation, ChartElement, CheckboxElement, CheckboxProps, DataFrameCalculation, DataLoader, DataLoaderBySpec, DataSource, DataSourceBase, DataSourceBaseFormat, DataSourceByDynamicURL, DataSourceByFile, DataSourceInline, DropdownElement, DropdownElementProps, DynamicDropdownOptions, ElementBase, ElementGroup, GoogleFontsSpec, ImageElement, ImageElementProps, InteractiveDocument, InteractiveDocumentWithSchema, InteractiveElement, Loader, LoaderBase, LoaderByDynamicURL, LoaderByFile, LoaderBySpec, LoaderInline, MarkdownElement, MermaidElement, MermaidElementProps, MermaidTemplate, NumberElement, NumberElementProps, OptionalVariableControl, PageElement, PageStyle, Preset, PresetsElement, PresetsElementProps, ReturnType, ScalarCalculation, SliderElement, SliderElementProps, TabulatorElement, TabulatorElementProps, TemplatedUrl, TextboxElement, TextboxElementProps, TreebarkElement, TreebarkElementProps, Variable, VariableControl, VariableID, VariableType, VariableValue, VariableValueArray, VariableValuePrimitive, Vega_or_VegaLite_spec };

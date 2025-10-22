@@ -3151,7 +3151,7 @@
           "type": "string"
         },
         "dataLoaders": {
-          "description": "DataLoaders populate variables for tables and charts Note: 'image' is not a valid type for a variable, do not provide a dataLoader if returnType.type = 'image',  (ImageElements can load images from URLs directly without a DataLoader.)",
+          "deprecated": "Use Variable.loader instead. DataLoaders will be removed in a future version.\nDataLoaders populate variables for tables and charts\nNote: 'image' is not a valid type for a variable, do not provide a dataLoader if returnType.type = 'image', \n(ImageElements can load images from URLs directly without a DataLoader.)",
           "items": {
             "$ref": "#/definitions/DataLoader"
           },
@@ -3712,6 +3712,148 @@
       },
       "required": [
         "type"
+      ],
+      "type": "object"
+    },
+    "Loader": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/LoaderInline"
+        },
+        {
+          "$ref": "#/definitions/LoaderByFile"
+        },
+        {
+          "$ref": "#/definitions/LoaderByDynamicURL"
+        },
+        {
+          "$ref": "#/definitions/LoaderBySpec"
+        }
+      ],
+      "description": "Union type for Loader - used in Variable.loader property"
+    },
+    "LoaderByDynamicURL": {
+      "additionalProperties": false,
+      "description": "User references a data source by URL for Variable.loader",
+      "properties": {
+        "delimiter": {
+          "description": "only if format = dsv",
+          "type": "string"
+        },
+        "docString": {
+          "description": "Assistant should not populate this.",
+          "type": "string"
+        },
+        "format": {
+          "$ref": "#/definitions/DataSourceBaseFormat",
+          "description": "optional, default is 'json'"
+        },
+        "returnType": {
+          "$ref": "#/definitions/ReturnType"
+        },
+        "type": {
+          "const": "url",
+          "type": "string"
+        },
+        "url": {
+          "$ref": "#/definitions/TemplatedUrl"
+        }
+      },
+      "required": [
+        "type",
+        "url"
+      ],
+      "type": "object"
+    },
+    "LoaderByFile": {
+      "additionalProperties": false,
+      "description": "User uploaded their own data file for Variable.loader",
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "delimiter": {
+          "description": "only if format = dsv",
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "format": {
+          "$ref": "#/definitions/DataSourceBaseFormat",
+          "description": "optional, default is 'json'"
+        },
+        "type": {
+          "const": "file",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "filename",
+        "content"
+      ],
+      "type": "object"
+    },
+    "LoaderBySpec": {
+      "additionalProperties": false,
+      "description": "LLM Should not use this type",
+      "properties": {
+        "spec": {
+          "description": "Vega Specification - Not Vega-Lite",
+          "type": "object"
+        },
+        "type": {
+          "const": "spec",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "spec"
+      ],
+      "type": "object"
+    },
+    "LoaderInline": {
+      "additionalProperties": false,
+      "description": "JSON data or CSV / TSV / DSV for Variable.loader",
+      "properties": {
+        "content": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ],
+          "description": "object array or a string or string array of CSV / TSV / DSV"
+        },
+        "delimiter": {
+          "description": "only if format = dsv",
+          "type": "string"
+        },
+        "format": {
+          "$ref": "#/definitions/DataSourceBaseFormat",
+          "description": "optional, default is 'json'"
+        },
+        "type": {
+          "const": "inline",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "content"
       ],
       "type": "object"
     },
@@ -5972,6 +6114,10 @@
         },
         "isArray": {
           "type": "boolean"
+        },
+        "loader": {
+          "$ref": "#/definitions/Loader",
+          "description": "Optional loader to populate this variable with data. Replaces the deprecated dataLoaders array."
         },
         "type": {
           "$ref": "#/definitions/VariableType"

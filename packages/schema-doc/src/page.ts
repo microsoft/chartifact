@@ -20,6 +20,7 @@ export interface InteractiveDocument {
   groups: ElementGroup[];
 
   /**
+   * @deprecated Use Variable.loader instead. DataLoaders will be removed in a future version.
    * DataLoaders populate variables for tables and charts
    * Note: 'image' is not a valid type for a variable, do not provide a dataLoader if returnType.type = 'image', 
    * (ImageElements can load images from URLs directly without a DataLoader.)

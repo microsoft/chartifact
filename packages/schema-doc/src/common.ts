@@ -3,6 +3,7 @@
 * Licensed under the MIT License.
 */
 import { Transforms } from 'vega';
+import type { Loader } from './datasource.js';
 
 /**
  * VariableID
@@ -27,6 +28,8 @@ export interface Variable {
   isArray?: boolean;
   initialValue: VariableValue;
   calculation?: Calculation;
+  /** Optional loader to populate this variable with data. Replaces the deprecated dataLoaders array. */
+  loader?: Loader;
 }
 
 /** Scalar calculation for primitive values. Not for object arrays. */

@@ -2,7 +2,7 @@
 * Copyright (c) Microsoft Corporation.
 * Licensed under the MIT License.
 */
-import { DataSourceBase, TemplatedUrl, VariableType } from './common.js';
+import { DataSourceBase, DataSourceBaseFormat, TemplatedUrl, VariableType } from './common.js';
 
 export interface ReturnType {
   type: VariableType;
@@ -49,3 +49,52 @@ export interface DataLoaderBySpec {
 }
 
 export type DataLoader = DataSource | DataLoaderBySpec;
+
+/**
+ * Loader types for Variable.loader property
+ * These are copies of the DataSource types but without dataFrameTransformations
+ * (transforms can be added via Variable.calculation instead)
+ */
+
+/** Base interface for loaders - excludes dataFrameTransformations */
+export interface LoaderBase {
+  /** optional, default is 'json' */
+  format?: DataSourceBaseFormat;
+  /** only if format = dsv */
+  delimiter?: string;
+}
+
+/** JSON data or CSV / TSV / DSV for Variable.loader */
+export interface LoaderInline extends LoaderBase {
+  type: 'inline';
+
+  /** object array or a string or string array of CSV / TSV / DSV */
+  content: object[] | string | string[];
+}
+
+/** User uploaded their own data file for Variable.loader */
+export interface LoaderByFile extends LoaderBase {
+  type: 'file';
+  filename: string;
+  content: string;
+}
+
+/** User references a data source by URL for Variable.loader */
+export interface LoaderByDynamicURL extends LoaderBase {
+  type: 'url';
+  url: TemplatedUrl;
+  returnType?: ReturnType;
+
+  /** Assistant should not populate this. */
+  docString?: string;
+}
+
+/** LLM Should not use this type */
+export interface LoaderBySpec {
+  type: 'spec';
+  /** Vega Specification - Not Vega-Lite */
+  spec: object;
+}
+
+/** Union type for Loader - used in Variable.loader property */
+export type Loader = LoaderInline | LoaderByFile | LoaderByDynamicURL | LoaderBySpec;
