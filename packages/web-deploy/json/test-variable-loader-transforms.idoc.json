@@ -1,0 +1,97 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Test Variable Loader with Transforms",
+    "style": {
+        "css": [
+            "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
+            "body { display: grid; grid-template-areas: 'header' 'source' 'filtered'; gap: 20px; max-width: 1200px; margin: 0 auto; }",
+            ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
+            "#header { grid-area: header; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }",
+            "#source { grid-area: source; min-width: 0; overflow: hidden; }",
+            "#filtered { grid-area: filtered; min-width: 0; overflow: hidden; }",
+            "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
+            "h2 { margin: 10px 0 20px 0; font-size: 1.5em; color: #2d3748; font-weight: 600; }",
+            ".tabulator { max-width: 100%; overflow: auto; }",
+            ".tabulator .tabulator-table { min-width: fit-content; }"
+        ]
+    },
+    "variables": [
+        {
+            "variableId": "salesData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "loader": {
+                "type": "inline",
+                "format": "csv",
+                "content": [
+                    "product,revenue,units,category",
+                    "Widgets,15000,150,Electronics",
+                    "Gadgets,22000,200,Electronics",
+                    "Gizmos,8000,80,Toys",
+                    "Doohickeys,12000,120,Tools",
+                    "Thingamajigs,5000,50,Toys"
+                ]
+            }
+        },
+        {
+            "variableId": "highRevenueSales",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["salesData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.revenue > 10000"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "revenueThreshold",
+            "type": "number",
+            "initialValue": 10000
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "header",
+            "elements": [
+                "# Sales Analysis",
+                "## Demonstrating Variable.loader with Transformations"
+            ]
+        },
+        {
+            "groupId": "source",
+            "elements": [
+                "## All Sales Data",
+                "Source data loaded via Variable.loader (no transforms)",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "salesData",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "minHeight": "200px"
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "filtered",
+            "elements": [
+                "## High Revenue Sales",
+                "Filtered data using Variable.calculation.dataFrameTransformations (revenue > ${{revenueThreshold}})",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "highRevenueSales",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "minHeight": "200px"
+                    }
+                }
+            ]
+        }
+    ]
+}

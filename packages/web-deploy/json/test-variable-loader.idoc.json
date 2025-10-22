@@ -1,0 +1,119 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Test Variable Loader Example",
+    "style": {
+        "css": [
+            "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8fafc; }",
+            "body { display: grid; grid-template-areas: 'header' 'table' 'chart'; gap: 20px; max-width: 1200px; margin: 0 auto; }",
+            ".group { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }",
+            "#header { grid-area: header; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }",
+            "#table { grid-area: table; min-width: 0; overflow: hidden; }",
+            "#chart { grid-area: chart; }",
+            "h1 { margin: 0; padding: 20px 0; font-size: 2em; font-weight: 600; }",
+            "h2 { margin: 10px 0 20px 0; font-size: 1.5em; color: #2d3748; font-weight: 600; }",
+            ".tabulator { max-width: 100%; overflow: auto; }",
+            ".tabulator .tabulator-table { min-width: fit-content; }"
+        ]
+    },
+    "variables": [
+        {
+            "variableId": "salesData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "loader": {
+                "type": "inline",
+                "format": "csv",
+                "content": [
+                    "product,revenue,units",
+                    "Widgets,15000,150",
+                    "Gadgets,22000,200",
+                    "Gizmos,18000,180",
+                    "Doohickeys,12000,120"
+                ]
+            }
+        },
+        {
+            "variableId": "totalRevenue",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "pluck(data('salesData'), 'revenue') ? sum(pluck(data('salesData'), 'revenue')) : 0"
+            }
+        },
+        {
+            "variableId": "totalUnits",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "pluck(data('salesData'), 'units') ? sum(pluck(data('salesData'), 'units')) : 0"
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "header",
+            "elements": [
+                "# Sales Dashboard",
+                "## Using Variable.loader Instead of dataLoaders"
+            ]
+        },
+        {
+            "groupId": "table",
+            "elements": [
+                "## Sales Data",
+                "Total Revenue: **${{totalRevenue}}** | Total Units: **{{totalUnits}}**",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "salesData",
+                    "tabulatorOptions": {
+                        "layout": "fitColumns",
+                        "minHeight": "200px"
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "chart",
+            "elements": [
+                "## Revenue by Product",
+                {
+                    "type": "chart",
+                    "chartKey": "revenueChart"
+                }
+            ]
+        }
+    ],
+    "resources": {
+        "charts": {
+            "revenueChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "data": {
+                    "name": "salesData"
+                },
+                "mark": "bar",
+                "encoding": {
+                    "x": {
+                        "field": "product",
+                        "type": "nominal",
+                        "axis": {
+                            "title": "Product"
+                        }
+                    },
+                    "y": {
+                        "field": "revenue",
+                        "type": "quantitative",
+                        "axis": {
+                            "title": "Revenue ($)"
+                        }
+                    },
+                    "color": {
+                        "field": "product",
+                        "type": "nominal",
+                        "legend": null
+                    }
+                }
+            }
+        }
+    }
+}
