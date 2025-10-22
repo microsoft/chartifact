@@ -2,6 +2,7 @@ import { Variable, DataLoader, Calculation, TabulatorElement } from '@microsoft/
 import { parse } from 'vega';
 import { createSpecWithVariables } from '../spec.js';
 import { validateTransforms } from './transforms.js';
+import { validateLoaderContent } from './loader.js';
 
 const illegalChars = '/|\\\'"`,.;:~-=+?!@#$%^&*()[]{}<>';
 
@@ -168,33 +169,8 @@ export function validateVariable(variable: Variable, otherVariables: Variable[],
             errors.push('Variable with loader must have type "object" and isArray set to true.');
         }
 
-        // Validate the loader as if it were a data source
-        if (loader.type) {
-            switch (loader.type) {
-                case 'inline':
-                    if (!loader.content) {
-                        errors.push('Variable loader of type "inline" must have content.');
-                    }
-                    break;
-                case 'file':
-                    if (!loader.filename) {
-                        errors.push('Variable loader of type "file" must have filename.');
-                    }
-                    if (!loader.content) {
-                        errors.push('Variable loader of type "file" must have content.');
-                    }
-                    break;
-                case 'url':
-                    if (!loader.url) {
-                        errors.push('Variable loader of type "url" must have url.');
-                    }
-                    break;
-                default:
-                    errors.push(`Variable loader has unsupported type: ${loader.type}`);
-            }
-        } else {
-            errors.push('Variable loader must have a type property.');
-        }
+        // Validate the loader content using shared validation function
+        errors.push(...validateLoaderContent(loader, 'Variable loader'));
 
         // Loader should not have dataFrameTransformations (those go in calculation)
         if (loader.dataFrameTransformations) {

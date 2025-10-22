@@ -515,6 +515,99 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     return errors;
   }
+  function validateDataSourceBase(ds) {
+    const errors = [];
+    if (!ds.dataSourceName) {
+      errors.push("Data source must have a dataSourceName");
+    }
+    return errors;
+  }
+  function validateDataSource(dataSource, variables, tabulatorElements, otherDataSources) {
+    const errors = validateDataSourceBase(dataSource);
+    if (!dataSource.dataSourceName) {
+      errors.push("Data source must have a dataSourceName");
+      return errors;
+    }
+    const idErrors = validateVariableID(dataSource.dataSourceName);
+    if (idErrors.length > 0) {
+      errors.push(...idErrors);
+    }
+    if (dataSource.dataSourceName.endsWith("-selected")) {
+      errors.push('Data source name may not end with "-selected"');
+    }
+    const existingVariable = (variables == null ? void 0 : variables.find((v) => v.variableId === dataSource.dataSourceName)) || (tabulatorElements == null ? void 0 : tabulatorElements.find((t) => t.variableId === dataSource.dataSourceName));
+    if (existingVariable) {
+      errors.push(`Data source with dataSourceName ${dataSource.dataSourceName} collides with variable name.`);
+    }
+    const existingDataSource = otherDataSources.find((ds) => dataSource.dataSourceName === ds.dataSourceName);
+    if (existingDataSource) {
+      errors.push(`Data source with dataSourceName ${dataSource.dataSourceName} already exists.`);
+    }
+    const dataLoaders = [];
+    errors.push(...validateTransforms(dataSource.dataFrameTransformations, variables, tabulatorElements, dataLoaders));
+    return errors;
+  }
+  function validateLoaderContent(loader, context) {
+    const errors = [];
+    if (!loader.type) {
+      errors.push(`${context} must have a type property`);
+      return errors;
+    }
+    switch (loader.type) {
+      case "inline":
+        if (!loader.content) {
+          errors.push(`${context} of type "inline" must have content`);
+        }
+        if (loader.format) {
+          switch (loader.format) {
+            case "json":
+            case "csv":
+            case "tsv":
+            case "dsv":
+              break;
+            default:
+              errors.push(`${context} format "${loader.format}" is not supported`);
+          }
+        }
+        break;
+      case "file":
+        if (!loader.filename) {
+          errors.push(`${context} of type "file" must have filename`);
+        }
+        if (!loader.content) {
+          errors.push(`${context} of type "file" must have content`);
+        }
+        break;
+      case "url":
+        if (!loader.url) {
+          errors.push(`${context} of type "url" must have url`);
+        }
+        break;
+      case "spec":
+        if (!loader.spec) {
+          errors.push(`${context} of type "spec" must have spec`);
+        }
+        if (typeof loader.spec !== "object") {
+          errors.push(`${context} spec must be an object`);
+        }
+        break;
+      default:
+        errors.push(`${context} has unsupported type: ${loader.type}`);
+    }
+    return errors;
+  }
+  async function validateDataLoader(dataLoader, variables, tabulatorElements, otherDataLoaders) {
+    const errors = [];
+    if (typeof dataLoader !== "object") {
+      errors.push("DataLoader must be an object");
+      return errors;
+    }
+    errors.push(...validateLoaderContent(dataLoader, "DataLoader"));
+    if (dataLoader.type !== "spec" && dataLoader.type) {
+      errors.push(...validateDataSource(dataLoader, variables, tabulatorElements, otherDataLoaders.filter((dl) => dl.type !== "spec")));
+    }
+    return errors;
+  }
   const illegalChars = "/|\\'\"`,.;:~-=+?!@#$%^&*()[]{}<>";
   const ignoredSignals = ["width", "height", "padding", "autosize", "background", "style", "parent", "datum", "item", "event", "cursor", "origins"];
   function validateRequiredString(value, propertyName, elementType) {
@@ -647,32 +740,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       if (variable.type !== "object" || !variable.isArray) {
         errors.push('Variable with loader must have type "object" and isArray set to true.');
       }
-      if (loader.type) {
-        switch (loader.type) {
-          case "inline":
-            if (!loader.content) {
-              errors.push('Variable loader of type "inline" must have content.');
-            }
-            break;
-          case "file":
-            if (!loader.filename) {
-              errors.push('Variable loader of type "file" must have filename.');
-            }
-            if (!loader.content) {
-              errors.push('Variable loader of type "file" must have content.');
-            }
-            break;
-          case "url":
-            if (!loader.url) {
-              errors.push('Variable loader of type "url" must have url.');
-            }
-            break;
-          default:
-            errors.push(`Variable loader has unsupported type: ${loader.type}`);
-        }
-      } else {
-        errors.push("Variable loader must have a type property.");
-      }
+      errors.push(...validateLoaderContent(loader, "Variable loader"));
       if (loader.dataFrameTransformations) {
         errors.push("Variable loader should not have dataFrameTransformations. Use Variable.calculation instead.");
       }
@@ -742,38 +810,6 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     } catch (e) {
       errors.push(`Calculation vegaExpression is invalid: ${e.message}`);
     }
-    return errors;
-  }
-  function validateDataSourceBase(ds) {
-    const errors = [];
-    if (!ds.dataSourceName) {
-      errors.push("Data source must have a dataSourceName");
-    }
-    return errors;
-  }
-  function validateDataSource(dataSource, variables, tabulatorElements, otherDataSources) {
-    const errors = validateDataSourceBase(dataSource);
-    if (!dataSource.dataSourceName) {
-      errors.push("Data source must have a dataSourceName");
-      return errors;
-    }
-    const idErrors = validateVariableID(dataSource.dataSourceName);
-    if (idErrors.length > 0) {
-      errors.push(...idErrors);
-    }
-    if (dataSource.dataSourceName.endsWith("-selected")) {
-      errors.push('Data source name may not end with "-selected"');
-    }
-    const existingVariable = (variables == null ? void 0 : variables.find((v) => v.variableId === dataSource.dataSourceName)) || (tabulatorElements == null ? void 0 : tabulatorElements.find((t) => t.variableId === dataSource.dataSourceName));
-    if (existingVariable) {
-      errors.push(`Data source with dataSourceName ${dataSource.dataSourceName} collides with variable name.`);
-    }
-    const existingDataSource = otherDataSources.find((ds) => dataSource.dataSourceName === ds.dataSourceName);
-    if (existingDataSource) {
-      errors.push(`Data source with dataSourceName ${dataSource.dataSourceName} already exists.`);
-    }
-    const dataLoaders = [];
-    errors.push(...validateTransforms(dataSource.dataFrameTransformations, variables, tabulatorElements, dataLoaders));
     return errors;
   }
   function safeVariableName(name) {
@@ -962,56 +998,6 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     return errors;
   }
-  async function validateDataLoader(dataLoader, variables, tabulatorElements, otherDataLoaders) {
-    const errors = [];
-    if (typeof dataLoader !== "object") {
-      errors.push("DataLoader must be an object");
-      return errors;
-    }
-    if (!dataLoader.type) {
-      errors.push("DataLoader must have a type");
-    }
-    switch (dataLoader.type) {
-      case "file": {
-        errors.push(...validateDataSource(dataLoader, variables, tabulatorElements, otherDataLoaders.filter((dl) => dl.type !== "spec")));
-        break;
-      }
-      case "url": {
-        errors.push(...validateDataSource(dataLoader, variables, tabulatorElements, otherDataLoaders.filter((dl) => dl.type !== "spec")));
-        break;
-      }
-      case "spec": {
-        if (!dataLoader.spec) {
-          errors.push("DataLoader must have a spec");
-        }
-        if (typeof dataLoader.spec !== "object") {
-          errors.push("DataLoader spec must be an object");
-        }
-        break;
-      }
-      case "inline": {
-        if (dataLoader.format) {
-          switch (dataLoader.format) {
-            case "json":
-            case "csv":
-            case "tsv":
-            case "dsv":
-              break;
-            default:
-              errors.push(`Inline DataLoader format "${dataLoader.format}" is not supported`);
-          }
-        }
-        if (!dataLoader.content) {
-          errors.push("Inline DataLoader must have content");
-        }
-        break;
-      }
-      default: {
-        errors.push(`DataLoader type "${dataLoader.type}" is not supported`);
-      }
-    }
-    return errors;
-  }
   async function validateDocument(page) {
     var _a;
     const errors = [];
@@ -1042,6 +1028,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     validateElement,
     validateGroup,
     validateInputElementWithVariableId,
+    validateLoaderContent,
     validateMarkdownString,
     validateOptionalBoolean,
     validateOptionalObject,
