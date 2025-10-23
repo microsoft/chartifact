@@ -101,21 +101,7 @@ export function targetMarkdown(page: InteractiveDocument, options?: TargetMarkdo
 
     const tabulatorElements = page.groups.flatMap(group => group.elements.filter(e => typeof e !== 'string' && e.type === 'tabulator'));
 
-    // Extract loaders from variables and convert them to DataSource format
-    const variableLoaders: DataSource[] = variables
-        .filter(v => v.loader)
-        .map(v => {
-            const loader = v.loader as any; // Cast to access properties
-            return {
-                ...loader,
-                dataSourceName: v.variableId,
-            } as DataSource;
-        });
-
-    // Combine dataLoaders and variable loaders (exclude 'spec' type for now)
-    const allDataSources = [...dataLoaders.filter(dl => dl.type !== 'spec'), ...variableLoaders];
-
-    const { vegaScope, inlineDataMd } = dataLoaderMarkdown(allDataSources, variables, tabulatorElements);
+    const { vegaScope, inlineDataMd } = dataLoaderMarkdown(dataLoaders.filter(dl => dl.type !== 'spec'), variables, tabulatorElements);
 
     // Process spec-type dataLoaders
     for (const dataLoader of dataLoaders.filter(dl => dl.type === 'spec')) {
@@ -178,12 +164,26 @@ export function targetMarkdown(page: InteractiveDocument, options?: TargetMarkdo
 
 function dataLoaderMarkdown(dataSources: DataSource[], variables: Variable[], tabulatorElements: TabulatorElement[]) {
 
+    // Extract loaders from variables and convert them to DataSource format
+    const variableLoaders: DataSource[] = variables
+        .filter(v => v.loader)
+        .map(v => {
+            const loader = v.loader as any; // Cast to access properties
+            return {
+                ...loader,
+                dataSourceName: v.variableId,
+            } as DataSource;
+        });
+
+    // Combine dataLoaders and variable loaders
+    const allDataSources = [...dataSources, ...variableLoaders];
+
     //create a Vega spec with all variables
     const spec = createSpecWithVariables(variables, tabulatorElements);
     const vegaScope = new VegaScope(spec);
     let inlineDataMd: string[] = [];
 
-    for (const dataSource of dataSources) {
+    for (const dataSource of allDataSources) {
         switch (dataSource.type) {
             case 'inline': {
                 inlineDataMd.push(addStaticDataLoaderToSpec(vegaScope, dataSource));

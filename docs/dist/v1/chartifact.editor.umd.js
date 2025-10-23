@@ -2553,15 +2553,7 @@ ${content}
       }
     }
     const tabulatorElements = page.groups.flatMap((group) => group.elements.filter((e) => typeof e !== "string" && e.type === "tabulator"));
-    const variableLoaders = variables.filter((v) => v.loader).map((v) => {
-      const loader = v.loader;
-      return {
-        ...loader,
-        dataSourceName: v.variableId
-      };
-    });
-    const allDataSources = [...dataLoaders.filter((dl) => dl.type !== "spec"), ...variableLoaders];
-    const { vegaScope, inlineDataMd } = dataLoaderMarkdown(allDataSources, variables, tabulatorElements);
+    const { vegaScope, inlineDataMd } = dataLoaderMarkdown(dataLoaders.filter((dl) => dl.type !== "spec"), variables, tabulatorElements);
     for (const dataLoader of dataLoaders.filter((dl) => dl.type === "spec")) {
       const useYaml = getPluginFormat("vega", finalPluginFormat) === "yaml";
       mdSections.push(useYaml ? chartWrapYaml(dataLoader.spec) : chartWrap(dataLoader.spec));
@@ -2606,10 +2598,18 @@ ${content}
     return normalizeNewlines(markdown, finalOptions.extraNewlines).trim();
   }
   function dataLoaderMarkdown(dataSources, variables, tabulatorElements) {
+    const variableLoaders = variables.filter((v) => v.loader).map((v) => {
+      const loader = v.loader;
+      return {
+        ...loader,
+        dataSourceName: v.variableId
+      };
+    });
+    const allDataSources = [...dataSources, ...variableLoaders];
     const spec = createSpecWithVariables(variables, tabulatorElements);
     const vegaScope = new VegaScope(spec);
     let inlineDataMd = [];
-    for (const dataSource of dataSources) {
+    for (const dataSource of allDataSources) {
       switch (dataSource.type) {
         case "inline": {
           inlineDataMd.push(addStaticDataLoaderToSpec(vegaScope, dataSource));
