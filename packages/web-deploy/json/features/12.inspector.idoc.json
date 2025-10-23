@@ -97,7 +97,7 @@
         {
             "groupId": "main",
             "elements": [
-                "# Variable Inspector with Data Transforms",
+                "# Variable Inspector",
                 "",
                 "The inspector plugin is particularly useful for examining transformed data. This example demonstrates Vega data transforms like **filter**, **aggregate**, **pivot**, and **nest**.",
                 "",
