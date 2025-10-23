@@ -202,7 +202,7 @@ function dataLoaderMarkdown(dataSources: DataSource[], variables: Variable[], ta
     return { vegaScope, inlineDataMd };
 }
 
-type pluginSpecs = Plugins.CheckboxSpec | Plugins.DropdownSpec | Plugins.ImageSpec | Plugins.MermaidSpec | Plugins.NumberSpec | Plugins.PresetsSpec | Plugins.SliderSpec | Plugins.TabulatorSpec | Plugins.TextboxSpec | Plugins.TreebarkSpec;
+type pluginSpecs = Plugins.CheckboxSpec | Plugins.DropdownSpec | Plugins.ImageSpec | Plugins.InspectorSpec | Plugins.MermaidSpec | Plugins.NumberSpec | Plugins.PresetsSpec | Plugins.SliderSpec | Plugins.TabulatorSpec | Plugins.TextboxSpec | Plugins.TreebarkSpec;
 
 function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: VegaScope, resources: { charts?: { [chartKey: string]: VegaSpec | VegaLiteSpec } }, pluginFormat: Record<string, "json" | "yaml">) {
     const mdElements: string[] = [];
@@ -279,6 +279,18 @@ function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: Ve
                         height,
                     };
                     addSpec('image', imageSpec);
+                    break;
+                }
+                case 'inspector': {
+                    const { variableId, raw } = element;
+                    const inspectorSpec: Plugins.InspectorSpec = {} as any;
+                    if (variableId) {
+                        inspectorSpec.variableId = variableId;
+                    }
+                    if (raw) {
+                        inspectorSpec.raw = raw;
+                    }
+                    addSpec('inspector', inspectorSpec, false);
                     break;
                 }
                 case 'mermaid': {
