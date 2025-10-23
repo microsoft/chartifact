@@ -167,9 +167,6 @@ export const inspectorPlugin: Plugin<InspectorSpec> = {
                         renderValue(element, getAllVariables());
                     }
                 },
-                destroy: () => {
-                    // No cleanup needed
-                },
             };
         });
         return instances;
