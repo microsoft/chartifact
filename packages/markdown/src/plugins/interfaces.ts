@@ -34,5 +34,6 @@ export type PluginNames =
     'textbox' |
     'treebark' |
     'tsv' |
+    'variables' |
     'vega-lite' |
     'vega';

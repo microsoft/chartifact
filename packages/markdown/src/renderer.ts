@@ -8,6 +8,7 @@ import { Renderers } from 'vega-typings';
 import { create, IInstance, plugins } from './factory.js';
 import { SignalBus } from './signalbus.js';
 import { defaultCommonOptions, SpecReview } from 'common';
+import { PluginNames } from './plugins/interfaces.js';
 
 export interface ErrorHandler {
     (error: Error, pluginName: string, instanceIndex: number, phase: string, container: Element, detail?: string): void;
@@ -30,7 +31,7 @@ const defaultRendererOptions: RendererOptions = {
 };
 
 interface Hydration {
-    pluginName: string;
+    pluginName: PluginNames;
     instances: IInstance[];
 }
 
@@ -158,23 +159,42 @@ export class Renderer {
         }
 
         try {
+            let variables: unknown; //VVVVV
+
             const pluginHydrations = await Promise.all(hydrationPromises);
             for (const hydration of pluginHydrations) {
                 if (hydration && hydration.instances) {
                     this.instances[hydration.pluginName] = hydration.instances;
                     //registration phase
-                    for (const instance of hydration.instances) {
-                        this.signalBus.registerPeer(instance);
+                    if (hydration.pluginName === 'variables') {
+                        variables = hydration.instances;
+                    } else {
+                        for (const instance of hydration.instances) {
+                            this.signalBus.registerPeer(instance);
+                        }
                     }
                 }
             }
+
+            /*
+                VVVVV
+                TODO: Create our "Brain" Vega spec that connects all the signals from variables
+
+                we only need to add variables that:
+                - have calculations
+                - have a loader
+
+                we also need to add signals (from the signal bus) that:
+                - are marked 'isData'
+            */
+
             await this.signalBus.beginListening();
 
             //trigger a resize event so that the Vega views can adjust
             setTimeout(() => {
                 window.dispatchEvent(new Event('resize'));
             }, 0);
-            
+
         } catch (error) {
             console.error('Error in rendering plugins', error);
         }
