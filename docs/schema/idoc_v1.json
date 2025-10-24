@@ -5973,6 +5973,88 @@
         "isArray": {
           "type": "boolean"
         },
+        "loader": {
+          "additionalProperties": false,
+          "description": "Optional loader for data-driven variables. This eliminates the need for separate DataLoader for users who choose it.",
+          "properties": {
+            "content": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "items": {
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  ],
+                  "description": "object array or a string or string array of CSV / TSV / DSV"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "object array or a string or string array of CSV / TSV / DSV"
+            },
+            "dataFrameTransformations": {
+              "items": {
+                "$ref": "#/definitions/Transforms"
+              },
+              "type": "array"
+            },
+            "delimiter": {
+              "description": "only if format = dsv",
+              "type": "string"
+            },
+            "docString": {
+              "description": "Assistant should not populate this.",
+              "type": "string"
+            },
+            "filename": {
+              "type": "string"
+            },
+            "format": {
+              "$ref": "#/definitions/DataSourceBaseFormat",
+              "description": "optional, default is 'json'"
+            },
+            "returnType": {
+              "$ref": "#/definitions/ReturnType"
+            },
+            "spec": {
+              "description": "Vega Specification - Not Vega-Lite",
+              "type": "object"
+            },
+            "type": {
+              "enum": [
+                "inline",
+                "file",
+                "url",
+                "spec"
+              ],
+              "type": "string"
+            },
+            "url": {
+              "$ref": "#/definitions/TemplatedUrl"
+            }
+          },
+          "required": [
+            "type",
+            "content",
+            "filename",
+            "url",
+            "spec"
+          ],
+          "type": "object"
+        },
         "type": {
           "$ref": "#/definitions/VariableType"
         },

@@ -159,7 +159,7 @@ export class Renderer {
         }
 
         try {
-            let variables: unknown; //VVVVV
+            let variableInstances: IInstance[] = []; //VVVVV
 
             const pluginHydrations = await Promise.all(hydrationPromises);
             for (const hydration of pluginHydrations) {
@@ -167,7 +167,7 @@ export class Renderer {
                     this.instances[hydration.pluginName] = hydration.instances;
                     //registration phase
                     if (hydration.pluginName === 'variables') {
-                        variables = hydration.instances;
+                        variableInstances = hydration.instances;
                     } else {
                         for (const instance of hydration.instances) {
                             this.signalBus.registerPeer(instance);
@@ -187,6 +187,11 @@ export class Renderer {
                 we also need to add signals (from the signal bus) that:
                 - are marked 'isData'
             */
+            
+            // Create the brain Vega spec if we have variables with loaders or calculations
+            if (variableInstances.length > 0) {
+                await this.createAndHydrateBrainSpec(variableInstances);
+            }
 
             await this.signalBus.beginListening();
 
@@ -218,6 +223,71 @@ export class Renderer {
 
         // Clear container content including styles
         this.element.innerHTML = '';
+    }
+
+    private async createAndHydrateBrainSpec(variableInstances: IInstance[]) {
+        // Import the VariableInstance type and extract variables
+        const variables = variableInstances.map((inst: any) => inst.variable).filter(Boolean);
+        
+        if (variables.length === 0) {
+            return;
+        }
+
+        // We need to import createSpecWithVariables from the compiler
+        // For now, let's create a minimal implementation here
+        // TODO: This should use the same logic as createSpecWithVariables from compiler
+        
+        // Create a minimal brain spec
+        const brainSpec: any = {
+            $schema: "https://vega.github.io/schema/vega/v5.json",
+            description: "Brain spec for variables with loaders and calculations",
+            signals: [],
+            data: [],
+        };
+        
+        // Add variables to the brain spec
+        // This is a simplified version - the full implementation should use createSpecWithVariables
+        for (const variable of variables) {
+            if (variable.loader) {
+                // Variables with loaders become data sources
+                brainSpec.signals.push({
+                    name: variable.variableId,
+                    update: `data('${variable.variableId}')`
+                });
+                brainSpec.data.push({
+                    name: variable.variableId,
+                    values: variable.initialValue || []
+                });
+            } else if (variable.calculation) {
+                // Variables with calculations become signals with update expressions
+                const calc = variable.calculation as any;
+                if (calc.vegaExpression) {
+                    brainSpec.signals.push({
+                        name: variable.variableId,
+                        value: variable.initialValue,
+                        update: calc.vegaExpression
+                    });
+                } else if (calc.dataFrameTransformations) {
+                    brainSpec.signals.push({
+                        name: variable.variableId,
+                        update: `data('${variable.variableId}')`
+                    });
+                    brainSpec.data.push({
+                        name: variable.variableId,
+                        source: calc.dataSourceNames || [],
+                        transform: calc.dataFrameTransformations || []
+                    });
+                }
+            }
+        }
+        
+        // Only create a Vega view if we have signals or data
+        if (brainSpec.signals.length > 0 || brainSpec.data.length > 0) {
+            // TODO: Create a Vega view from the brain spec and register it with the signal bus
+            // This requires importing Vega and creating a view similar to the vega plugin
+            // For now, we'll leave this as a stub
+            this.signalBus.log('Renderer', 'Brain spec created', brainSpec);
+        }
     }
 
 }

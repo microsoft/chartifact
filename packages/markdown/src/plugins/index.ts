@@ -22,6 +22,7 @@ import { tabulatorPlugin } from './tabulator.js';
 import { textboxPlugin } from './textbox.js';
 import { treebarkPlugin } from './treebark.js';
 import { tsvPlugin } from './tsv.js';
+import { variablesPlugin } from './variables.js';
 import { vegaLitePlugin } from './vega-lite.js';
 import { vegaPlugin } from './vega.js';
 
@@ -43,6 +44,7 @@ export function registerNativePlugins() {
     registerMarkdownPlugin(textboxPlugin);
     registerMarkdownPlugin(treebarkPlugin);
     registerMarkdownPlugin(tsvPlugin);
+    registerMarkdownPlugin(variablesPlugin);
     registerMarkdownPlugin(vegaLitePlugin);
     registerMarkdownPlugin(vegaPlugin);
 }

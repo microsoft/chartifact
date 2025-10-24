@@ -15,6 +15,20 @@ import * as yaml from 'js-yaml';
 
 const defaultJsonIndent = 2;
 
+function convertDataLoadersToVariables(dataSources: DataSource[]): Variable[] {
+    return dataSources.map(dataSource => {
+        const { dataSourceName, ...loaderProps } = dataSource;
+        const variable: Variable = {
+            variableId: dataSourceName,
+            type: 'object',
+            isArray: true,
+            initialValue: [],
+            loader: loaderProps as any, // Cast to bypass the Omit type check
+        };
+        return variable;
+    });
+}
+
 export function tickWrap(plugin: string, content: string) {
     return `\n\n\n\`\`\`${plugin}\n${content}\n\`\`\`\n\n\n`;
 }
@@ -81,7 +95,11 @@ export function targetMarkdown(page: InteractiveDocument, options?: TargetMarkdo
 
     const mdSections: string[] = [];
     const dataLoaders = page.dataLoaders || [];
-    const variables = page.variables || [];
+    let variables = page.variables || [];
+
+    // Convert DataLoaders to Variables with loaders
+    const convertedVariables = convertDataLoadersToVariables(dataLoaders.filter(dl => dl.type !== 'spec'));
+    variables = [...variables, ...convertedVariables];
 
     if (page.style) {
         const { style } = page;
@@ -96,6 +114,17 @@ export function targetMarkdown(page: InteractiveDocument, options?: TargetMarkdo
         }
         if (style.googleFonts) {
             mdSections.push(jsonWrap('google-fonts', JSON.stringify(style.googleFonts, null, defaultJsonIndent)));
+        }
+    }
+
+    // Output variables plugin if we have variables with loaders or calculations
+    const variablesWithLoadersOrCalculations = variables.filter(v => v.loader || v.calculation);
+    if (variablesWithLoadersOrCalculations.length > 0) {
+        const useYaml = getPluginFormat('variables', finalPluginFormat) === 'yaml';
+        if (useYaml) {
+            mdSections.push(yamlWrap('variables', yaml.dump(variablesWithLoadersOrCalculations, { indent: defaultJsonIndent })));
+        } else {
+            mdSections.push(jsonWrap('variables', JSON.stringify(variablesWithLoadersOrCalculations, null, defaultJsonIndent)));
         }
     }
 
