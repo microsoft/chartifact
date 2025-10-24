@@ -1116,6 +1116,20 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
   }
   const defaultJsonIndent = 2;
+  function convertDataLoadersToVariables(dataSources) {
+    return dataSources.map((dataSource) => {
+      const { dataSourceName, ...loaderProps } = dataSource;
+      const variable = {
+        variableId: dataSourceName,
+        type: "object",
+        isArray: true,
+        initialValue: [],
+        loader: loaderProps
+        // Cast to bypass the Omit type check
+      };
+      return variable;
+    });
+  }
   function tickWrap(plugin, content) {
     return `
 
@@ -1171,7 +1185,9 @@ ${content}
     const finalPluginFormat = { ...defaultPluginFormat, ...options == null ? void 0 : options.pluginFormat };
     const mdSections = [];
     const dataLoaders = page.dataLoaders || [];
-    const variables = page.variables || [];
+    let variables = page.variables || [];
+    const convertedVariables = convertDataLoadersToVariables(dataLoaders.filter((dl) => dl.type !== "spec"));
+    variables = [...variables, ...convertedVariables];
     if (page.style) {
       const { style } = page;
       if (style.css) {
@@ -1185,6 +1201,15 @@ ${content}
       }
       if (style.googleFonts) {
         mdSections.push(jsonWrap("google-fonts", JSON.stringify(style.googleFonts, null, defaultJsonIndent)));
+      }
+    }
+    const variablesWithLoadersOrCalculations = variables.filter((v) => v.loader || v.calculation);
+    if (variablesWithLoadersOrCalculations.length > 0) {
+      const useYaml = getPluginFormat("variables", finalPluginFormat) === "yaml";
+      if (useYaml) {
+        mdSections.push(yamlWrap("variables", yaml__namespace.dump(variablesWithLoadersOrCalculations, { indent: defaultJsonIndent })));
+      } else {
+        mdSections.push(jsonWrap("variables", JSON.stringify(variablesWithLoadersOrCalculations, null, defaultJsonIndent)));
       }
     }
     const tabulatorElements = page.groups.flatMap((group) => group.elements.filter((e) => typeof e !== "string" && e.type === "tabulator"));

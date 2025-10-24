@@ -226,18 +226,17 @@ export class Renderer {
     }
 
     private async createAndHydrateBrainSpec(variableInstances: IInstance[]) {
-        // Import the VariableInstance type and extract variables
+        // Import Vega for creating the view
+        const vega = await import('vega');
+        
+        // Extract variables from instances
         const variables = variableInstances.map((inst: any) => inst.variable).filter(Boolean);
         
         if (variables.length === 0) {
             return;
         }
 
-        // We need to import createSpecWithVariables from the compiler
-        // For now, let's create a minimal implementation here
-        // TODO: This should use the same logic as createSpecWithVariables from compiler
-        
-        // Create a minimal brain spec
+        // Create the brain spec following the same logic as createSpecWithVariables
         const brainSpec: any = {
             $schema: "https://vega.github.io/schema/vega/v5.json",
             description: "Brain spec for variables with loaders and calculations",
@@ -245,35 +244,76 @@ export class Renderer {
             data: [],
         };
         
+        // Also collect data signals from signal bus
+        const dataSignalsFromBus: string[] = [];
+        for (const signalName in this.signalBus.signalDeps) {
+            const dep = this.signalBus.signalDeps[signalName];
+            if (dep.isData) {
+                dataSignalsFromBus.push(signalName);
+            }
+        }
+        
         // Add variables to the brain spec
-        // This is a simplified version - the full implementation should use createSpecWithVariables
         for (const variable of variables) {
-            if (variable.loader) {
+            const { variableId, type, isArray, initialValue, calculation, loader } = variable;
+            
+            if (loader) {
                 // Variables with loaders become data sources
                 brainSpec.signals.push({
-                    name: variable.variableId,
-                    update: `data('${variable.variableId}')`
+                    name: variableId,
+                    update: `data('${variableId}')`
                 });
-                brainSpec.data.push({
-                    name: variable.variableId,
-                    values: variable.initialValue || []
-                });
-            } else if (variable.calculation) {
-                // Variables with calculations become signals with update expressions
-                const calc = variable.calculation as any;
+                
+                // Handle different loader types
+                const dataEntry: any = {
+                    name: variableId,
+                };
+                
+                if (loader.type === 'inline') {
+                    // For inline loaders, the data will be provided by CSV/TSV/DSV plugins
+                    // So we just create a placeholder
+                    dataEntry.values = initialValue || [];
+                } else if (loader.type === 'url') {
+                    // For URL loaders, Vega can handle the loading
+                    dataEntry.url = loader.url;
+                    if (loader.format) {
+                        if (loader.format === 'dsv' && loader.delimiter) {
+                            dataEntry.format = { type: 'dsv', delimiter: loader.delimiter };
+                        } else {
+                            dataEntry.format = { type: loader.format };
+                        }
+                    }
+                } else if (loader.type === 'file') {
+                    // File loaders are treated like inline
+                    dataEntry.values = initialValue || [];
+                }
+                
+                // Add transforms if present
+                if (loader.dataFrameTransformations && loader.dataFrameTransformations.length > 0) {
+                    dataEntry.transform = loader.dataFrameTransformations;
+                }
+                
+                brainSpec.data.push(dataEntry);
+                
+            } else if (calculation) {
+                // Variables with calculations
+                const calc = calculation as any;
+                
                 if (calc.vegaExpression) {
+                    // Scalar calculation
                     brainSpec.signals.push({
-                        name: variable.variableId,
-                        value: variable.initialValue,
+                        name: variableId,
+                        value: initialValue,
                         update: calc.vegaExpression
                     });
                 } else if (calc.dataFrameTransformations) {
+                    // DataFrame calculation
                     brainSpec.signals.push({
-                        name: variable.variableId,
-                        update: `data('${variable.variableId}')`
+                        name: variableId,
+                        update: `data('${variableId}')`
                     });
                     brainSpec.data.push({
-                        name: variable.variableId,
+                        name: variableId,
                         source: calc.dataSourceNames || [],
                         transform: calc.dataFrameTransformations || []
                     });
@@ -283,10 +323,104 @@ export class Renderer {
         
         // Only create a Vega view if we have signals or data
         if (brainSpec.signals.length > 0 || brainSpec.data.length > 0) {
-            // TODO: Create a Vega view from the brain spec and register it with the signal bus
-            // This requires importing Vega and creating a view similar to the vega plugin
-            // For now, we'll leave this as a stub
             this.signalBus.log('Renderer', 'Brain spec created', brainSpec);
+            
+            // Create a hidden container for the brain view
+            const brainContainer = document.createElement('div');
+            brainContainer.id = 'brain-vega-view';
+            brainContainer.style.display = 'none';
+            this.element.appendChild(brainContainer);
+            
+            try {
+                // Parse and create the Vega view
+                const runtime = vega.parse(brainSpec);
+                const view = new vega.View(runtime, {
+                    container: brainContainer,
+                    renderer: 'none', // No rendering needed for brain spec
+                });
+                
+                await view.runAsync();
+                
+                // Create an IInstance for the brain view and register it
+                const brainInstance: IInstance = {
+                    id: 'brain-vega-view',
+                    initialSignals: brainSpec.signals.map((signal: any) => ({
+                        name: signal.name,
+                        value: signal.value,
+                        priority: signal.bind ? 1 : 0,
+                        isData: signal.update === `data('${signal.name}')`,
+                    })),
+                    receiveBatch: async (batch, from) => {
+                        // Handle incoming signals from other plugins
+                        this.signalBus.log('brain', 'received batch', batch, from);
+                        let hasChanges = false;
+                        
+                        for (const signalName in batch) {
+                            const batchItem = batch[signalName];
+                            if (batchItem.isData) {
+                                // Update data
+                                const matchData = brainSpec.data.find((d: any) => d.name === signalName);
+                                if (matchData) {
+                                    view.change(signalName, vega.changeset().remove(() => true).insert(batchItem.value));
+                                    hasChanges = true;
+                                }
+                            } else {
+                                // Update signal
+                                const matchSignal = brainSpec.signals.find((s: any) => s.name === signalName);
+                                if (matchSignal && !matchSignal.update) {
+                                    view.signal(signalName, batchItem.value);
+                                    hasChanges = true;
+                                }
+                            }
+                        }
+                        
+                        if (hasChanges) {
+                            await view.runAsync();
+                        }
+                    },
+                    beginListening: (sharedSignals) => {
+                        // Listen to signals and broadcast changes
+                        for (const { signalName, isData } of sharedSignals) {
+                            if (isData) {
+                                const matchData = brainSpec.data.find((d: any) => d.name === signalName);
+                                if (matchData) {
+                                    view.addDataListener(signalName, (name, value) => {
+                                        this.signalBus.broadcast('brain', {
+                                            [name]: { value, isData: true }
+                                        });
+                                    });
+                                }
+                            } else {
+                                const matchSignal = brainSpec.signals.find((s: any) => s.name === signalName);
+                                if (matchSignal && matchSignal.update) {
+                                    view.addSignalListener(signalName, (name, value) => {
+                                        this.signalBus.broadcast('brain', {
+                                            [name]: { value, isData: false }
+                                        });
+                                    });
+                                }
+                            }
+                        }
+                    },
+                    getCurrentSignalValue: (signalName: string) => {
+                        const matchSignal = brainSpec.signals.find((s: any) => s.name === signalName);
+                        if (matchSignal) {
+                            return view.signal(signalName);
+                        }
+                        return undefined;
+                    },
+                    destroy: () => {
+                        view.finalize();
+                    },
+                };
+                
+                // Register the brain instance with the signal bus
+                this.signalBus.registerPeer(brainInstance);
+                
+            } catch (error) {
+                console.error('Error creating brain Vega view:', error);
+                this.options.errorHandler(error as Error, 'brain', 0, 'view', brainContainer);
+            }
         }
     }
 

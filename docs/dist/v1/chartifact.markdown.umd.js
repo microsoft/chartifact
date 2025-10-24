@@ -628,10 +628,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     loading: "0.1",
     error: "0.5"
   };
-  const pluginName$g = "image";
-  const className$e = pluginClassName(pluginName$g);
+  const pluginName$h = "image";
+  const className$f = pluginClassName(pluginName$h);
   const imagePlugin = {
-    ...flaggablePlugin(pluginName$g, className$e),
+    ...flaggablePlugin(pluginName$h, className$f),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const imageInstances = [];
       for (let index2 = 0; index2 < specs.length; index2++) {
@@ -646,11 +646,11 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           container,
           null,
           (error) => {
-            errorHandler(error, pluginName$g, index2, "load", container, img.src);
+            errorHandler(error, pluginName$h, index2, "load", container, img.src);
           }
         );
         const imageInstance = {
-          id: `${pluginName$g}-${index2}`,
+          id: `${pluginName$h}-${index2}`,
           spec,
           img: null,
           // Will be set below
@@ -708,7 +708,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       if (isSafeImageUrl(src)) {
         tempImg.setAttribute("src", src);
       } else {
-        errorHandler(new Error(`Unsafe image URL: ${src}`), pluginName$g, instanceIndex, "load", null, src);
+        errorHandler(new Error(`Unsafe image URL: ${src}`), pluginName$h, instanceIndex, "load", null, src);
       }
     }
     tempImg.setAttribute("alt", alt);
@@ -827,10 +827,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     return null;
   }
-  const pluginName$f = "placeholders";
-  const imageClassName = pluginClassName(pluginName$f + "_image");
+  const pluginName$g = "placeholders";
+  const imageClassName = pluginClassName(pluginName$g + "_image");
   const placeholdersPlugin = {
-    name: pluginName$f,
+    name: pluginName$g,
     initializePlugin: async (md) => {
       md.use(function(md2) {
         md2.inline.ruler.after("emphasis", "dynamic_placeholder", function(state, silent) {
@@ -951,7 +951,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       for (const element of Array.from(dynamicImages)) {
         const { dynamicUrl, img } = createImageLoadingLogic(element, null, (error) => {
           const index2 = -1;
-          errorHandler(error, pluginName$f, index2, "load", element, img.src);
+          errorHandler(error, pluginName$g, index2, "load", element, img.src);
         });
         if (!dynamicUrl) {
           continue;
@@ -976,7 +976,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       });
       const instances = [
         {
-          id: pluginName$f,
+          id: pluginName$g,
           initialSignals,
           receiveBatch: async (batch) => {
             var _a, _b;
@@ -1123,10 +1123,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     };
     return md;
   }
-  const pluginName$e = "checkbox";
-  const className$d = pluginClassName(pluginName$e);
+  const pluginName$f = "checkbox";
+  const className$e = pluginClassName(pluginName$f);
   const checkboxPlugin = {
-    ...flaggablePlugin(pluginName$e, className$d),
+    ...flaggablePlugin(pluginName$f, className$e),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const { signalBus } = renderer;
       const checkboxInstances = [];
@@ -1147,7 +1147,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
                 </form>`;
         container.innerHTML = html;
         const element = container.querySelector('input[type="checkbox"]');
-        const checkboxInstance = { id: `${pluginName$e}-${index2}`, spec, element };
+        const checkboxInstance = { id: `${pluginName$f}-${index2}`, spec, element };
         checkboxInstances.push(checkboxInstance);
       }
       const instances = checkboxInstances.map((checkboxInstance) => {
@@ -1190,9 +1190,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       return instances;
     }
   };
-  const pluginName$d = "#";
+  const pluginName$e = "#";
   const commentPlugin = {
-    name: pluginName$d,
+    name: pluginName$e,
     fence: (token) => {
       const content = token.content.trim();
       return sanitizeHtmlComment(content);
@@ -1421,14 +1421,14 @@ ${reconstitutedRules.join("\n\n")}
     }
     return result;
   }
-  const pluginName$c = "css";
-  const className$c = pluginClassName(pluginName$c);
+  const pluginName$d = "css";
+  const className$d = pluginClassName(pluginName$d);
   const cssPlugin = {
-    ...flaggablePlugin(pluginName$c, className$c),
+    ...flaggablePlugin(pluginName$d, className$d),
     fence: (token, index2) => {
       const cssContent = token.content.trim();
       const categorizedCss = categorizeCss(cssContent);
-      return sanitizedHTML("div", { id: `${pluginName$c}-${index2}`, class: className$c }, JSON.stringify(categorizedCss), true);
+      return sanitizedHTML("div", { id: `${pluginName$d}-${index2}`, class: className$d }, JSON.stringify(categorizedCss), true);
     },
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const cssInstances = [];
@@ -1451,7 +1451,7 @@ ${reconstitutedRules.join("\n\n")}
           target.appendChild(styleElement);
           comments.push(`<!-- CSS styles applied to ${renderer.shadowRoot ? "shadow DOM" : "document"} -->`);
           cssInstances.push({
-            id: `${pluginName$c}-${index2}`,
+            id: `${pluginName$d}-${index2}`,
             element: styleElement
           });
         } else {
@@ -1528,18 +1528,18 @@ ${reconstitutedRules.join("\n\n")}
     }
     return result;
   }
-  const pluginName$b = "dsv";
-  const className$b = pluginClassName(pluginName$b);
+  const pluginName$c = "dsv";
+  const className$c = pluginClassName(pluginName$c);
   const dsvPlugin = {
-    name: pluginName$b,
+    name: pluginName$c,
     fence: (token, index2) => {
       const content = token.content.trim();
       const info = token.info.trim();
       const { delimiter, wasDefaultDelimiter } = parseDelimiter(info);
       const { variableId, wasDefaultId } = parseVariableId(info, "dsv", index2);
       return sanitizedHTML("pre", {
-        id: `${pluginName$b}-${index2}`,
-        class: className$b,
+        id: `${pluginName$c}-${index2}`,
+        class: className$c,
         style: "display:none",
         "data-variable-id": variableId,
         "data-delimiter": delimiter,
@@ -1550,7 +1550,7 @@ ${reconstitutedRules.join("\n\n")}
     hydrateSpecs: (renderer, errorHandler) => {
       var _a;
       const flagged = [];
-      const containers = renderer.element.querySelectorAll(`.${className$b}`);
+      const containers = renderer.element.querySelectorAll(`.${className$c}`);
       for (const [index2, container] of Array.from(containers).entries()) {
         try {
           const variableId = container.getAttribute("data-variable-id");
@@ -1558,18 +1558,18 @@ ${reconstitutedRules.join("\n\n")}
           const wasDefaultId = container.getAttribute("data-was-default-id") === "true";
           const wasDefaultDelimiter = container.getAttribute("data-was-default-delimiter") === "true";
           if (!variableId) {
-            errorHandler(new Error("No variable ID found"), pluginName$b, index2, "parse", container);
+            errorHandler(new Error("No variable ID found"), pluginName$c, index2, "parse", container);
             continue;
           }
           if (!delimiter) {
-            errorHandler(new Error("No delimiter found"), pluginName$b, index2, "parse", container);
+            errorHandler(new Error("No delimiter found"), pluginName$c, index2, "parse", container);
             continue;
           }
           const spec = { variableId, delimiter, wasDefaultId, wasDefaultDelimiter };
           const flaggableSpec = inspectDsvSpec(spec);
           const f = {
             approvedSpec: null,
-            pluginName: pluginName$b,
+            pluginName: pluginName$c,
             containerId: container.id
           };
           if (flaggableSpec.hasFlags) {
@@ -1580,7 +1580,7 @@ ${reconstitutedRules.join("\n\n")}
           }
           flagged.push(f);
         } catch (e) {
-          errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName$b, index2, "parse", container);
+          errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName$c, index2, "parse", container);
         }
       }
       return flagged;
@@ -1596,19 +1596,19 @@ ${reconstitutedRules.join("\n\n")}
         }
         const container = renderer.element.querySelector(`#${specReview.containerId}`);
         if (!container) {
-          errorHandler(new Error("Container not found"), pluginName$b, index2, "init", null);
+          errorHandler(new Error("Container not found"), pluginName$c, index2, "init", null);
           continue;
         }
         try {
           const content = (_a = container.textContent) == null ? void 0 : _a.trim();
           if (!content) {
-            errorHandler(new Error("No DSV content found"), pluginName$b, index2, "parse", container);
+            errorHandler(new Error("No DSV content found"), pluginName$c, index2, "parse", container);
             continue;
           }
           const spec = specReview.approvedSpec;
           const data = vega.read(content, { type: "dsv", delimiter: spec.delimiter });
           const dsvInstance = {
-            id: `${pluginName$b}-${index2}`,
+            id: `${pluginName$c}-${index2}`,
             spec,
             data
           };
@@ -1617,7 +1617,7 @@ ${reconstitutedRules.join("\n\n")}
           const comment = sanitizeHtmlComment(`${delimiterName} data loaded: ${data.length} rows for variable '${spec.variableId}'`);
           container.insertAdjacentHTML("beforebegin", comment);
         } catch (e) {
-          errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName$b, index2, "parse", container);
+          errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName$c, index2, "parse", container);
         }
       }
       const instances = dsvInstances.map((dsvInstance) => {
@@ -1735,8 +1735,8 @@ ${reconstitutedRules.join("\n\n")}
     generateRule("hero", "h1");
     return cssRules.join("\n\n");
   }
-  const pluginName$a = "google-fonts";
-  const className$a = pluginClassName(pluginName$a);
+  const pluginName$b = "google-fonts";
+  const className$b = pluginClassName(pluginName$b);
   function inspectGoogleFontsSpec(spec) {
     var _a, _b;
     const reasons = [];
@@ -1765,7 +1765,7 @@ ${reconstitutedRules.join("\n\n")}
     };
   }
   const googleFontsPlugin = {
-    ...flaggablePlugin(pluginName$a, className$a, inspectGoogleFontsSpec),
+    ...flaggablePlugin(pluginName$b, className$b, inspectGoogleFontsSpec),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const googleFontsInstances = [];
       let emitted = false;
@@ -1836,10 +1836,10 @@ ${reconstitutedRules.join("\n\n")}
       return instances;
     }
   };
-  const pluginName$9 = "dropdown";
-  const className$9 = pluginClassName(pluginName$9);
+  const pluginName$a = "dropdown";
+  const className$a = pluginClassName(pluginName$a);
   const dropdownPlugin = {
-    ...flaggablePlugin(pluginName$9, className$9),
+    ...flaggablePlugin(pluginName$a, className$a),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const { signalBus } = renderer;
       const dropdownInstances = [];
@@ -1862,7 +1862,7 @@ ${reconstitutedRules.join("\n\n")}
         container.innerHTML = html;
         const element = container.querySelector("select");
         setSelectOptions(element, spec.multiple ?? false, spec.options ?? [], spec.value ?? (spec.multiple ? [] : ""));
-        const dropdownInstance = { id: `${pluginName$9}-${index2}`, spec, element };
+        const dropdownInstance = { id: `${pluginName$a}-${index2}`, spec, element };
         dropdownInstances.push(dropdownInstance);
       }
       const instances = dropdownInstances.map((dropdownInstance, index2) => {
@@ -1986,8 +1986,8 @@ ${reconstitutedRules.join("\n\n")}
       selectElement.appendChild(optionElement);
     });
   }
-  const pluginName$8 = "mermaid";
-  const className$8 = pluginClassName(pluginName$8);
+  const pluginName$9 = "mermaid";
+  const className$9 = pluginClassName(pluginName$9);
   function inspectMermaidSpec(spec) {
     const reasons = [];
     let hasFlags = false;
@@ -2065,7 +2065,7 @@ ${reconstitutedRules.join("\n\n")}
     return mermaidLoadPromise;
   }
   const mermaidPlugin = {
-    ...flaggablePlugin(pluginName$8, className$8),
+    ...flaggablePlugin(pluginName$9, className$9),
     fence: (token, index2) => {
       const content = token.content.trim();
       let spec;
@@ -2089,7 +2089,7 @@ ${reconstitutedRules.join("\n\n")}
       }
       flaggableSpec = inspectMermaidSpec(spec);
       const json = JSON.stringify(flaggableSpec);
-      return sanitizedHTML("div", { class: className$8, id: `${pluginName$8}-${index2}` }, json, true);
+      return sanitizedHTML("div", { class: className$9, id: `${pluginName$9}-${index2}` }, json, true);
     },
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const { signalBus } = renderer;
@@ -2108,7 +2108,7 @@ ${reconstitutedRules.join("\n\n")}
         container.innerHTML = `<div class="mermaid-loading">Loading diagram...</div>`;
         const tokens = tokenizeTemplate((template == null ? void 0 : template.header) || "") || [];
         const mermaidInstance = {
-          id: `${pluginName$8}-${index2}`,
+          id: `${pluginName$9}-${index2}`,
           spec,
           container,
           signals: {},
@@ -2117,7 +2117,7 @@ ${reconstitutedRules.join("\n\n")}
         };
         mermaidInstances.push(mermaidInstance);
         if (spec.diagramText && typeof spec.diagramText === "string") {
-          await renderRawDiagram(mermaidInstance.id, mermaidInstance.container, spec.diagramText, errorHandler, pluginName$8, index2);
+          await renderRawDiagram(mermaidInstance.id, mermaidInstance.container, spec.diagramText, errorHandler, pluginName$9, index2);
         }
       }
       const instances = mermaidInstances.map((mermaidInstance, index2) => {
@@ -2166,7 +2166,7 @@ ${reconstitutedRules.join("\n\n")}
                   }
                 }
                 if (diagramText && mermaidInstance.lastRenderedDiagram !== diagramText) {
-                  await renderRawDiagram(mermaidInstance.id, mermaidInstance.container, diagramText, errorHandler, pluginName$8, index2);
+                  await renderRawDiagram(mermaidInstance.id, mermaidInstance.container, diagramText, errorHandler, pluginName$9, index2);
                   mermaidInstance.lastRenderedDiagram = diagramText;
                 }
               } else {
@@ -2175,7 +2175,7 @@ ${reconstitutedRules.join("\n\n")}
             } else if (variableId && batch[variableId]) {
               const value = batch[variableId].value;
               if (typeof value === "string" && value.trim().length > 0) {
-                await renderRawDiagram(mermaidInstance.id, mermaidInstance.container, value, errorHandler, pluginName$8, index2);
+                await renderRawDiagram(mermaidInstance.id, mermaidInstance.container, value, errorHandler, pluginName$9, index2);
                 mermaidInstance.lastRenderedDiagram = value;
               } else {
                 mermaidInstance.container.innerHTML = '<div class="error">No diagram to display</div>';
@@ -2252,10 +2252,10 @@ ${reconstitutedRules.join("\n\n")}
     const diagramText = lines.join("\n");
     return diagramText;
   }
-  const pluginName$7 = "number";
-  const className$7 = pluginClassName(pluginName$7);
+  const pluginName$8 = "number";
+  const className$8 = pluginClassName(pluginName$8);
   const numberPlugin = {
-    ...flaggablePlugin(pluginName$7, className$7),
+    ...flaggablePlugin(pluginName$8, className$8),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const { signalBus } = renderer;
       const numberInstances = [];
@@ -2281,7 +2281,7 @@ ${reconstitutedRules.join("\n\n")}
                 </form>`;
         container.innerHTML = html;
         const element = container.querySelector('input[type="number"]');
-        const numberInstance = { id: `${pluginName$7}-${index2}`, spec, element };
+        const numberInstance = { id: `${pluginName$8}-${index2}`, spec, element };
         numberInstances.push(numberInstance);
       }
       const instances = numberInstances.map((numberInstance) => {
@@ -2329,10 +2329,10 @@ ${reconstitutedRules.join("\n\n")}
       return instances;
     }
   };
-  const pluginName$6 = "presets";
-  const className$6 = pluginClassName(pluginName$6);
+  const pluginName$7 = "presets";
+  const className$7 = pluginClassName(pluginName$7);
   const presetsPlugin = {
-    ...flaggablePlugin(pluginName$6, className$6),
+    ...flaggablePlugin(pluginName$7, className$7),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const { signalBus } = renderer;
       const presetsInstances = [];
@@ -2342,7 +2342,7 @@ ${reconstitutedRules.join("\n\n")}
           continue;
         }
         const container = renderer.element.querySelector(`#${specReview.containerId}`);
-        const id = `${pluginName$6}-${index2}`;
+        const id = `${pluginName$7}-${index2}`;
         const presets = specReview.approvedSpec;
         if (!Array.isArray(presets)) {
           container.innerHTML = '<div class="error">Expected an array of presets</div>';
@@ -2424,10 +2424,10 @@ ${reconstitutedRules.join("\n\n")}
       }
     }
   }
-  const pluginName$5 = "slider";
-  const className$5 = pluginClassName(pluginName$5);
+  const pluginName$6 = "slider";
+  const className$6 = pluginClassName(pluginName$6);
   const sliderPlugin = {
-    ...flaggablePlugin(pluginName$5, className$5),
+    ...flaggablePlugin(pluginName$6, className$6),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const { signalBus } = renderer;
       const sliderInstances = [];
@@ -2450,7 +2450,7 @@ ${reconstitutedRules.join("\n\n")}
                 </form>`;
         container.innerHTML = html;
         const element = container.querySelector('input[type="range"]');
-        const sliderInstance = { id: `${pluginName$5}-${index2}`, spec, element };
+        const sliderInstance = { id: `${pluginName$6}-${index2}`, spec, element };
         sliderInstances.push(sliderInstance);
       }
       const instances = sliderInstances.map((sliderInstance) => {
@@ -2510,10 +2510,10 @@ ${reconstitutedRules.join("\n\n")}
     };
     return flaggableSpec;
   }
-  const pluginName$4 = "tabulator";
-  const className$4 = pluginClassName(pluginName$4);
+  const pluginName$5 = "tabulator";
+  const className$5 = pluginClassName(pluginName$5);
   const tabulatorPlugin = {
-    ...flaggablePlugin(pluginName$4, className$4, inspectTabulatorSpec, { style: "box-sizing: border-box;" }),
+    ...flaggablePlugin(pluginName$5, className$5, inspectTabulatorSpec, { style: "box-sizing: border-box;" }),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const { signalBus } = renderer;
       const tabulatorInstances = [];
@@ -2529,14 +2529,14 @@ ${reconstitutedRules.join("\n\n")}
         }
         const spec = specReview.approvedSpec;
         if (!Tabulator && index2 === 0) {
-          errorHandler(new Error("Tabulator not found"), pluginName$4, index2, "init", container);
+          errorHandler(new Error("Tabulator not found"), pluginName$5, index2, "init", container);
           continue;
         }
         if (!spec.dataSourceName) {
-          errorHandler(new Error("Tabulator requires dataSourceName"), pluginName$4, index2, "init", container);
+          errorHandler(new Error("Tabulator requires dataSourceName"), pluginName$5, index2, "init", container);
           continue;
         } else if (spec.dataSourceName === spec.variableId) {
-          errorHandler(new Error("Tabulator dataSourceName and variableId cannot be the same"), pluginName$4, index2, "init", container);
+          errorHandler(new Error("Tabulator dataSourceName and variableId cannot be the same"), pluginName$5, index2, "init", container);
           continue;
         }
         let options = {
@@ -2575,7 +2575,7 @@ ${reconstitutedRules.join("\n\n")}
         const nestedDiv = container.querySelector(".tabulator-nested");
         const table = new Tabulator(nestedDiv, options);
         const tabulatorInstance = {
-          id: `${pluginName$4}-${index2}`,
+          id: `${pluginName$5}-${index2}`,
           spec,
           container,
           table,
@@ -2777,10 +2777,10 @@ ${reconstitutedRules.join("\n\n")}
       return instances;
     }
   };
-  const pluginName$3 = "textbox";
-  const className$3 = pluginClassName(pluginName$3);
+  const pluginName$4 = "textbox";
+  const className$4 = pluginClassName(pluginName$4);
   const textboxPlugin = {
-    ...flaggablePlugin(pluginName$3, className$3),
+    ...flaggablePlugin(pluginName$4, className$4),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const { signalBus } = renderer;
       const textboxInstances = [];
@@ -2803,7 +2803,7 @@ ${reconstitutedRules.join("\n\n")}
                 </form>`;
         container.innerHTML = html;
         const element = container.querySelector(spec.multiline ? "textarea" : 'input[type="text"]');
-        const textboxInstance = { id: `${pluginName$3}-${index2}`, spec, element };
+        const textboxInstance = { id: `${pluginName$4}-${index2}`, spec, element };
         textboxInstances.push(textboxInstance);
       }
       const instances = textboxInstances.map((textboxInstance) => {
@@ -3281,8 +3281,8 @@ ${reconstitutedRules.join("\n\n")}
       element.setAttribute(key, attrValue);
     });
   }
-  const pluginName$2 = "treebark";
-  const className$2 = pluginClassName(pluginName$2);
+  const pluginName$3 = "treebark";
+  const className$3 = pluginClassName(pluginName$3);
   function inspectTreebarkSpec(spec) {
     const reasons = [];
     let hasFlags = false;
@@ -3298,7 +3298,7 @@ ${reconstitutedRules.join("\n\n")}
     };
   }
   const treebarkPlugin = {
-    ...flaggablePlugin(pluginName$2, className$2, inspectTreebarkSpec),
+    ...flaggablePlugin(pluginName$3, className$3, inspectTreebarkSpec),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const { signalBus } = renderer;
       const treebarkInstances = [];
@@ -3314,7 +3314,7 @@ ${reconstitutedRules.join("\n\n")}
         const spec = specReview.approvedSpec;
         container.innerHTML = `<div class="treebark-loading">Loading...</div>`;
         const treebarkInstance = {
-          id: `${pluginName$2}-${index2}`,
+          id: `${pluginName$3}-${index2}`,
           spec,
           container,
           lastRenderedData: null
@@ -3368,7 +3368,7 @@ ${reconstitutedRules.join("\n\n")}
       container.innerHTML = `<div class="error">Failed to render treebark template</div>`;
       errorHandler(
         error instanceof Error ? error : new Error(String(error)),
-        pluginName$2,
+        pluginName$3,
         index2,
         "render",
         container
@@ -3383,6 +3383,71 @@ ${reconstitutedRules.join("\n\n")}
       const dsvInfo = `dsv delimiter:\\t variableId:${variableId}`;
       const dsvToken = Object.assign({}, token, { info: dsvInfo });
       return dsvPlugin.fence(dsvToken, index2);
+    }
+  };
+  const pluginName$2 = "variables";
+  const className$2 = pluginClassName(pluginName$2);
+  function inspectVariablesSpec(spec) {
+    return {
+      spec,
+      hasFlags: false,
+      reasons: []
+    };
+  }
+  const variablesPlugin = {
+    name: pluginName$2,
+    fence: (token, index2) => {
+      const content = token.content.trim();
+      return `<div id="${pluginName$2}-${index2}" class="${className$2}" style="display:none">${content}</div>`;
+    },
+    hydrateSpecs: (renderer, errorHandler) => {
+      var _a;
+      const flagged = [];
+      const containers = renderer.element.querySelectorAll(`.${className$2}`);
+      for (const [index2, container] of Array.from(containers).entries()) {
+        try {
+          const content = (_a = container.textContent) == null ? void 0 : _a.trim();
+          if (!content) {
+            errorHandler(new Error("No variables content found"), pluginName$2, index2, "parse", container);
+            continue;
+          }
+          const variables = JSON.parse(content);
+          const spec = { variables };
+          const flaggableSpec = inspectVariablesSpec(spec);
+          const f = {
+            approvedSpec: null,
+            pluginName: pluginName$2,
+            containerId: container.id
+          };
+          if (flaggableSpec.hasFlags) ;
+          else {
+            f.approvedSpec = flaggableSpec.spec;
+          }
+          flagged.push(f);
+        } catch (e) {
+          errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName$2, index2, "parse", container);
+        }
+      }
+      return flagged;
+    },
+    hydrateComponent: async (renderer, errorHandler, specs) => {
+      const instances = [];
+      for (let index2 = 0; index2 < specs.length; index2++) {
+        const specReview = specs[index2];
+        if (!specReview.approvedSpec) {
+          continue;
+        }
+        const spec = specReview.approvedSpec;
+        for (const variable of spec.variables) {
+          instances.push({
+            id: `${pluginName$2}-${variable.variableId}`,
+            initialSignals: [],
+            variable
+            // Store the variable metadata
+          });
+        }
+      }
+      return instances;
     }
   };
   var LogLevel = /* @__PURE__ */ ((LogLevel2) => {
@@ -3927,6 +3992,7 @@ ${reconstitutedRules.join("\n\n")}
     registerMarkdownPlugin(textboxPlugin);
     registerMarkdownPlugin(treebarkPlugin);
     registerMarkdownPlugin(tsvPlugin);
+    registerMarkdownPlugin(variablesPlugin);
     registerMarkdownPlugin(vegaLitePlugin);
     registerMarkdownPlugin(vegaPlugin);
   }
@@ -4027,14 +4093,22 @@ ${reconstitutedRules.join("\n\n")}
         }
       }
       try {
+        let variableInstances = [];
         const pluginHydrations = await Promise.all(hydrationPromises);
         for (const hydration of pluginHydrations) {
           if (hydration && hydration.instances) {
             this.instances[hydration.pluginName] = hydration.instances;
-            for (const instance of hydration.instances) {
-              this.signalBus.registerPeer(instance);
+            if (hydration.pluginName === "variables") {
+              variableInstances = hydration.instances;
+            } else {
+              for (const instance of hydration.instances) {
+                this.signalBus.registerPeer(instance);
+              }
             }
           }
+        }
+        if (variableInstances.length > 0) {
+          await this.createAndHydrateBrainSpec(variableInstances);
         }
         await this.signalBus.beginListening();
         setTimeout(() => {
@@ -4055,6 +4129,157 @@ ${reconstitutedRules.join("\n\n")}
       }
       this.instances = {};
       this.element.innerHTML = "";
+    }
+    async createAndHydrateBrainSpec(variableInstances) {
+      const vega2 = await import("vega");
+      const variables = variableInstances.map((inst) => inst.variable).filter(Boolean);
+      if (variables.length === 0) {
+        return;
+      }
+      const brainSpec = {
+        $schema: "https://vega.github.io/schema/vega/v5.json",
+        description: "Brain spec for variables with loaders and calculations",
+        signals: [],
+        data: []
+      };
+      for (const signalName in this.signalBus.signalDeps) {
+        const dep = this.signalBus.signalDeps[signalName];
+        if (dep.isData) ;
+      }
+      for (const variable of variables) {
+        const { variableId, type, isArray, initialValue, calculation, loader } = variable;
+        if (loader) {
+          brainSpec.signals.push({
+            name: variableId,
+            update: `data('${variableId}')`
+          });
+          const dataEntry = {
+            name: variableId
+          };
+          if (loader.type === "inline") {
+            dataEntry.values = initialValue || [];
+          } else if (loader.type === "url") {
+            dataEntry.url = loader.url;
+            if (loader.format) {
+              if (loader.format === "dsv" && loader.delimiter) {
+                dataEntry.format = { type: "dsv", delimiter: loader.delimiter };
+              } else {
+                dataEntry.format = { type: loader.format };
+              }
+            }
+          } else if (loader.type === "file") {
+            dataEntry.values = initialValue || [];
+          }
+          if (loader.dataFrameTransformations && loader.dataFrameTransformations.length > 0) {
+            dataEntry.transform = loader.dataFrameTransformations;
+          }
+          brainSpec.data.push(dataEntry);
+        } else if (calculation) {
+          const calc = calculation;
+          if (calc.vegaExpression) {
+            brainSpec.signals.push({
+              name: variableId,
+              value: initialValue,
+              update: calc.vegaExpression
+            });
+          } else if (calc.dataFrameTransformations) {
+            brainSpec.signals.push({
+              name: variableId,
+              update: `data('${variableId}')`
+            });
+            brainSpec.data.push({
+              name: variableId,
+              source: calc.dataSourceNames || [],
+              transform: calc.dataFrameTransformations || []
+            });
+          }
+        }
+      }
+      if (brainSpec.signals.length > 0 || brainSpec.data.length > 0) {
+        this.signalBus.log("Renderer", "Brain spec created", brainSpec);
+        const brainContainer = document.createElement("div");
+        brainContainer.id = "brain-vega-view";
+        brainContainer.style.display = "none";
+        this.element.appendChild(brainContainer);
+        try {
+          const runtime = vega2.parse(brainSpec);
+          const view = new vega2.View(runtime, {
+            container: brainContainer,
+            renderer: "none"
+            // No rendering needed for brain spec
+          });
+          await view.runAsync();
+          const brainInstance = {
+            id: "brain-vega-view",
+            initialSignals: brainSpec.signals.map((signal) => ({
+              name: signal.name,
+              value: signal.value,
+              priority: signal.bind ? 1 : 0,
+              isData: signal.update === `data('${signal.name}')`
+            })),
+            receiveBatch: async (batch, from) => {
+              this.signalBus.log("brain", "received batch", batch, from);
+              let hasChanges = false;
+              for (const signalName in batch) {
+                const batchItem = batch[signalName];
+                if (batchItem.isData) {
+                  const matchData = brainSpec.data.find((d2) => d2.name === signalName);
+                  if (matchData) {
+                    view.change(signalName, vega2.changeset().remove(() => true).insert(batchItem.value));
+                    hasChanges = true;
+                  }
+                } else {
+                  const matchSignal = brainSpec.signals.find((s) => s.name === signalName);
+                  if (matchSignal && !matchSignal.update) {
+                    view.signal(signalName, batchItem.value);
+                    hasChanges = true;
+                  }
+                }
+              }
+              if (hasChanges) {
+                await view.runAsync();
+              }
+            },
+            beginListening: (sharedSignals) => {
+              for (const { signalName, isData } of sharedSignals) {
+                if (isData) {
+                  const matchData = brainSpec.data.find((d2) => d2.name === signalName);
+                  if (matchData) {
+                    view.addDataListener(signalName, (name, value) => {
+                      this.signalBus.broadcast("brain", {
+                        [name]: { value, isData: true }
+                      });
+                    });
+                  }
+                } else {
+                  const matchSignal = brainSpec.signals.find((s) => s.name === signalName);
+                  if (matchSignal && matchSignal.update) {
+                    view.addSignalListener(signalName, (name, value) => {
+                      this.signalBus.broadcast("brain", {
+                        [name]: { value, isData: false }
+                      });
+                    });
+                  }
+                }
+              }
+            },
+            getCurrentSignalValue: (signalName) => {
+              const matchSignal = brainSpec.signals.find((s) => s.name === signalName);
+              if (matchSignal) {
+                return view.signal(signalName);
+              }
+              return void 0;
+            },
+            destroy: () => {
+              view.finalize();
+            }
+          };
+          this.signalBus.registerPeer(brainInstance);
+        } catch (error) {
+          console.error("Error creating brain Vega view:", error);
+          this.options.errorHandler(error, "brain", 0, "view", brainContainer);
+        }
+      }
     }
   }
   registerNativePlugins();
