@@ -152,28 +152,28 @@ export function create() {
             if (directPlugin) {
                 return directPlugin;
             }
+            
+            // Split info into words for further processing
+            const infoWords = info.split(/\s+/);
+            
             // Third priority: Check for plugin names with additional parameters (like "csv variableId")
-            else {
-                const infoWords = info.split(/\s+/);
-                if (infoWords.length > 0) {
-                    const pluginPrefix = findPluginByPrefix(infoWords[0]);
-                    if (pluginPrefix) {
-                        return pluginPrefix;
-                    }
+            if (infoWords.length > 0) {
+                const pluginPrefix = findPluginByPrefix(infoWords[0]);
+                if (pluginPrefix) {
+                    return pluginPrefix;
                 }
             }
+            
             // Fourth priority: Check if it starts with "json " and extract the plugin name
-            if (info.startsWith('json ')) {
-                const jsonPluginName = info.slice(5).trim();
-                const jsonPlugin = findPlugin(jsonPluginName);
+            if (info.startsWith('json ') && infoWords.length > 1) {
+                const jsonPlugin = findPlugin(infoWords[1]);
                 if (jsonPlugin) {
                     return jsonPlugin;
                 }
             }
             // Fifth priority: Check if it starts with "yaml " and extract the plugin name
-            else if (info.startsWith('yaml ')) {
-                const yamlPluginName = info.slice(5).trim();
-                const yamlPlugin = findPlugin(yamlPluginName);
+            else if (info.startsWith('yaml ') && infoWords.length > 1) {
+                const yamlPlugin = findPlugin(infoWords[1]);
                 if (yamlPlugin) {
                     return yamlPlugin;
                 }
