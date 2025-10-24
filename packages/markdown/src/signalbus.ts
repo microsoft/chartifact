@@ -91,7 +91,9 @@ export class SignalBus {
         //set current values
         for (const signalName in batch) {
             const signalDep = this.signalDeps[signalName];
-            signalDep.value = batch[signalName].value;
+            if (signalDep) {
+                signalDep.value = batch[signalName].value;
+            }
         }
 
         if (this.broadcastingStack.length === 0) {
