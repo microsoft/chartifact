@@ -1,0 +1,99 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "JSON Data Plugin - Complete Example",
+    "description": "Demonstrates the new JSON plugin for inline JSON data in markdown fence blocks",
+    "dataLoaders": [
+        {
+            "dataSourceName": "companiesFromDataLoader",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"company": "TechCorp", "industry": "Technology", "revenue": 5000000, "employees": 250},
+                {"company": "HealthPlus", "industry": "Healthcare", "revenue": 3200000, "employees": 180},
+                {"company": "EduLearn", "industry": "Education", "revenue": 1500000, "employees": 95}
+            ]
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "intro",
+            "elements": [
+                "# JSON Data Plugin",
+                "",
+                "This document demonstrates the **JSON plugin** which allows you to embed JSON data directly in markdown fence blocks, similar to how CSV, TSV, and DSV plugins work.",
+                "",
+                "## Benefits",
+                "- **Structured Data**: JSON supports complex nested structures, booleans, numbers, and more",
+                "- **Type Safety**: Preserves data types (numbers stay as numbers, booleans as booleans)",
+                "- **Readability**: JSON format is widely understood and easy to read",
+                "- **Compatibility**: Works seamlessly with existing Chartifact components like tables and charts"
+            ]
+        },
+        {
+            "groupId": "fence_example",
+            "elements": [
+                "## Example 1: JSON Fence Block",
+                "",
+                "You can provide JSON data using a markdown fence block with the `json` keyword followed by a variable name:",
+                "",
+                "```json products\n[\n  {\"name\": \"Laptop\", \"category\": \"Electronics\", \"price\": 1299.99, \"inStock\": true, \"rating\": 4.5},\n  {\"name\": \"Desk Chair\", \"category\": \"Furniture\", \"price\": 349.99, \"inStock\": true, \"rating\": 4.8},\n  {\"name\": \"Monitor\", \"category\": \"Electronics\", \"price\": 499.99, \"inStock\": false, \"rating\": 4.6},\n  {\"name\": \"Keyboard\", \"category\": \"Electronics\", \"price\": 129.99, \"inStock\": true, \"rating\": 4.7},\n  {\"name\": \"Standing Desk\", \"category\": \"Furniture\", \"price\": 799.99, \"inStock\": true, \"rating\": 4.9}\n]\n```",
+                "",
+                "### Products Table",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "products",
+                    "variableId": "selectedProduct",
+                    "tabulatorOptions": {
+                        "autoColumns": true,
+                        "layout": "fitColumns",
+                        "maxHeight": "250px",
+                        "selectable": 1
+                    }
+                },
+                "",
+                "**Selected Product:** {{selectedProduct[0].name}} - ${{selectedProduct[0].price}} (Rating: {{selectedProduct[0].rating}}⭐)"
+            ]
+        },
+        {
+            "groupId": "dataloader_example",
+            "elements": [
+                "## Example 2: JSON in DataLoaders",
+                "",
+                "You can also use JSON format in the `dataLoaders` section with an object array:",
+                "",
+                "### Companies Table",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "companiesFromDataLoader",
+                    "tabulatorOptions": {
+                        "autoColumns": true,
+                        "layout": "fitColumns",
+                        "maxHeight": "200px"
+                    }
+                }
+            ]
+        },
+        {
+            "groupId": "comparison",
+            "elements": [
+                "## Comparison: JSON vs CSV",
+                "",
+                "### JSON Format",
+                "```json jsonExample\n[\n  {\"item\": \"Widget\", \"quantity\": 100, \"available\": true},\n  {\"item\": \"Gadget\", \"quantity\": 50, \"available\": false}\n]\n```",
+                "",
+                "### CSV Format",
+                "```csv csvExample\nitem,quantity,available\nWidget,100,true\nGadget,50,false\n```",
+                "",
+                "### JSON Advantages:",
+                "- **Native data types**: Numbers and booleans don't need parsing",
+                "- **Complex structures**: Can handle nested objects and arrays",
+                "- **No escaping issues**: Special characters don't need escape sequences",
+                "",
+                "### CSV Advantages:",
+                "- **Compact**: More space-efficient for simple tabular data",
+                "- **Widely supported**: Easy to import/export from spreadsheets",
+                "- **Human-readable**: Simpler format for basic tables"
+            ]
+        }
+    ]
+}
