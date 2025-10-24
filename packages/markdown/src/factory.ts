@@ -165,7 +165,7 @@ export function create() {
             }
             
             // Fourth priority: Check if it starts with "json " and extract the plugin name
-            if (info.startsWith('json ') && infoWords.length > 1) {
+            if (infoWords[0] === 'json' && infoWords.length > 1) {
                 const jsonPlugin = findPlugin(infoWords[1]);
                 if (jsonPlugin) {
                     return jsonPlugin;
