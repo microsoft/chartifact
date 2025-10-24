@@ -65,6 +65,10 @@ export function addStaticDataLoaderToSpec(vegaScope: VegaScope, dataSource: Data
                 inlineDataMd = tickWrap(`dsv delimiter:${delimiter} variableId:${ds_raw}`, content);
                 break;
             }
+            case 'json': {
+                inlineDataMd = tickWrap(`json ${ds_raw}`, content);
+                break;
+            }
             default: {
                 console.warn(`Unsupported inline data format: ${dataSource.format}, type is ${typeof dataSource.content}`);
                 break;

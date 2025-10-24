@@ -1,0 +1,30 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "JSON Plugin - DataLoader String Format",
+    "dataLoaders": [
+        {
+            "dataSourceName": "employees",
+            "type": "inline",
+            "format": "json",
+            "content": "[\n  {\"name\": \"Alice Johnson\", \"department\": \"Engineering\", \"salary\": 95000},\n  {\"name\": \"Bob Smith\", \"department\": \"Sales\", \"salary\": 75000},\n  {\"name\": \"Carol White\", \"department\": \"Engineering\", \"salary\": 105000},\n  {\"name\": \"David Brown\", \"department\": \"Marketing\", \"salary\": 68000}\n]"
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "dataloader_test",
+            "elements": [
+                "## JSON DataLoader (String Format)",
+                "This example tests using JSON format in dataLoaders with string content.",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "employees",
+                    "tabulatorOptions": {
+                        "autoColumns": true,
+                        "layout": "fitColumns",
+                        "maxHeight": "200px"
+                    }
+                }
+            ]
+        }
+    ]
+}
