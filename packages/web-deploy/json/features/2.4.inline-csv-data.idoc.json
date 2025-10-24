@@ -3,6 +3,24 @@
     "title": "Feature: Inline Delimited Data",
     "groups": [
         {
+            "groupId": "inline_json",
+            "elements": [
+                "## Inline JSON Data",
+                "You can provide JSON data directly as a code block within the document using the **json plugin** with a `variableId` parameter. This is useful for structured data or when you want to include complex data objects.",
+                "",
+                "```json inventory\n[\n  {\"item\": \"Keyboard\", \"price\": 79.99, \"inStock\": true},\n  {\"item\": \"Mouse\", \"price\": 29.99, \"inStock\": true},\n  {\"item\": \"Monitor\", \"price\": 299.99, \"inStock\": false}\n]\n```",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "inventory",
+                    "tabulatorOptions": {
+                        "autoColumns": true,
+                        "layout": "fitColumns",
+                        "maxHeight": "150px"
+                    }
+                }
+            ]
+        },
+        {
             "groupId": "inline_csv",
             "elements": [
                 "## Inline CSV Data",
