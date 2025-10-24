@@ -37,10 +37,10 @@ function inspectJsonSpec(spec: JsonSpec): RawFlaggableSpec<JsonSpec> {
     return result;
 }
 
-const pluginName: PluginNames = 'json';
+const pluginName: PluginNames = 'json-data';
 const className = pluginClassName(pluginName);
 
-export const jsonPlugin: Plugin<JsonSpec> = {
+export const jsonDataPlugin: Plugin<JsonSpec> = {
     name: pluginName,
     fence: (token, index) => {
         const content = token.content.trim();
@@ -49,22 +49,22 @@ export const jsonPlugin: Plugin<JsonSpec> = {
         // Parse the fence info - expect "json data variableId" format
         const parts = info.split(/\s+/);
         
-        // Check if the second parameter is "data"
+        // Require "json data" prefix
+        if (parts.length < 2 || parts[0] !== 'json' || parts[1] !== 'data') {
+            // This fence is not for json-data plugin
+            return '';
+        }
+        
+        // Check for variable ID
         let variableId: string;
         let wasDefaultId = false;
         
-        if (parts.length >= 3 && parts[1] === 'data') {
+        if (parts.length >= 3) {
             // Format: json data variableId
             variableId = parts[2];
-        } else if (parts.length >= 2 && parts[1].startsWith('variableId:')) {
-            // Format: json data variableId:name (with explicit parameter)
-            variableId = parts[1].slice(11).trim();
-        } else if (parts.length >= 3 && parts[2].startsWith('variableId:')) {
-            // Format: json data variableId:name (with data keyword)
-            variableId = parts[2].slice(11).trim();
         } else {
-            // Default variable ID if format is incorrect
-            variableId = `${pluginName}Data${index}`;
+            // Default variable ID if not provided
+            variableId = `jsonData${index}`;
             wasDefaultId = true;
         }
         

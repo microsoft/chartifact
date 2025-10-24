@@ -156,6 +156,14 @@ export function create() {
             else {
                 const infoWords = info.split(/\s+/);
                 if (infoWords.length > 0) {
+                    // Special case for "json data" - treat as single plugin name
+                    if (infoWords[0] === 'json' && infoWords[1] === 'data') {
+                        const jsonDataPlugin = findPlugin('json-data');
+                        if (jsonDataPlugin) {
+                            return jsonDataPlugin;
+                        }
+                    }
+                    
                     const pluginPrefix = findPluginByPrefix(infoWords[0]);
                     if (pluginPrefix) {
                         return pluginPrefix;

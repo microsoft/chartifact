@@ -18,15 +18,42 @@ export function addStaticDataLoaderToSpec(vegaScope: VegaScope, dataSource: Data
 
     if (dataSource.type === 'inline' && dataSource.format === 'json') {
 
-        const newData: ValuesData = {
-            name: dataSourceName,
-            values: dataSource.content as object[],
-            transform: dataSource.dataFrameTransformations || [],
-        };
-        spec.signals.push(dataAsSignal(dataSourceName));
+        // Check if content is already an object array
+        if (Array.isArray(dataSource.content) && typeof dataSource.content[0] === 'object') {
+            const newData: ValuesData = {
+                name: dataSourceName,
+                values: dataSource.content as object[],
+                transform: dataSource.dataFrameTransformations || [],
+            };
+            spec.signals.push(dataAsSignal(dataSourceName));
 
-        //real data goes to the beginning of the data array
-        spec.data.unshift(newData);
+            //real data goes to the beginning of the data array
+            spec.data.unshift(newData);
+        } else if (typeof dataSource.content === 'string') {
+            // Content is JSON string - need to output as json data fence block
+            const content = dataSource.content;
+            let ds_raw = dataSourceName;
+            
+            if (dataSource.dataFrameTransformations) {
+                ds_raw += '_raw';
+
+                const newData: SourceData = {
+                    name: dataSourceName,
+                    source: ds_raw,
+                    transform: dataSource.dataFrameTransformations || [],
+                };
+                spec.signals.push(dataAsSignal(dataSourceName));
+
+                spec.data.unshift(newData);
+
+                //add a placeholder data since the transform depends on it
+                spec.data.unshift({
+                    name: ds_raw
+                });
+            }
+            
+            inlineDataMd = tickWrap(`json data ${ds_raw}`, content);
+        }
 
     } else if (typeof dataSource.content === 'string' || (Array.isArray(dataSource.content) && typeof dataSource.content[0] === 'string')) {
 
@@ -63,10 +90,6 @@ export function addStaticDataLoaderToSpec(vegaScope: VegaScope, dataSource: Data
             }
             case 'dsv': {
                 inlineDataMd = tickWrap(`dsv delimiter:${delimiter} variableId:${ds_raw}`, content);
-                break;
-            }
-            case 'json': {
-                inlineDataMd = tickWrap(`json data ${ds_raw}`, content);
                 break;
             }
             default: {
