@@ -37,35 +37,33 @@ function inspectJsonDataSpec(spec: JsonDataSpec): RawFlaggableSpec<JsonDataSpec>
     return result;
 }
 
-const pluginName: PluginNames = 'json-data';
+const pluginName: PluginNames = 'data';
 const className = pluginClassName(pluginName);
 
-export const jsonDataPlugin: Plugin<JsonDataSpec> = {
+export const dataPlugin: Plugin<JsonDataSpec> = {
     name: pluginName,
     fence: (token, index) => {
         const content = token.content.trim();
         const info = token.info.trim();
         
         // Parse the fence info - expect "json data variableId" format
+        // The factory.ts will route "json data ..." to this plugin
         const parts = info.split(/\s+/);
         
-        // Require "json data" prefix
-        if (parts.length < 2 || parts[0] !== 'json' || parts[1] !== 'data') {
-            // This fence is not for json-data plugin
-            return '';
-        }
-        
-        // Check for variable ID
+        // Check for variable ID (should be after "json data")
         let variableId: string;
         let wasDefaultId = false;
         
-        if (parts.length >= 3) {
+        if (parts.length >= 3 && parts[0] === 'json' && parts[1] === 'data') {
             // Format: json data variableId
             variableId = parts[2];
-        } else {
-            // Default variable ID if not provided
+        } else if (parts.length >= 2 && parts[0] === 'json' && parts[1] === 'data') {
+            // Format: json data (no variable ID provided)
             variableId = `jsonData${index}`;
             wasDefaultId = true;
+        } else {
+            // Not the expected format
+            return '';
         }
         
         // Use script tag with application/json type instead of pre tag
