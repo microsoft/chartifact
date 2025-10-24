@@ -4080,8 +4080,10 @@ ${reconstitutedRules.join("\n\n")}
       this.ensureMd();
       this.signalBus.log("Renderer", "hydrate components");
       const hydrationPromises = [];
-      for (let i = 0; i < plugins.length; i++) {
-        const plugin = plugins[i];
+      const vegaPlugin2 = plugins.find((p) => p.name === "vega");
+      const otherPlugins = plugins.filter((p) => p.name !== "vega");
+      for (let i = 0; i < otherPlugins.length; i++) {
+        const plugin = otherPlugins[i];
         if (plugin.hydrateComponent) {
           const specsForPlugin = specs.filter((spec) => spec.pluginName === plugin.name);
           hydrationPromises.push(plugin.hydrateComponent(this, this.options.errorHandler, specsForPlugin).then((instances) => {
@@ -4108,7 +4110,18 @@ ${reconstitutedRules.join("\n\n")}
           }
         }
         if (variableInstances.length > 0) {
-          await this.createAndHydrateBrainSpec(variableInstances);
+          await this.createAndHydrateBrainSpec(variableInstances, specs, vegaPlugin2);
+        } else if (vegaPlugin2) {
+          const vegaSpecs = specs.filter((spec) => spec.pluginName === "vega");
+          if (vegaSpecs.length > 0 && vegaPlugin2.hydrateComponent) {
+            const vegaInstances = await vegaPlugin2.hydrateComponent(this, this.options.errorHandler, vegaSpecs);
+            if (vegaInstances) {
+              this.instances["vega"] = vegaInstances;
+              for (const instance of vegaInstances) {
+                this.signalBus.registerPeer(instance);
+              }
+            }
+          }
         }
         await this.signalBus.beginListening();
         setTimeout(() => {
@@ -4130,8 +4143,7 @@ ${reconstitutedRules.join("\n\n")}
       this.instances = {};
       this.element.innerHTML = "";
     }
-    async createAndHydrateBrainSpec(variableInstances) {
-      const vega2 = await import("vega");
+    async createAndHydrateBrainSpec(variableInstances, specs, vegaPlugin2) {
       const variables = variableInstances.map((inst) => inst.variable).filter(Boolean);
       if (variables.length === 0) {
         return;
@@ -4142,10 +4154,6 @@ ${reconstitutedRules.join("\n\n")}
         signals: [],
         data: []
       };
-      for (const signalName in this.signalBus.signalDeps) {
-        const dep = this.signalBus.signalDeps[signalName];
-        if (dep.isData) ;
-      }
       for (const variable of variables) {
         const { variableId, type, isArray, initialValue, calculation, loader } = variable;
         if (loader) {
@@ -4198,86 +4206,41 @@ ${reconstitutedRules.join("\n\n")}
       if (brainSpec.signals.length > 0 || brainSpec.data.length > 0) {
         this.signalBus.log("Renderer", "Brain spec created", brainSpec);
         const brainContainer = document.createElement("div");
-        brainContainer.id = "brain-vega-view";
+        brainContainer.id = "vega-brain";
+        brainContainer.className = "plugin-vega";
         brainContainer.style.display = "none";
+        const specData = { spec: brainSpec };
+        brainContainer.textContent = JSON.stringify(specData);
         this.element.appendChild(brainContainer);
-        try {
-          const runtime = vega2.parse(brainSpec);
-          const view = new vega2.View(runtime, {
-            container: brainContainer,
-            renderer: "none"
-            // No rendering needed for brain spec
-          });
-          await view.runAsync();
-          const brainInstance = {
-            id: "brain-vega-view",
-            initialSignals: brainSpec.signals.map((signal) => ({
-              name: signal.name,
-              value: signal.value,
-              priority: signal.bind ? 1 : 0,
-              isData: signal.update === `data('${signal.name}')`
-            })),
-            receiveBatch: async (batch, from) => {
-              this.signalBus.log("brain", "received batch", batch, from);
-              let hasChanges = false;
-              for (const signalName in batch) {
-                const batchItem = batch[signalName];
-                if (batchItem.isData) {
-                  const matchData = brainSpec.data.find((d2) => d2.name === signalName);
-                  if (matchData) {
-                    view.change(signalName, vega2.changeset().remove(() => true).insert(batchItem.value));
-                    hasChanges = true;
-                  }
-                } else {
-                  const matchSignal = brainSpec.signals.find((s) => s.name === signalName);
-                  if (matchSignal && !matchSignal.update) {
-                    view.signal(signalName, batchItem.value);
-                    hasChanges = true;
-                  }
-                }
-              }
-              if (hasChanges) {
-                await view.runAsync();
-              }
-            },
-            beginListening: (sharedSignals) => {
-              for (const { signalName, isData } of sharedSignals) {
-                if (isData) {
-                  const matchData = brainSpec.data.find((d2) => d2.name === signalName);
-                  if (matchData) {
-                    view.addDataListener(signalName, (name, value) => {
-                      this.signalBus.broadcast("brain", {
-                        [name]: { value, isData: true }
-                      });
-                    });
-                  }
-                } else {
-                  const matchSignal = brainSpec.signals.find((s) => s.name === signalName);
-                  if (matchSignal && matchSignal.update) {
-                    view.addSignalListener(signalName, (name, value) => {
-                      this.signalBus.broadcast("brain", {
-                        [name]: { value, isData: false }
-                      });
-                    });
-                  }
-                }
-              }
-            },
-            getCurrentSignalValue: (signalName) => {
-              const matchSignal = brainSpec.signals.find((s) => s.name === signalName);
-              if (matchSignal) {
-                return view.signal(signalName);
-              }
-              return void 0;
-            },
-            destroy: () => {
-              view.finalize();
+        const brainSpecReview = {
+          approvedSpec: brainSpec,
+          pluginName: "vega",
+          containerId: "vega-brain"
+        };
+        if (vegaPlugin2 && vegaPlugin2.hydrateComponent) {
+          const brainInstances = await vegaPlugin2.hydrateComponent(this, this.options.errorHandler, [brainSpecReview]);
+          if (brainInstances && brainInstances.length > 0) {
+            if (!this.instances["vega"]) {
+              this.instances["vega"] = [];
             }
-          };
-          this.signalBus.registerPeer(brainInstance);
-        } catch (error) {
-          console.error("Error creating brain Vega view:", error);
-          this.options.errorHandler(error, "brain", 0, "view", brainContainer);
+            this.instances["vega"].push(...brainInstances);
+            for (const instance of brainInstances) {
+              this.signalBus.registerPeer(instance);
+            }
+          }
+        }
+        const existingVegaSpecs = specs.filter((spec) => spec.pluginName === "vega");
+        if (existingVegaSpecs.length > 0 && vegaPlugin2 && vegaPlugin2.hydrateComponent) {
+          const existingVegaInstances = await vegaPlugin2.hydrateComponent(this, this.options.errorHandler, existingVegaSpecs);
+          if (existingVegaInstances && existingVegaInstances.length > 0) {
+            if (!this.instances["vega"]) {
+              this.instances["vega"] = [];
+            }
+            this.instances["vega"].push(...existingVegaInstances);
+            for (const instance of existingVegaInstances) {
+              this.signalBus.registerPeer(instance);
+            }
+          }
         }
       }
     }

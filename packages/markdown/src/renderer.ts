@@ -5,7 +5,7 @@
 
 import MarkdownIt from 'markdown-it';
 import { Renderers } from 'vega-typings';
-import { create, IInstance, plugins } from './factory.js';
+import { create, IInstance, plugins, Plugin } from './factory.js';
 import { SignalBus } from './signalbus.js';
 import { defaultCommonOptions, SpecReview } from 'common';
 import { PluginNames } from './plugins/interfaces.js';
@@ -143,8 +143,13 @@ export class Renderer {
         this.signalBus.log('Renderer', 'hydrate components');
         const hydrationPromises: Promise<Hydration>[] = [];
 
-        for (let i = 0; i < plugins.length; i++) {
-            const plugin = plugins[i];
+        // Separate vega plugin from other plugins
+        const vegaPlugin = plugins.find(p => p.name === 'vega');
+        const otherPlugins = plugins.filter(p => p.name !== 'vega');
+
+        // First hydrate all plugins except vega
+        for (let i = 0; i < otherPlugins.length; i++) {
+            const plugin = otherPlugins[i];
             if (plugin.hydrateComponent) {
                 //get only those specs that match the plugin name
                 const specsForPlugin = specs.filter(spec => spec.pluginName === plugin.name);
@@ -159,7 +164,7 @@ export class Renderer {
         }
 
         try {
-            let variableInstances: IInstance[] = []; //VVVVV
+            let variableInstances: IInstance[] = [];
 
             const pluginHydrations = await Promise.all(hydrationPromises);
             for (const hydration of pluginHydrations) {
@@ -176,21 +181,21 @@ export class Renderer {
                 }
             }
 
-            /*
-                VVVVV
-                TODO: Create our "Brain" Vega spec that connects all the signals from variables
-
-                we only need to add variables that:
-                - have calculations
-                - have a loader
-
-                we also need to add signals (from the signal bus) that:
-                - are marked 'isData'
-            */
-            
-            // Create the brain Vega spec if we have variables with loaders or calculations
+            // After all other plugins are hydrated, create and hydrate the brain spec if needed
             if (variableInstances.length > 0) {
-                await this.createAndHydrateBrainSpec(variableInstances);
+                await this.createAndHydrateBrainSpec(variableInstances, specs, vegaPlugin);
+            } else if (vegaPlugin) {
+                // No brain spec needed, but still hydrate existing vega specs
+                const vegaSpecs = specs.filter(spec => spec.pluginName === 'vega');
+                if (vegaSpecs.length > 0 && vegaPlugin.hydrateComponent) {
+                    const vegaInstances = await vegaPlugin.hydrateComponent(this, this.options.errorHandler, vegaSpecs);
+                    if (vegaInstances) {
+                        this.instances['vega'] = vegaInstances;
+                        for (const instance of vegaInstances) {
+                            this.signalBus.registerPeer(instance);
+                        }
+                    }
+                }
             }
 
             await this.signalBus.beginListening();
@@ -225,10 +230,7 @@ export class Renderer {
         this.element.innerHTML = '';
     }
 
-    private async createAndHydrateBrainSpec(variableInstances: IInstance[]) {
-        // Import Vega for creating the view
-        const vega = await import('vega');
-        
+    private async createAndHydrateBrainSpec(variableInstances: IInstance[], specs: SpecReview<{}>[], vegaPlugin: Plugin<any>) {
         // Extract variables from instances
         const variables = variableInstances.map((inst: any) => inst.variable).filter(Boolean);
         
@@ -243,15 +245,6 @@ export class Renderer {
             signals: [],
             data: [],
         };
-        
-        // Also collect data signals from signal bus
-        const dataSignalsFromBus: string[] = [];
-        for (const signalName in this.signalBus.signalDeps) {
-            const dep = this.signalBus.signalDeps[signalName];
-            if (dep.isData) {
-                dataSignalsFromBus.push(signalName);
-            }
-        }
         
         // Add variables to the brain spec
         for (const variable of variables) {
@@ -325,101 +318,57 @@ export class Renderer {
         if (brainSpec.signals.length > 0 || brainSpec.data.length > 0) {
             this.signalBus.log('Renderer', 'Brain spec created', brainSpec);
             
-            // Create a hidden container for the brain view
+            // Create a div for the brain vega spec
             const brainContainer = document.createElement('div');
-            brainContainer.id = 'brain-vega-view';
+            brainContainer.id = 'vega-brain';
+            brainContainer.className = 'plugin-vega';
             brainContainer.style.display = 'none';
+            
+            // Store the spec as JSON in the div
+            const specData = { spec: brainSpec };
+            brainContainer.textContent = JSON.stringify(specData);
+            
+            // Add the div to the DOM
             this.element.appendChild(brainContainer);
             
-            try {
-                // Parse and create the Vega view
-                const runtime = vega.parse(brainSpec);
-                const view = new vega.View(runtime, {
-                    container: brainContainer,
-                    renderer: 'none', // No rendering needed for brain spec
-                });
+            // Create a SpecReview for the brain spec
+            const brainSpecReview: SpecReview<any> = {
+                approvedSpec: brainSpec,
+                pluginName: 'vega',
+                containerId: 'vega-brain'
+            };
+            
+            // Hydrate the brain spec using the vega plugin
+            if (vegaPlugin && vegaPlugin.hydrateComponent) {
+                const brainInstances = await vegaPlugin.hydrateComponent(this, this.options.errorHandler, [brainSpecReview]);
                 
-                await view.runAsync();
-                
-                // Create an IInstance for the brain view and register it
-                const brainInstance: IInstance = {
-                    id: 'brain-vega-view',
-                    initialSignals: brainSpec.signals.map((signal: any) => ({
-                        name: signal.name,
-                        value: signal.value,
-                        priority: signal.bind ? 1 : 0,
-                        isData: signal.update === `data('${signal.name}')`,
-                    })),
-                    receiveBatch: async (batch, from) => {
-                        // Handle incoming signals from other plugins
-                        this.signalBus.log('brain', 'received batch', batch, from);
-                        let hasChanges = false;
-                        
-                        for (const signalName in batch) {
-                            const batchItem = batch[signalName];
-                            if (batchItem.isData) {
-                                // Update data
-                                const matchData = brainSpec.data.find((d: any) => d.name === signalName);
-                                if (matchData) {
-                                    view.change(signalName, vega.changeset().remove(() => true).insert(batchItem.value));
-                                    hasChanges = true;
-                                }
-                            } else {
-                                // Update signal
-                                const matchSignal = brainSpec.signals.find((s: any) => s.name === signalName);
-                                if (matchSignal && !matchSignal.update) {
-                                    view.signal(signalName, batchItem.value);
-                                    hasChanges = true;
-                                }
-                            }
-                        }
-                        
-                        if (hasChanges) {
-                            await view.runAsync();
-                        }
-                    },
-                    beginListening: (sharedSignals) => {
-                        // Listen to signals and broadcast changes
-                        for (const { signalName, isData } of sharedSignals) {
-                            if (isData) {
-                                const matchData = brainSpec.data.find((d: any) => d.name === signalName);
-                                if (matchData) {
-                                    view.addDataListener(signalName, (name, value) => {
-                                        this.signalBus.broadcast('brain', {
-                                            [name]: { value, isData: true }
-                                        });
-                                    });
-                                }
-                            } else {
-                                const matchSignal = brainSpec.signals.find((s: any) => s.name === signalName);
-                                if (matchSignal && matchSignal.update) {
-                                    view.addSignalListener(signalName, (name, value) => {
-                                        this.signalBus.broadcast('brain', {
-                                            [name]: { value, isData: false }
-                                        });
-                                    });
-                                }
-                            }
-                        }
-                    },
-                    getCurrentSignalValue: (signalName: string) => {
-                        const matchSignal = brainSpec.signals.find((s: any) => s.name === signalName);
-                        if (matchSignal) {
-                            return view.signal(signalName);
-                        }
-                        return undefined;
-                    },
-                    destroy: () => {
-                        view.finalize();
-                    },
-                };
-                
-                // Register the brain instance with the signal bus
-                this.signalBus.registerPeer(brainInstance);
-                
-            } catch (error) {
-                console.error('Error creating brain Vega view:', error);
-                this.options.errorHandler(error as Error, 'brain', 0, 'view', brainContainer);
+                if (brainInstances && brainInstances.length > 0) {
+                    // Add brain instances to the vega instances
+                    if (!this.instances['vega']) {
+                        this.instances['vega'] = [];
+                    }
+                    this.instances['vega'].push(...brainInstances);
+                    
+                    // Register brain instances with the signal bus
+                    for (const instance of brainInstances) {
+                        this.signalBus.registerPeer(instance);
+                    }
+                }
+            }
+            
+            // Also hydrate any existing vega specs
+            const existingVegaSpecs = specs.filter(spec => spec.pluginName === 'vega');
+            if (existingVegaSpecs.length > 0 && vegaPlugin && vegaPlugin.hydrateComponent) {
+                const existingVegaInstances = await vegaPlugin.hydrateComponent(this, this.options.errorHandler, existingVegaSpecs);
+                if (existingVegaInstances && existingVegaInstances.length > 0) {
+                    if (!this.instances['vega']) {
+                        this.instances['vega'] = [];
+                    }
+                    this.instances['vega'].push(...existingVegaInstances);
+                    for (const instance of existingVegaInstances) {
+                        this.signalBus.registerPeer(instance);
+                    }
+                }
             }
         }
     }
