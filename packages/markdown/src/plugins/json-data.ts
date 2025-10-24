@@ -10,19 +10,19 @@ import { PluginNames } from './interfaces.js';
 import { SpecReview } from 'common';
 import { parseVariableId } from './dsv.js';
 
-interface JsonInstance {
+interface JsonDataInstance {
     id: string;
-    spec: JsonSpec;
+    spec: JsonDataSpec;
     data: object[];
 }
 
-export interface JsonSpec {
+export interface JsonDataSpec {
     variableId: string;
     wasDefaultId?: boolean;
 }
 
-function inspectJsonSpec(spec: JsonSpec): RawFlaggableSpec<JsonSpec> {
-    const result: RawFlaggableSpec<JsonSpec> = {
+function inspectJsonDataSpec(spec: JsonDataSpec): RawFlaggableSpec<JsonDataSpec> {
+    const result: RawFlaggableSpec<JsonDataSpec> = {
         spec,
         hasFlags: false,
         reasons: []
@@ -40,7 +40,7 @@ function inspectJsonSpec(spec: JsonSpec): RawFlaggableSpec<JsonSpec> {
 const pluginName: PluginNames = 'json-data';
 const className = pluginClassName(pluginName);
 
-export const jsonDataPlugin: Plugin<JsonSpec> = {
+export const jsonDataPlugin: Plugin<JsonDataSpec> = {
     name: pluginName,
     fence: (token, index) => {
         const content = token.content.trim();
@@ -79,7 +79,7 @@ export const jsonDataPlugin: Plugin<JsonSpec> = {
         return scriptElement.outerHTML;
     },
     hydrateSpecs: (renderer, errorHandler) => {
-        const flagged: SpecReview<JsonSpec>[] = [];
+        const flagged: SpecReview<JsonDataSpec>[] = [];
         const containers = renderer.element.querySelectorAll(`.${className}`);
         
         for (const [index, container] of Array.from(containers).entries()) {
@@ -92,10 +92,10 @@ export const jsonDataPlugin: Plugin<JsonSpec> = {
                     continue;
                 }
                 
-                const spec: JsonSpec = { variableId, wasDefaultId };
-                const flaggableSpec = inspectJsonSpec(spec);
+                const spec: JsonDataSpec = { variableId, wasDefaultId };
+                const flaggableSpec = inspectJsonDataSpec(spec);
                 
-                const f: SpecReview<JsonSpec> = { 
+                const f: SpecReview<JsonDataSpec> = { 
                     approvedSpec: null, 
                     pluginName, 
                     containerId: container.id 
@@ -118,7 +118,7 @@ export const jsonDataPlugin: Plugin<JsonSpec> = {
     },
     hydrateComponent: async (renderer, errorHandler, specs) => {
         const { signalBus } = renderer;
-        const jsonInstances: JsonInstance[] = [];
+        const jsonInstances: JsonDataInstance[] = [];
 
         for (let index = 0; index < specs.length; index++) {
             const specReview = specs[index];
@@ -139,7 +139,7 @@ export const jsonDataPlugin: Plugin<JsonSpec> = {
                     continue;
                 }
                 
-                const spec: JsonSpec = specReview.approvedSpec;
+                const spec: JsonDataSpec = specReview.approvedSpec;
                 
                 // Parse JSON content
                 let data: object[];
@@ -163,7 +163,7 @@ export const jsonDataPlugin: Plugin<JsonSpec> = {
                     continue;
                 }
                 
-                const jsonInstance: JsonInstance = { 
+                const jsonInstance: JsonDataInstance = { 
                     id: `${pluginName}-${index}`, 
                     spec, 
                     data 
