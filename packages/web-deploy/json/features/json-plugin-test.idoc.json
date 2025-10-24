@@ -8,7 +8,7 @@
                 "## Testing JSON Plugin",
                 "This example tests the new JSON plugin with inline JSON data.",
                 "",
-                "```json books\n[\n  {\"title\": \"The Great Gatsby\", \"author\": \"F. Scott Fitzgerald\", \"year\": 1925, \"rating\": 4.5},\n  {\"title\": \"To Kill a Mockingbird\", \"author\": \"Harper Lee\", \"year\": 1960, \"rating\": 4.8},\n  {\"title\": \"1984\", \"author\": \"George Orwell\", \"year\": 1949, \"rating\": 4.7},\n  {\"title\": \"Pride and Prejudice\", \"author\": \"Jane Austen\", \"year\": 1813, \"rating\": 4.6}\n]\n```",
+                "```json data books\n[\n  {\"title\": \"The Great Gatsby\", \"author\": \"F. Scott Fitzgerald\", \"year\": 1925, \"rating\": 4.5},\n  {\"title\": \"To Kill a Mockingbird\", \"author\": \"Harper Lee\", \"year\": 1960, \"rating\": 4.8},\n  {\"title\": \"1984\", \"author\": \"George Orwell\", \"year\": 1949, \"rating\": 4.7},\n  {\"title\": \"Pride and Prejudice\", \"author\": \"Jane Austen\", \"year\": 1813, \"rating\": 4.6}\n]\n```",
                 {
                     "type": "tabulator",
                     "dataSourceName": "books",

@@ -66,7 +66,7 @@ export function addStaticDataLoaderToSpec(vegaScope: VegaScope, dataSource: Data
                 break;
             }
             case 'json': {
-                inlineDataMd = tickWrap(`json ${ds_raw}`, content);
+                inlineDataMd = tickWrap(`json data ${ds_raw}`, content);
                 break;
             }
             default: {

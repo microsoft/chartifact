@@ -4,7 +4,7 @@
 */
 
 import { Batch, IInstance, Plugin, RawFlaggableSpec } from '../factory.js';
-import { sanitizedHTML, sanitizeHtmlComment } from '../sanitize.js';
+import { sanitizedScriptTag, sanitizeHtmlComment } from '../sanitize.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { SpecReview } from 'common';
@@ -46,16 +46,37 @@ export const jsonPlugin: Plugin<JsonSpec> = {
         const content = token.content.trim();
         const info = token.info.trim();
         
-        // Use utility function to parse variable ID
-        const { variableId, wasDefaultId } = parseVariableId(info, 'json', index);
+        // Parse the fence info - expect "json data variableId" format
+        const parts = info.split(/\s+/);
         
-        return sanitizedHTML('pre', { 
-            id: `${pluginName}-${index}`, 
+        // Check if the second parameter is "data"
+        let variableId: string;
+        let wasDefaultId = false;
+        
+        if (parts.length >= 3 && parts[1] === 'data') {
+            // Format: json data variableId
+            variableId = parts[2];
+        } else if (parts.length >= 2 && parts[1].startsWith('variableId:')) {
+            // Format: json data variableId:name (with explicit parameter)
+            variableId = parts[1].slice(11).trim();
+        } else if (parts.length >= 3 && parts[2].startsWith('variableId:')) {
+            // Format: json data variableId:name (with data keyword)
+            variableId = parts[2].slice(11).trim();
+        } else {
+            // Default variable ID if format is incorrect
+            variableId = `${pluginName}Data${index}`;
+            wasDefaultId = true;
+        }
+        
+        // Use script tag with application/json type instead of pre tag
+        const scriptElement = sanitizedScriptTag(content, {
+            id: `${pluginName}-${index}`,
             class: className,
-            style: 'display:none',
             'data-variable-id': variableId,
             'data-was-default-id': wasDefaultId.toString()
-        }, content, false);
+        });
+        
+        return scriptElement.outerHTML;
     },
     hydrateSpecs: (renderer, errorHandler) => {
         const flagged: SpecReview<JsonSpec>[] = [];
