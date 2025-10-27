@@ -9,6 +9,7 @@ import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { SpecReview } from 'common';
 import { parseVariableId } from './dsv.js';
+import * as yaml from 'js-yaml';
 
 interface JsonDataInstance {
     id: string;
@@ -46,32 +47,37 @@ export const dataPlugin: Plugin<JsonDataSpec> = {
         const content = token.content.trim();
         const info = token.info.trim();
         
-        // Parse the fence info - expect "json data variableId" format
-        // The factory.ts will route "json data ..." to this plugin
+        // Parse the fence info - expect "json data variableId" or "yaml data variableId" format
+        // The factory.ts will route "json data ..." or "yaml data ..." to this plugin
         const parts = info.split(/\s+/);
         
-        // Check for variable ID (should be after "json data")
+        // Check for variable ID (should be after "json data" or "yaml data")
         let variableId: string;
         let wasDefaultId = false;
+        let isYaml = false;
         
-        if (parts.length >= 3 && parts[0] === 'json' && parts[1] === 'data') {
-            // Format: json data variableId
+        if (parts.length >= 3 && (parts[0] === 'json' || parts[0] === 'yaml') && parts[1] === 'data') {
+            // Format: json data variableId or yaml data variableId
             variableId = parts[2];
-        } else if (parts.length >= 2 && parts[0] === 'json' && parts[1] === 'data') {
-            // Format: json data (no variable ID provided)
-            variableId = `jsonData${index}`;
+            isYaml = parts[0] === 'yaml';
+        } else if (parts.length >= 2 && (parts[0] === 'json' || parts[0] === 'yaml') && parts[1] === 'data') {
+            // Format: json data or yaml data (no variable ID provided)
+            variableId = `${parts[0]}Data${index}`;
             wasDefaultId = true;
+            isYaml = parts[0] === 'yaml';
         } else {
             // Not the expected format
             return '';
         }
         
-        // Use script tag with application/json type instead of pre tag
+        // Use script tag with application/json type for storage
+        // Note: We store both JSON and YAML data as JSON in the script tag
         const scriptElement = sanitizedScriptTag(content, {
             id: `${pluginName}-${index}`,
             class: className,
             'data-variable-id': variableId,
-            'data-was-default-id': wasDefaultId.toString()
+            'data-was-default-id': wasDefaultId.toString(),
+            'data-format': isYaml ? 'yaml' : 'json'
         });
         
         return scriptElement.outerHTML;
@@ -133,16 +139,26 @@ export const dataPlugin: Plugin<JsonDataSpec> = {
             try {
                 const content = container.textContent?.trim();
                 if (!content) {
-                    errorHandler(new Error('No JSON content found'), pluginName, index, 'parse', container);
+                    errorHandler(new Error('No data content found'), pluginName, index, 'parse', container);
                     continue;
                 }
                 
                 const spec: JsonDataSpec = specReview.approvedSpec;
+                const format = container.getAttribute('data-format') || 'json';
                 
-                // Parse JSON content
+                // Parse JSON or YAML content
                 let data: object[];
                 try {
-                    const parsed = JSON.parse(content);
+                    let parsed: any;
+                    
+                    if (format === 'yaml') {
+                        // Parse YAML
+                        parsed = yaml.load(content);
+                    } else {
+                        // Parse JSON
+                        parsed = JSON.parse(content);
+                    }
+                    
                     // Ensure data is an array
                     if (Array.isArray(parsed)) {
                         data = parsed;
@@ -150,9 +166,9 @@ export const dataPlugin: Plugin<JsonDataSpec> = {
                         // If it's a single object, wrap it in an array
                         data = [parsed];
                     }
-                } catch (jsonError) {
+                } catch (parseError) {
                     errorHandler(
-                        new Error(`Invalid JSON: ${jsonError instanceof Error ? jsonError.message : String(jsonError)}`), 
+                        new Error(`Invalid ${format.toUpperCase()}: ${parseError instanceof Error ? parseError.message : String(parseError)}`), 
                         pluginName, 
                         index, 
                         'parse', 
@@ -169,7 +185,7 @@ export const dataPlugin: Plugin<JsonDataSpec> = {
                 jsonInstances.push(jsonInstance);
                 
                 // Add a safe comment before the container to show that data was loaded
-                const comment = sanitizeHtmlComment(`JSON data loaded: ${data.length} rows for variable '${spec.variableId}'`);
+                const comment = sanitizeHtmlComment(`${format.toUpperCase()} data loaded: ${data.length} rows for variable '${spec.variableId}'`);
                 container.insertAdjacentHTML('beforebegin', comment);
                 
             } catch (e) {
