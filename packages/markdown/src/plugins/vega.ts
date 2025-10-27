@@ -28,6 +28,7 @@ interface VegaInstance extends SpecInit {
     batch?: Batch;
     dataSignals: string[];
     needToRun?: boolean;
+    isListening?: boolean;
 }
 
 const pluginName: PluginNames = 'vega';
@@ -113,17 +114,23 @@ export const vegaPlugin: Plugin<Spec> = {
                 receiveBatch: async (batch, from) => {
                     signalBus.log(vegaInstance.id, 'received batch', batch, from);
                     return new Promise<void>(resolve => {
-                        view.runAfter(async () => {
-                            if (receiveBatch(batch, signalBus, vegaInstance)) {
-                                signalBus.log(vegaInstance.id, 'running after _pulse, changes from', from);
-                                view.resize();
-                                vegaInstance.needToRun = true;
-                            } else {
-                                signalBus.log(vegaInstance.id, 'no changes');
-                            }
-                            signalBus.log(vegaInstance.id, 'running view after _pulse finished');
+                        if (vegaInstance.isListening) {
+                            view.runAfter(async () => {
+                                if (receiveBatch(batch, signalBus, vegaInstance)) {
+                                    signalBus.log(vegaInstance.id, 'running after _pulse, changes from', from);
+                                    view.resize();
+                                    vegaInstance.needToRun = true;
+                                } else {
+                                    signalBus.log(vegaInstance.id, 'no changes');
+                                }
+                                signalBus.log(vegaInstance.id, 'running view after _pulse finished');
+                                resolve();
+                            });
+                        } else {
+                            //not yet listening, so just receive the batch without running
+                            receiveBatch(batch, signalBus, vegaInstance);
                             resolve();
-                        });
+                        }
                     });
                 },
                 broadcastComplete: async () => {
@@ -180,6 +187,8 @@ export const vegaPlugin: Plugin<Spec> = {
                             //signalBus.log(vegaInstance.id, 'not listening to signal, no match', signalName);
                         }
                     }
+                    vegaInstance.isListening = true;
+                    view.runAsync();
                 },
                 getCurrentSignalValue: (signalName: string) => {
                     const matchSignal = spec.signals?.find(signal => signal.name === signalName);
@@ -219,7 +228,7 @@ function receiveBatch(batch: Batch, signalBus: SignalBus, vegaInstance: VegaInst
                     logReason = 'not updating data, no match';
                 } else {
                     logReason = 'updating data';
-                    
+
                     // Use structuredClone to ensure deep copy
                     // vega may efficiently have symbols on data to cache a datum's values
                     // so this needs to appear to be new data
