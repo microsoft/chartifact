@@ -128,7 +128,9 @@ export const vegaPlugin: Plugin<Spec> = {
                             });
                         } else {
                             //not yet listening, so just receive the batch without running
-                            receiveBatch(batch, signalBus, vegaInstance);
+                            if (receiveBatch(batch, signalBus, vegaInstance)) {
+                                vegaInstance.needToRun = true;
+                            }
                             resolve();
                         }
                     });
@@ -188,7 +190,10 @@ export const vegaPlugin: Plugin<Spec> = {
                         }
                     }
                     vegaInstance.isListening = true;
-                    view.runAsync();
+                    if (vegaInstance.needToRun) {
+                        view.runAsync();
+                        vegaInstance.needToRun = false;
+                    }
                 },
                 getCurrentSignalValue: (signalName: string) => {
                     const matchSignal = spec.signals?.find(signal => signal.name === signalName);
