@@ -628,10 +628,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     loading: "0.1",
     error: "0.5"
   };
-  const pluginName$g = "image";
-  const className$e = pluginClassName(pluginName$g);
+  const pluginName$h = "image";
+  const className$f = pluginClassName(pluginName$h);
   const imagePlugin = {
-    ...flaggablePlugin(pluginName$g, className$e),
+    ...flaggablePlugin(pluginName$h, className$f),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const imageInstances = [];
       for (let index2 = 0; index2 < specs.length; index2++) {
@@ -646,11 +646,11 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
           container,
           null,
           (error) => {
-            errorHandler(error, pluginName$g, index2, "load", container, img.src);
+            errorHandler(error, pluginName$h, index2, "load", container, img.src);
           }
         );
         const imageInstance = {
-          id: `${pluginName$g}-${index2}`,
+          id: `${pluginName$h}-${index2}`,
           spec,
           img: null,
           // Will be set below
@@ -708,7 +708,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       if (isSafeImageUrl(src)) {
         tempImg.setAttribute("src", src);
       } else {
-        errorHandler(new Error(`Unsafe image URL: ${src}`), pluginName$g, instanceIndex, "load", null, src);
+        errorHandler(new Error(`Unsafe image URL: ${src}`), pluginName$h, instanceIndex, "load", null, src);
       }
     }
     tempImg.setAttribute("alt", alt);
@@ -827,10 +827,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     return null;
   }
-  const pluginName$f = "placeholders";
-  const imageClassName = pluginClassName(pluginName$f + "_image");
+  const pluginName$g = "placeholders";
+  const imageClassName = pluginClassName(pluginName$g + "_image");
   const placeholdersPlugin = {
-    name: pluginName$f,
+    name: pluginName$g,
     initializePlugin: async (md) => {
       md.use(function(md2) {
         md2.inline.ruler.after("emphasis", "dynamic_placeholder", function(state, silent) {
@@ -951,7 +951,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       for (const element of Array.from(dynamicImages)) {
         const { dynamicUrl, img } = createImageLoadingLogic(element, null, (error) => {
           const index2 = -1;
-          errorHandler(error, pluginName$f, index2, "load", element, img.src);
+          errorHandler(error, pluginName$g, index2, "load", element, img.src);
         });
         if (!dynamicUrl) {
           continue;
@@ -976,7 +976,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       });
       const instances = [
         {
-          id: pluginName$f,
+          id: pluginName$g,
           initialSignals,
           receiveBatch: async (batch) => {
             var _a, _b;
@@ -1099,9 +1099,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
         }
         if (info.startsWith("json ")) {
           const jsonPluginName = info.slice(5).trim();
-          const jsonPlugin = findPlugin(jsonPluginName);
-          if (jsonPlugin) {
-            return jsonPlugin;
+          const jsonPlugin2 = findPlugin(jsonPluginName);
+          if (jsonPlugin2) {
+            return jsonPlugin2;
           }
         } else if (info.startsWith("yaml ")) {
           const yamlPluginName = info.slice(5).trim();
@@ -1123,10 +1123,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     };
     return md;
   }
-  const pluginName$e = "checkbox";
-  const className$d = pluginClassName(pluginName$e);
+  const pluginName$f = "checkbox";
+  const className$e = pluginClassName(pluginName$f);
   const checkboxPlugin = {
-    ...flaggablePlugin(pluginName$e, className$d),
+    ...flaggablePlugin(pluginName$f, className$e),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const { signalBus } = renderer;
       const checkboxInstances = [];
@@ -1147,7 +1147,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
                 </form>`;
         container.innerHTML = html;
         const element = container.querySelector('input[type="checkbox"]');
-        const checkboxInstance = { id: `${pluginName$e}-${index2}`, spec, element };
+        const checkboxInstance = { id: `${pluginName$f}-${index2}`, spec, element };
         checkboxInstances.push(checkboxInstance);
       }
       const instances = checkboxInstances.map((checkboxInstance) => {
@@ -1190,9 +1190,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       return instances;
     }
   };
-  const pluginName$d = "#";
+  const pluginName$e = "#";
   const commentPlugin = {
-    name: pluginName$d,
+    name: pluginName$e,
     fence: (token) => {
       const content = token.content.trim();
       return sanitizeHtmlComment(content);
@@ -1421,14 +1421,14 @@ ${reconstitutedRules.join("\n\n")}
     }
     return result;
   }
-  const pluginName$c = "css";
-  const className$c = pluginClassName(pluginName$c);
+  const pluginName$d = "css";
+  const className$d = pluginClassName(pluginName$d);
   const cssPlugin = {
-    ...flaggablePlugin(pluginName$c, className$c),
+    ...flaggablePlugin(pluginName$d, className$d),
     fence: (token, index2) => {
       const cssContent = token.content.trim();
       const categorizedCss = categorizeCss(cssContent);
-      return sanitizedHTML("div", { id: `${pluginName$c}-${index2}`, class: className$c }, JSON.stringify(categorizedCss), true);
+      return sanitizedHTML("div", { id: `${pluginName$d}-${index2}`, class: className$d }, JSON.stringify(categorizedCss), true);
     },
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const cssInstances = [];
@@ -1451,7 +1451,7 @@ ${reconstitutedRules.join("\n\n")}
           target.appendChild(styleElement);
           comments.push(`<!-- CSS styles applied to ${renderer.shadowRoot ? "shadow DOM" : "document"} -->`);
           cssInstances.push({
-            id: `${pluginName$c}-${index2}`,
+            id: `${pluginName$d}-${index2}`,
             element: styleElement
           });
         } else {
@@ -1528,18 +1528,18 @@ ${reconstitutedRules.join("\n\n")}
     }
     return result;
   }
-  const pluginName$b = "dsv";
-  const className$b = pluginClassName(pluginName$b);
+  const pluginName$c = "dsv";
+  const className$c = pluginClassName(pluginName$c);
   const dsvPlugin = {
-    name: pluginName$b,
+    name: pluginName$c,
     fence: (token, index2) => {
       const content = token.content.trim();
       const info = token.info.trim();
       const { delimiter, wasDefaultDelimiter } = parseDelimiter(info);
       const { variableId, wasDefaultId } = parseVariableId(info, "dsv", index2);
       return sanitizedHTML("pre", {
-        id: `${pluginName$b}-${index2}`,
-        class: className$b,
+        id: `${pluginName$c}-${index2}`,
+        class: className$c,
         style: "display:none",
         "data-variable-id": variableId,
         "data-delimiter": delimiter,
@@ -1550,7 +1550,7 @@ ${reconstitutedRules.join("\n\n")}
     hydrateSpecs: (renderer, errorHandler) => {
       var _a;
       const flagged = [];
-      const containers = renderer.element.querySelectorAll(`.${className$b}`);
+      const containers = renderer.element.querySelectorAll(`.${className$c}`);
       for (const [index2, container] of Array.from(containers).entries()) {
         try {
           const variableId = container.getAttribute("data-variable-id");
@@ -1558,18 +1558,18 @@ ${reconstitutedRules.join("\n\n")}
           const wasDefaultId = container.getAttribute("data-was-default-id") === "true";
           const wasDefaultDelimiter = container.getAttribute("data-was-default-delimiter") === "true";
           if (!variableId) {
-            errorHandler(new Error("No variable ID found"), pluginName$b, index2, "parse", container);
+            errorHandler(new Error("No variable ID found"), pluginName$c, index2, "parse", container);
             continue;
           }
           if (!delimiter) {
-            errorHandler(new Error("No delimiter found"), pluginName$b, index2, "parse", container);
+            errorHandler(new Error("No delimiter found"), pluginName$c, index2, "parse", container);
             continue;
           }
           const spec = { variableId, delimiter, wasDefaultId, wasDefaultDelimiter };
           const flaggableSpec = inspectDsvSpec(spec);
           const f = {
             approvedSpec: null,
-            pluginName: pluginName$b,
+            pluginName: pluginName$c,
             containerId: container.id
           };
           if (flaggableSpec.hasFlags) {
@@ -1580,7 +1580,7 @@ ${reconstitutedRules.join("\n\n")}
           }
           flagged.push(f);
         } catch (e) {
-          errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName$b, index2, "parse", container);
+          errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName$c, index2, "parse", container);
         }
       }
       return flagged;
@@ -1596,19 +1596,19 @@ ${reconstitutedRules.join("\n\n")}
         }
         const container = renderer.element.querySelector(`#${specReview.containerId}`);
         if (!container) {
-          errorHandler(new Error("Container not found"), pluginName$b, index2, "init", null);
+          errorHandler(new Error("Container not found"), pluginName$c, index2, "init", null);
           continue;
         }
         try {
           const content = (_a = container.textContent) == null ? void 0 : _a.trim();
           if (!content) {
-            errorHandler(new Error("No DSV content found"), pluginName$b, index2, "parse", container);
+            errorHandler(new Error("No DSV content found"), pluginName$c, index2, "parse", container);
             continue;
           }
           const spec = specReview.approvedSpec;
           const data = vega.read(content, { type: "dsv", delimiter: spec.delimiter });
           const dsvInstance = {
-            id: `${pluginName$b}-${index2}`,
+            id: `${pluginName$c}-${index2}`,
             spec,
             data
           };
@@ -1617,7 +1617,7 @@ ${reconstitutedRules.join("\n\n")}
           const comment = sanitizeHtmlComment(`${delimiterName} data loaded: ${data.length} rows for variable '${spec.variableId}'`);
           container.insertAdjacentHTML("beforebegin", comment);
         } catch (e) {
-          errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName$b, index2, "parse", container);
+          errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName$c, index2, "parse", container);
         }
       }
       const instances = dsvInstances.map((dsvInstance) => {
@@ -1735,8 +1735,8 @@ ${reconstitutedRules.join("\n\n")}
     generateRule("hero", "h1");
     return cssRules.join("\n\n");
   }
-  const pluginName$a = "google-fonts";
-  const className$a = pluginClassName(pluginName$a);
+  const pluginName$b = "google-fonts";
+  const className$b = pluginClassName(pluginName$b);
   function inspectGoogleFontsSpec(spec) {
     var _a, _b;
     const reasons = [];
@@ -1765,7 +1765,7 @@ ${reconstitutedRules.join("\n\n")}
     };
   }
   const googleFontsPlugin = {
-    ...flaggablePlugin(pluginName$a, className$a, inspectGoogleFontsSpec),
+    ...flaggablePlugin(pluginName$b, className$b, inspectGoogleFontsSpec),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const googleFontsInstances = [];
       let emitted = false;
@@ -1836,10 +1836,10 @@ ${reconstitutedRules.join("\n\n")}
       return instances;
     }
   };
-  const pluginName$9 = "dropdown";
-  const className$9 = pluginClassName(pluginName$9);
+  const pluginName$a = "dropdown";
+  const className$a = pluginClassName(pluginName$a);
   const dropdownPlugin = {
-    ...flaggablePlugin(pluginName$9, className$9),
+    ...flaggablePlugin(pluginName$a, className$a),
     hydrateComponent: async (renderer, errorHandler, specs) => {
       const { signalBus } = renderer;
       const dropdownInstances = [];
@@ -1862,7 +1862,7 @@ ${reconstitutedRules.join("\n\n")}
         container.innerHTML = html;
         const element = container.querySelector("select");
         setSelectOptions(element, spec.multiple ?? false, spec.options ?? [], spec.value ?? (spec.multiple ? [] : ""));
-        const dropdownInstance = { id: `${pluginName$9}-${index2}`, spec, element };
+        const dropdownInstance = { id: `${pluginName$a}-${index2}`, spec, element };
         dropdownInstances.push(dropdownInstance);
       }
       const instances = dropdownInstances.map((dropdownInstance, index2) => {
@@ -1986,6 +1986,147 @@ ${reconstitutedRules.join("\n\n")}
       selectElement.appendChild(optionElement);
     });
   }
+  function inspectJsonSpec(spec) {
+    const result = {
+      spec,
+      hasFlags: false,
+      reasons: []
+    };
+    if (spec.wasDefaultId) {
+      result.hasFlags = true;
+      result.reasons.push("No variable ID specified - using default");
+    }
+    return result;
+  }
+  const pluginName$9 = "json";
+  const className$9 = pluginClassName(pluginName$9);
+  const jsonPlugin = {
+    name: pluginName$9,
+    fence: (token, index2) => {
+      const content = token.content.trim();
+      const info = token.info.trim();
+      const { variableId, wasDefaultId } = parseVariableId(info, "json", index2);
+      return sanitizedHTML("pre", {
+        id: `${pluginName$9}-${index2}`,
+        class: className$9,
+        style: "display:none",
+        "data-variable-id": variableId,
+        "data-was-default-id": wasDefaultId.toString()
+      }, content, false);
+    },
+    hydrateSpecs: (renderer, errorHandler) => {
+      var _a;
+      const flagged = [];
+      const containers = renderer.element.querySelectorAll(`.${className$9}`);
+      for (const [index2, container] of Array.from(containers).entries()) {
+        try {
+          const variableId = container.getAttribute("data-variable-id");
+          const wasDefaultId = container.getAttribute("data-was-default-id") === "true";
+          if (!variableId) {
+            errorHandler(new Error("No variable ID found"), pluginName$9, index2, "parse", container);
+            continue;
+          }
+          const spec = { variableId, wasDefaultId };
+          const flaggableSpec = inspectJsonSpec(spec);
+          const f = {
+            approvedSpec: null,
+            pluginName: pluginName$9,
+            containerId: container.id
+          };
+          if (flaggableSpec.hasFlags) {
+            f.blockedSpec = flaggableSpec.spec;
+            f.reason = ((_a = flaggableSpec.reasons) == null ? void 0 : _a.join(", ")) || "Unknown reason";
+          } else {
+            f.approvedSpec = flaggableSpec.spec;
+          }
+          flagged.push(f);
+        } catch (e) {
+          errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName$9, index2, "parse", container);
+        }
+      }
+      return flagged;
+    },
+    hydrateComponent: async (renderer, errorHandler, specs) => {
+      var _a;
+      const { signalBus } = renderer;
+      const jsonInstances = [];
+      for (let index2 = 0; index2 < specs.length; index2++) {
+        const specReview = specs[index2];
+        if (!specReview.approvedSpec) {
+          continue;
+        }
+        const container = renderer.element.querySelector(`#${specReview.containerId}`);
+        if (!container) {
+          errorHandler(new Error("Container not found"), pluginName$9, index2, "init", null);
+          continue;
+        }
+        try {
+          const content = (_a = container.textContent) == null ? void 0 : _a.trim();
+          if (!content) {
+            errorHandler(new Error("No JSON content found"), pluginName$9, index2, "parse", container);
+            continue;
+          }
+          const spec = specReview.approvedSpec;
+          let data;
+          try {
+            const parsed = JSON.parse(content);
+            if (Array.isArray(parsed)) {
+              data = parsed;
+            } else {
+              data = [parsed];
+            }
+          } catch (jsonError) {
+            errorHandler(
+              new Error(`Invalid JSON: ${jsonError instanceof Error ? jsonError.message : String(jsonError)}`),
+              pluginName$9,
+              index2,
+              "parse",
+              container
+            );
+            continue;
+          }
+          const jsonInstance = {
+            id: `${pluginName$9}-${index2}`,
+            spec,
+            data
+          };
+          jsonInstances.push(jsonInstance);
+          const comment = sanitizeHtmlComment(`JSON data loaded: ${data.length} rows for variable '${spec.variableId}'`);
+          container.insertAdjacentHTML("beforebegin", comment);
+        } catch (e) {
+          errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName$9, index2, "parse", container);
+        }
+      }
+      const instances = jsonInstances.map((jsonInstance) => {
+        const { spec, data } = jsonInstance;
+        const initialSignals = [{
+          name: spec.variableId,
+          value: data,
+          priority: 1,
+          isData: true
+        }];
+        return {
+          ...jsonInstance,
+          initialSignals,
+          beginListening() {
+            const batch = {
+              [spec.variableId]: {
+                value: data,
+                isData: true
+              }
+            };
+            signalBus.broadcast(jsonInstance.id, batch);
+          },
+          getCurrentSignalValue: () => {
+            return data;
+          },
+          destroy: () => {
+          }
+        };
+      });
+      return instances;
+    }
+  };
   const pluginName$8 = "mermaid";
   const className$8 = pluginClassName(pluginName$8);
   function inspectMermaidSpec(spec) {
@@ -3918,6 +4059,7 @@ ${reconstitutedRules.join("\n\n")}
     registerMarkdownPlugin(googleFontsPlugin);
     registerMarkdownPlugin(dropdownPlugin);
     registerMarkdownPlugin(imagePlugin);
+    registerMarkdownPlugin(jsonPlugin);
     registerMarkdownPlugin(mermaidPlugin);
     registerMarkdownPlugin(numberPlugin);
     registerMarkdownPlugin(placeholdersPlugin);
