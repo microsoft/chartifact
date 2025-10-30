@@ -2,3 +2,4 @@ js
 !dist
 dist/html**.*
 dist/index.mjs
+dist/umd

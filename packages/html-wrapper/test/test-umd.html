@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Wrapper UMD Test</title>
+    <link rel="stylesheet" href="https://microsoft.github.io/chartifact/dist/v1/chartifact-toolbar.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-section {
+            margin-bottom: 40px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #666;
+            margin-top: 0;
+        }
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 10px;
+            font-family: monospace;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        #preview-md, #preview-json {
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 200px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>HTML Wrapper UMD Bundle Test</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Check if UMD bundle loads</h2>
+        <div id="load-test"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Markdown Viewer</h2>
+        <div class="chartifact-toolbar-md"></div>
+        <textarea id="source-md" spellcheck="false"># Hello Chartifact
+
+This is a test of the markdown viewer.</textarea>
+        <div id="preview-md"></div>
+        <div id="md-test"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: JSON Viewer</h2>
+        <div class="chartifact-toolbar-json"></div>
+        <textarea id="source-json" spellcheck="false">{
+  "title": "Test Document",
+  "components": [
+    {
+      "type": "text",
+      "content": "# Hello from JSON\n\nThis is a test."
+    }
+  ]
+}</textarea>
+        <div id="preview-json"></div>
+        <div id="json-test"></div>
+    </div>
+
+    <!-- Load dependencies first -->
+    <script src="https://microsoft.github.io/chartifact/dist/v1/chartifact.toolbar.umd.js"></script>
+    <script src="https://microsoft.github.io/chartifact/dist/v1/chartifact.sandbox.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.29.0"></script>
+    <script src="https://unpkg.com/js-yaml/dist/js-yaml.min.js"></script>
+    <script src="https://microsoft.github.io/chartifact/dist/v1/chartifact.compiler.umd.js"></script>
+    
+    <!-- Load html-wrapper UMD bundle -->
+    <script src="../../docs/dist/v1/chartifact.html-wrapper.umd.js"></script>
+
+    <script>
+        // Test 1: Check if the module loaded
+        const loadTestDiv = document.getElementById('load-test');
+        if (typeof Chartifact !== 'undefined' && Chartifact.htmlWrapper) {
+            loadTestDiv.innerHTML = '<span class="success">✓ UMD bundle loaded successfully!</span>';
+            loadTestDiv.innerHTML += '<br>Available functions: ' + Object.keys(Chartifact.htmlWrapper).join(', ');
+        } else {
+            loadTestDiv.innerHTML = '<span class="error">✗ Failed to load UMD bundle</span>';
+        }
+
+        // Test 2: Markdown Viewer and Test 3: JSON Viewer
+        function initializeViewers() {
+            const mdTestDiv = document.getElementById('md-test');
+            try {
+                const result = Chartifact.htmlWrapper.initMarkdownViewer('#source-md', '#preview-md', '.chartifact-toolbar-md');
+                if (result && result.sandbox && result.toolbar) {
+                    mdTestDiv.innerHTML = '<span class="success">✓ Markdown viewer initialized successfully!</span>';
+                } else {
+                    mdTestDiv.innerHTML = '<span class="error">✗ Markdown viewer initialization returned unexpected result</span>';
+                }
+            } catch (error) {
+                mdTestDiv.innerHTML = '<span class="error">✗ Error initializing markdown viewer: ' + error.message + '</span>';
+            }
+
+            const jsonTestDiv = document.getElementById('json-test');
+            try {
+                const result = Chartifact.htmlWrapper.initJsonViewer('#source-json', '#preview-json', '.chartifact-toolbar-json');
+                if (result && result.sandbox && result.toolbar) {
+                    jsonTestDiv.innerHTML = '<span class="success">✓ JSON viewer initialized successfully!</span>';
+                } else {
+                    jsonTestDiv.innerHTML = '<span class="error">✗ JSON viewer initialization returned unexpected result</span>';
+                }
+            } catch (error) {
+                jsonTestDiv.innerHTML = '<span class="error">✗ Error initializing JSON viewer: ' + error.message + '</span>';
+            }
+        }
+
+        // Handle case where DOMContentLoaded may have already fired
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', initializeViewers);
+        } else {
+            initializeViewers();
+        }
+    </script>
+</body>
+</html>
