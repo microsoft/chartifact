@@ -2,4 +2,4 @@
 * Copyright (c) Microsoft Corporation.
 * Licensed under the MIT License.
 */
-export * as htmlWrapper from './src/index.js';
+export { default as htmlWrapper } from './dist/index.mjs';
