@@ -104,8 +104,8 @@ This is a test of the markdown viewer.</textarea>
             loadTestDiv.innerHTML = '<span class="error">✗ Failed to load UMD bundle</span>';
         }
 
-        // Test 2: Markdown Viewer
-        window.addEventListener('DOMContentLoaded', () => {
+        // Test 2: Markdown Viewer and Test 3: JSON Viewer
+        function initializeViewers() {
             const mdTestDiv = document.getElementById('md-test');
             try {
                 const result = Chartifact.htmlWrapper.initMarkdownViewer('#source-md', '#preview-md', '.chartifact-toolbar-md');
@@ -118,7 +118,6 @@ This is a test of the markdown viewer.</textarea>
                 mdTestDiv.innerHTML = '<span class="error">✗ Error initializing markdown viewer: ' + error.message + '</span>';
             }
 
-            // Test 3: JSON Viewer
             const jsonTestDiv = document.getElementById('json-test');
             try {
                 const result = Chartifact.htmlWrapper.initJsonViewer('#source-json', '#preview-json', '.chartifact-toolbar-json');
@@ -130,7 +129,14 @@ This is a test of the markdown viewer.</textarea>
             } catch (error) {
                 jsonTestDiv.innerHTML = '<span class="error">✗ Error initializing JSON viewer: ' + error.message + '</span>';
             }
-        });
+        }
+
+        // Handle case where DOMContentLoaded may have already fired
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', initializeViewers);
+        } else {
+            initializeViewers();
+        }
     </script>
 </body>
 </html>
