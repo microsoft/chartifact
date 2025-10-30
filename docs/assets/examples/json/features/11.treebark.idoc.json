@@ -64,7 +64,7 @@
         "# Treebark Plugin Examples",
         "The Treebark plugin enables rendering of HTML structures using templates and data binding. It's perfect for creating cards, lists, and other structured UI components.",
         "",
-        "For comprehensive documentation and more examples, visit [Treebark Documentation](https://danmarshall.github.io/treebark/)."
+        "For comprehensive documentation and more examples, visit [Treebark Documentation](https://treebark.js.org)."
       ]
     },
     {
@@ -305,7 +305,7 @@
       "groupId": "learn-more",
       "elements": [
         "## Learn More",
-        "Visit the [Treebark Documentation](https://danmarshall.github.io/treebark/) to explore:",
+        "Visit the [Treebark Documentation](https://treebark.js.org) to explore:",
         "- Advanced template syntax",
         "- More conditional rendering options",
         "- Nested data binding",
