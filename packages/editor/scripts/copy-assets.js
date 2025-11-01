@@ -13,13 +13,19 @@ if (!fs.existsSync(sourceDir)) {
 // Create target directory
 fs.mkdirSync(targetDir, { recursive: true });
 
-// Copy all files
+// Copy all files (skip directories)
 const files = fs.readdirSync(sourceDir);
+let copiedCount = 0;
+
 files.forEach(file => {
-    fs.copyFileSync(
-        path.join(sourceDir, file),
-        path.join(targetDir, file)
-    );
+    const sourcePath = path.join(sourceDir, file);
+    const targetPath = path.join(targetDir, file);
+    
+    // Only copy if it's a file (not a directory)
+    if (fs.statSync(sourcePath).isFile()) {
+        fs.copyFileSync(sourcePath, targetPath);
+        copiedCount++;
+    }
 });
 
-console.log(`Copied ${files.length} assets to ${targetDir}`);
+console.log(`Copied ${copiedCount} assets to ${targetDir}`);
