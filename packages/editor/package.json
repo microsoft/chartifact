@@ -7,11 +7,11 @@
   "types": "dist/esnext/index.d.ts",
   "scripts": {
     "clean": "rimraf dist && rimraf public/chartifact",
-    "copy-assets": "mkdir -p public/chartifact/dist/v1 && cp -r ../../docs/dist/v1/* public/chartifact/dist/v1/ 2>/dev/null || echo 'Assets not found, run npm run build in workspace root first'",
-    "predev": "npm run copy-assets",
+    "copy-assets": "node scripts/copy-assets.js",
     "dev": "vite --config vite.config.js",
-    "prebuild": "npm run clean",
     "tsc": "tsc -p .",
+    "predev": "npm run copy-assets",
+    "postbundle": "npm run copy-assets",
     "bundle": "vite build --config vite.bundle.config.js",
     "build": "npm run tsc",
     "build:06": "npm run build"
