@@ -1,0 +1,29 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "YAML Data Plugin Test",
+    "groups": [
+        {
+            "groupId": "yaml_test",
+            "elements": [
+                "## Testing YAML Data Plugin",
+                "This example tests the data plugin with YAML format.",
+                "",
+                "```yaml data people\n- name: Alice\n  age: 25\n  city: New York\n\n- name: Bob\n  age: 30\n  city: Chicago\n\n- name: Carol\n  age: 35\n  city: Los Angeles\n\n- name: David\n  age: 28\n  city: Seattle\n```",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "people",
+                    "variableId": "selectedPerson",
+                    "tabulatorOptions": {
+                        "autoColumns": true,
+                        "layout": "fitColumns",
+                        "maxHeight": "300px",
+                        "selectable": 1
+                    }
+                },
+                "",
+                "### Selected Person",
+                "Selected: **{{selectedPerson[0].name}}** from {{selectedPerson[0].city}} ({{selectedPerson[0].age}} years old)"
+            ]
+        }
+    ]
+}

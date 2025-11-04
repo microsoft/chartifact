@@ -4,6 +4,7 @@
 */
 export { CheckboxSpec } from './checkbox.js';
 export { CsvSpec } from './csv.js';
+export { JsonDataSpec } from './data.js';
 export { DropdownSpec } from './dropdown.js';
 export { DsvSpec } from './dsv.js';
 export { ImageSpec } from './image.js';
@@ -21,6 +22,7 @@ export type PluginNames =
     'css' |
     'csv' |
     'checkbox' |
+    'data' |
     'dropdown' |
     'dsv' |
     'image' |
