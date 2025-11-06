@@ -14,9 +14,11 @@ export const initializeResources = async (context: vscode.ExtensionContext): Pro
     //TODO - remove these once we have a proper CDN
     'chartifact.sandbox.umd.js',
     'chartifact.compiler.umd.js',
+    'chartifact.toolbar.umd.js',
 
     //offline copies for editor sandbox (which can't access via vscode resources url)
     'chartifact-reset.css',
+    'chartifact-toolbar.css',
     'chartifact.markdown.umd.js',
     'tabulator.min.css',
     'markdown-it.min.js',
