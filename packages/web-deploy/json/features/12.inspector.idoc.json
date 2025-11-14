@@ -1,0 +1,197 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "Inspector",
+    "dataLoaders": [
+        {
+            "dataSourceName": "salesData",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {"category": "Electronics", "product": "Laptop", "region": "North", "sales": 1200, "quantity": 3},
+                {"category": "Electronics", "product": "Phone", "region": "North", "sales": 800, "quantity": 5},
+                {"category": "Electronics", "product": "Laptop", "region": "South", "sales": 1500, "quantity": 4},
+                {"category": "Furniture", "product": "Desk", "region": "North", "sales": 600, "quantity": 2},
+                {"category": "Furniture", "product": "Chair", "region": "South", "sales": 300, "quantity": 6},
+                {"category": "Furniture", "product": "Desk", "region": "South", "sales": 700, "quantity": 3}
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "variableId": "selectedRegion",
+            "type": "string",
+            "initialValue": "North"
+        },
+        {
+            "variableId": "minSales",
+            "type": "number",
+            "initialValue": 500
+        },
+        {
+            "variableId": "filteredData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["salesData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.region == selectedRegion && datum.sales >= minSales"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "aggregatedByCategory",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["filteredData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "groupby": ["category"],
+                        "ops": ["sum", "sum", "count"],
+                        "fields": ["sales", "quantity", null],
+                        "as": ["totalSales", "totalQuantity", "productCount"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "pivotedData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["salesData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "pivot",
+                        "groupby": ["product"],
+                        "field": "region",
+                        "value": "sales",
+                        "op": "sum"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "nestedByCategory",
+            "type": "object",
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["salesData"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "nest",
+                        "keys": ["category"]
+                    }
+                ]
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "main",
+            "elements": [
+                "# Variable Inspector",
+                "",
+                "The inspector plugin is particularly useful for examining transformed data. This example demonstrates Vega data transforms like **filter**, **aggregate**, **pivot**, and **nest**.",
+                "",
+                "---",
+                "",
+                "## Filter Controls",
+                "",
+                "Select a region and minimum sales threshold to filter the data:",
+                "",
+                {
+                    "type": "dropdown",
+                    "variableId": "selectedRegion",
+                    "label": "Region",
+                    "options": ["North", "South"]
+                },
+                "",
+                {
+                    "type": "slider",
+                    "variableId": "minSales",
+                    "label": "Minimum Sales",
+                    "min": 0,
+                    "max": 2000,
+                    "step": 100
+                },
+                "",
+                "---",
+                "",
+                "## Filtered Data",
+                "",
+                "Filtered by selected region and minimum sales using Vega **filter** transform:",
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "filteredData"
+                },
+                "",
+                "---",
+                "",
+                "## Aggregated by Category",
+                "",
+                "Data grouped by category with totals using Vega **aggregate** transform:",
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "aggregatedByCategory"
+                },
+                "",
+                "---",
+                "",
+                "## Pivoted Data",
+                "",
+                "Sales pivoted by product and region using Vega **pivot** transform:",
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "pivotedData"
+                },
+                "",
+                "---",
+                "",
+                "## Nested by Category",
+                "",
+                "Data nested by category using Vega **nest** transform:",
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector",
+                    "variableId": "nestedByCategory"
+                },
+                "",
+                "---",
+                "",
+                "## All Variables (Debug Inspector)",
+                "",
+                "Omitting `variableId` to inspect all variables in the document:",
+                "",
+                "**Inspector output:**",
+                {
+                    "type": "inspector"
+                },
+                "",
+                "---",
+                "",
+                "## Use Cases",
+                "",
+                "The inspector is particularly useful for:",
+                "- **Debugging transforms**: See exactly how filter, aggregate, pivot, and nest operations transform your data",
+                "- **Verifying calculations**: Ensure data transformations produce expected results",
+                "- **Understanding data flow**: Trace how data changes through the pipeline",
+                "- **Development**: Build and test complex data transformations interactively"
+            ]
+        }
+    ]
+}

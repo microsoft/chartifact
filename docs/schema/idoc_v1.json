@@ -3143,6 +3143,28 @@
       ],
       "type": "object"
     },
+    "InspectorElement": {
+      "additionalProperties": false,
+      "description": "Inspector use for examining and displaying the current value of a variable",
+      "properties": {
+        "label": {
+          "description": "optional label if the variableId is not descriptive enough",
+          "type": "string"
+        },
+        "type": {
+          "const": "inspector",
+          "type": "string"
+        },
+        "variableId": {
+          "$ref": "#/definitions/VariableID"
+        }
+      },
+      "required": [
+        "type",
+        "variableId"
+      ],
+      "type": "object"
+    },
     "InteractiveDocumentWithSchema": {
       "additionalProperties": false,
       "description": "JSON Schema version with $schema property for validation",
@@ -3215,6 +3237,9 @@
         },
         {
           "$ref": "#/definitions/ImageElement"
+        },
+        {
+          "$ref": "#/definitions/InspectorElement"
         },
         {
           "$ref": "#/definitions/MermaidElement"

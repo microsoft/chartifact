@@ -71,7 +71,7 @@ export class SignalBus {
             let hasBatch = false;
             for (const signalName in batch) {
                 if (
-                    peer.initialSignals.some(s => s.name === signalName)
+                    peer.initialSignals.some(s => s.name === signalName || s.name === '*')
                     && (
                         (batch[signalName].value !== this.signalDeps[signalName].value)
                         ||

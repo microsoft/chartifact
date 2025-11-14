@@ -13,6 +13,7 @@ import { dsvPlugin } from './dsv.js';
 import { googleFontsPlugin } from './google-fonts.js';
 import { dropdownPlugin } from './dropdown.js';
 import { imagePlugin } from './image.js';
+import { inspectorPlugin } from './inspector.js';
 import { mermaidPlugin } from './mermaid.js';
 import { numberPlugin } from './number.js';
 import { placeholdersPlugin } from './placeholders.js';
@@ -34,6 +35,7 @@ export function registerNativePlugins() {
     registerMarkdownPlugin(googleFontsPlugin);
     registerMarkdownPlugin(dropdownPlugin);
     registerMarkdownPlugin(imagePlugin);
+    registerMarkdownPlugin(inspectorPlugin);
     registerMarkdownPlugin(mermaidPlugin);
     registerMarkdownPlugin(numberPlugin);
     registerMarkdownPlugin(placeholdersPlugin);
