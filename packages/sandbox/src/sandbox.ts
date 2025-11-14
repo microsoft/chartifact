@@ -104,8 +104,8 @@ export class Sandbox {
     }
 
     getDependencies() {
-        const { hostname, origin } = window.location;
-        const url = (hostname === 'localhost')
+        const { hostname, origin, port } = window.location;
+        const url = (hostname === 'localhost' && port === '4000')
             ? origin
             : 'https://microsoft.github.io';
         return `
