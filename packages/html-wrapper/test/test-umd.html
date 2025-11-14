@@ -92,7 +92,7 @@ This is a test of the markdown viewer.</textarea>
     <script src="https://microsoft.github.io/chartifact/dist/v1/chartifact.compiler.umd.js"></script>
     
     <!-- Load html-wrapper UMD bundle -->
-    <script src="../../docs/dist/v1/chartifact.html-wrapper.umd.js"></script>
+    <script src="../../../docs/dist/v1/chartifact.html-wrapper.umd.js"></script>
 
     <script>
         // Test 1: Check if the module loaded
@@ -108,8 +108,8 @@ This is a test of the markdown viewer.</textarea>
         function initializeViewers() {
             const mdTestDiv = document.getElementById('md-test');
             try {
-                const result = Chartifact.htmlWrapper.initMarkdownViewer('#source-md', '#preview-md', '.chartifact-toolbar-md');
-                if (result && result.sandbox && result.toolbar) {
+                const result = Chartifact.htmlWrapper.htmlMarkdownWrapper('#source-md', '#preview-md', '.chartifact-toolbar-md');
+                if (result) {
                     mdTestDiv.innerHTML = '<span class="success">✓ Markdown viewer initialized successfully!</span>';
                 } else {
                     mdTestDiv.innerHTML = '<span class="error">✗ Markdown viewer initialization returned unexpected result</span>';
@@ -120,8 +120,8 @@ This is a test of the markdown viewer.</textarea>
 
             const jsonTestDiv = document.getElementById('json-test');
             try {
-                const result = Chartifact.htmlWrapper.initJsonViewer('#source-json', '#preview-json', '.chartifact-toolbar-json');
-                if (result && result.sandbox && result.toolbar) {
+                const result = Chartifact.htmlWrapper.htmlJsonWrapper('#source-json', '#preview-json', '.chartifact-toolbar-json');
+                if (result) {
                     jsonTestDiv.innerHTML = '<span class="success">✓ JSON viewer initialized successfully!</span>';
                 } else {
                     jsonTestDiv.innerHTML = '<span class="error">✗ JSON viewer initialization returned unexpected result</span>';
