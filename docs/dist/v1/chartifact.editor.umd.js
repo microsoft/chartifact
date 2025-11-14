@@ -2952,8 +2952,8 @@ document.addEventListener('DOMContentLoaded', () => {
       (_a = this.iframe.contentWindow) == null ? void 0 : _a.postMessage(message, "*");
     }
     getDependencies() {
-      const { hostname, origin } = window.location;
-      const url = hostname === "localhost" ? origin : "https://microsoft.github.io";
+      const { hostname, origin, port } = window.location;
+      const url = hostname === "localhost" && port === "4000" ? origin : "https://microsoft.github.io";
       return `
 <link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet" />
 <link href="${url}/chartifact/dist/v1/chartifact-reset.css" rel="stylesheet" />
