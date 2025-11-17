@@ -112,12 +112,11 @@ export class Listener {
     }
 
     // Check URL parameters for file to load
-    // Hide help if URL contains ?post parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const hasPostParam = urlParams.has('post');
-    
     if (!this.options.url || (this.options.url && !checkUrlForFile(this))) {
       show(this.loadingDiv, false);
+      // Hide help if URL contains ?post parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasPostParam = urlParams.has('post');
       show(this.helpDiv, !hasPostParam);
     }
 
