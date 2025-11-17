@@ -3751,7 +3751,9 @@ ${guardedJs}
       }
       if (!this.options.url || this.options.url && !checkUrlForFile(this)) {
         show(this.loadingDiv, false);
-        show(this.helpDiv, true);
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasPostParam = urlParams.has("post");
+        show(this.helpDiv, !hasPostParam);
       }
       this.setupPageVisibilityHandling();
     }
