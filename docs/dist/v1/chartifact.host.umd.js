@@ -218,9 +218,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     return sorted;
   }
+  const $schema = "https://vega.github.io/schema/vega/v6.json";
   function createSpecWithVariables(variables, tabulatorElements, stubDataLoaders) {
     const spec = {
-      $schema: "https://vega.github.io/schema/vega/v5.json",
+      $schema,
       description: "This is the central brain of the page",
       signals: [],
       data: []
@@ -721,11 +722,11 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     return name.replace(/[^a-zA-Z0-9_]/g, "_");
   }
   function getChartType(spec) {
-    const $schema = spec == null ? void 0 : spec.$schema;
-    if (!$schema) {
+    const $schema2 = spec == null ? void 0 : spec.$schema;
+    if (!$schema2) {
       return "vega-lite";
     }
-    return $schema.includes("vega-lite") ? "vega-lite" : "vega";
+    return $schema2.includes("vega-lite") ? "vega-lite" : "vega";
   }
   function flattenMarkdownElements(elements) {
     return elements.reduce((acc, e) => {
@@ -1100,7 +1101,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
       return signal;
     }
   }
-  /*! js-yaml 4.1.0 https://github.com/nodeca/js-yaml @license MIT */
+  /*! js-yaml 4.1.1 https://github.com/nodeca/js-yaml @license MIT */
   function isNothing(subject) {
     return typeof subject === "undefined" || subject === null;
   }
@@ -2955,14 +2956,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const { hostname, origin, port } = window.location;
       const url = hostname === "localhost" && port === "4000" ? origin : "https://microsoft.github.io";
       return `
-<link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet" />
+<link href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator.min.css" rel="stylesheet" />
 <link href="${url}/chartifact/dist/v1/chartifact-reset.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"><\/script>
-<script src="https://unpkg.com/css-tree/dist/csstree.js"><\/script>
-<script src="https://unpkg.com/js-yaml/dist/js-yaml.min.js"><\/script>
-<script src="https://cdn.jsdelivr.net/npm/vega@5.29.0"><\/script>
-<script src="https://cdn.jsdelivr.net/npm/vega-lite@5.20.1"><\/script>
-<script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"><\/script>
+<script src="https://unpkg.com/css-tree@3.1.0/dist/csstree.js"><\/script>
+<script src="https://unpkg.com/js-yaml@4.1.1/dist/js-yaml.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/vega@6.2.0"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.1"><\/script>
+<script src="https://unpkg.com/tabulator-tables@6.3.1/dist/js/tabulator.min.js"><\/script>
 <script src="${url}/chartifact/dist/v1/chartifact.markdown.umd.js"><\/script>
 `;
     }
@@ -4008,8 +4009,8 @@ window.addEventListener('DOMContentLoaded', () => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{TITLE}}</title>
     <link rel="stylesheet" href="https://microsoft.github.io/chartifact/dist/v1/chartifact-toolbar.css" />
-    <script src="https://unpkg.com/js-yaml/dist/js-yaml.min.js"><\/script>
-    <script src="https://cdn.jsdelivr.net/npm/vega@5.29.0"><\/script>
+    <script src="https://unpkg.com/js-yaml@4.1.1/dist/js-yaml.min.js"><\/script>
+    <script src="https://cdn.jsdelivr.net/npm/vega@6.2.0"><\/script>
     <script src="https://microsoft.github.io/chartifact/dist/v1/chartifact.toolbar.umd.js"><\/script>
     <script src="https://microsoft.github.io/chartifact/dist/v1/chartifact.compiler.umd.js"><\/script>
     <script src="https://microsoft.github.io/chartifact/dist/v1/chartifact.sandbox.umd.js"><\/script>
