@@ -2811,11 +2811,10 @@ ${content}
 <body></body>
 
 </html>`;
-  const sandboxedJs = `let renderer;
-document.addEventListener('DOMContentLoaded', () => {
+  const sandboxedJs = `document.addEventListener('DOMContentLoaded', () => {
     let transactionIndex = 0;
     const transactions = {};
-    renderer = new Chartifact.markdown.Renderer(document.body, {
+    const renderer = new Chartifact.markdown.Renderer(document.body, {
         ...rendererOptions,
         errorHandler: (error, pluginName, instanceIndex, phase, container, detail) => {
             console.error(\`Error in plugin \${pluginName} at instance \${instanceIndex} during \${phase}:\`, error);
