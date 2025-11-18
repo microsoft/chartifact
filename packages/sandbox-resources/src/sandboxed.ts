@@ -5,14 +5,12 @@
 declare const renderRequest: Chartifact.common.SandboxRenderMessage;
 declare const rendererOptions: Chartifact.markdown.RendererOptions;
 
-let renderer: Chartifact.markdown.Renderer;
-
 document.addEventListener('DOMContentLoaded', () => {
     let transactionIndex = 0;
 
     const transactions: Record<number, Chartifact.common.SpecReview<{}>[]> = {};
 
-    renderer = new Chartifact.markdown.Renderer(document.body, {
+    const renderer = new Chartifact.markdown.Renderer(document.body, {
         ...rendererOptions,
         errorHandler: (error: Error, pluginName: string, instanceIndex: number, phase: string, container: Element, detail?: string) => {
             console.error(`Error in plugin ${pluginName} at instance ${instanceIndex} during ${phase}:`, error);
