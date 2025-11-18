@@ -1,0 +1,44 @@
+{
+    "$schema": "../../../../docs/schema/idoc_v1.json",
+    "title": "Feature: Fetch Plugin",
+    "variables": [
+        {
+            "variableId": "json_url",
+            "type": "string",
+            "initialValue": "https://vega.github.io/editor/data/barley.json"
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "main",
+            "elements": [
+                "## Fetch Plugin with Dynamic URL Variables",
+                "The fetch plugin allows you to load data from a URL. You can use variables to dynamically change data sources, just like the example in 2.3.dynamic-url-variables.idoc.md, but without requiring a Vega spec.",
+                "",
+                "Use a single variable for the entire URL (no URL encoding is applied) or construct URLs from multiple segments (e.g., `{{host}}/{{path}}`). When using multiple segments, each is encoded using `encodeURIComponent`.",
+                "",
+                "Select a data source:",
+                {
+                    "type": "dropdown",
+                    "variableId": "json_url",
+                    "options": [
+                        "https://vega.github.io/editor/data/barley.json",
+                        "https://vega.github.io/editor/data/cars.json"
+                    ]
+                },
+                "",
+                "```fetch url:{{json_url}} format:json variableId:fetchedData```",
+                "",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "fetchedData",
+                    "tabulatorOptions": {
+                        "autoColumns": true,
+                        "layout": "fitColumns",
+                        "maxHeight": "300px"
+                    }
+                }
+            ]
+        }
+    ]
+}

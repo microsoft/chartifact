@@ -10,6 +10,7 @@ import { commentPlugin } from './comment.js';
 import { cssPlugin } from './css.js';
 import { csvPlugin } from './csv.js';
 import { dsvPlugin } from './dsv.js';
+import { fetchPlugin } from './fetch.js';
 import { googleFontsPlugin } from './google-fonts.js';
 import { dropdownPlugin } from './dropdown.js';
 import { imagePlugin } from './image.js';
@@ -31,6 +32,7 @@ export function registerNativePlugins() {
     registerMarkdownPlugin(cssPlugin);
     registerMarkdownPlugin(csvPlugin);
     registerMarkdownPlugin(dsvPlugin);
+    registerMarkdownPlugin(fetchPlugin);
     registerMarkdownPlugin(googleFontsPlugin);
     registerMarkdownPlugin(dropdownPlugin);
     registerMarkdownPlugin(imagePlugin);
