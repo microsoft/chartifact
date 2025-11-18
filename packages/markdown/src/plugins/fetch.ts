@@ -43,7 +43,7 @@ function inspectFetchSpec(spec: FetchSpec): RawFlaggableSpec<FetchSpec> {
     return result;
 }
 
-const pluginName: PluginNames = 'fetch' as PluginNames;
+const pluginName: PluginNames = 'fetch';
 const className = pluginClassName(pluginName);
 
 export const fetchPlugin: Plugin<FetchSpec> = {
