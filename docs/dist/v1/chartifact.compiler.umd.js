@@ -234,9 +234,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     }
     return sorted;
   }
+  const $schema = "https://vega.github.io/schema/vega/v6.json";
   function createSpecWithVariables(variables, tabulatorElements, stubDataLoaders) {
     const spec = {
-      $schema: "https://vega.github.io/schema/vega/v5.json",
+      $schema,
       description: "This is the central brain of the page",
       signals: [],
       data: []
@@ -737,11 +738,11 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     return name.replace(/[^a-zA-Z0-9_]/g, "_");
   }
   function getChartType(spec) {
-    const $schema = spec == null ? void 0 : spec.$schema;
-    if (!$schema) {
+    const $schema2 = spec == null ? void 0 : spec.$schema;
+    if (!$schema2) {
       return "vega-lite";
     }
-    return $schema.includes("vega-lite") ? "vega-lite" : "vega";
+    return $schema2.includes("vega-lite") ? "vega-lite" : "vega";
   }
   function flattenMarkdownElements(elements) {
     return elements.reduce((acc, e) => {

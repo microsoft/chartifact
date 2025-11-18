@@ -162,11 +162,10 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
 <body></body>
 
 </html>`;
-  const sandboxedJs = `let renderer;
-document.addEventListener('DOMContentLoaded', () => {
+  const sandboxedJs = `document.addEventListener('DOMContentLoaded', () => {
     let transactionIndex = 0;
     const transactions = {};
-    renderer = new Chartifact.markdown.Renderer(document.body, {
+    const renderer = new Chartifact.markdown.Renderer(document.body, {
         ...rendererOptions,
         errorHandler: (error, pluginName, instanceIndex, phase, container, detail) => {
             console.error(\`Error in plugin \${pluginName} at instance \${instanceIndex} during \${phase}:\`, error);
@@ -306,14 +305,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const { hostname, origin, port } = window.location;
       const url = hostname === "localhost" && port === "4000" ? origin : "https://microsoft.github.io";
       return `
-<link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.1/dist/css/tabulator.min.css" rel="stylesheet" />
 <link href="${url}/chartifact/dist/v1/chartifact-reset.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"><\/script>
-<script src="https://unpkg.com/css-tree/dist/csstree.js"><\/script>
-<script src="https://unpkg.com/js-yaml/dist/js-yaml.min.js"><\/script>
-<script src="https://cdn.jsdelivr.net/npm/vega@5.29.0"><\/script>
-<script src="https://cdn.jsdelivr.net/npm/vega-lite@5.20.1"><\/script>
-<script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/css-tree@3.1.0/dist/csstree.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.1/dist/js-yaml.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/vega@6.2.0"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.1"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.1/dist/js/tabulator.min.js"><\/script>
 <script src="${url}/chartifact/dist/v1/chartifact.markdown.umd.js"><\/script>
 `;
     }

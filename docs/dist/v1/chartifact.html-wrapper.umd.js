@@ -62,8 +62,8 @@ window.addEventListener('DOMContentLoaded', () => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{TITLE}}</title>
     <link rel="stylesheet" href="https://microsoft.github.io/chartifact/dist/v1/chartifact-toolbar.css" />
-    <script src="https://unpkg.com/js-yaml/dist/js-yaml.min.js"><\/script>
-    <script src="https://cdn.jsdelivr.net/npm/vega@5.29.0"><\/script>
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.1/dist/js-yaml.min.js"><\/script>
+    <script src="https://cdn.jsdelivr.net/npm/vega@6.2.0"><\/script>
     <script src="https://microsoft.github.io/chartifact/dist/v1/chartifact.toolbar.umd.js"><\/script>
     <script src="https://microsoft.github.io/chartifact/dist/v1/chartifact.compiler.umd.js"><\/script>
     <script src="https://microsoft.github.io/chartifact/dist/v1/chartifact.sandbox.umd.js"><\/script>

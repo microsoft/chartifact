@@ -7,13 +7,13 @@ import { Variable, DataLoader, TabulatorElement, DataFrameCalculation, ScalarCal
 import { SourceData, ValuesData, Signal, NewSignal } from "vega";
 import { topologicalSort } from "./sort.js";
 
-export const $schema = "https://vega.github.io/schema/vega/v5.json";
+export const $schema = "https://vega.github.io/schema/vega/v6.json";
 
 export function createSpecWithVariables(variables: Variable[], tabulatorElements: TabulatorElement[], stubDataLoaders?: DataLoader[]) {
 
     //preload with variables as signals
     const spec: VegaSpec = {
-        $schema: "https://vega.github.io/schema/vega/v5.json",
+        $schema,
         description: "This is the central brain of the page",
         signals: [],
         data: [],
