@@ -208,6 +208,21 @@ interface ImageElementProps {
     width?: number;
 }
 /**
+ * Fetch
+ * use for fetching data from a URL with optional variable substitution
+ */
+interface FetchElement extends FetchElementProps {
+    type: 'fetch';
+}
+interface FetchElementProps extends VariableControl {
+    /** URL to fetch data from (may contain {{variable}} placeholders) */
+    url: TemplatedUrl;
+    /** Data format: json, csv, tsv, or dsv (default: json) */
+    format?: 'json' | 'csv' | 'tsv' | 'dsv';
+    /** Delimiter for dsv format (default: ,) */
+    delimiter?: string;
+}
+/**
  * Treebark
  * use for rendering cards and structured HTML from templates
  */
@@ -256,7 +271,7 @@ interface TabulatorElementProps extends OptionalVariableControl {
 /**
  * Union type for all possible interactive elements
  */
-type InteractiveElement = ChartElement | CheckboxElement | DropdownElement | ImageElement | MermaidElement | NumberElement | PresetsElement | SliderElement | TabulatorElement | TextboxElement | TreebarkElement;
+type InteractiveElement = ChartElement | CheckboxElement | DropdownElement | FetchElement | ImageElement | MermaidElement | NumberElement | PresetsElement | SliderElement | TabulatorElement | TextboxElement | TreebarkElement;
 interface ElementGroup {
     groupId: string;
     elements: PageElement[];

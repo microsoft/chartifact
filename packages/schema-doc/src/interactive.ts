@@ -173,6 +173,24 @@ export interface Preset {
 }
 
 /**
+ * Fetch
+ * use for fetching data from a URL with optional variable substitution
+ */
+export interface FetchElement extends FetchElementProps {
+  type: 'fetch';
+}
+export interface FetchElementProps extends VariableControl {
+  /** URL to fetch data from (may contain {{variable}} placeholders) */
+  url: TemplatedUrl;
+  
+  /** Data format: json, csv, tsv, or dsv (default: json) */
+  format?: 'json' | 'csv' | 'tsv' | 'dsv';
+  
+  /** Delimiter for dsv format (default: ,) */
+  delimiter?: string;
+}
+
+/**
  * Tabulator
  * use for tabular data
  */
@@ -242,6 +260,7 @@ export type InteractiveElement =
   | ChartElement
   | CheckboxElement
   | DropdownElement
+  | FetchElement
   | ImageElement
   | MermaidElement
   | NumberElement
