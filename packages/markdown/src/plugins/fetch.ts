@@ -5,11 +5,11 @@
 
 import { read } from 'vega';
 import { Batch, IInstance, Plugin, RawFlaggableSpec } from '../factory.js';
-import { sanitizedHTML, sanitizeHtmlComment } from '../sanitize.js';
+import { sanitizeHtmlComment } from '../sanitize.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
-import { SpecReview } from 'common';
 import { DynamicUrl } from './url.js';
+import { flaggablePlugin } from './config.js';
 
 interface FetchInstance {
     id: string;
@@ -35,9 +35,20 @@ function inspectFetchSpec(spec: FetchSpec): RawFlaggableSpec<FetchSpec> {
     };
 
     // Check for http:// (should use https://)
-    if (spec.url.includes('http://') && !spec.url.includes('{{')) {
+    if (spec.url && spec.url.includes('http://') && !spec.url.includes('{{')) {
         result.hasFlags = true;
         result.reasons.push('URL uses http:// instead of https://');
+    }
+
+    // Check for required fields
+    if (!spec.url) {
+        result.hasFlags = true;
+        result.reasons.push('URL is required');
+    }
+
+    if (!spec.variableId) {
+        result.hasFlags = true;
+        result.reasons.push('variableId is required');
     }
 
     return result;
@@ -47,91 +58,7 @@ const pluginName: PluginNames = 'fetch';
 const className = pluginClassName(pluginName);
 
 export const fetchPlugin: Plugin<FetchSpec> = {
-    name: pluginName,
-    fence: (token, index) => {
-        const info = token.info.trim();
-        const parts = info.split(/\s+/);
-        
-        // Parse format: fetch url:https://example.com/data.json format:json variableId:myData
-        let url = '';
-        let format: 'json' | 'csv' | 'tsv' | 'dsv' = 'json';
-        let delimiter = ',';
-        let variableId = `fetchData${index}`;
-        
-        for (let i = 1; i < parts.length; i++) {
-            const part = parts[i];
-            if (part.startsWith('url:')) {
-                url = part.slice(4);
-            } else if (part.startsWith('format:')) {
-                format = part.slice(7) as 'json' | 'csv' | 'tsv' | 'dsv';
-            } else if (part.startsWith('delimiter:')) {
-                delimiter = part.slice(10);
-                if (delimiter === '\\t') delimiter = '\t';
-                if (delimiter === '\\n') delimiter = '\n';
-                if (delimiter === '\\r') delimiter = '\r';
-            } else if (part.startsWith('variableId:')) {
-                variableId = part.slice(11);
-            } else if (i === 1 && !part.includes(':')) {
-                // First parameter without prefix is the URL
-                url = part;
-            }
-        }
-        
-        return sanitizedHTML('div', {
-            id: `${pluginName}-${index}`,
-            class: className,
-            style: 'display:none',
-            'data-variable-id': variableId,
-            'data-url': url,
-            'data-format': format,
-            'data-delimiter': delimiter
-        }, '', false);
-    },
-    hydrateSpecs: (renderer, errorHandler) => {
-        const flagged: SpecReview<FetchSpec>[] = [];
-        const containers = renderer.element.querySelectorAll(`.${className}`);
-        
-        for (const [index, container] of Array.from(containers).entries()) {
-            try {
-                const variableId = container.getAttribute('data-variable-id');
-                const url = container.getAttribute('data-url');
-                const format = (container.getAttribute('data-format') || 'json') as 'json' | 'csv' | 'tsv' | 'dsv';
-                const delimiter = container.getAttribute('data-delimiter') || ',';
-                
-                if (!variableId) {
-                    errorHandler(new Error('No variable ID found'), pluginName, index, 'parse', container);
-                    continue;
-                }
-                
-                if (!url) {
-                    errorHandler(new Error('No URL found'), pluginName, index, 'parse', container);
-                    continue;
-                }
-                
-                const spec: FetchSpec = { variableId, url, format, delimiter };
-                const flaggableSpec = inspectFetchSpec(spec);
-                
-                const f: SpecReview<FetchSpec> = {
-                    approvedSpec: null,
-                    pluginName,
-                    containerId: container.id
-                };
-                
-                if (flaggableSpec.hasFlags) {
-                    f.blockedSpec = flaggableSpec.spec;
-                    f.reason = flaggableSpec.reasons?.join(', ') || 'Unknown reason';
-                } else {
-                    f.approvedSpec = flaggableSpec.spec;
-                }
-                
-                flagged.push(f);
-            } catch (e) {
-                errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName, index, 'parse', container);
-            }
-        }
-        
-        return flagged;
-    },
+    ...flaggablePlugin<FetchSpec>(pluginName, className, inspectFetchSpec),
     hydrateComponent: async (renderer, errorHandler, specs) => {
         const { signalBus } = renderer;
         const fetchInstances: FetchInstance[] = [];

@@ -27,7 +27,7 @@
                     ]
                 },
                 "",
-                "```fetch url:{{json_url}} format:json variableId:fetchedData```",
+                "```yaml fetch\nurl: {{json_url}}\nformat: json\nvariableId: fetchedData\n```",
                 "",
                 {
                     "type": "tabulator",
