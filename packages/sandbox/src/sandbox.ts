@@ -109,14 +109,14 @@ export class Sandbox {
             ? origin
             : 'https://microsoft.github.io';
         return `
-<link href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.1/dist/css/tabulator.min.css" rel="stylesheet" />
 <link href="${url}/chartifact/dist/v1/chartifact-reset.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
-<script src="https://unpkg.com/css-tree@3.1.0/dist/csstree.js"></script>
-<script src="https://unpkg.com/js-yaml@4.1.1/dist/js-yaml.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/css-tree@3.1.0/dist/csstree.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.1/dist/js-yaml.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega@6.2.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.1"></script>
-<script src="https://unpkg.com/tabulator-tables@6.3.1/dist/js/tabulator.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.1/dist/js/tabulator.min.js"></script>
 <script src="${url}/chartifact/dist/v1/chartifact.markdown.umd.js"></script>
 `;
     }
