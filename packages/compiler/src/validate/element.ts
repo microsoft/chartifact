@@ -1,4 +1,4 @@
-import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, ImageElement, MermaidElement, TreebarkElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
+import { PageElement, Variable, DataLoader, CheckboxElement, DropdownElement, SliderElement, TextboxElement, ChartElement, ImageElement, InspectorElement, MermaidElement, TreebarkElement, Vega_or_VegaLite_spec } from "@microsoft/chartifact-schema";
 import { getChartType } from "../util.js";
 import { validateVegaLite, validateVegaChart } from "./chart.js";
 import { validateVariableID, validateRequiredString, validateOptionalString, validateOptionalPositiveNumber, validateOptionalBoolean, validateOptionalObject, validateInputElementWithVariableId, validateMarkdownString } from "./common.js";
@@ -92,6 +92,13 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                     errors.push(...validateOptionalPositiveNumber(imageElement.height, 'height', 'Image'));
                     errors.push(...validateOptionalPositiveNumber(imageElement.width, 'width', 'Image'));
 
+                    break;
+                }
+                case 'inspector': {
+                    // Inspector has optional variableId (if omitted, inspects all variables)
+                    if (element.variableId) {
+                        errors.push(...validateInputElementWithVariableId(element as { type: string; variableId: string }));
+                    }
                     break;
                 }
                 case 'mermaid': {

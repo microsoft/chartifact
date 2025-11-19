@@ -138,6 +138,21 @@ export interface ImageElementProps {
 }
 
 /**
+ * Inspector
+ * use for examining and displaying the current value of a variable
+ */
+export interface InspectorElement extends InspectorElementProps {
+  type: 'inspector';
+}
+export interface InspectorElementProps {
+  /** Optional variable ID. If omitted, inspects all variables from signalBus.signalDeps */
+  variableId?: VariableID;
+  
+  /** When true, displays raw JSON output without interactive elements (for copy/paste). Default is false. */
+  raw?: boolean;
+}
+
+/**
  * Treebark
  * use for rendering cards and structured HTML from templates
  */
@@ -243,6 +258,7 @@ export type InteractiveElement =
   | CheckboxElement
   | DropdownElement
   | ImageElement
+  | InspectorElement
   | MermaidElement
   | NumberElement
   | PresetsElement
