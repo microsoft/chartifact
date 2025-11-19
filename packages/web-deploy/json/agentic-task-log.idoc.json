@@ -14,7 +14,7 @@
             ".bubble-user .bubble-content { background: #007bff; color: white; border-bottom-right-radius: 4px; }",
             ".bubble-assistant .bubble-content { background: #e9ecef; color: #333; border-bottom-left-radius: 4px; }",
             ".bubble-sender { font-size: 0.75em; font-weight: 600; margin-bottom: 4px; opacity: 0.8; }",
-            ".bubble-user .bubble-sender { text-align: right; color: #007bff; }",
+            ".bubble-user .bubble-sender { text-align: right; color: rgba(255,255,255,0.9); }",
             ".bubble-assistant .bubble-sender { text-align: left; color: #6c757d; }",
             ".bubble-text { margin: 0; line-height: 1.4; word-wrap: break-word; }",
             ".execution-log { background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; margin: 25px 0; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.9em; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }",
@@ -155,7 +155,7 @@
                 {
                     "sender": "Assistant",
                     "type": "assistant",
-                    "message": "Analysis complete! Here are the key findings:\n\n• Total Q4 Revenue: $4.2M (+18% vs Q3)\n• Best performing region: West ($1.3M)\n• Top product category: Electronics (42% of sales)\n• Peak sales month: December\n\nI've generated visualizations for each insight. Would you like me to create the summary report now?"
+                    "message": "Analysis complete! Here are the key findings:\n\n\u2022 Total Q4 Revenue: $4.2M (+18% vs Q3)\n\u2022 Best performing region: West ($1.3M)\n\u2022 Top product category: Electronics (42% of sales)\n\u2022 Peak sales month: December\n\nI've generated visualizations for each insight. Would you like me to create the summary report now?"
                 },
                 {
                     "sender": "User",
@@ -236,12 +236,7 @@
                             "$children": [
                                 {
                                     "div": {
-                                        "class": {
-                                            "$concat": [
-                                                "chat-bubble bubble-",
-                                                "{{type}}"
-                                            ]
-                                        },
+                                        "class": "chat-bubble bubble-{{type}}",
                                         "$children": [
                                             {
                                                 "div": {
@@ -284,7 +279,7 @@
                                 {
                                     "h3": {
                                         "$children": [
-                                            "⚙️ Execution Phase 1: Data Loading & Validation"
+                                            "\u2699\ufe0f Execution Phase 1: Data Loading & Validation"
                                         ]
                                     }
                                 },
@@ -306,12 +301,7 @@
                                                         },
                                                         {
                                                             "span": {
-                                                                "class": {
-                                                                    "$concat": [
-                                                                        "log-level-",
-                                                                        "{{level}}"
-                                                                    ]
-                                                                },
+                                                                "class": "log-level-{{level}}",
                                                                 "$children": [
                                                                     " {{level}}: "
                                                                 ]
@@ -346,12 +336,7 @@
                             "$children": [
                                 {
                                     "div": {
-                                        "class": {
-                                            "$concat": [
-                                                "chat-bubble bubble-",
-                                                "{{type}}"
-                                            ]
-                                        },
+                                        "class": "chat-bubble bubble-{{type}}",
                                         "$children": [
                                             {
                                                 "div": {
@@ -394,7 +379,7 @@
                                 {
                                     "h3": {
                                         "$children": [
-                                            "⚙️ Execution Phase 2: Analysis & Visualization"
+                                            "\u2699\ufe0f Execution Phase 2: Analysis & Visualization"
                                         ]
                                     }
                                 },
@@ -416,12 +401,7 @@
                                                         },
                                                         {
                                                             "span": {
-                                                                "class": {
-                                                                    "$concat": [
-                                                                        "log-level-",
-                                                                        "{{level}}"
-                                                                    ]
-                                                                },
+                                                                "class": "log-level-{{level}}",
                                                                 "$children": [
                                                                     " {{level}}: "
                                                                 ]
@@ -456,12 +436,7 @@
                             "$children": [
                                 {
                                     "div": {
-                                        "class": {
-                                            "$concat": [
-                                                "chat-bubble bubble-",
-                                                "{{type}}"
-                                            ]
-                                        },
+                                        "class": "chat-bubble bubble-{{type}}",
                                         "$children": [
                                             {
                                                 "div": {
@@ -504,7 +479,7 @@
                                 {
                                     "h3": {
                                         "$children": [
-                                            "⚙️ Execution Phase 3: Report Generation"
+                                            "\u2699\ufe0f Execution Phase 3: Report Generation"
                                         ]
                                     }
                                 },
@@ -526,12 +501,7 @@
                                                         },
                                                         {
                                                             "span": {
-                                                                "class": {
-                                                                    "$concat": [
-                                                                        "log-level-",
-                                                                        "{{level}}"
-                                                                    ]
-                                                                },
+                                                                "class": "log-level-{{level}}",
                                                                 "$children": [
                                                                     " {{level}}: "
                                                                 ]
@@ -566,12 +536,7 @@
                             "$children": [
                                 {
                                     "div": {
-                                        "class": {
-                                            "$concat": [
-                                                "chat-bubble bubble-",
-                                                "{{type}}"
-                                            ]
-                                        },
+                                        "class": "chat-bubble bubble-{{type}}",
                                         "$children": [
                                             {
                                                 "div": {
@@ -613,7 +578,7 @@
                                 {
                                     "h3": {
                                         "$children": [
-                                            "📊 Task Summary"
+                                            "\ud83d\udcca Task Summary"
                                         ]
                                     }
                                 },
@@ -698,7 +663,7 @@
                                                             "div": {
                                                                 "class": "stat-value",
                                                                 "$children": [
-                                                                    "✓"
+                                                                    "\u2713"
                                                                 ]
                                                             }
                                                         },
