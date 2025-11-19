@@ -1614,6 +1614,47 @@
       ],
       "type": "object"
     },
+    "FetchElement": {
+      "additionalProperties": false,
+      "description": "Fetch use for fetching data from a URL with optional variable substitution",
+      "properties": {
+        "delimiter": {
+          "description": "Delimiter for dsv format (default: ,)",
+          "type": "string"
+        },
+        "format": {
+          "description": "Data format: json, csv, tsv, or dsv (default: json)",
+          "enum": [
+            "json",
+            "csv",
+            "tsv",
+            "dsv"
+          ],
+          "type": "string"
+        },
+        "label": {
+          "description": "optional label if the variableId is not descriptive enough",
+          "type": "string"
+        },
+        "type": {
+          "const": "fetch",
+          "type": "string"
+        },
+        "url": {
+          "$ref": "#/definitions/TemplatedUrl",
+          "description": "URL to fetch data from (may contain {{variable}} placeholders)"
+        },
+        "variableId": {
+          "$ref": "#/definitions/VariableID"
+        }
+      },
+      "required": [
+        "type",
+        "url",
+        "variableId"
+      ],
+      "type": "object"
+    },
     "DynamicDropdownOptions": {
       "additionalProperties": false,
       "description": "Dropdown use for selecting from a list of options",
@@ -3212,6 +3253,9 @@
         },
         {
           "$ref": "#/definitions/DropdownElement"
+        },
+        {
+          "$ref": "#/definitions/FetchElement"
         },
         {
           "$ref": "#/definitions/ImageElement"

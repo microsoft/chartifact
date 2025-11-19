@@ -1660,6 +1660,197 @@ ${reconstitutedRules.join("\n\n")}
       return dsvPlugin.fence(dsvToken, index2);
     }
   };
+  function inspectFetchSpec(spec) {
+    const result = {
+      spec,
+      hasFlags: false,
+      reasons: []
+    };
+    if (spec.url.includes("http://") && !spec.url.includes("{{")) {
+      result.hasFlags = true;
+      result.reasons.push("URL uses http:// instead of https://");
+    }
+    return result;
+  }
+  const pluginName$b = "fetch";
+  const className$b = pluginClassName(pluginName$b);
+  const fetchPlugin = {
+    name: pluginName$b,
+    fence: (token, index2) => {
+      const info = token.info.trim();
+      const parts = info.split(/\s+/);
+      let url = "";
+      let format = "json";
+      let delimiter = ",";
+      let variableId = `fetchData${index2}`;
+      for (let i = 1; i < parts.length; i++) {
+        const part = parts[i];
+        if (part.startsWith("url:")) {
+          url = part.slice(4);
+        } else if (part.startsWith("format:")) {
+          format = part.slice(7);
+        } else if (part.startsWith("delimiter:")) {
+          delimiter = part.slice(10);
+          if (delimiter === "\\t") delimiter = "	";
+          if (delimiter === "\\n") delimiter = "\n";
+          if (delimiter === "\\r") delimiter = "\r";
+        } else if (part.startsWith("variableId:")) {
+          variableId = part.slice(11);
+        } else if (i === 1 && !part.includes(":")) {
+          url = part;
+        }
+      }
+      return sanitizedHTML("div", {
+        id: `${pluginName$b}-${index2}`,
+        class: className$b,
+        style: "display:none",
+        "data-variable-id": variableId,
+        "data-url": url,
+        "data-format": format,
+        "data-delimiter": delimiter
+      }, "", false);
+    },
+    hydrateSpecs: (renderer, errorHandler) => {
+      var _a;
+      const flagged = [];
+      const containers = renderer.element.querySelectorAll(`.${className$b}`);
+      for (const [index2, container] of Array.from(containers).entries()) {
+        try {
+          const variableId = container.getAttribute("data-variable-id");
+          const url = container.getAttribute("data-url");
+          const format = container.getAttribute("data-format") || "json";
+          const delimiter = container.getAttribute("data-delimiter") || ",";
+          if (!variableId) {
+            errorHandler(new Error("No variable ID found"), pluginName$b, index2, "parse", container);
+            continue;
+          }
+          if (!url) {
+            errorHandler(new Error("No URL found"), pluginName$b, index2, "parse", container);
+            continue;
+          }
+          const spec = { variableId, url, format, delimiter };
+          const flaggableSpec = inspectFetchSpec(spec);
+          const f = {
+            approvedSpec: null,
+            pluginName: pluginName$b,
+            containerId: container.id
+          };
+          if (flaggableSpec.hasFlags) {
+            f.blockedSpec = flaggableSpec.spec;
+            f.reason = ((_a = flaggableSpec.reasons) == null ? void 0 : _a.join(", ")) || "Unknown reason";
+          } else {
+            f.approvedSpec = flaggableSpec.spec;
+          }
+          flagged.push(f);
+        } catch (e) {
+          errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName$b, index2, "parse", container);
+        }
+      }
+      return flagged;
+    },
+    hydrateComponent: async (renderer, errorHandler, specs) => {
+      const { signalBus } = renderer;
+      const fetchInstances = [];
+      for (let index2 = 0; index2 < specs.length; index2++) {
+        const specReview = specs[index2];
+        if (!specReview.approvedSpec) {
+          continue;
+        }
+        const container = renderer.element.querySelector(`#${specReview.containerId}`);
+        if (!container) {
+          errorHandler(new Error("Container not found"), pluginName$b, index2, "init", null);
+          continue;
+        }
+        const spec = specReview.approvedSpec;
+        const fetchInstance = {
+          id: `${pluginName$b}-${index2}`,
+          spec,
+          data: null,
+          dynamicUrl: null,
+          container,
+          errorHandler: (error) => {
+            errorHandler(error, pluginName$b, index2, "fetch", container, spec.url);
+          }
+        };
+        fetchInstances.push(fetchInstance);
+      }
+      const instances = fetchInstances.map((fetchInstance) => {
+        var _a;
+        const { spec, id } = fetchInstance;
+        const fetchData = async (url) => {
+          if (!url || url.includes("{{")) {
+            return;
+          }
+          try {
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            let data;
+            if (spec.format === "json") {
+              const jsonData = await response.json();
+              data = Array.isArray(jsonData) ? jsonData : [jsonData];
+            } else {
+              const text = await response.text();
+              const formatType = spec.format === "dsv" ? "dsv" : spec.format;
+              const delimiter = spec.format === "dsv" ? spec.delimiter : spec.format === "tsv" ? "	" : ",";
+              data = vega.read(text, { type: formatType, delimiter });
+            }
+            fetchInstance.data = data;
+            const batch = {
+              [spec.variableId]: {
+                value: data,
+                isData: true
+              }
+            };
+            signalBus.broadcast(id, batch);
+            const comment = sanitizeHtmlComment(`Fetch data loaded: ${data.length} rows for variable '${spec.variableId}' from ${url}`);
+            fetchInstance.container.insertAdjacentHTML("afterbegin", comment);
+          } catch (e) {
+            fetchInstance.errorHandler(e instanceof Error ? e : new Error(String(e)));
+          }
+        };
+        if (spec.url.includes("{{")) {
+          fetchInstance.dynamicUrl = new DynamicUrl(spec.url, (resolvedUrl) => {
+            fetchData(resolvedUrl);
+          });
+        } else {
+          fetchData(spec.url);
+        }
+        const signalNames = Object.keys(((_a = fetchInstance.dynamicUrl) == null ? void 0 : _a.signals) || {});
+        return {
+          id,
+          initialSignals: signalNames.map((name) => ({
+            name,
+            value: null,
+            priority: -1,
+            isData: false
+          })),
+          receiveBatch: async (batch, from) => {
+            var _a2;
+            (_a2 = fetchInstance.dynamicUrl) == null ? void 0 : _a2.receiveBatch(batch);
+          },
+          beginListening() {
+            if (fetchInstance.data) {
+              const batch = {
+                [spec.variableId]: {
+                  value: fetchInstance.data,
+                  isData: true
+                }
+              };
+              signalBus.broadcast(id, batch);
+            }
+          },
+          getCurrentSignalValue: () => {
+            return fetchInstance.data;
+          },
+          destroy: () => {
+          }
+        };
+      });
+      return instances;
+    }
+  };
   function isValidGoogleFontsUrl(url) {
     try {
       const parsed = new URL(url);
@@ -4056,6 +4247,7 @@ ${reconstitutedRules.join("\n\n")}
     registerMarkdownPlugin(cssPlugin);
     registerMarkdownPlugin(csvPlugin);
     registerMarkdownPlugin(dsvPlugin);
+    registerMarkdownPlugin(fetchPlugin);
     registerMarkdownPlugin(googleFontsPlugin);
     registerMarkdownPlugin(dropdownPlugin);
     registerMarkdownPlugin(imagePlugin);

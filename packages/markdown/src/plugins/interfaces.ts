@@ -7,6 +7,7 @@ export { CsvSpec } from './csv.js';
 export { JsonDataSpec } from './data.js';
 export { DropdownSpec } from './dropdown.js';
 export { DsvSpec } from './dsv.js';
+export { FetchSpec } from './fetch.js';
 export { ImageSpec } from './image.js';
 export { MermaidSpec } from './mermaid.js';
 export { NumberSpec } from './number.js';
@@ -25,6 +26,7 @@ export type PluginNames =
     'data' |
     'dropdown' |
     'dsv' |
+    'fetch' |
     'image' |
     'google-fonts' |
     'mermaid' |

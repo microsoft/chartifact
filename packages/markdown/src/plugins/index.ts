@@ -11,6 +11,7 @@ import { cssPlugin } from './css.js';
 import { csvPlugin } from './csv.js';
 import { dataPlugin } from './data.js';
 import { dsvPlugin } from './dsv.js';
+import { fetchPlugin } from './fetch.js';
 import { googleFontsPlugin } from './google-fonts.js';
 import { dropdownPlugin } from './dropdown.js';
 import { imagePlugin } from './image.js';
@@ -33,6 +34,7 @@ export function registerNativePlugins() {
     registerMarkdownPlugin(csvPlugin);
     registerMarkdownPlugin(dataPlugin);
     registerMarkdownPlugin(dsvPlugin);
+    registerMarkdownPlugin(fetchPlugin);
     registerMarkdownPlugin(googleFontsPlugin);
     registerMarkdownPlugin(dropdownPlugin);
     registerMarkdownPlugin(imagePlugin);
