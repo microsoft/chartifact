@@ -214,6 +214,39 @@ export class Toolbar {
         this.render();
     }
 
+    showOrHideButtons(buttons: { source?: boolean; download?: boolean; restart?: boolean }) {
+        if (buttons.source !== undefined) {
+            this.props.tweakDisplay = buttons.source ? '' : 'none';
+        }
+        if (buttons.download !== undefined) {
+            this.props.downloadDisplay = buttons.download ? '' : 'none';
+        }
+        if (buttons.restart !== undefined) {
+            this.props.restartDisplay = buttons.restart ? '' : 'none';
+        }
+        this.render();
+    }
+
+    setSourceVisibility(visible: boolean) {
+        const { textarea } = this.options;
+        if (!textarea) {
+            return;
+        }
+        textarea.style.display = visible ? '' : 'none';
+    }
+
+    setFilename(filename: string) {
+        this.filename = filename;
+        this.render();
+    }
+
+    showDownloadDialog() {
+        // Trigger the download click handler to show the popup
+        if (this.props.downloadClick) {
+            this.props.downloadClick();
+        }
+    }
+
     manageTextareaVisibilityForAgents() {
         const { textarea } = this.options;
 

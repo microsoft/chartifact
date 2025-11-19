@@ -3658,12 +3658,31 @@ ${guardedJs}
           return;
         }
         const message = event.data;
-        if (message.type == "hostRenderRequest") {
-          if (message.markdown) {
-            await host.render(message.title, message.markdown, void 0, false);
-          } else if (message.interactiveDocument) {
-            await host.render(message.title, void 0, message.interactiveDocument, false);
+        if (message.type === "hostRenderRequest") {
+          const renderMessage = message;
+          if (renderMessage.markdown) {
+            await host.render(renderMessage.title, renderMessage.markdown, void 0, false);
+          } else if (renderMessage.interactiveDocument) {
+            await host.render(renderMessage.title, void 0, renderMessage.interactiveDocument, false);
           } else {
+          }
+        } else if (message.type === "hostToolbarControl") {
+          const toolbarMessage = message;
+          if (!host.toolbar) {
+            console.warn("Toolbar control message received but no toolbar is available");
+            return;
+          }
+          if (toolbarMessage.showSource !== void 0) {
+            host.toolbar.setSourceVisibility(toolbarMessage.showSource);
+          }
+          if (toolbarMessage.showOrHideButtons !== void 0) {
+            host.toolbar.showOrHideButtons(toolbarMessage.showOrHideButtons);
+          }
+          if (toolbarMessage.setFilename !== void 0) {
+            host.toolbar.setFilename(toolbarMessage.setFilename);
+          }
+          if (toolbarMessage.showDownloadDialog !== void 0 && toolbarMessage.showDownloadDialog) {
+            host.toolbar.showDownloadDialog();
           }
         }
       } catch (error) {
@@ -4289,6 +4308,34 @@ ${htmlJsonJs}
     showDownloadButton() {
       this.props.downloadDisplay = "";
       this.render();
+    }
+    showOrHideButtons(buttons) {
+      if (buttons.source !== void 0) {
+        this.props.tweakDisplay = buttons.source ? "" : "none";
+      }
+      if (buttons.download !== void 0) {
+        this.props.downloadDisplay = buttons.download ? "" : "none";
+      }
+      if (buttons.restart !== void 0) {
+        this.props.restartDisplay = buttons.restart ? "" : "none";
+      }
+      this.render();
+    }
+    setSourceVisibility(visible) {
+      const { textarea } = this.options;
+      if (!textarea) {
+        return;
+      }
+      textarea.style.display = visible ? "" : "none";
+    }
+    setFilename(filename) {
+      this.filename = filename;
+      this.render();
+    }
+    showDownloadDialog() {
+      if (this.props.downloadClick) {
+        this.props.downloadClick();
+      }
     }
     manageTextareaVisibilityForAgents() {
       const { textarea } = this.options;

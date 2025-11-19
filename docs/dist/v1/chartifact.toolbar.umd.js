@@ -433,6 +433,34 @@ ${htmlJsonJs}
       this.props.downloadDisplay = "";
       this.render();
     }
+    showOrHideButtons(buttons) {
+      if (buttons.source !== void 0) {
+        this.props.tweakDisplay = buttons.source ? "" : "none";
+      }
+      if (buttons.download !== void 0) {
+        this.props.downloadDisplay = buttons.download ? "" : "none";
+      }
+      if (buttons.restart !== void 0) {
+        this.props.restartDisplay = buttons.restart ? "" : "none";
+      }
+      this.render();
+    }
+    setSourceVisibility(visible) {
+      const { textarea } = this.options;
+      if (!textarea) {
+        return;
+      }
+      textarea.style.display = visible ? "" : "none";
+    }
+    setFilename(filename) {
+      this.filename = filename;
+      this.render();
+    }
+    showDownloadDialog() {
+      if (this.props.downloadClick) {
+        this.props.downloadClick();
+      }
+    }
     manageTextareaVisibilityForAgents() {
       const { textarea } = this.options;
       if (!textarea) {

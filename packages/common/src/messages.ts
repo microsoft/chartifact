@@ -42,6 +42,18 @@ export interface HostStatusMessage {
     details?: string;
 }
 
+export interface HostToolbarControlMessage {
+    type: 'hostToolbarControl';
+    showSource?: boolean;
+    showOrHideButtons?: {
+        source?: boolean;
+        download?: boolean;
+        restart?: boolean;
+    };
+    showDownloadDialog?: boolean;
+    setFilename?: string;
+}
+
 export interface EditorReadyMessage {
     type: 'editorReady';
     sender: string;
