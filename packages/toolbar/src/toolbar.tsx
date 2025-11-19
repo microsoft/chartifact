@@ -214,18 +214,16 @@ export class Toolbar {
         this.render();
     }
 
-    hideTweakButton() {
-        this.props.tweakDisplay = 'none';
-        this.render();
-    }
-
-    hideRestartButton() {
-        this.props.restartDisplay = 'none';
-        this.render();
-    }
-
-    hideDownloadButton() {
-        this.props.downloadDisplay = 'none';
+    showOrHideButtons(buttons: { tweak?: boolean; download?: boolean; restart?: boolean }) {
+        if (buttons.tweak !== undefined) {
+            this.props.tweakDisplay = buttons.tweak ? '' : 'none';
+        }
+        if (buttons.download !== undefined) {
+            this.props.downloadDisplay = buttons.download ? '' : 'none';
+        }
+        if (buttons.restart !== undefined) {
+            this.props.restartDisplay = buttons.restart ? '' : 'none';
+        }
         this.render();
     }
 

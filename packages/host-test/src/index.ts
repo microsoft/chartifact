@@ -63,7 +63,12 @@ The colors distinguish between different weather conditions such as sun, fog, dr
       const toolbarControlMessage: Chartifact.common.HostToolbarControlMessage = {
         type: 'hostToolbarControl',
         showSource: true,  // Show the source textarea
-        setFilename: 'seattle-weather-demo'  // Set a custom filename
+        setFilename: 'seattle-weather-demo',  // Set a custom filename
+        showOrHideButtons: {  // Control button visibility
+          tweak: true,
+          download: true,
+          restart: false
+        }
       };
       iframe.contentWindow.postMessage(toolbarControlMessage, '*');
     }, 1000);

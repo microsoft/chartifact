@@ -36,26 +36,8 @@ export function setupPostMessageHandling(host: Listener) {
                 if (toolbarMessage.showSource !== undefined) {
                     host.toolbar.setSourceVisibility(toolbarMessage.showSource);
                 }
-                if (toolbarMessage.showTweakButton !== undefined) {
-                    if (toolbarMessage.showTweakButton) {
-                        host.toolbar.showTweakButton();
-                    } else {
-                        host.toolbar.hideTweakButton();
-                    }
-                }
-                if (toolbarMessage.showDownloadButton !== undefined) {
-                    if (toolbarMessage.showDownloadButton) {
-                        host.toolbar.showDownloadButton();
-                    } else {
-                        host.toolbar.hideDownloadButton();
-                    }
-                }
-                if (toolbarMessage.showRestartButton !== undefined) {
-                    if (toolbarMessage.showRestartButton) {
-                        host.toolbar.showRestartButton();
-                    } else {
-                        host.toolbar.hideRestartButton();
-                    }
+                if (toolbarMessage.showOrHideButtons !== undefined) {
+                    host.toolbar.showOrHideButtons(toolbarMessage.showOrHideButtons);
                 }
                 if (toolbarMessage.setFilename !== undefined) {
                     host.toolbar.setFilename(toolbarMessage.setFilename);

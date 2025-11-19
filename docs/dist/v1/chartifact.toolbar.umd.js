@@ -433,16 +433,16 @@ ${htmlJsonJs}
       this.props.downloadDisplay = "";
       this.render();
     }
-    hideTweakButton() {
-      this.props.tweakDisplay = "none";
-      this.render();
-    }
-    hideRestartButton() {
-      this.props.restartDisplay = "none";
-      this.render();
-    }
-    hideDownloadButton() {
-      this.props.downloadDisplay = "none";
+    showOrHideButtons(buttons) {
+      if (buttons.tweak !== void 0) {
+        this.props.tweakDisplay = buttons.tweak ? "" : "none";
+      }
+      if (buttons.download !== void 0) {
+        this.props.downloadDisplay = buttons.download ? "" : "none";
+      }
+      if (buttons.restart !== void 0) {
+        this.props.restartDisplay = buttons.restart ? "" : "none";
+      }
       this.render();
     }
     setSourceVisibility(visible) {

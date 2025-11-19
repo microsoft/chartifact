@@ -45,9 +45,11 @@ export interface HostStatusMessage {
 export interface HostToolbarControlMessage {
     type: 'hostToolbarControl';
     showSource?: boolean;
-    showTweakButton?: boolean;
-    showDownloadButton?: boolean;
-    showRestartButton?: boolean;
+    showOrHideButtons?: {
+        tweak?: boolean;
+        download?: boolean;
+        restart?: boolean;
+    };
     showDownloadDialog?: boolean;
     setFilename?: string;
 }

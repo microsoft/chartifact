@@ -3675,26 +3675,8 @@ ${guardedJs}
           if (toolbarMessage.showSource !== void 0) {
             host.toolbar.setSourceVisibility(toolbarMessage.showSource);
           }
-          if (toolbarMessage.showTweakButton !== void 0) {
-            if (toolbarMessage.showTweakButton) {
-              host.toolbar.showTweakButton();
-            } else {
-              host.toolbar.hideTweakButton();
-            }
-          }
-          if (toolbarMessage.showDownloadButton !== void 0) {
-            if (toolbarMessage.showDownloadButton) {
-              host.toolbar.showDownloadButton();
-            } else {
-              host.toolbar.hideDownloadButton();
-            }
-          }
-          if (toolbarMessage.showRestartButton !== void 0) {
-            if (toolbarMessage.showRestartButton) {
-              host.toolbar.showRestartButton();
-            } else {
-              host.toolbar.hideRestartButton();
-            }
+          if (toolbarMessage.showOrHideButtons !== void 0) {
+            host.toolbar.showOrHideButtons(toolbarMessage.showOrHideButtons);
           }
           if (toolbarMessage.setFilename !== void 0) {
             host.toolbar.setFilename(toolbarMessage.setFilename);
@@ -4327,16 +4309,16 @@ ${htmlJsonJs}
       this.props.downloadDisplay = "";
       this.render();
     }
-    hideTweakButton() {
-      this.props.tweakDisplay = "none";
-      this.render();
-    }
-    hideRestartButton() {
-      this.props.restartDisplay = "none";
-      this.render();
-    }
-    hideDownloadButton() {
-      this.props.downloadDisplay = "none";
+    showOrHideButtons(buttons) {
+      if (buttons.tweak !== void 0) {
+        this.props.tweakDisplay = buttons.tweak ? "" : "none";
+      }
+      if (buttons.download !== void 0) {
+        this.props.downloadDisplay = buttons.download ? "" : "none";
+      }
+      if (buttons.restart !== void 0) {
+        this.props.restartDisplay = buttons.restart ? "" : "none";
+      }
       this.render();
     }
     setSourceVisibility(visible) {
