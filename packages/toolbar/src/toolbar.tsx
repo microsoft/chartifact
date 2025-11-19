@@ -214,6 +214,43 @@ export class Toolbar {
         this.render();
     }
 
+    hideTweakButton() {
+        this.props.tweakDisplay = 'none';
+        this.render();
+    }
+
+    hideRestartButton() {
+        this.props.restartDisplay = 'none';
+        this.render();
+    }
+
+    hideDownloadButton() {
+        this.props.downloadDisplay = 'none';
+        this.render();
+    }
+
+    setSourceVisibility(visible: boolean) {
+        const { textarea } = this.options;
+        if (!textarea) {
+            return;
+        }
+        textarea.style.display = visible ? '' : 'none';
+    }
+
+    setFilename(filename: string) {
+        this.filename = filename;
+        this.render();
+    }
+
+    setMode(mode: 'markdown' | 'json') {
+        // Runtime check to restrict mode to allowed values only
+        const allowedModes = ['markdown', 'json'];
+        if (allowedModes.includes(mode)) {
+            this.mode = mode;
+            this.render();
+        }
+    }
+
     manageTextareaVisibilityForAgents() {
         const { textarea } = this.options;
 

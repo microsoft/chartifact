@@ -7,7 +7,8 @@ const iframe = document.getElementById('host') as HTMLIFrameElement;
 window.addEventListener('message', (event) => {
   const hostStatusMessage = event.data as Chartifact.common.HostStatusMessage;
   if (hostStatusMessage.type === 'hostStatus' && hostStatusMessage.hostStatus === 'ready') {
-    const message: Chartifact.common.HostRenderRequestMessage = {
+    // First, send the render request
+    const renderMessage: Chartifact.common.HostRenderRequestMessage = {
       type: 'hostRenderRequest',
       title: 'sample',
       markdown: `# Auto-loaded Content
@@ -55,6 +56,16 @@ The colors distinguish between different weather conditions such as sun, fog, dr
 }
 \`\`\`
 `};
-    iframe.contentWindow.postMessage(message, '*');
+    iframe.contentWindow.postMessage(renderMessage, '*');
+
+    // After a short delay, demonstrate toolbar control
+    setTimeout(() => {
+      const toolbarControlMessage: Chartifact.common.HostToolbarControlMessage = {
+        type: 'hostToolbarControl',
+        showSource: true,  // Show the source textarea
+        setFilename: 'seattle-weather-demo'  // Set a custom filename
+      };
+      iframe.contentWindow.postMessage(toolbarControlMessage, '*');
+    }, 1000);
   }
 });

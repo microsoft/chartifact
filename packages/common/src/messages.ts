@@ -42,6 +42,16 @@ export interface HostStatusMessage {
     details?: string;
 }
 
+export interface HostToolbarControlMessage {
+    type: 'hostToolbarControl';
+    showSource?: boolean;
+    showTweakButton?: boolean;
+    showDownloadButton?: boolean;
+    showRestartButton?: boolean;
+    setMode?: 'markdown' | 'json';
+    setFilename?: string;
+}
+
 export interface EditorReadyMessage {
     type: 'editorReady';
     sender: string;
