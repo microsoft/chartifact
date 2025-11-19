@@ -3696,9 +3696,6 @@ ${guardedJs}
               host.toolbar.hideRestartButton();
             }
           }
-          if (toolbarMessage.setMode !== void 0) {
-            host.toolbar.setMode(toolbarMessage.setMode);
-          }
           if (toolbarMessage.setFilename !== void 0) {
             host.toolbar.setFilename(toolbarMessage.setFilename);
           }
@@ -4352,13 +4349,6 @@ ${htmlJsonJs}
     setFilename(filename) {
       this.filename = filename;
       this.render();
-    }
-    setMode(mode) {
-      const allowedModes = ["markdown", "json"];
-      if (allowedModes.includes(mode)) {
-        this.mode = mode;
-        this.render();
-      }
     }
     showDownloadDialog() {
       if (this.props.downloadClick) {

@@ -57,9 +57,6 @@ export function setupPostMessageHandling(host: Listener) {
                         host.toolbar.hideRestartButton();
                     }
                 }
-                if (toolbarMessage.setMode !== undefined) {
-                    host.toolbar.setMode(toolbarMessage.setMode);
-                }
                 if (toolbarMessage.setFilename !== undefined) {
                     host.toolbar.setFilename(toolbarMessage.setFilename);
                 }

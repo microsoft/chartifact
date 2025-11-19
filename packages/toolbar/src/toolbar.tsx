@@ -242,15 +242,6 @@ export class Toolbar {
         this.render();
     }
 
-    setMode(mode: 'markdown' | 'json') {
-        // Runtime check to restrict mode to allowed values only
-        const allowedModes = ['markdown', 'json'];
-        if (allowedModes.includes(mode)) {
-            this.mode = mode;
-            this.render();
-        }
-    }
-
     showDownloadDialog() {
         // Trigger the download click handler to show the popup
         if (this.props.downloadClick) {

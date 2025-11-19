@@ -456,13 +456,6 @@ ${htmlJsonJs}
       this.filename = filename;
       this.render();
     }
-    setMode(mode) {
-      const allowedModes = ["markdown", "json"];
-      if (allowedModes.includes(mode)) {
-        this.mode = mode;
-        this.render();
-      }
-    }
     showDownloadDialog() {
       if (this.props.downloadClick) {
         this.props.downloadClick();
