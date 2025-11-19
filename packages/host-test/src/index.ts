@@ -65,7 +65,7 @@ The colors distinguish between different weather conditions such as sun, fog, dr
         showSource: true,  // Show the source textarea
         setFilename: 'seattle-weather-demo',  // Set a custom filename
         showOrHideButtons: {  // Control button visibility
-          tweak: true,
+          source: true,
           download: true,
           restart: false
         }

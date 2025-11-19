@@ -214,9 +214,9 @@ export class Toolbar {
         this.render();
     }
 
-    showOrHideButtons(buttons: { tweak?: boolean; download?: boolean; restart?: boolean }) {
-        if (buttons.tweak !== undefined) {
-            this.props.tweakDisplay = buttons.tweak ? '' : 'none';
+    showOrHideButtons(buttons: { source?: boolean; download?: boolean; restart?: boolean }) {
+        if (buttons.source !== undefined) {
+            this.props.tweakDisplay = buttons.source ? '' : 'none';
         }
         if (buttons.download !== undefined) {
             this.props.downloadDisplay = buttons.download ? '' : 'none';

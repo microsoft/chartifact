@@ -434,8 +434,8 @@ ${htmlJsonJs}
       this.render();
     }
     showOrHideButtons(buttons) {
-      if (buttons.tweak !== void 0) {
-        this.props.tweakDisplay = buttons.tweak ? "" : "none";
+      if (buttons.source !== void 0) {
+        this.props.tweakDisplay = buttons.source ? "" : "none";
       }
       if (buttons.download !== void 0) {
         this.props.downloadDisplay = buttons.download ? "" : "none";

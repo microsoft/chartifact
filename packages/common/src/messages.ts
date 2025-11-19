@@ -46,7 +46,7 @@ export interface HostToolbarControlMessage {
     type: 'hostToolbarControl';
     showSource?: boolean;
     showOrHideButtons?: {
-        tweak?: boolean;
+        source?: boolean;
         download?: boolean;
         restart?: boolean;
     };
