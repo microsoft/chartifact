@@ -433,6 +433,41 @@ ${htmlJsonJs}
       this.props.downloadDisplay = "";
       this.render();
     }
+    hideTweakButton() {
+      this.props.tweakDisplay = "none";
+      this.render();
+    }
+    hideRestartButton() {
+      this.props.restartDisplay = "none";
+      this.render();
+    }
+    hideDownloadButton() {
+      this.props.downloadDisplay = "none";
+      this.render();
+    }
+    setSourceVisibility(visible) {
+      const { textarea } = this.options;
+      if (!textarea) {
+        return;
+      }
+      textarea.style.display = visible ? "" : "none";
+    }
+    setFilename(filename) {
+      this.filename = filename;
+      this.render();
+    }
+    setMode(mode) {
+      const allowedModes = ["markdown", "json"];
+      if (allowedModes.includes(mode)) {
+        this.mode = mode;
+        this.render();
+      }
+    }
+    showDownloadDialog() {
+      if (this.props.downloadClick) {
+        this.props.downloadClick();
+      }
+    }
     manageTextareaVisibilityForAgents() {
       const { textarea } = this.options;
       if (!textarea) {

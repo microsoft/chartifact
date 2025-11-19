@@ -251,6 +251,13 @@ export class Toolbar {
         }
     }
 
+    showDownloadDialog() {
+        // Trigger the download click handler to show the popup
+        if (this.props.downloadClick) {
+            this.props.downloadClick();
+        }
+    }
+
     manageTextareaVisibilityForAgents() {
         const { textarea } = this.options;
 

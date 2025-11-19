@@ -3658,12 +3658,52 @@ ${guardedJs}
           return;
         }
         const message = event.data;
-        if (message.type == "hostRenderRequest") {
-          if (message.markdown) {
-            await host.render(message.title, message.markdown, void 0, false);
-          } else if (message.interactiveDocument) {
-            await host.render(message.title, void 0, message.interactiveDocument, false);
+        if (message.type === "hostRenderRequest") {
+          const renderMessage = message;
+          if (renderMessage.markdown) {
+            await host.render(renderMessage.title, renderMessage.markdown, void 0, false);
+          } else if (renderMessage.interactiveDocument) {
+            await host.render(renderMessage.title, void 0, renderMessage.interactiveDocument, false);
           } else {
+          }
+        } else if (message.type === "hostToolbarControl") {
+          const toolbarMessage = message;
+          if (!host.toolbar) {
+            console.warn("Toolbar control message received but no toolbar is available");
+            return;
+          }
+          if (toolbarMessage.showSource !== void 0) {
+            host.toolbar.setSourceVisibility(toolbarMessage.showSource);
+          }
+          if (toolbarMessage.showTweakButton !== void 0) {
+            if (toolbarMessage.showTweakButton) {
+              host.toolbar.showTweakButton();
+            } else {
+              host.toolbar.hideTweakButton();
+            }
+          }
+          if (toolbarMessage.showDownloadButton !== void 0) {
+            if (toolbarMessage.showDownloadButton) {
+              host.toolbar.showDownloadButton();
+            } else {
+              host.toolbar.hideDownloadButton();
+            }
+          }
+          if (toolbarMessage.showRestartButton !== void 0) {
+            if (toolbarMessage.showRestartButton) {
+              host.toolbar.showRestartButton();
+            } else {
+              host.toolbar.hideRestartButton();
+            }
+          }
+          if (toolbarMessage.setMode !== void 0) {
+            host.toolbar.setMode(toolbarMessage.setMode);
+          }
+          if (toolbarMessage.setFilename !== void 0) {
+            host.toolbar.setFilename(toolbarMessage.setFilename);
+          }
+          if (toolbarMessage.showDownloadDialog !== void 0 && toolbarMessage.showDownloadDialog) {
+            host.toolbar.showDownloadDialog();
           }
         }
       } catch (error) {
@@ -4289,6 +4329,41 @@ ${htmlJsonJs}
     showDownloadButton() {
       this.props.downloadDisplay = "";
       this.render();
+    }
+    hideTweakButton() {
+      this.props.tweakDisplay = "none";
+      this.render();
+    }
+    hideRestartButton() {
+      this.props.restartDisplay = "none";
+      this.render();
+    }
+    hideDownloadButton() {
+      this.props.downloadDisplay = "none";
+      this.render();
+    }
+    setSourceVisibility(visible) {
+      const { textarea } = this.options;
+      if (!textarea) {
+        return;
+      }
+      textarea.style.display = visible ? "" : "none";
+    }
+    setFilename(filename) {
+      this.filename = filename;
+      this.render();
+    }
+    setMode(mode) {
+      const allowedModes = ["markdown", "json"];
+      if (allowedModes.includes(mode)) {
+        this.mode = mode;
+        this.render();
+      }
+    }
+    showDownloadDialog() {
+      if (this.props.downloadClick) {
+        this.props.downloadClick();
+      }
     }
     manageTextareaVisibilityForAgents() {
       const { textarea } = this.options;

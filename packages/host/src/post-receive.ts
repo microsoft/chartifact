@@ -63,6 +63,9 @@ export function setupPostMessageHandling(host: Listener) {
                 if (toolbarMessage.setFilename !== undefined) {
                     host.toolbar.setFilename(toolbarMessage.setFilename);
                 }
+                if (toolbarMessage.showDownloadDialog !== undefined && toolbarMessage.showDownloadDialog) {
+                    host.toolbar.showDownloadDialog();
+                }
             }
         } catch (error) {
             host.errorHandler(

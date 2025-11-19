@@ -67,5 +67,14 @@ The colors distinguish between different weather conditions such as sun, fog, dr
       };
       iframe.contentWindow.postMessage(toolbarControlMessage, '*');
     }, 1000);
+
+    // After another delay, demonstrate showing the download dialog
+    setTimeout(() => {
+      const showDownloadMessage: Chartifact.common.HostToolbarControlMessage = {
+        type: 'hostToolbarControl',
+        showDownloadDialog: true  // Show the download popup dialog
+      };
+      iframe.contentWindow.postMessage(showDownloadMessage, '*');
+    }, 2500);
   }
 });

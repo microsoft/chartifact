@@ -48,6 +48,7 @@ export interface HostToolbarControlMessage {
     showTweakButton?: boolean;
     showDownloadButton?: boolean;
     showRestartButton?: boolean;
+    showDownloadDialog?: boolean;
     setMode?: 'markdown' | 'json';
     setFilename?: string;
 }
