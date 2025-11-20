@@ -8,13 +8,13 @@
         "a": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -29,13 +29,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -195,13 +195,13 @@
         "article": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -216,13 +216,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -260,7 +260,7 @@
     "AttributeValue": {
       "anyOf": [
         {
-          "type": "string"
+          "$ref": "#/definitions/InterpolatedString"
         },
         {
           "$ref": "#/definitions/ConditionalValue"
@@ -340,19 +340,22 @@
       ],
       "type": "object"
     },
+    "BindPath": {
+      "type": "string"
+    },
     "BlockquoteTag": {
       "additionalProperties": false,
       "properties": {
         "blockquote": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -367,13 +370,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -417,13 +420,13 @@
         "br": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -438,7 +441,7 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "class": {
                   "$ref": "#/definitions/AttributeValue"
@@ -529,13 +532,13 @@
         "code": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -550,13 +553,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -614,13 +617,13 @@
         "$comment": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -635,13 +638,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -730,7 +733,7 @@
         }
       ]
     },
-    "ConditionalBase<(string|TemplateObject)>": {
+    "ConditionalBase<(InterpolatedString|TemplateObject)>": {
       "additionalProperties": false,
       "properties": {
         "$<": {
@@ -749,12 +752,12 @@
           "type": "number"
         },
         "$check": {
-          "type": "string"
+          "$ref": "#/definitions/BindPath"
         },
         "$else": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "$ref": "#/definitions/TemplateObject"
@@ -780,7 +783,7 @@
         "$then": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "$ref": "#/definitions/TemplateObject"
@@ -813,7 +816,7 @@
           "type": "number"
         },
         "$check": {
-          "type": "string"
+          "$ref": "#/definitions/BindPath"
         },
         "$else": {
           "$ref": "#/definitions/CSSProperties"
@@ -844,7 +847,7 @@
       ],
       "type": "object"
     },
-    "ConditionalBase<string>": {
+    "ConditionalBase<InterpolatedString>": {
       "additionalProperties": false,
       "properties": {
         "$<": {
@@ -863,10 +866,10 @@
           "type": "number"
         },
         "$check": {
-          "type": "string"
+          "$ref": "#/definitions/BindPath"
         },
         "$else": {
-          "type": "string"
+          "$ref": "#/definitions/InterpolatedString"
         },
         "$in": {
           "items": {
@@ -885,7 +888,7 @@
           "type": "boolean"
         },
         "$then": {
-          "type": "string"
+          "$ref": "#/definitions/InterpolatedString"
         }
       },
       "required": [
@@ -895,10 +898,10 @@
       "type": "object"
     },
     "ConditionalValue": {
-      "$ref": "#/definitions/ConditionalBase%3Cstring%3E"
+      "$ref": "#/definitions/ConditionalBase%3CInterpolatedString%3E"
     },
     "ConditionalValueOrTemplate": {
-      "$ref": "#/definitions/ConditionalBase%3C(string%7CTemplateObject)%3E"
+      "$ref": "#/definitions/ConditionalBase%3C(InterpolatedString%7CTemplateObject)%3E"
     },
     "ContourTransform": {
       "anyOf": [
@@ -1080,29 +1083,6 @@
       },
       "required": [
         "type"
-      ],
-      "type": "object"
-    },
-    "CsvElement": {
-      "additionalProperties": false,
-      "description": "CSV Element Embed CSV data inline using markdown fence block: ```csv variableId Content should be CSV rows (comma-separated values). All values are stored as strings.",
-      "properties": {
-        "content": {
-          "description": "CSV content as string",
-          "type": "string"
-        },
-        "type": {
-          "const": "csv",
-          "type": "string"
-        },
-        "variableId": {
-          "$ref": "#/definitions/VariableID"
-        }
-      },
-      "required": [
-        "type",
-        "variableId",
-        "content"
       ],
       "type": "object"
     },
@@ -1501,13 +1481,13 @@
         "div": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -1522,13 +1502,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -1637,34 +1617,6 @@
       ],
       "type": "object"
     },
-    "DsvElement": {
-      "additionalProperties": false,
-      "description": "DSV Element Embed delimiter-separated data inline using markdown fence block: ```dsv delimiter:| variableId Content should be delimiter-separated rows. All values are stored as strings.",
-      "properties": {
-        "content": {
-          "description": "DSV content as string",
-          "type": "string"
-        },
-        "delimiter": {
-          "description": "Custom delimiter character (e.g., '|', ';', etc.)",
-          "type": "string"
-        },
-        "type": {
-          "const": "dsv",
-          "type": "string"
-        },
-        "variableId": {
-          "$ref": "#/definitions/VariableID"
-        }
-      },
-      "required": [
-        "type",
-        "variableId",
-        "delimiter",
-        "content"
-      ],
-      "type": "object"
-    },
     "DynamicDropdownOptions": {
       "additionalProperties": false,
       "description": "Dropdown use for selecting from a list of options",
@@ -1709,13 +1661,13 @@
         "em": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -1730,13 +1682,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -1930,13 +1882,13 @@
         "footer": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -1951,13 +1903,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -2448,13 +2400,13 @@
         "h1": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -2469,13 +2421,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -2516,13 +2468,13 @@
         "h2": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -2537,13 +2489,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -2584,13 +2536,13 @@
         "h3": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -2605,13 +2557,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -2652,13 +2604,13 @@
         "h4": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -2673,13 +2625,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -2720,13 +2672,13 @@
         "h5": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -2741,13 +2693,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -2788,13 +2740,13 @@
         "h6": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -2809,13 +2761,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -2856,13 +2808,13 @@
         "header": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -2877,13 +2829,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -2977,13 +2929,13 @@
         "hr": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -2998,7 +2950,7 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "class": {
                   "$ref": "#/definitions/AttributeValue"
@@ -3088,13 +3040,13 @@
         "img": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -3109,7 +3061,7 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "alt": {
                   "type": "string"
@@ -3193,26 +3145,6 @@
         "key"
       ],
       "type": "object"
-    },
-    "InlineDataElement": {
-      "anyOf": [
-        {
-          "$ref": "#/definitions/CsvElement"
-        },
-        {
-          "$ref": "#/definitions/TsvElement"
-        },
-        {
-          "$ref": "#/definitions/DsvElement"
-        },
-        {
-          "$ref": "#/definitions/JsonValueElement"
-        },
-        {
-          "$ref": "#/definitions/YamlValueElement"
-        }
-      ],
-      "description": "Union type for all inline data elements"
     },
     "InteractiveDocumentWithSchema": {
       "additionalProperties": false,
@@ -3307,12 +3239,12 @@
         },
         {
           "$ref": "#/definitions/TreebarkElement"
-        },
-        {
-          "$ref": "#/definitions/InlineDataElement"
         }
       ],
       "description": "Union type for all possible interactive elements"
+    },
+    "InterpolatedString": {
+      "type": "string"
     },
     "IsocontourTransform": {
       "additionalProperties": false,
@@ -3435,39 +3367,6 @@
       },
       "required": [
         "type"
-      ],
-      "type": "object"
-    },
-    "JsonValueElement": {
-      "additionalProperties": false,
-      "description": "Value Element (JSON) Embed JSON data inline using markdown fence block: ```json value variableId Content should be a JSON array or object. Preserves data types: numbers remain numbers, booleans remain booleans, nested objects are preserved. Use this for structured data with type preservation.",
-      "properties": {
-        "content": {
-          "anyOf": [
-            {
-              "type": "object"
-            },
-            {
-              "items": {
-                "type": "object"
-              },
-              "type": "array"
-            }
-          ],
-          "description": "JSON content as array or object"
-        },
-        "type": {
-          "const": "json-value",
-          "type": "string"
-        },
-        "variableId": {
-          "$ref": "#/definitions/VariableID"
-        }
-      },
-      "required": [
-        "type",
-        "variableId",
-        "content"
       ],
       "type": "object"
     },
@@ -3701,13 +3600,13 @@
         "li": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -3722,13 +3621,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -3902,13 +3801,13 @@
         "main": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -3923,13 +3822,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -4077,13 +3976,13 @@
         "ol": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -4098,13 +3997,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -4145,13 +4044,13 @@
         "p": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -4166,13 +4065,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -4383,13 +4282,13 @@
         "pre": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -4404,13 +4303,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -4776,13 +4675,13 @@
         "section": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -4797,13 +4696,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -4915,13 +4814,13 @@
         "span": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -4936,13 +4835,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -5043,13 +4942,13 @@
         "strong": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -5064,13 +4963,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -5121,13 +5020,13 @@
         "table": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -5142,13 +5041,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -5225,13 +5124,13 @@
         "tbody": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -5246,13 +5145,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -5293,13 +5192,13 @@
         "td": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -5314,13 +5213,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -5367,7 +5266,7 @@
     "TemplateElement": {
       "anyOf": [
         {
-          "type": "string"
+          "$ref": "#/definitions/InterpolatedString"
         },
         {
           "$ref": "#/definitions/TemplateObject"
@@ -5422,13 +5321,13 @@
         "th": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -5443,13 +5342,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -5499,13 +5398,13 @@
         "thead": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -5520,13 +5419,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -5628,13 +5527,13 @@
         "tr": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -5649,13 +5548,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -6000,42 +5899,19 @@
       ],
       "type": "object"
     },
-    "TsvElement": {
-      "additionalProperties": false,
-      "description": "TSV Element Embed TSV data inline using markdown fence block: ```tsv variableId Content should be TSV rows (tab-separated values). All values are stored as strings.",
-      "properties": {
-        "content": {
-          "description": "TSV content as string",
-          "type": "string"
-        },
-        "type": {
-          "const": "tsv",
-          "type": "string"
-        },
-        "variableId": {
-          "$ref": "#/definitions/VariableID"
-        }
-      },
-      "required": [
-        "type",
-        "variableId",
-        "content"
-      ],
-      "type": "object"
-    },
     "UlTag": {
       "additionalProperties": false,
       "properties": {
         "ul": {
           "anyOf": [
             {
-              "type": "string"
+              "$ref": "#/definitions/InterpolatedString"
             },
             {
               "items": {
                 "anyOf": [
                   {
-                    "type": "string"
+                    "$ref": "#/definitions/InterpolatedString"
                   },
                   {
                     "$ref": "#/definitions/TemplateObject"
@@ -6050,13 +5926,13 @@
               },
               "properties": {
                 "$bind": {
-                  "type": "string"
+                  "$ref": "#/definitions/BindPath"
                 },
                 "$children": {
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/InterpolatedString"
                       },
                       {
                         "$ref": "#/definitions/TemplateObject"
@@ -6487,39 +6363,6 @@
       },
       "required": [
         "type"
-      ],
-      "type": "object"
-    },
-    "YamlValueElement": {
-      "additionalProperties": false,
-      "description": "Value Element (YAML) Embed YAML data inline using markdown fence block: ```yaml value variableId Content should be YAML array or object. Preserves data types: numbers remain numbers, booleans remain booleans, nested objects are preserved. Use this for structured data with type preservation.",
-      "properties": {
-        "content": {
-          "anyOf": [
-            {
-              "type": "object"
-            },
-            {
-              "items": {
-                "type": "object"
-              },
-              "type": "array"
-            }
-          ],
-          "description": "YAML content as array or object"
-        },
-        "type": {
-          "const": "yaml-value",
-          "type": "string"
-        },
-        "variableId": {
-          "$ref": "#/definitions/VariableID"
-        }
-      },
-      "required": [
-        "type",
-        "variableId",
-        "content"
       ],
       "type": "object"
     }

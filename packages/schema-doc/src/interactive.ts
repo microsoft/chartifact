@@ -4,7 +4,6 @@
 */
 import { VariableID, VariableControl, ElementBase, TemplatedUrl, OptionalVariableControl } from './common.js';
 import { TemplateElement } from 'treebark';
-import { InlineDataElement } from './inline-data.js';
 
 /**
  * Interactive Elements
@@ -251,5 +250,4 @@ export type InteractiveElement =
   | TabulatorElement
   | TextboxElement
   | TreebarkElement
-  | InlineDataElement
   ;
