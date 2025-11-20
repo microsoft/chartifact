@@ -9,7 +9,7 @@ import { checkboxPlugin } from './checkbox.js';
 import { commentPlugin } from './comment.js';
 import { cssPlugin } from './css.js';
 import { csvPlugin } from './csv.js';
-import { dataPlugin } from './data.js';
+import { valuePlugin } from './value.js';
 import { dsvPlugin } from './dsv.js';
 import { googleFontsPlugin } from './google-fonts.js';
 import { dropdownPlugin } from './dropdown.js';
@@ -31,7 +31,7 @@ export function registerNativePlugins() {
     registerMarkdownPlugin(commentPlugin);
     registerMarkdownPlugin(cssPlugin);
     registerMarkdownPlugin(csvPlugin);
-    registerMarkdownPlugin(dataPlugin);
+    registerMarkdownPlugin(valuePlugin);
     registerMarkdownPlugin(dsvPlugin);
     registerMarkdownPlugin(googleFontsPlugin);
     registerMarkdownPlugin(dropdownPlugin);

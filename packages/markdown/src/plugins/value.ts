@@ -11,19 +11,19 @@ import { SpecReview } from 'common';
 import { parseVariableId } from './dsv.js';
 import * as yaml from 'js-yaml';
 
-interface JsonDataInstance {
+interface ValueInstance {
     id: string;
-    spec: JsonDataSpec;
+    spec: ValueSpec;
     data: object[];
 }
 
-export interface JsonDataSpec {
+export interface ValueSpec {
     variableId: string;
     wasDefaultId?: boolean;
 }
 
-function inspectJsonDataSpec(spec: JsonDataSpec): RawFlaggableSpec<JsonDataSpec> {
-    const result: RawFlaggableSpec<JsonDataSpec> = {
+function inspectValueSpec(spec: ValueSpec): RawFlaggableSpec<ValueSpec> {
+    const result: RawFlaggableSpec<ValueSpec> = {
         spec,
         hasFlags: false,
         reasons: []
@@ -38,31 +38,31 @@ function inspectJsonDataSpec(spec: JsonDataSpec): RawFlaggableSpec<JsonDataSpec>
     return result;
 }
 
-const pluginName: PluginNames = 'data';
+const pluginName: PluginNames = 'value';
 const className = pluginClassName(pluginName);
 
-export const dataPlugin: Plugin<JsonDataSpec> = {
+export const valuePlugin: Plugin<ValueSpec> = {
     name: pluginName,
     fence: (token, index) => {
         const content = token.content.trim();
         const info = token.info.trim();
         
-        // Parse the fence info - expect "json data variableId" or "yaml data variableId" format
-        // The factory.ts will route "json data ..." or "yaml data ..." to this plugin
+        // Parse the fence info - expect "json value variableId" or "yaml value variableId" format
+        // The factory.ts will route "json value ..." or "yaml value ..." to this plugin
         const parts = info.split(/\s+/);
         
-        // Check for variable ID (should be after "json data" or "yaml data")
+        // Check for variable ID (should be after "json value" or "yaml value")
         let variableId: string;
         let wasDefaultId = false;
         let isYaml = false;
         
-        if (parts.length >= 3 && (parts[0] === 'json' || parts[0] === 'yaml') && parts[1] === 'data') {
-            // Format: json data variableId or yaml data variableId
+        if (parts.length >= 3 && (parts[0] === 'json' || parts[0] === 'yaml') && parts[1] === 'value') {
+            // Format: json value variableId or yaml value variableId
             variableId = parts[2];
             isYaml = parts[0] === 'yaml';
-        } else if (parts.length >= 2 && (parts[0] === 'json' || parts[0] === 'yaml') && parts[1] === 'data') {
-            // Format: json data or yaml data (no variable ID provided)
-            variableId = `${parts[0]}Data${index}`;
+        } else if (parts.length >= 2 && (parts[0] === 'json' || parts[0] === 'yaml') && parts[1] === 'value') {
+            // Format: json value or yaml value (no variable ID provided)
+            variableId = `${parts[0]}Value${index}`;
             wasDefaultId = true;
             isYaml = parts[0] === 'yaml';
         } else {
@@ -83,7 +83,7 @@ export const dataPlugin: Plugin<JsonDataSpec> = {
         return scriptElement.outerHTML;
     },
     hydrateSpecs: (renderer, errorHandler) => {
-        const flagged: SpecReview<JsonDataSpec>[] = [];
+        const flagged: SpecReview<ValueSpec>[] = [];
         const containers = renderer.element.querySelectorAll(`.${className}`);
         
         for (const [index, container] of Array.from(containers).entries()) {
@@ -96,10 +96,10 @@ export const dataPlugin: Plugin<JsonDataSpec> = {
                     continue;
                 }
                 
-                const spec: JsonDataSpec = { variableId, wasDefaultId };
-                const flaggableSpec = inspectJsonDataSpec(spec);
+                const spec: ValueSpec = { variableId, wasDefaultId };
+                const flaggableSpec = inspectValueSpec(spec);
                 
-                const f: SpecReview<JsonDataSpec> = { 
+                const f: SpecReview<ValueSpec> = { 
                     approvedSpec: null, 
                     pluginName, 
                     containerId: container.id 
@@ -122,7 +122,7 @@ export const dataPlugin: Plugin<JsonDataSpec> = {
     },
     hydrateComponent: async (renderer, errorHandler, specs) => {
         const { signalBus } = renderer;
-        const jsonInstances: JsonDataInstance[] = [];
+        const valueInstances: ValueInstance[] = [];
 
         for (let index = 0; index < specs.length; index++) {
             const specReview = specs[index];
@@ -139,11 +139,11 @@ export const dataPlugin: Plugin<JsonDataSpec> = {
             try {
                 const content = container.textContent?.trim();
                 if (!content) {
-                    errorHandler(new Error('No data content found'), pluginName, index, 'parse', container);
+                    errorHandler(new Error('No value content found'), pluginName, index, 'parse', container);
                     continue;
                 }
                 
-                const spec: JsonDataSpec = specReview.approvedSpec;
+                const spec: ValueSpec = specReview.approvedSpec;
                 const format = container.getAttribute('data-format') || 'json';
                 
                 // Parse JSON or YAML content
@@ -177,15 +177,15 @@ export const dataPlugin: Plugin<JsonDataSpec> = {
                     continue;
                 }
                 
-                const jsonInstance: JsonDataInstance = { 
+                const valueInstance: ValueInstance = { 
                     id: `${pluginName}-${index}`, 
                     spec, 
                     data 
                 };
-                jsonInstances.push(jsonInstance);
+                valueInstances.push(valueInstance);
                 
-                // Add a safe comment before the container to show that data was loaded
-                const comment = sanitizeHtmlComment(`${format.toUpperCase()} data loaded: ${data.length} rows for variable '${spec.variableId}'`);
+                // Add a safe comment before the container to show that value was loaded
+                const comment = sanitizeHtmlComment(`${format.toUpperCase()} value loaded: ${data.length} rows for variable '${spec.variableId}'`);
                 container.insertAdjacentHTML('beforebegin', comment);
                 
             } catch (e) {
@@ -193,8 +193,8 @@ export const dataPlugin: Plugin<JsonDataSpec> = {
             }
         }
 
-        const instances = jsonInstances.map((jsonInstance): IInstance => {
-            const { spec, data } = jsonInstance;
+        const instances = valueInstances.map((valueInstance): IInstance => {
+            const { spec, data } = valueInstance;
             
             const initialSignals = [{
                 name: spec.variableId,
@@ -204,17 +204,17 @@ export const dataPlugin: Plugin<JsonDataSpec> = {
             }];
 
             return {
-                ...jsonInstance,
+                ...valueInstance,
                 initialSignals,
                 beginListening() {
-                    // JSON data is static, but we broadcast it when listening begins
+                    // Value data is static, but we broadcast it when listening begins
                     const batch: Batch = {
                         [spec.variableId]: {
                             value: data,
                             isData: true,
                         },
                     };
-                    signalBus.broadcast(jsonInstance.id, batch);
+                    signalBus.broadcast(valueInstance.id, batch);
                 },
                 getCurrentSignalValue: () => {
                     return data;

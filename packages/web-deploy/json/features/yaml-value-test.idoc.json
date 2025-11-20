@@ -1,14 +1,14 @@
 {
     "$schema": "../../../../docs/schema/idoc_v1.json",
-    "title": "YAML Data Plugin Test",
+    "title": "YAML Value Plugin Test",
     "groups": [
         {
             "groupId": "yaml_test",
             "elements": [
-                "## Testing YAML Data Plugin",
-                "This example tests the data plugin with YAML format.",
+                "## Testing YAML Value Plugin",
+                "This example tests the value plugin with YAML format.",
                 "",
-                "```yaml data people\n- name: Alice\n  age: 25\n  city: New York\n\n- name: Bob\n  age: 30\n  city: Chicago\n\n- name: Carol\n  age: 35\n  city: Los Angeles\n\n- name: David\n  age: 28\n  city: Seattle\n```",
+                "```yaml value people\n- name: Alice\n  age: 25\n  city: New York\n\n- name: Bob\n  age: 30\n  city: Chicago\n\n- name: Carol\n  age: 35\n  city: Los Angeles\n\n- name: David\n  age: 28\n  city: Seattle\n```",
                 {
                     "type": "tabulator",
                     "dataSourceName": "people",
