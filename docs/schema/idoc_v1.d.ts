@@ -286,16 +286,6 @@ interface InteractiveDocument {
 /**
  * Use markdown elements to be verbose and descriptive. Do not use as labels for interactive elements.
  * Embed dynamic variables in markdown using double curly braces {{variableId}} as a placeholder for their values.
- * 
- * Markdown Fence Blocks for Inline Data:
- * - CSV: ```csv variableId (content is CSV rows)
- * - TSV: ```tsv variableId (content is TSV rows)
- * - DSV: ```dsv delimiter:| variableId (content is delimiter-separated rows)
- * - JSON Value: ```json value variableId (content is JSON array or object)
- * - YAML Value: ```yaml value variableId (content is YAML array or object)
- * 
- * The value plugin (JSON/YAML) is useful for inline structured data with type preservation (numbers, booleans, nested objects).
- * CSV/TSV/DSV store everything as strings and are better for tabular data.
  */
 type MarkdownElement = string;
 /** Union type for all possible elements */
