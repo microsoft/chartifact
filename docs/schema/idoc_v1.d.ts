@@ -100,46 +100,76 @@ type DataLoader = DataSource | DataLoaderBySpec;
  * Licensed under the MIT License.
  */
 /**
- * CSV data in markdown fence: ```csv variableId
+ * Inline Data Elements
+ * These elements are defined using markdown fence blocks to embed data directly in the document.
+ */
+/**
+ * CSV Element
+ * Embed CSV data inline using markdown fence block: ```csv variableId
+ * Content should be CSV rows (comma-separated values).
+ * All values are stored as strings.
  */
 interface CsvElement extends ElementBase {
     type: 'csv';
     variableId: VariableID;
-    content: string | string[] | string[][];
+    /** CSV content as string */
+    content: string;
 }
 /**
- * TSV data in markdown fence: ```tsv variableId
+ * TSV Element
+ * Embed TSV data inline using markdown fence block: ```tsv variableId
+ * Content should be TSV rows (tab-separated values).
+ * All values are stored as strings.
  */
 interface TsvElement extends ElementBase {
     type: 'tsv';
     variableId: VariableID;
-    content: string | string[] | string[][];
+    /** TSV content as string */
+    content: string;
 }
 /**
- * Custom delimiter-separated data in markdown fence: ```dsv delimiter:| variableId
+ * DSV Element
+ * Embed delimiter-separated data inline using markdown fence block: ```dsv delimiter:| variableId
+ * Content should be delimiter-separated rows.
+ * All values are stored as strings.
  */
 interface DsvElement extends ElementBase {
     type: 'dsv';
     variableId: VariableID;
+    /** Custom delimiter character (e.g., '|', ';', etc.) */
     delimiter: string;
-    content: string | string[] | string[][];
+    /** DSV content as string */
+    content: string;
 }
 /**
- * JSON data with type preservation in markdown fence: ```json value variableId
+ * Value Element (JSON)
+ * Embed JSON data inline using markdown fence block: ```json value variableId
+ * Content should be a JSON array or object.
+ * Preserves data types: numbers remain numbers, booleans remain booleans, nested objects are preserved.
+ * Use this for structured data with type preservation.
  */
 interface JsonValueElement extends ElementBase {
     type: 'json-value';
     variableId: VariableID;
+    /** JSON content as array or object */
     content: object | object[];
 }
 /**
- * YAML data with type preservation in markdown fence: ```yaml value variableId
+ * Value Element (YAML)
+ * Embed YAML data inline using markdown fence block: ```yaml value variableId
+ * Content should be YAML array or object.
+ * Preserves data types: numbers remain numbers, booleans remain booleans, nested objects are preserved.
+ * Use this for structured data with type preservation.
  */
 interface YamlValueElement extends ElementBase {
     type: 'yaml-value';
     variableId: VariableID;
-    content: object | object[] | string | string[];
+    /** YAML content as array or object */
+    content: object | object[];
 }
+/**
+ * Union type for all inline data elements
+ */
 type InlineDataElement = CsvElement | TsvElement | DsvElement | JsonValueElement | YamlValueElement;
 /**
  * Interactive Elements
@@ -335,7 +365,7 @@ interface InteractiveDocument {
  */
 type MarkdownElement = string;
 /** Union type for all possible elements */
-type PageElement = MarkdownElement | InteractiveElement | InlineDataElement;
+type PageElement = MarkdownElement | InteractiveElement;
 interface PageStyle {
     /** CSS styles, either a string, or array of strings which will be concatenated. The array is for developer ergonomics for authoring and merging. */
     css: string | string[];
