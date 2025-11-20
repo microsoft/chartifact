@@ -157,7 +157,7 @@
                 {
                     "sender": "Assistant",
                     "type": "assistant",
-                    "message": "Analysis complete! Here are the key findings:\n\n\u2022 Total Q4 Revenue: $4.2M (+18% vs Q3)\n\u2022 Best performing region: West ($1.3M)\n\u2022 Top product category: Electronics (42% of sales)\n\u2022 Peak sales month: December\n\nI've generated visualizations for each insight. Would you like me to create the summary report now?"
+                    "message": "Analysis complete! Here are the key findings:\n\n\u2022 Total Q4 Revenue: $4.2M (+18% vs Q3)\n\u2022 Best performing region: West ($1.3M)\n\u2022 Top product category: Electronics (42% of sales)\n\u2022 Peak sales month: December\n\nBelow you can see charts showing my execution metrics - time spent per phase and log activity over time. Would you like me to create the summary report now?"
                 },
                 {
                     "sender": "User",
@@ -221,48 +221,121 @@
             ]
         },
         {
-            "variableId": "regionalSalesData",
+            "variableId": "executionTimeByPhase",
             "type": "object",
             "isArray": true,
             "initialValue": [
                 {
-                    "region": "North",
-                    "revenue": 950000,
-                    "orders": 1234
+                    "phase": "Data Loading",
+                    "duration_seconds": 6,
+                    "operations": 5
                 },
                 {
-                    "region": "South",
-                    "revenue": 850000,
-                    "orders": 1089
+                    "phase": "Analysis",
+                    "duration_seconds": 13,
+                    "operations": 7
                 },
                 {
-                    "region": "East",
-                    "revenue": 1100000,
-                    "orders": 1456
-                },
-                {
-                    "region": "West",
-                    "revenue": 1300000,
-                    "orders": 1678
+                    "phase": "Report Generation",
+                    "duration_seconds": 13,
+                    "operations": 6
                 }
             ]
         },
         {
-            "variableId": "monthlyTrendData",
+            "variableId": "logActivityOverTime",
             "type": "object",
             "isArray": true,
             "initialValue": [
                 {
-                    "month": "October",
-                    "revenue": 1200000
+                    "timestamp": "10:15:23",
+                    "log_count": 1,
+                    "cumulative": 1
                 },
                 {
-                    "month": "November",
-                    "revenue": 1400000
+                    "timestamp": "10:15:24",
+                    "log_count": 1,
+                    "cumulative": 2
                 },
                 {
-                    "month": "December",
-                    "revenue": 1600000
+                    "timestamp": "10:15:26",
+                    "log_count": 1,
+                    "cumulative": 3
+                },
+                {
+                    "timestamp": "10:15:27",
+                    "log_count": 1,
+                    "cumulative": 4
+                },
+                {
+                    "timestamp": "10:15:29",
+                    "log_count": 1,
+                    "cumulative": 5
+                },
+                {
+                    "timestamp": "10:16:05",
+                    "log_count": 1,
+                    "cumulative": 6
+                },
+                {
+                    "timestamp": "10:16:07",
+                    "log_count": 1,
+                    "cumulative": 7
+                },
+                {
+                    "timestamp": "10:16:09",
+                    "log_count": 1,
+                    "cumulative": 8
+                },
+                {
+                    "timestamp": "10:16:10",
+                    "log_count": 1,
+                    "cumulative": 9
+                },
+                {
+                    "timestamp": "10:16:13",
+                    "log_count": 1,
+                    "cumulative": 10
+                },
+                {
+                    "timestamp": "10:16:14",
+                    "log_count": 1,
+                    "cumulative": 11
+                },
+                {
+                    "timestamp": "10:16:18",
+                    "log_count": 1,
+                    "cumulative": 12
+                },
+                {
+                    "timestamp": "10:17:30",
+                    "log_count": 1,
+                    "cumulative": 13
+                },
+                {
+                    "timestamp": "10:17:31",
+                    "log_count": 1,
+                    "cumulative": 14
+                },
+                {
+                    "timestamp": "10:17:33",
+                    "log_count": 1,
+                    "cumulative": 15
+                },
+                {
+                    "timestamp": "10:17:38",
+                    "log_count": 1,
+                    "cumulative": 16
+                },
+                {
+                    "timestamp": "10:17:42",
+                    "log_count": 1,
+                    "cumulative": 17
+                },
+                {
+                    "timestamp": "10:17:43",
+                    "log_count": 1,
+                    "cumulative": 18
                 }
             ]
         }
@@ -518,18 +591,18 @@
                 },
                 "",
                 "",
-                "### \ud83d\udcca Generated Visualizations",
+                "### \ud83e\udd16 Agent Execution Metrics",
                 "",
-                "#### Regional Revenue Analysis",
+                "#### Execution Time by Phase",
                 {
                     "type": "chart",
-                    "chartKey": "regionalRevenueChart"
+                    "chartKey": "executionTimeChart"
                 },
                 "",
-                "#### Monthly Revenue Trend",
+                "#### Log Activity Over Time",
                 {
                     "type": "chart",
-                    "chartKey": "monthlyTrendChart"
+                    "chartKey": "logActivityChart"
                 },
                 "",
                 {
@@ -754,12 +827,12 @@
     ],
     "resources": {
         "charts": {
-            "regionalRevenueChart": {
+            "executionTimeChart": {
                 "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
                 "width": "container",
                 "height": 300,
                 "data": {
-                    "name": "regionalSalesData"
+                    "name": "executionTimeByPhase"
                 },
                 "mark": {
                     "type": "bar",
@@ -767,45 +840,40 @@
                 },
                 "encoding": {
                     "x": {
-                        "field": "region",
+                        "field": "phase",
                         "type": "nominal",
-                        "title": "Region",
+                        "title": "Execution Phase",
                         "axis": {
                             "labelAngle": 0
                         }
                     },
                     "y": {
-                        "field": "revenue",
+                        "field": "duration_seconds",
                         "type": "quantitative",
-                        "title": "Revenue ($)",
-                        "axis": {
-                            "format": "$,.0f"
-                        }
+                        "title": "Duration (seconds)"
                     },
                     "tooltip": [
                         {
-                            "field": "region",
-                            "title": "Region"
+                            "field": "phase",
+                            "title": "Phase"
                         },
                         {
-                            "field": "revenue",
-                            "title": "Revenue",
-                            "format": "$,.0f"
+                            "field": "duration_seconds",
+                            "title": "Duration (sec)"
                         },
                         {
-                            "field": "orders",
-                            "title": "Orders",
-                            "format": ","
+                            "field": "operations",
+                            "title": "Operations"
                         }
                     ]
                 }
             },
-            "monthlyTrendChart": {
+            "logActivityChart": {
                 "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
                 "width": "container",
                 "height": 300,
                 "data": {
-                    "name": "monthlyTrendData"
+                    "name": "logActivityOverTime"
                 },
                 "mark": {
                     "type": "line",
@@ -815,32 +883,26 @@
                 },
                 "encoding": {
                     "x": {
-                        "field": "month",
+                        "field": "timestamp",
                         "type": "nominal",
-                        "title": "Month",
-                        "sort": [
-                            "October",
-                            "November",
-                            "December"
-                        ]
+                        "title": "Time",
+                        "axis": {
+                            "labelAngle": -45
+                        }
                     },
                     "y": {
-                        "field": "revenue",
+                        "field": "cumulative",
                         "type": "quantitative",
-                        "title": "Revenue ($)",
-                        "axis": {
-                            "format": "$,.0f"
-                        }
+                        "title": "Cumulative Log Entries"
                     },
                     "tooltip": [
                         {
-                            "field": "month",
-                            "title": "Month"
+                            "field": "timestamp",
+                            "title": "Time"
                         },
                         {
-                            "field": "revenue",
-                            "title": "Revenue",
-                            "format": "$,.0f"
+                            "field": "cumulative",
+                            "title": "Total Logs"
                         }
                     ]
                 }
