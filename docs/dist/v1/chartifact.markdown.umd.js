@@ -2905,7 +2905,7 @@ ${reconstitutedRules.join("\n\n")}
     "behavior",
     "-moz-binding"
   ]);
-  function getProperty(data, path, parents = [], logger) {
+  function getProperty(data, path, parents = [], logger, getOuterProperty) {
     if (path === ".") {
       return data;
     }
@@ -2925,6 +2925,9 @@ ${reconstitutedRules.join("\n\n")}
         currentData = parents[parents.length - parentLevels];
         remainingPath = tempPath.startsWith(".") ? tempPath.substring(1) : tempPath;
       } else {
+        if (getOuterProperty) {
+          return getOuterProperty(path, data, parents);
+        }
         return void 0;
       }
     }
@@ -2933,21 +2936,25 @@ ${reconstitutedRules.join("\n\n")}
         logger.error(`Cannot access property "${remainingPath}" on primitive value of type "${typeof currentData}"`);
         return void 0;
       }
-      return remainingPath.split(".").reduce((o, k2) => o && typeof o === "object" && o !== null ? o[k2] : void 0, currentData);
+      const result = remainingPath.split(".").reduce((o, k2) => o && typeof o === "object" && o !== null ? o[k2] : void 0, currentData);
+      if (result === void 0 && getOuterProperty) {
+        return getOuterProperty(path, data, parents);
+      }
+      return result;
     }
     return currentData;
   }
   function escape(s) {
     return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] || c);
   }
-  function interpolate(tpl, data, escapeHtml = true, parents = [], logger) {
+  function interpolate(tpl, data, escapeHtml = true, parents = [], logger, getOuterProperty) {
     return tpl.replace(/\{\{\{([^{]*?)\}\}\}|\{\{([^{]*?)\}\}/g, (match, escapedExpr, normalExpr) => {
       if (escapedExpr !== void 0) {
         const trimmed2 = escapedExpr.trim();
         return `{{${trimmed2}}}`;
       }
       const trimmed = normalExpr.trim();
-      const val = getProperty(data, trimmed, parents, logger);
+      const val = getProperty(data, trimmed, parents, logger, getOuterProperty);
       return val == null ? "" : escapeHtml ? escape(String(val)) : String(val);
     });
   }
@@ -2987,13 +2994,13 @@ ${reconstitutedRules.join("\n\n")}
     }
     return cssDeclarations.join("; ").trim();
   }
-  function processStyleAttribute(value, data, parents, logger) {
+  function processStyleAttribute(value, data, parents, logger, getOuterProperty) {
     if (value !== null && typeof value === "object" && !Array.isArray(value) && "$check" in value && typeof value.$check === "string") {
       const conditional = value;
       if (!validatePathExpression(conditional.$check, "$check", logger)) {
         return "";
       }
-      const checkValue = getProperty(data, conditional.$check, parents);
+      const checkValue = getProperty(data, conditional.$check, parents, logger, getOuterProperty);
       const condition = evaluateCondition(checkValue, conditional);
       const resultValue = condition ? conditional.$then : conditional.$else;
       if (resultValue === void 0) {
@@ -3078,11 +3085,11 @@ ${reconstitutedRules.join("\n\n")}
   function isConditionalValue(value) {
     return value !== null && typeof value === "object" && !Array.isArray(value) && "$check" in value && typeof value.$check === "string";
   }
-  function evaluateConditionalValue(value, data, parents = [], logger) {
+  function evaluateConditionalValue(value, data, parents = [], logger, getOuterProperty) {
     if (!validatePathExpression(value.$check, "$check", logger)) {
       return "";
     }
-    const checkValue = getProperty(data, value.$check, parents);
+    const checkValue = getProperty(data, value.$check, parents, logger, getOuterProperty);
     const condition = evaluateCondition(checkValue, value);
     if (condition) {
       return value.$then !== void 0 ? value.$then : "";
@@ -3110,7 +3117,7 @@ ${reconstitutedRules.join("\n\n")}
     const attrs = rest && typeof rest === "object" && !Array.isArray(rest) ? Object.fromEntries(Object.entries(rest).filter(([k2]) => k2 !== "$children")) : {};
     return { tag, rest, children, attrs };
   }
-  function processConditional(rest, data, parents = [], logger) {
+  function processConditional(rest, data, parents = [], logger, getOuterProperty) {
     const conditional = rest;
     if (!conditional.$check) {
       logger.error('"$if" tag requires $check attribute to specify the condition');
@@ -3119,7 +3126,7 @@ ${reconstitutedRules.join("\n\n")}
     if (!validatePathExpression(conditional.$check, "$check", logger)) {
       return { valueToRender: void 0 };
     }
-    const checkValue = getProperty(data, conditional.$check, parents);
+    const checkValue = getProperty(data, conditional.$check, parents, logger, getOuterProperty);
     if (typeof rest === "object" && rest !== null && !Array.isArray(rest) && "$children" in rest) {
       logger.warn('"$if" tag does not support $children, use $then and $else instead');
     }
@@ -3144,8 +3151,9 @@ ${reconstitutedRules.join("\n\n")}
   function renderToDOM(input, options = {}) {
     const data = input.data;
     const logger = options.logger || console;
+    const getOuterProperty = options.propertyFallback;
     const fragment = document.createDocumentFragment();
-    const result = render(input.template, data, { logger });
+    const result = render(input.template, data, { logger, getOuterProperty });
     if (Array.isArray(result))
       result.forEach((n) => fragment.appendChild(n));
     else
@@ -3155,8 +3163,11 @@ ${reconstitutedRules.join("\n\n")}
   function render(template, data, context) {
     const parents = context.parents || [];
     const logger = context.logger;
-    if (typeof template === "string")
-      return document.createTextNode(interpolate(template, data, true, parents, logger));
+    const getOuterProperty = context.getOuterProperty;
+    if (typeof template === "string") {
+      const shouldEscape = context.insideComment || false;
+      return document.createTextNode(interpolate(template, data, shouldEscape, parents, logger, getOuterProperty));
+    }
     if (Array.isArray(template)) {
       const results = [];
       for (const t of template) {
@@ -3182,7 +3193,7 @@ ${reconstitutedRules.join("\n\n")}
       return [];
     }
     if (tag === "$if") {
-      const { valueToRender } = processConditional(rest, data, parents, logger);
+      const { valueToRender } = processConditional(rest, data, parents, logger, getOuterProperty);
       if (valueToRender === void 0) {
         return [];
       }
@@ -3213,9 +3224,9 @@ ${reconstitutedRules.join("\n\n")}
       if (!validatePathExpression(rest.$bind, "$bind", logger)) {
         return [];
       }
-      const bound = getProperty(data, rest.$bind, [], logger);
+      const bound = getProperty(data, rest.$bind, [], logger, getOuterProperty);
       const { $bind, $children = [], ...bindAttrs } = rest;
-      setAttrs(element, bindAttrs, data, tag, parents, logger);
+      setAttrs(element, bindAttrs, data, tag, parents, logger, getOuterProperty);
       if (isVoid && $children.length > 0) {
         logger.warn(`Tag "${tag}" is a void element and cannot have children`);
       }
@@ -3245,7 +3256,7 @@ ${reconstitutedRules.join("\n\n")}
       const childNodes = render({ [tag]: { ...bindAttrs, $children } }, boundData, { ...context, parents: newParents });
       return Array.isArray(childNodes) ? childNodes : [childNodes];
     }
-    setAttrs(element, attrs, data, tag, parents, logger);
+    setAttrs(element, attrs, data, tag, parents, logger, getOuterProperty);
     if (!isVoid) {
       for (const c of children) {
         const nodes = render(c, data, context);
@@ -3259,23 +3270,23 @@ ${reconstitutedRules.join("\n\n")}
     }
     return element;
   }
-  function setAttrs(element, attrs, data, tag, parents = [], logger) {
+  function setAttrs(element, attrs, data, tag, parents = [], logger, getOuterProperty) {
     Object.entries(attrs).forEach(([key, value]) => {
       if (!validateAttribute(key, tag, logger)) {
         return;
       }
       let attrValue;
       if (key === "style") {
-        attrValue = processStyleAttribute(value, data, parents, logger);
+        attrValue = processStyleAttribute(value, data, parents, logger, getOuterProperty);
         if (!attrValue) {
           return;
         }
       } else {
         if (isConditionalValue(value)) {
-          const evaluatedValue = evaluateConditionalValue(value, data, parents, logger);
-          attrValue = interpolate(String(evaluatedValue), data, false, parents, logger);
+          const evaluatedValue = evaluateConditionalValue(value, data, parents, logger, getOuterProperty);
+          attrValue = interpolate(String(evaluatedValue), data, false, parents, logger, getOuterProperty);
         } else {
-          attrValue = interpolate(String(value), data, false, parents, logger);
+          attrValue = interpolate(String(value), data, false, parents, logger, getOuterProperty);
         }
       }
       element.setAttribute(key, attrValue);
