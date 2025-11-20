@@ -29,6 +29,10 @@ Chartifact consists of several interoperating modules:
 ### Testing
 - Currently we don't have much test coverage. We can add this later.
 
+### Version Control
+- **Do NOT check in UMD build artifacts**: Files matching `*.umd.js` in `docs/dist/v1/` are build outputs and should not be committed in PRs
+- These files are generated during the build process and committing them creates unnecessary merge conflicts
+
 ## Project-Specific Conventions
 
 1. **File Formats**:

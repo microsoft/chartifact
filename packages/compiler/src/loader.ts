@@ -18,40 +18,15 @@ export function addStaticDataLoaderToSpec(vegaScope: VegaScope, dataSource: Data
 
     if (dataSource.type === 'inline' && dataSource.format === 'json') {
 
-        // For JSON format, always output as json data fence block
-        let content: string;
-        
-        // Stringify content if it's an object array
-        if (Array.isArray(dataSource.content) && typeof dataSource.content[0] === 'object') {
-            content = JSON.stringify(dataSource.content, null, 2);
-        } else if (typeof dataSource.content === 'string') {
-            content = dataSource.content;
-        } else {
-            console.warn(`Unsupported JSON content type: ${typeof dataSource.content}`);
-            return inlineDataMd;
-        }
+        const newData: ValuesData = {
+            name: dataSourceName,
+            values: dataSource.content as object[],
+            transform: dataSource.dataFrameTransformations || [],
+        };
+        spec.signals.push(dataAsSignal(dataSourceName));
 
-        let ds_raw = dataSourceName;
-        
-        if (dataSource.dataFrameTransformations) {
-            ds_raw += '_raw';
-
-            const newData: SourceData = {
-                name: dataSourceName,
-                source: ds_raw,
-                transform: dataSource.dataFrameTransformations || [],
-            };
-            spec.signals.push(dataAsSignal(dataSourceName));
-
-            spec.data.unshift(newData);
-
-            //add a placeholder data since the transform depends on it
-            spec.data.unshift({
-                name: ds_raw
-            });
-        }
-        
-        inlineDataMd = tickWrap(`json data ${ds_raw}`, content);
+        //real data goes to the beginning of the data array
+        spec.data.unshift(newData);
 
     } else if (typeof dataSource.content === 'string' || (Array.isArray(dataSource.content) && typeof dataSource.content[0] === 'string')) {
 
