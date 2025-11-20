@@ -96,6 +96,52 @@ interface DataLoaderBySpec {
 }
 type DataLoader = DataSource | DataLoaderBySpec;
 /**
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
+/**
+ * CSV data in markdown fence: ```csv variableId
+ */
+interface CsvElement extends ElementBase {
+    type: 'csv';
+    variableId: VariableID;
+    content: string | string[] | string[][];
+}
+/**
+ * TSV data in markdown fence: ```tsv variableId
+ */
+interface TsvElement extends ElementBase {
+    type: 'tsv';
+    variableId: VariableID;
+    content: string | string[] | string[][];
+}
+/**
+ * Custom delimiter-separated data in markdown fence: ```dsv delimiter:| variableId
+ */
+interface DsvElement extends ElementBase {
+    type: 'dsv';
+    variableId: VariableID;
+    delimiter: string;
+    content: string | string[] | string[][];
+}
+/**
+ * JSON data with type preservation in markdown fence: ```json value variableId
+ */
+interface JsonValueElement extends ElementBase {
+    type: 'json-value';
+    variableId: VariableID;
+    content: object | object[];
+}
+/**
+ * YAML data with type preservation in markdown fence: ```yaml value variableId
+ */
+interface YamlValueElement extends ElementBase {
+    type: 'yaml-value';
+    variableId: VariableID;
+    content: object | object[] | string | string[];
+}
+type InlineDataElement = CsvElement | TsvElement | DsvElement | JsonValueElement | YamlValueElement;
+/**
  * Interactive Elements
  */
 /**
@@ -256,7 +302,7 @@ interface TabulatorElementProps extends OptionalVariableControl {
 /**
  * Union type for all possible interactive elements
  */
-type InteractiveElement = ChartElement | CheckboxElement | DropdownElement | ImageElement | MermaidElement | NumberElement | PresetsElement | SliderElement | TabulatorElement | TextboxElement | TreebarkElement;
+type InteractiveElement = ChartElement | CheckboxElement | DropdownElement | ImageElement | MermaidElement | NumberElement | PresetsElement | SliderElement | TabulatorElement | TextboxElement | TreebarkElement | InlineDataElement;
 interface ElementGroup {
     groupId: string;
     elements: PageElement[];
@@ -289,7 +335,7 @@ interface InteractiveDocument {
  */
 type MarkdownElement = string;
 /** Union type for all possible elements */
-type PageElement = MarkdownElement | InteractiveElement;
+type PageElement = MarkdownElement | InteractiveElement | InlineDataElement;
 interface PageStyle {
     /** CSS styles, either a string, or array of strings which will be concatenated. The array is for developer ergonomics for authoring and merging. */
     css: string | string[];
@@ -316,4 +362,4 @@ interface GoogleFontsSpec {
 type InteractiveDocumentWithSchema = InteractiveDocument & {
     $schema?: string;
 };
-export type { Calculation, ChartElement, CheckboxElement, CheckboxProps, DataFrameCalculation, DataLoader, DataLoaderBySpec, DataSource, DataSourceBase, DataSourceBaseFormat, DataSourceByDynamicURL, DataSourceByFile, DataSourceInline, DropdownElement, DropdownElementProps, DynamicDropdownOptions, ElementBase, ElementGroup, GoogleFontsSpec, ImageElement, ImageElementProps, InteractiveDocument, InteractiveDocumentWithSchema, InteractiveElement, MarkdownElement, MermaidElement, MermaidElementProps, MermaidTemplate, NumberElement, NumberElementProps, OptionalVariableControl, PageElement, PageStyle, Preset, PresetsElement, PresetsElementProps, ReturnType, ScalarCalculation, SliderElement, SliderElementProps, TabulatorElement, TabulatorElementProps, TemplatedUrl, TextboxElement, TextboxElementProps, TreebarkElement, TreebarkElementProps, Variable, VariableControl, VariableID, VariableType, VariableValue, VariableValueArray, VariableValuePrimitive, Vega_or_VegaLite_spec };
+export type { Calculation, ChartElement, CheckboxElement, CheckboxProps, CsvElement, DataFrameCalculation, DataLoader, DataLoaderBySpec, DataSource, DataSourceBase, DataSourceBaseFormat, DataSourceByDynamicURL, DataSourceByFile, DataSourceInline, DropdownElement, DropdownElementProps, DsvElement, DynamicDropdownOptions, ElementBase, ElementGroup, GoogleFontsSpec, ImageElement, ImageElementProps, InlineDataElement, InteractiveDocument, InteractiveDocumentWithSchema, InteractiveElement, JsonValueElement, MarkdownElement, MermaidElement, MermaidElementProps, MermaidTemplate, NumberElement, NumberElementProps, OptionalVariableControl, PageElement, PageStyle, Preset, PresetsElement, PresetsElementProps, ReturnType, ScalarCalculation, SliderElement, SliderElementProps, TabulatorElement, TabulatorElementProps, TemplatedUrl, TextboxElement, TextboxElementProps, TreebarkElement, TreebarkElementProps, TsvElement, Variable, VariableControl, VariableID, VariableType, VariableValue, VariableValueArray, VariableValuePrimitive, Vega_or_VegaLite_spec, YamlValueElement };

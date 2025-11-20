@@ -1083,6 +1083,47 @@
       ],
       "type": "object"
     },
+    "CsvElement": {
+      "additionalProperties": false,
+      "description": "CSV data in markdown fence: ```csv variableId",
+      "properties": {
+        "content": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "type": "array"
+            }
+          ]
+        },
+        "type": {
+          "const": "csv",
+          "type": "string"
+        },
+        "variableId": {
+          "$ref": "#/definitions/VariableID"
+        }
+      },
+      "required": [
+        "type",
+        "variableId",
+        "content"
+      ],
+      "type": "object"
+    },
     "DataFrameCalculation": {
       "additionalProperties": false,
       "description": "DataFrame calculation for object arrays. Not for primitive/scalar values.",
@@ -1611,6 +1652,51 @@
       "required": [
         "type",
         "variableId"
+      ],
+      "type": "object"
+    },
+    "DsvElement": {
+      "additionalProperties": false,
+      "description": "Custom delimiter-separated data in markdown fence: ```dsv delimiter:| variableId",
+      "properties": {
+        "content": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "type": "array"
+            }
+          ]
+        },
+        "delimiter": {
+          "type": "string"
+        },
+        "type": {
+          "const": "dsv",
+          "type": "string"
+        },
+        "variableId": {
+          "$ref": "#/definitions/VariableID"
+        }
+      },
+      "required": [
+        "type",
+        "variableId",
+        "delimiter",
+        "content"
       ],
       "type": "object"
     },
@@ -3143,6 +3229,25 @@
       ],
       "type": "object"
     },
+    "InlineDataElement": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/CsvElement"
+        },
+        {
+          "$ref": "#/definitions/TsvElement"
+        },
+        {
+          "$ref": "#/definitions/DsvElement"
+        },
+        {
+          "$ref": "#/definitions/JsonValueElement"
+        },
+        {
+          "$ref": "#/definitions/YamlValueElement"
+        }
+      ]
+    },
     "InteractiveDocumentWithSchema": {
       "additionalProperties": false,
       "description": "JSON Schema version with $schema property for validation",
@@ -3236,6 +3341,9 @@
         },
         {
           "$ref": "#/definitions/TreebarkElement"
+        },
+        {
+          "$ref": "#/definitions/InlineDataElement"
         }
       ],
       "description": "Union type for all possible interactive elements"
@@ -3361,6 +3469,38 @@
       },
       "required": [
         "type"
+      ],
+      "type": "object"
+    },
+    "JsonValueElement": {
+      "additionalProperties": false,
+      "description": "JSON data with type preservation in markdown fence: ```json value variableId",
+      "properties": {
+        "content": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "items": {
+                "type": "object"
+              },
+              "type": "array"
+            }
+          ]
+        },
+        "type": {
+          "const": "json-value",
+          "type": "string"
+        },
+        "variableId": {
+          "$ref": "#/definitions/VariableID"
+        }
+      },
+      "required": [
+        "type",
+        "variableId",
+        "content"
       ],
       "type": "object"
     },
@@ -4138,6 +4278,9 @@
         },
         {
           "$ref": "#/definitions/InteractiveElement"
+        },
+        {
+          "$ref": "#/definitions/InlineDataElement"
         }
       ],
       "description": "Union type for all possible elements"
@@ -5893,6 +6036,47 @@
       ],
       "type": "object"
     },
+    "TsvElement": {
+      "additionalProperties": false,
+      "description": "TSV data in markdown fence: ```tsv variableId",
+      "properties": {
+        "content": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "type": "array"
+            }
+          ]
+        },
+        "type": {
+          "const": "tsv",
+          "type": "string"
+        },
+        "variableId": {
+          "$ref": "#/definitions/VariableID"
+        }
+      },
+      "required": [
+        "type",
+        "variableId",
+        "content"
+      ],
+      "type": "object"
+    },
     "UlTag": {
       "additionalProperties": false,
       "properties": {
@@ -6357,6 +6541,47 @@
       },
       "required": [
         "type"
+      ],
+      "type": "object"
+    },
+    "YamlValueElement": {
+      "additionalProperties": false,
+      "description": "YAML data with type preservation in markdown fence: ```yaml value variableId",
+      "properties": {
+        "content": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "items": {
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ]
+        },
+        "type": {
+          "const": "yaml-value",
+          "type": "string"
+        },
+        "variableId": {
+          "$ref": "#/definitions/VariableID"
+        }
+      },
+      "required": [
+        "type",
+        "variableId",
+        "content"
       ],
       "type": "object"
     }

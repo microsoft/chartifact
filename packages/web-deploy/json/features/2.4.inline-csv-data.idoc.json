@@ -37,7 +37,12 @@
                 {
                     "type": "csv",
                     "variableId": "officeSupplies",
-                    "content": "item,price\nStapler,12.99\nPen,1.25\nLamp,29.99"
+                    "content": [
+                        "item,price",
+                        "Stapler,12.99",
+                        "Pen,1.25",
+                        "Lamp,29.99"
+                    ]
                 },
                 {
                     "type": "tabulator",
@@ -59,7 +64,12 @@
                 {
                     "type": "tsv",
                     "variableId": "people",
-                    "content": "name\tage\tcity\nAlice\t30\tNew York\nBob\t25\tLos Angeles\nCharlie\t35\tChicago"
+                    "content": [
+                        "name\tage\tcity",
+                        "Alice\t30\tNew York",
+                        "Bob\t25\tLos Angeles",
+                        "Charlie\t35\tChicago"
+                    ]
                 },
                 {
                     "type": "tabulator",
@@ -82,7 +92,12 @@
                     "type": "dsv",
                     "variableId": "products",
                     "delimiter": "|",
-                    "content": "product|category|rating\nLaptop|Electronics|4.5\nChair|Furniture|4.2\nBook|Education|4.8"
+                    "content": [
+                        "product|category|rating",
+                        "Laptop|Electronics|4.5",
+                        "Chair|Furniture|4.2",
+                        "Book|Education|4.8"
+                    ]
                 },
                 {
                     "type": "tabulator",

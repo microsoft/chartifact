@@ -8,7 +8,16 @@
                 "## Testing YAML Value Plugin",
                 "This example tests the value plugin with YAML format.",
                 "",
-                "```yaml value people\n- name: Alice\n  age: 25\n  city: New York\n\n- name: Bob\n  age: 30\n  city: Chicago\n\n- name: Carol\n  age: 35\n  city: Los Angeles\n\n- name: David\n  age: 28\n  city: Seattle\n```",
+                {
+                    "type": "yaml-value",
+                    "variableId": "people",
+                    "content": [
+                        {"name": "Alice", "age": 25, "city": "New York"},
+                        {"name": "Bob", "age": 30, "city": "Chicago"},
+                        {"name": "Carol", "age": 35, "city": "Los Angeles"},
+                        {"name": "David", "age": 28, "city": "Seattle"}
+                    ]
+                },
                 {
                     "type": "tabulator",
                     "dataSourceName": "people",
