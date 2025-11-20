@@ -1083,29 +1083,6 @@
       ],
       "type": "object"
     },
-    "CsvElement": {
-      "additionalProperties": false,
-      "description": "CSV Element Embed CSV data inline using markdown fence block: ```csv variableId Content should be CSV rows (comma-separated values). All values are stored as strings.",
-      "properties": {
-        "content": {
-          "description": "CSV content as string",
-          "type": "string"
-        },
-        "type": {
-          "const": "csv",
-          "type": "string"
-        },
-        "variableId": {
-          "$ref": "#/definitions/VariableID"
-        }
-      },
-      "required": [
-        "type",
-        "variableId",
-        "content"
-      ],
-      "type": "object"
-    },
     "DataFrameCalculation": {
       "additionalProperties": false,
       "description": "DataFrame calculation for object arrays. Not for primitive/scalar values.",
@@ -1634,34 +1611,6 @@
       "required": [
         "type",
         "variableId"
-      ],
-      "type": "object"
-    },
-    "DsvElement": {
-      "additionalProperties": false,
-      "description": "DSV Element Embed delimiter-separated data inline using markdown fence block: ```dsv delimiter:| variableId Content should be delimiter-separated rows. All values are stored as strings.",
-      "properties": {
-        "content": {
-          "description": "DSV content as string",
-          "type": "string"
-        },
-        "delimiter": {
-          "description": "Custom delimiter character (e.g., '|', ';', etc.)",
-          "type": "string"
-        },
-        "type": {
-          "const": "dsv",
-          "type": "string"
-        },
-        "variableId": {
-          "$ref": "#/definitions/VariableID"
-        }
-      },
-      "required": [
-        "type",
-        "variableId",
-        "delimiter",
-        "content"
       ],
       "type": "object"
     },
@@ -3194,26 +3143,6 @@
       ],
       "type": "object"
     },
-    "InlineDataElement": {
-      "anyOf": [
-        {
-          "$ref": "#/definitions/CsvElement"
-        },
-        {
-          "$ref": "#/definitions/TsvElement"
-        },
-        {
-          "$ref": "#/definitions/DsvElement"
-        },
-        {
-          "$ref": "#/definitions/JsonValueElement"
-        },
-        {
-          "$ref": "#/definitions/YamlValueElement"
-        }
-      ],
-      "description": "Union type for all inline data elements"
-    },
     "InteractiveDocumentWithSchema": {
       "additionalProperties": false,
       "description": "JSON Schema version with $schema property for validation",
@@ -3307,9 +3236,6 @@
         },
         {
           "$ref": "#/definitions/TreebarkElement"
-        },
-        {
-          "$ref": "#/definitions/InlineDataElement"
         }
       ],
       "description": "Union type for all possible interactive elements"
@@ -3435,39 +3361,6 @@
       },
       "required": [
         "type"
-      ],
-      "type": "object"
-    },
-    "JsonValueElement": {
-      "additionalProperties": false,
-      "description": "Value Element (JSON) Embed JSON data inline using markdown fence block: ```json value variableId Content should be a JSON array or object. Preserves data types: numbers remain numbers, booleans remain booleans, nested objects are preserved. Use this for structured data with type preservation.",
-      "properties": {
-        "content": {
-          "anyOf": [
-            {
-              "type": "object"
-            },
-            {
-              "items": {
-                "type": "object"
-              },
-              "type": "array"
-            }
-          ],
-          "description": "JSON content as array or object"
-        },
-        "type": {
-          "const": "json-value",
-          "type": "string"
-        },
-        "variableId": {
-          "$ref": "#/definitions/VariableID"
-        }
-      },
-      "required": [
-        "type",
-        "variableId",
-        "content"
       ],
       "type": "object"
     },
@@ -6000,29 +5893,6 @@
       ],
       "type": "object"
     },
-    "TsvElement": {
-      "additionalProperties": false,
-      "description": "TSV Element Embed TSV data inline using markdown fence block: ```tsv variableId Content should be TSV rows (tab-separated values). All values are stored as strings.",
-      "properties": {
-        "content": {
-          "description": "TSV content as string",
-          "type": "string"
-        },
-        "type": {
-          "const": "tsv",
-          "type": "string"
-        },
-        "variableId": {
-          "$ref": "#/definitions/VariableID"
-        }
-      },
-      "required": [
-        "type",
-        "variableId",
-        "content"
-      ],
-      "type": "object"
-    },
     "UlTag": {
       "additionalProperties": false,
       "properties": {
@@ -6487,39 +6357,6 @@
       },
       "required": [
         "type"
-      ],
-      "type": "object"
-    },
-    "YamlValueElement": {
-      "additionalProperties": false,
-      "description": "Value Element (YAML) Embed YAML data inline using markdown fence block: ```yaml value variableId Content should be YAML array or object. Preserves data types: numbers remain numbers, booleans remain booleans, nested objects are preserved. Use this for structured data with type preservation.",
-      "properties": {
-        "content": {
-          "anyOf": [
-            {
-              "type": "object"
-            },
-            {
-              "items": {
-                "type": "object"
-              },
-              "type": "array"
-            }
-          ],
-          "description": "YAML content as array or object"
-        },
-        "type": {
-          "const": "yaml-value",
-          "type": "string"
-        },
-        "variableId": {
-          "$ref": "#/definitions/VariableID"
-        }
-      },
-      "required": [
-        "type",
-        "variableId",
-        "content"
       ],
       "type": "object"
     }

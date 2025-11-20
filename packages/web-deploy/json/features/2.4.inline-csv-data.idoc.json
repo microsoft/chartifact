@@ -8,7 +8,15 @@
                 "## Inline JSON Value",
                 "You can provide JSON data directly as a code block within the document using the **json plugin** with a `variableId` parameter. This is useful for structured data or when you want to include complex data objects.",
                 "",
-                "```json value inventory\n[\n  {\"item\": \"Keyboard\", \"price\": 79.99, \"inStock\": true},\n  {\"item\": \"Mouse\", \"price\": 29.99, \"inStock\": true},\n  {\"item\": \"Monitor\", \"price\": 299.99, \"inStock\": false}\n]\n```",
+                {
+                    "type": "json-value",
+                    "variableId": "inventory",
+                    "content": [
+                        {"item": "Keyboard", "price": 79.99, "inStock": true},
+                        {"item": "Mouse", "price": 29.99, "inStock": true},
+                        {"item": "Monitor", "price": 299.99, "inStock": false}
+                    ]
+                },
                 {
                     "type": "tabulator",
                     "dataSourceName": "inventory",
@@ -26,7 +34,11 @@
                 "## Inline CSV Data",
                 "You can provide CSV data directly as a code block within the document using the **csv plugin** with a `variableId` parameter. This is useful for small datasets or when you want to include sample data without external dependencies.",
                 "",
-                "```csv officeSupplies\nitem,price\nStapler,12.99\nPen,1.25\nLamp,29.99\n```",
+                {
+                    "type": "csv",
+                    "variableId": "officeSupplies",
+                    "content": "item,price\nStapler,12.99\nPen,1.25\nLamp,29.99"
+                },
                 {
                     "type": "tabulator",
                     "dataSourceName": "officeSupplies",
@@ -44,7 +56,11 @@
                 "## Inline TSV Data",
                 "You can also use tab-separated values (TSV) with the **tsv plugin** and a `variableId` parameter:",
                 "",
-                "```tsv people\nname\tage\tcity\nAlice\t30\tNew York\nBob\t25\tLos Angeles\nCharlie\t35\tChicago\n```",
+                {
+                    "type": "tsv",
+                    "variableId": "people",
+                    "content": "name\tage\tcity\nAlice\t30\tNew York\nBob\t25\tLos Angeles\nCharlie\t35\tChicago"
+                },
                 {
                     "type": "tabulator",
                     "dataSourceName": "people",
@@ -62,7 +78,12 @@
                 "## Inline DSV Data (Custom Delimiter)",
                 "For custom delimiters, use the **dsv plugin** with `delimiter:` and `variableId:` parameters. Here's an example with pipe-separated values:",
                 "",
-                "```dsv delimiter:| variableId:products\nproduct|category|rating\nLaptop|Electronics|4.5\nChair|Furniture|4.2\nBook|Education|4.8\n```",
+                {
+                    "type": "dsv",
+                    "variableId": "products",
+                    "delimiter": "|",
+                    "content": "product|category|rating\nLaptop|Electronics|4.5\nChair|Furniture|4.2\nBook|Education|4.8"
+                },
                 {
                     "type": "tabulator",
                     "dataSourceName": "products",

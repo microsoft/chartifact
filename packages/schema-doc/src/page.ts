@@ -3,6 +3,7 @@
 * Licensed under the MIT License.
 */
 import { InteractiveElement } from './interactive.js';
+import { InlineDataElement } from './inline-data.js';
 import { DataLoader } from './datasource.js';
 import { Variable } from './common.js';
 
@@ -45,7 +46,7 @@ export interface InteractiveDocument {
 export type MarkdownElement = string;
 
 /** Union type for all possible elements */
-export type PageElement = MarkdownElement | InteractiveElement;
+export type PageElement = MarkdownElement | InteractiveElement | InlineDataElement;
 
 export interface PageStyle {
   /** CSS styles, either a string, or array of strings which will be concatenated. The array is for developer ergonomics for authoring and merging. */

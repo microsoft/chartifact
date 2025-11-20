@@ -18,8 +18,8 @@ import { VariableID, ElementBase } from './common.js';
 export interface CsvElement extends ElementBase {
   type: 'csv';
   variableId: VariableID;
-  /** CSV content as string */
-  content: string;
+  /** CSV content as string, array of strings, or array of string arrays */
+  content: string | string[] | string[][];
 }
 
 /**
@@ -31,8 +31,8 @@ export interface CsvElement extends ElementBase {
 export interface TsvElement extends ElementBase {
   type: 'tsv';
   variableId: VariableID;
-  /** TSV content as string */
-  content: string;
+  /** TSV content as string, array of strings, or array of string arrays */
+  content: string | string[] | string[][];
 }
 
 /**
@@ -46,8 +46,8 @@ export interface DsvElement extends ElementBase {
   variableId: VariableID;
   /** Custom delimiter character (e.g., '|', ';', etc.) */
   delimiter: string;
-  /** DSV content as string */
-  content: string;
+  /** DSV content as string, array of strings, or array of string arrays */
+  content: string | string[] | string[][];
 }
 
 /**
@@ -74,8 +74,8 @@ export interface JsonValueElement extends ElementBase {
 export interface YamlValueElement extends ElementBase {
   type: 'yaml-value';
   variableId: VariableID;
-  /** YAML content as array or object */
-  content: object | object[];
+  /** YAML content as array, object, string, or string array */
+  content: object | object[] | string | string[];
 }
 
 /**
