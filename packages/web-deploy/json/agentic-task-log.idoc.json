@@ -35,7 +35,9 @@
             ".summary-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }",
             ".stat-item { text-align: center; padding: 10px; background: #f8f9fa; border-radius: 4px; }",
             ".stat-value { font-size: 1.8em; font-weight: bold; color: #667eea; }",
-            ".stat-label { font-size: 0.9em; color: #6c757d; margin-top: 5px; }"
+            ".stat-label { font-size: 0.9em; color: #6c757d; margin-top: 5px; }",
+            ".chart-section { background: white; padding: 20px; margin: 25px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }",
+            ".chart-section h3 { margin: 0 0 15px 0; color: #2c3e50; font-size: 1.1em; }"
         ]
     },
     "variables": [
@@ -215,6 +217,52 @@
                     "sender": "User",
                     "type": "user",
                     "message": "Excellent work! Thank you."
+                }
+            ]
+        },
+        {
+            "variableId": "regionalSalesData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [
+                {
+                    "region": "North",
+                    "revenue": 950000,
+                    "orders": 1234
+                },
+                {
+                    "region": "South",
+                    "revenue": 850000,
+                    "orders": 1089
+                },
+                {
+                    "region": "East",
+                    "revenue": 1100000,
+                    "orders": 1456
+                },
+                {
+                    "region": "West",
+                    "revenue": 1300000,
+                    "orders": 1678
+                }
+            ]
+        },
+        {
+            "variableId": "monthlyTrendData",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [
+                {
+                    "month": "October",
+                    "revenue": 1200000
+                },
+                {
+                    "month": "November",
+                    "revenue": 1400000
+                },
+                {
+                    "month": "December",
+                    "revenue": 1600000
                 }
             ]
         }
@@ -469,6 +517,21 @@
                     }
                 },
                 "",
+                "",
+                "### \ud83d\udcca Generated Visualizations",
+                "",
+                "#### Regional Revenue Analysis",
+                {
+                    "type": "chart",
+                    "chartKey": "regionalRevenueChart"
+                },
+                "",
+                "#### Monthly Revenue Trend",
+                {
+                    "type": "chart",
+                    "chartKey": "monthlyTrendChart"
+                },
+                "",
                 {
                     "type": "treebark",
                     "variableId": "executionLogs3",
@@ -688,5 +751,100 @@
                 }
             ]
         }
-    ]
+    ],
+    "resources": {
+        "charts": {
+            "regionalRevenueChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "regionalSalesData"
+                },
+                "mark": {
+                    "type": "bar",
+                    "color": "#667eea"
+                },
+                "encoding": {
+                    "x": {
+                        "field": "region",
+                        "type": "nominal",
+                        "title": "Region",
+                        "axis": {
+                            "labelAngle": 0
+                        }
+                    },
+                    "y": {
+                        "field": "revenue",
+                        "type": "quantitative",
+                        "title": "Revenue ($)",
+                        "axis": {
+                            "format": "$,.0f"
+                        }
+                    },
+                    "tooltip": [
+                        {
+                            "field": "region",
+                            "title": "Region"
+                        },
+                        {
+                            "field": "revenue",
+                            "title": "Revenue",
+                            "format": "$,.0f"
+                        },
+                        {
+                            "field": "orders",
+                            "title": "Orders",
+                            "format": ","
+                        }
+                    ]
+                }
+            },
+            "monthlyTrendChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "monthlyTrendData"
+                },
+                "mark": {
+                    "type": "line",
+                    "point": true,
+                    "color": "#764ba2",
+                    "strokeWidth": 3
+                },
+                "encoding": {
+                    "x": {
+                        "field": "month",
+                        "type": "nominal",
+                        "title": "Month",
+                        "sort": [
+                            "October",
+                            "November",
+                            "December"
+                        ]
+                    },
+                    "y": {
+                        "field": "revenue",
+                        "type": "quantitative",
+                        "title": "Revenue ($)",
+                        "axis": {
+                            "format": "$,.0f"
+                        }
+                    },
+                    "tooltip": [
+                        {
+                            "field": "month",
+                            "title": "Month"
+                        },
+                        {
+                            "field": "revenue",
+                            "title": "Revenue",
+                            "format": "$,.0f"
+                        }
+                    ]
+                }
+            }
+        }
+    }
 }
