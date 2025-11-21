@@ -199,8 +199,8 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                     }
                     break;
                 }
-                case 'json-value':
-                case 'yaml-value': {
+                case 'json':
+                case 'yaml': {
                     errors.push(...validateVariableID(element.variableId));
                     if (!element.content) {
                         errors.push(`${element.type} element must have content property`);

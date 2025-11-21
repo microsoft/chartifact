@@ -36,7 +36,7 @@ export interface DsvElement extends ElementBase {
  * JSON data with type preservation in markdown fence: ```json value variableId
  */
 export interface JsonValueElement extends ElementBase {
-  type: 'json-value';
+  type: 'json';
   variableId: VariableID;
   content: object | object[];
 }
@@ -45,7 +45,7 @@ export interface JsonValueElement extends ElementBase {
  * YAML data with type preservation in markdown fence: ```yaml value variableId
  */
 export interface YamlValueElement extends ElementBase {
-  type: 'yaml-value';
+  type: 'yaml';
   variableId: VariableID;
   content: object | object[] | string | string[];
 }

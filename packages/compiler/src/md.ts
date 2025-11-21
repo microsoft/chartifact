@@ -391,13 +391,13 @@ function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: Ve
                     mdElements.push(tickWrap(`dsv delimiter:${delimiter} ${variableId}`, dsvContent));
                     break;
                 }
-                case 'json-value': {
+                case 'json': {
                     const { variableId, content } = element;
                     const jsonContent = JSON.stringify(content, null, defaultJsonIndent);
-                    mdElements.push(tickWrap(`json value ${variableId}`, jsonContent));
+                    mdElements.push(tickWrap(`json ${variableId}`, jsonContent));
                     break;
                 }
-                case 'yaml-value': {
+                case 'yaml': {
                     const { variableId, content } = element;
                     let yamlContent: string;
                     if (typeof content === 'string') {
