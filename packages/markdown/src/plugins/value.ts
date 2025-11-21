@@ -8,7 +8,7 @@ import { sanitizedScriptTag, sanitizeHtmlComment } from '../sanitize.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { SpecReview } from 'common';
-import { parseVariableId } from './dsv.js';
+import { parseFenceInfo } from './config.js';
 import * as yaml from 'js-yaml';
 
 interface ValueInstance {
@@ -47,37 +47,31 @@ export const valuePlugin: Plugin<ValueSpec> = {
         const content = token.content.trim();
         const info = token.info.trim();
         
-        // Parse the fence info - expect "json value variableId" or "yaml value variableId" format
-        // The factory.ts will route "json value ..." or "yaml value ..." to this plugin
-        const parts = info.split(/\s+/);
+        // Parse fence info
+        const { format, pluginName: parsedPluginName, params, wasDefaultId } = parseFenceInfo(info);
         
-        // Check for variable ID (should be after "json value" or "yaml value")
+        // If pluginName isn't "value" AND isn't empty AND no explicit variableId, 
+        // it's actually the variableId (e.g., "json inventory")
         let variableId: string;
-        let wasDefaultId = false;
-        let isYaml = false;
+        let actualWasDefaultId: boolean;
         
-        if (parts.length >= 3 && (parts[0] === 'json' || parts[0] === 'yaml') && parts[1] === 'value') {
-            // Format: json value variableId or yaml value variableId
-            variableId = parts[2];
-            isYaml = parts[0] === 'yaml';
-        } else if (parts.length >= 2 && (parts[0] === 'json' || parts[0] === 'yaml') && parts[1] === 'value') {
-            // Format: json value or yaml value (no variable ID provided)
-            variableId = `${parts[0]}Value${index}`;
-            wasDefaultId = true;
-            isYaml = parts[0] === 'yaml';
+        if (parsedPluginName && parsedPluginName !== pluginName && !params.has('variableId')) {
+            // The parsed plugin name is actually the variableId
+            variableId = parsedPluginName;
+            actualWasDefaultId = false;
         } else {
-            // Not the expected format
-            return '';
+            // Normal case: get variableId from params or use default
+            variableId = params.get('variableId') || `${format}Value${index}`;
+            actualWasDefaultId = wasDefaultId;
         }
         
         // Use script tag with application/json type for storage
-        // Note: We store both JSON and YAML data as JSON in the script tag
         const scriptElement = sanitizedScriptTag(content, {
             id: `${pluginName}-${index}`,
             class: className,
             'data-variable-id': variableId,
-            'data-was-default-id': wasDefaultId.toString(),
-            'data-format': isYaml ? 'yaml' : 'json'
+            'data-was-default-id': actualWasDefaultId.toString(),
+            'data-format': format
         });
         
         return scriptElement.outerHTML;
