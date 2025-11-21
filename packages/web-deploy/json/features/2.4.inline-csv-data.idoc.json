@@ -1,6 +1,42 @@
 {
     "$schema": "../../../../docs/schema/idoc_v1.json",
     "title": "Feature: Inline Delimited Data",
+    "dataLoaders": [
+        {
+            "dataSourceName": "officeSupplies",
+            "type": "inline",
+            "format": "csv",
+            "content": [
+                "item,price",
+                "Stapler,12.99",
+                "Pen,1.25",
+                "Lamp,29.99"
+            ]
+        },
+        {
+            "dataSourceName": "people",
+            "type": "inline",
+            "format": "tsv",
+            "content": [
+                "name\tage\tcity",
+                "Alice\t30\tNew York",
+                "Bob\t25\tLos Angeles",
+                "Charlie\t35\tChicago"
+            ]
+        },
+        {
+            "dataSourceName": "products",
+            "type": "inline",
+            "format": "dsv",
+            "delimiter": "|",
+            "content": [
+                "product|category|rating",
+                "Laptop|Electronics|4.5",
+                "Chair|Furniture|4.2",
+                "Book|Education|4.8"
+            ]
+        }
+    ],
     "groups": [
         {
             "groupId": "inline_json",
@@ -9,12 +45,24 @@
                 "You can provide JSON data directly as a code block within the document using the **json plugin** with a `variableId` parameter. This is useful for structured data or when you want to include complex data objects.",
                 "",
                 {
-                    "type": "json-value",
+                    "type": "json",
                     "variableId": "inventory",
                     "content": [
-                        {"item": "Keyboard", "price": 79.99, "inStock": true},
-                        {"item": "Mouse", "price": 29.99, "inStock": true},
-                        {"item": "Monitor", "price": 299.99, "inStock": false}
+                        {
+                            "item": "Keyboard",
+                            "price": 79.99,
+                            "inStock": true
+                        },
+                        {
+                            "item": "Mouse",
+                            "price": 29.99,
+                            "inStock": true
+                        },
+                        {
+                            "item": "Monitor",
+                            "price": 299.99,
+                            "inStock": false
+                        }
                     ]
                 },
                 {
@@ -33,17 +81,6 @@
             "elements": [
                 "## Inline CSV Data",
                 "You can provide CSV data directly as a code block within the document using the **csv plugin** with a `variableId` parameter. This is useful for small datasets or when you want to include sample data without external dependencies.",
-                "",
-                {
-                    "type": "csv",
-                    "variableId": "officeSupplies",
-                    "content": [
-                        "item,price",
-                        "Stapler,12.99",
-                        "Pen,1.25",
-                        "Lamp,29.99"
-                    ]
-                },
                 {
                     "type": "tabulator",
                     "dataSourceName": "officeSupplies",
@@ -60,17 +97,6 @@
             "elements": [
                 "## Inline TSV Data",
                 "You can also use tab-separated values (TSV) with the **tsv plugin** and a `variableId` parameter:",
-                "",
-                {
-                    "type": "tsv",
-                    "variableId": "people",
-                    "content": [
-                        "name\tage\tcity",
-                        "Alice\t30\tNew York",
-                        "Bob\t25\tLos Angeles",
-                        "Charlie\t35\tChicago"
-                    ]
-                },
                 {
                     "type": "tabulator",
                     "dataSourceName": "people",
@@ -87,18 +113,6 @@
             "elements": [
                 "## Inline DSV Data (Custom Delimiter)",
                 "For custom delimiters, use the **dsv plugin** with `delimiter:` and `variableId:` parameters. Here's an example with pipe-separated values:",
-                "",
-                {
-                    "type": "dsv",
-                    "variableId": "products",
-                    "delimiter": "|",
-                    "content": [
-                        "product|category|rating",
-                        "Laptop|Electronics|4.5",
-                        "Chair|Furniture|4.2",
-                        "Book|Education|4.8"
-                    ]
-                },
                 {
                     "type": "tabulator",
                     "dataSourceName": "products",
