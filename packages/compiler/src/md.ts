@@ -373,25 +373,6 @@ function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: Ve
                     addSpec('number', numberSpec, false);
                     break;
                 }
-                case 'json': {
-                    const { variableId, content } = element;
-                    const jsonContent = JSON.stringify(content, null, defaultJsonIndent);
-                    mdElements.push(tickWrap(`json ${variableId}`, jsonContent));
-                    break;
-                }
-                case 'yaml': {
-                    const { variableId, content } = element;
-                    let yamlContent: string;
-                    if (typeof content === 'string') {
-                        yamlContent = content;
-                    } else if (Array.isArray(content) && content.every(item => typeof item === 'string')) {
-                        yamlContent = content.join('\n');
-                    } else {
-                        yamlContent = yaml.dump(content, { indent: defaultJsonIndent });
-                    }
-                    mdElements.push(tickWrap(`yaml ${variableId}`, trimTrailingNewline(yamlContent)));
-                    break;
-                }
                 default: {
                     //output as a comment
                     mdElements.push(tickWrap('#', JSON.stringify(element)));
