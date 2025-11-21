@@ -9,6 +9,7 @@ import { sanitizedHTML, sanitizeHtmlComment } from '../sanitize.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { SpecReview } from 'common';
+import { parseFenceInfo } from './config.js';
 
 interface DsvInstance {
     id: string;
@@ -40,42 +41,25 @@ export function parseDsvInfo(info: string, pluginName: string, index: number): {
     wasDefaultId: boolean;
     wasDefaultDelimiter: boolean;
 } {
-    const parts = info.trim().split(/\s+/);
+    const { params, wasDefaultId } = parseFenceInfo(info);
     
-    let variableId: string | null = null;
-    let delimiter: string | null = null;
+    // Get variableId (already handled by parseFenceInfo)
+    const variableId = params.get('variableId') || `${pluginName}Data${index}`;
     
-    for (let i = 0; i < parts.length; i++) {
-        const part = parts[i];
-        
-        // Parse variableId: parameter
-        if (part.startsWith('variableId:')) {
-            const value = part.slice(11);
-            variableId = value || (i + 1 < parts.length ? parts[++i] : null);
-        }
-        // Parse delimiter: parameter
-        else if (part.startsWith('delimiter:')) {
-            const value = part.slice(10);
-            delimiter = value || (i + 1 < parts.length ? parts[++i] : null);
-        }
-        // Direct variableId format (not a parameter key)
-        else if (i > 0 && !variableId && part !== 'variableId:' && part !== 'delimiter:') {
-            variableId = part;
-        }
-    }
+    // Get delimiter from parameter or use default
+    let delimiter = params.get('delimiter') || ',';
+    const wasDefaultDelimiter = !params.has('delimiter');
     
     // Handle special delimiter characters
-    if (delimiter) {
-        if (delimiter === '\\t') delimiter = '\t';
-        if (delimiter === '\\n') delimiter = '\n';
-        if (delimiter === '\\r') delimiter = '\r';
-    }
+    if (delimiter === '\\t') delimiter = '\t';
+    if (delimiter === '\\n') delimiter = '\n';
+    if (delimiter === '\\r') delimiter = '\r';
     
     return {
-        variableId: variableId || `${pluginName}Data${index}`,
-        delimiter: delimiter || ',',
-        wasDefaultId: !variableId,
-        wasDefaultDelimiter: !delimiter
+        variableId,
+        delimiter,
+        wasDefaultId,
+        wasDefaultDelimiter
     };
 }
 
@@ -102,15 +86,11 @@ function inspectDsvSpec(spec: DsvSpec): RawFlaggableSpec<DsvSpec> {
         reasons: []
     };
 
-    // Flag if we had to use defaults
+    // Only flag if we had to use default variable ID
+    // Using default delimiter (comma) is fine and shouldn't be flagged
     if (spec.wasDefaultId) {
         result.hasFlags = true;
         result.reasons.push('No variable ID specified - using default');
-    }
-    
-    if (spec.wasDefaultDelimiter) {
-        result.hasFlags = true;
-        result.reasons.push('No delimiter specified - using default comma');
     }
     
     return result;
