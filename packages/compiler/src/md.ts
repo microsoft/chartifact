@@ -373,24 +373,6 @@ function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: Ve
                     addSpec('number', numberSpec, false);
                     break;
                 }
-                case 'csv': {
-                    const { variableId, content } = element;
-                    const csvContent = Array.isArray(content) ? content.join('\n') : content;
-                    mdElements.push(tickWrap(`csv ${variableId}`, csvContent));
-                    break;
-                }
-                case 'tsv': {
-                    const { variableId, content } = element;
-                    const tsvContent = Array.isArray(content) ? content.join('\n') : content;
-                    mdElements.push(tickWrap(`tsv ${variableId}`, tsvContent));
-                    break;
-                }
-                case 'dsv': {
-                    const { variableId, delimiter, content } = element;
-                    const dsvContent = Array.isArray(content) ? content.join('\n') : content;
-                    mdElements.push(tickWrap(`dsv delimiter:${delimiter} ${variableId}`, dsvContent));
-                    break;
-                }
                 case 'json': {
                     const { variableId, content } = element;
                     const jsonContent = JSON.stringify(content, null, defaultJsonIndent);
@@ -407,7 +389,7 @@ function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: Ve
                     } else {
                         yamlContent = yaml.dump(content, { indent: defaultJsonIndent });
                     }
-                    mdElements.push(tickWrap(`yaml value ${variableId}`, trimTrailingNewline(yamlContent)));
+                    mdElements.push(tickWrap(`yaml ${variableId}`, trimTrailingNewline(yamlContent)));
                     break;
                 }
                 default: {

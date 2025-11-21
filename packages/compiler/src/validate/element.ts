@@ -190,15 +190,6 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                     errors.push(...validateInputElementWithVariableId(element));
                     break;
                 }
-                case 'csv':
-                case 'tsv':
-                case 'dsv': {
-                    errors.push(...validateVariableID(element.variableId));
-                    if (element.type === 'dsv' && !element.delimiter) {
-                        errors.push('DSV element must have a delimiter property');
-                    }
-                    break;
-                }
                 case 'json':
                 case 'yaml': {
                     errors.push(...validateVariableID(element.variableId));
