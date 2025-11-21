@@ -190,14 +190,6 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                     errors.push(...validateInputElementWithVariableId(element));
                     break;
                 }
-                case 'json':
-                case 'yaml': {
-                    errors.push(...validateVariableID(element.variableId));
-                    if (!element.content) {
-                        errors.push(`${element.type} element must have content property`);
-                    }
-                    break;
-                }
                 default: {
                     errors.push(`Unknown element type ${(element as any).type} at group ${groupIndex}, element index ${elementIndex}: ${JSON.stringify(element)}`);
                     break;
