@@ -26,11 +26,7 @@ export function sanitizedHTML(tagName: string, attributes: { [key: string]: stri
 
     if (precedeWithScriptTag) {
         // Create a script tag that precedes the main element
-        const scriptElement = domDocument.createElement('script');
-        scriptElement.setAttribute('type', 'application/json');
-        // Only escape the dangerous sequence that could break out of script tag
-        const safeContent = content.replace(/<\/script>/gi, '<\\/script>');
-        scriptElement.innerHTML = safeContent;
+        const scriptElement = sanitizedScriptTag(content);
 
         // Return script tag followed by empty element
         return scriptElement.outerHTML + element.outerHTML;
@@ -41,6 +37,30 @@ export function sanitizedHTML(tagName: string, attributes: { [key: string]: stri
 
     // Return the outer HTML of the element
     return element.outerHTML;
+}
+
+export function sanitizedScriptTag(content: string, attributes?: { [key: string]: string }): HTMLScriptElement {
+    if (!domDocument) {
+        throw new Error('No DOM Document available. Please set domDocument using setDomDocument.');
+    }
+
+    const scriptElement = domDocument.createElement('script');
+    
+    // Set default type to application/json
+    scriptElement.setAttribute('type', 'application/json');
+    
+    // Set additional attributes if provided
+    if (attributes) {
+        Object.keys(attributes).forEach(key => {
+            scriptElement.setAttribute(key, attributes[key]);
+        });
+    }
+    
+    // Only escape the dangerous sequence that could break out of script tag
+    const safeContent = content.replace(/<\/script>/gi, '<\\/script>');
+    scriptElement.innerHTML = safeContent;
+
+    return scriptElement;
 }
 
 export function sanitizeHtmlComment(content: string) {

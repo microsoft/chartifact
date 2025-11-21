@@ -4,6 +4,7 @@
 */
 export { CheckboxSpec } from './checkbox.js';
 export { CsvSpec } from './csv.js';
+export { ValueSpec } from './value.js';
 export { DropdownSpec } from './dropdown.js';
 export { DsvSpec } from './dsv.js';
 export { ImageSpec } from './image.js';
@@ -18,13 +19,13 @@ export { TsvSpec } from './tsv.js';
 
 export type PluginNames =
     '#' |
+    'checkbox' |
     'css' |
     'csv' |
-    'checkbox' |
     'dropdown' |
     'dsv' |
-    'image' |
     'google-fonts' |
+    'image' |
     'mermaid' |
     'number' |
     'placeholders' |
@@ -34,5 +35,6 @@ export type PluginNames =
     'textbox' |
     'treebark' |
     'tsv' |
-    'vega-lite' |
-    'vega';
+    'value' |
+    'vega' |
+    'vega-lite';

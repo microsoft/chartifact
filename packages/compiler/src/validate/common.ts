@@ -5,7 +5,7 @@ import { validateTransforms } from './transforms.js';
 
 const illegalChars = '/|\\\'"`,.;:~-=+?!@#$%^&*()[]{}<>';
 
-export const ignoredSignals = ['width', 'height', 'padding', 'autosize', 'background', 'style', 'parent', 'datum', 'item', 'event', 'cursor', 'origins'];
+export const ignoredSignals = ['width', 'height', 'padding', 'autosize', 'background', 'style', 'parent', 'datum', 'item', 'event', 'cursor', 'value'];
 
 // Utility functions for property validation
 export function validateRequiredString(value: any, propertyName: string, elementType: string): string[] {

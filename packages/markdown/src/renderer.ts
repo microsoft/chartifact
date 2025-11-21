@@ -181,12 +181,18 @@ export class Renderer {
     }
 
     reset() {
+        //carry old values over
+        const { logLevel, logWatchIds } = this.signalBus; 
 
         //cancel the old signal bus, which may have active listeners
         this.signalBus.deactivate();
 
         //create a new signal bus
         this.signalBus = new SignalBus(defaultCommonOptions.dataSignalPrefix!);
+        
+        //restore old values
+        this.signalBus.logLevel = logLevel;
+        this.signalBus.logWatchIds = logWatchIds;
 
         for (const pluginName of Object.keys(this.instances)) {
             const instances = this.instances[pluginName];

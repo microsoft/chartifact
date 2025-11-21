@@ -29,6 +29,12 @@ Chartifact consists of several interoperating modules:
 ### Testing
 - Currently we don't have much test coverage. We can add this later.
 
+### Version Control
+- **Do NOT check in UMD build artifacts**: Files matching `*.umd.js` in `docs/dist/v1/` are build outputs and should not be committed in PRs
+- **Do NOT edit `docs/schema/idoc_v1.d.ts` directly**: This file is generated from `packages/schema-doc/src/`. Edit the source files in the schema-doc package instead
+- **Do NOT check in built schema files**: Files `docs/schema/idoc_v1.d.ts` and `docs/schema/idoc_v1.json` are generated from `packages/schema-doc/src/` during the build process and should not be committed in PRs
+- These files are generated during the build process and committing them creates unnecessary merge conflicts
+
 ## Project-Specific Conventions
 
 1. **File Formats**:

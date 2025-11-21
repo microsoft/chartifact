@@ -91,7 +91,9 @@ export class SignalBus {
         //set current values
         for (const signalName in batch) {
             const signalDep = this.signalDeps[signalName];
-            signalDep.value = batch[signalName].value;
+            if (signalDep) {
+                signalDep.value = batch[signalName].value;
+            }
         }
 
         if (this.broadcastingStack.length === 0) {
@@ -143,14 +145,15 @@ export class SignalBus {
         //set the initial batch on each peer
         this.log('beginListening', 'begin initial batch', this.signalDeps);
 
+        const initialBatch: Batch = {};
+        for (const signalName in this.signalDeps) {
+            const signalDep = this.signalDeps[signalName];
+            const { value, isData } = signalDep;
+            initialBatch[signalName] = { value, isData };
+        }
+
         for (const peer of this.peers) {
-            const batch: Batch = {};
-            for (const signalName in this.signalDeps) {
-                const signalDep = this.signalDeps[signalName];
-                const { value, isData } = signalDep;
-                batch[signalName] = { value, isData };
-            }
-            peer.receiveBatch && peer.receiveBatch(batch, 'initial');
+            peer.receiveBatch && peer.receiveBatch(initialBatch, 'initial');
         }
 
         //need to call broadcast complete to ensure that all peers have the initial values
