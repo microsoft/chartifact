@@ -170,12 +170,22 @@ export function create() {
                 if (jsonPlugin) {
                     return jsonPlugin;
                 }
+                // Default to 'value' plugin for json data (e.g., "json products")
+                const valuePlugin = findPlugin('value');
+                if (valuePlugin) {
+                    return valuePlugin;
+                }
             }
             // Fifth priority: Check if it starts with "yaml " and extract the plugin name
             else if (info.startsWith('yaml ') && infoWords.length > 1) {
                 const yamlPlugin = findPlugin(infoWords[1]);
                 if (yamlPlugin) {
                     return yamlPlugin;
+                }
+                // Default to 'value' plugin for yaml data (e.g., "yaml products")
+                const valuePlugin = findPlugin('value');
+                if (valuePlugin) {
+                    return valuePlugin;
                 }
             }
         }
