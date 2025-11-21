@@ -9,7 +9,7 @@
                 "This example tests the value plugin with YAML format.",
                 "",
                 {
-                    "type": "yaml-value",
+                    "type": "yaml",
                     "variableId": "people",
                     "content": [
                         {"name": "Alice", "age": 25, "city": "New York"},
