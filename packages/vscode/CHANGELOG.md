@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.9]
+
+Bug fixes
+
 ## [1.0.8]
 
 Updated examples

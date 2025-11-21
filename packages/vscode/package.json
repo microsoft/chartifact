@@ -2,7 +2,7 @@
   "name": "chartifact",
   "displayName": "Chartifact",
   "description": "Declarative, interactive data documents",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "publisher": "msrvida",
   "repository": {
     "type": "git",

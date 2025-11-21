@@ -493,7 +493,7 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
     return errors;
   }
   const illegalChars = "/|\\'\"`,.;:~-=+?!@#$%^&*()[]{}<>";
-  const ignoredSignals = ["width", "height", "padding", "autosize", "background", "style", "parent", "datum", "item", "event", "cursor", "origins"];
+  const ignoredSignals = ["width", "height", "padding", "autosize", "background", "style", "parent", "datum", "item", "event", "cursor", "value"];
   function validateRequiredString(value, propertyName, elementType) {
     const errors = [];
     if (!value) {
