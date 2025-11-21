@@ -19,14 +19,13 @@ export { TsvSpec } from './tsv.js';
 
 export type PluginNames =
     '#' |
+    'checkbox' |
     'css' |
     'csv' |
-    'checkbox' |
-    'value' |
     'dropdown' |
     'dsv' |
-    'image' |
     'google-fonts' |
+    'image' |
     'mermaid' |
     'number' |
     'placeholders' |
@@ -36,5 +35,6 @@ export type PluginNames =
     'textbox' |
     'treebark' |
     'tsv' |
-    'vega-lite' |
-    'vega';
+    'value' |
+    'vega' |
+    'vega-lite';
