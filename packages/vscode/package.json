@@ -171,6 +171,6 @@
     "postpackage": "node ./scripts/move-package.mjs"
   },
   "devDependencies": {
-    "@vscode/vsce": "^3.7.0"
+    "@vscode/vsce": "^3.7.1"
   }
 }
