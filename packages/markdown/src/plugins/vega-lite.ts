@@ -24,7 +24,7 @@ export const vegaLitePlugin: Plugin<TopLevelSpec> = {
         // Parse body content using the helper function
         const parseResult = parseBody<TopLevelSpec>(content, info);
         
-        let flaggableSpec: RawFlaggableSpec<Spec>;
+        let flaggableSpec: RawFlaggableSpec<TopLevelSpec>;
         
         if (parseResult.error) {
             // Parsing failed
@@ -37,7 +37,15 @@ export const vegaLitePlugin: Plugin<TopLevelSpec> = {
             // Parsing succeeded, try to compile to Vega
             try {
                 const vegaSpec = compile(parseResult.spec);
-                flaggableSpec = inspectVegaSpec(vegaSpec.spec);
+                // inspectVegaSpec returns RawFlaggableSpec<Spec> (Vega), but we store as TopLevelSpec
+                const inspected = inspectVegaSpec(vegaSpec.spec);
+                // Create a compatible flaggableSpec that uses the compiled Vega spec
+                // Note: This plugin actually stores the compiled Vega spec, not the original TopLevelSpec
+                flaggableSpec = {
+                    spec: vegaSpec.spec as any as TopLevelSpec, // Type assertion needed due to Vega vs Vega-Lite types
+                    hasFlags: inspected.hasFlags,
+                    reasons: inspected.reasons
+                };
             } catch (e) {
                 flaggableSpec = {
                     spec: null,

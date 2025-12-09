@@ -94,13 +94,24 @@ export function parseBody<T>(content: string, info: string): {
     const formatName = format === 'yaml' ? 'YAML' : 'JSON';
     
     try {
-        let spec: T;
+        let parsed: unknown;
         if (format === 'yaml') {
-            spec = yaml.load(content.trim()) as T;
+            parsed = yaml.load(content.trim());
         } else {
-            spec = JSON.parse(content.trim());
+            parsed = JSON.parse(content.trim());
         }
-        return { spec, format };
+        
+        // Handle null/undefined results from YAML parsing (empty content)
+        if (parsed === null || parsed === undefined) {
+            return {
+                spec: null,
+                format,
+                error: `Empty or null ${formatName} content`
+            };
+        }
+        
+        // Return the parsed result - caller is responsible for validating structure
+        return { spec: parsed as T, format };
     } catch (e) {
         return {
             spec: null,
