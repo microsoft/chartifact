@@ -130,14 +130,31 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
 
             const spec = specReview.approvedSpec;
             
-            // If this spec has templateId and an object template, register it
-            if (spec.templateId && typeof spec.template === 'object') {
-                templateRegistry[spec.templateId] = spec.template;
-            }
-            
-            // Resolve template if it's a string reference
             let resolvedTemplate: object;
-            if (typeof spec.template === 'string') {
+            
+            // Use templateId to determine SET vs GET
+            if (spec.templateId) {
+                if (spec.template) {
+                    // SET: templateId + template = register the template
+                    templateRegistry[spec.templateId] = spec.template as object;
+                    resolvedTemplate = spec.template as object;
+                } else {
+                    // GET: templateId without template = lookup the template
+                    resolvedTemplate = templateRegistry[spec.templateId];
+                    if (!resolvedTemplate) {
+                        container.innerHTML = `<div class="error">Template '${spec.templateId}' not found</div>`;
+                        errorHandler(
+                            new Error(`Template '${spec.templateId}' not found`),
+                            pluginName,
+                            index,
+                            'resolve',
+                            container
+                        );
+                        continue;
+                    }
+                }
+            } else if (typeof spec.template === 'string') {
+                // Fallback: string template without templateId = lookup by template value
                 resolvedTemplate = templateRegistry[spec.template];
                 if (!resolvedTemplate) {
                     container.innerHTML = `<div class="error">Template '${spec.template}' not found</div>`;
@@ -151,6 +168,7 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
                     continue;
                 }
             } else {
+                // No templateId, object template = use as-is
                 resolvedTemplate = spec.template as object;
             }
 
