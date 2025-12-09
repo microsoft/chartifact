@@ -55,7 +55,7 @@
  * 4. Reference a template:
  * ```treebark
  * {
- *   "template": "myCard",
+ *   "templateId": "myCard",
  *   "variableId": "products"
  * }
  * ```
