@@ -38,28 +38,36 @@
  * }
  * ```
  *
- * 3. Using Template Reference (head syntax):
- * ```treebark{templateId=chatBubble variableId=chatMessages}
- * ```
- *
- * 4. Using Template Reference (JSON with string template):
+ * 3. Define and reuse templates:
  * ```treebark
  * {
- *   "template": "chatBubble",
- *   "variableId": "chatMessages"
+ *   "templateId": "myCard",
+ *   "template": {
+ *     "div": {
+ *       "class": "card",
+ *       "$children": ["{{name}}"]
+ *     }
+ *   },
+ *   "variableId": "users"
+ * }
+ * ```
+ *
+ * 4. Reference a template:
+ * ```treebark
+ * {
+ *   "template": "myCard",
+ *   "variableId": "products"
  * }
  * ```
  */
 
 import { Plugin, RawFlaggableSpec, IInstance } from '../factory.js';
 import { ErrorHandler } from '../renderer.js';
+import { flaggablePlugin } from './config.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { TreebarkElementProps } from '@microsoft/chartifact-schema';
 import { renderToDOM } from 'treebark';
-import { sanitizedHTML } from '../sanitize.js';
-import * as yaml from 'js-yaml';
-import { SpecReview } from 'common';
 
 interface TreebarkInstance {
     id: string;
@@ -73,15 +81,6 @@ export interface TreebarkSpec extends TreebarkElementProps { }
 
 const pluginName: PluginNames = 'treebark';
 const className = pluginClassName(pluginName);
-
-/**
- * Parse templateId from fence info head syntax
- * Supports: ```treebark{templateId=foo variableId=bar}
- */
-function parseTemplateId(info: string): { templateId: string | null } {
-    const match = info.match(/templateId[=:](\S+)/);
-    return { templateId: match ? match[1] : null };
-}
 
 function inspectTreebarkSpec(spec: TreebarkSpec): RawFlaggableSpec<TreebarkSpec> {
     const reasons: string[] = [];
@@ -109,81 +108,15 @@ function inspectTreebarkSpec(spec: TreebarkSpec): RawFlaggableSpec<TreebarkSpec>
 }
 
 export const treebarkPlugin: Plugin<TreebarkSpec> = {
-    name: pluginName,
-    fence: (token, index) => {
-        const info = token.info.trim();
-        let content = token.content.trim();
-        let spec: TreebarkSpec;
-        let flaggableSpec: RawFlaggableSpec<TreebarkSpec>;
-        
-        // Check for head syntax (templateId parameter)
-        const { templateId } = parseTemplateId(info);
-        
-        // Determine format from token info
-        const isYaml = info.startsWith('yaml ');
-        const formatName = isYaml ? 'YAML' : 'JSON';
-        
-        try {
-            if (isYaml) {
-                spec = yaml.load(content) as TreebarkSpec;
-            } else {
-                spec = JSON.parse(content);
-            }
-        } catch (e) {
-            flaggableSpec = {
-                spec: null,
-                hasFlags: true,
-                reasons: [`malformed ${formatName}`],
-            };
-        }
-        
-        // If templateId specified in head, set template to the string reference
-        if (templateId && spec) {
-            spec.template = templateId;
-        }
-        
-        if (spec) {
-            flaggableSpec = inspectTreebarkSpec(spec);
-        }
-        
-        if (flaggableSpec) {
-            content = JSON.stringify(flaggableSpec);
-        }
-        
-        return sanitizedHTML('div', { class: className, id: `${pluginName}-${index}` }, content, true);
-    },
-    hydrateSpecs: (renderer, errorHandler) => {
-        const flagged: SpecReview<TreebarkSpec>[] = [];
-        const containers = renderer.element.querySelectorAll(`.${className}`);
-        for (const [index, container] of Array.from(containers).entries()) {
-            const scriptTag = container.querySelector('script[type="application/json"]') as HTMLScriptElement;
-            if (!scriptTag) continue;
-            
-            let flaggableSpec: RawFlaggableSpec<TreebarkSpec>;
-            try {
-                flaggableSpec = JSON.parse(scriptTag.textContent || '{}');
-            } catch (e) {
-                errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName, index, 'parse', container);
-                continue;
-            }
-            
-            const f: SpecReview<TreebarkSpec> = { approvedSpec: null, pluginName, containerId: container.id };
-            if (flaggableSpec.hasFlags) {
-                f.blockedSpec = flaggableSpec.spec;
-                f.reason = flaggableSpec.reasons?.join(', ') || 'Unknown reason';
-            } else {
-                f.approvedSpec = flaggableSpec.spec;
-            }
-            flagged.push(f);
-        }
-        return flagged;
-    },
+    ...flaggablePlugin<TreebarkSpec>(pluginName, className, inspectTreebarkSpec),
     hydrateComponent: async (renderer, errorHandler, specs) => {
         const { signalBus, document } = renderer;
         const treebarkInstances: TreebarkInstance[] = [];
         
-        // Get treebarkTemplates from document resources
-        const treebarkTemplates = (document as any)?.resources?.treebarkTemplates || {};
+        // Template registry: starts with templates from resources, then adds inline-defined ones
+        const templateRegistry: Record<string, object> = {
+            ...(document as any)?.resources?.treebarkTemplates || {}
+        };
 
         for (let index = 0; index < specs.length; index++) {
             const specReview = specs[index];
@@ -197,12 +130,17 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
 
             const spec = specReview.approvedSpec;
             
+            // If this spec has templateId and an object template, register it
+            if (spec.templateId && typeof spec.template === 'object') {
+                templateRegistry[spec.templateId] = spec.template;
+            }
+            
             // Resolve template if it's a string reference
             let resolvedTemplate: object;
             if (typeof spec.template === 'string') {
-                resolvedTemplate = treebarkTemplates[spec.template];
+                resolvedTemplate = templateRegistry[spec.template];
                 if (!resolvedTemplate) {
-                    container.innerHTML = `<div class="error">Template '${spec.template}' not found in resources.treebarkTemplates</div>`;
+                    container.innerHTML = `<div class="error">Template '${spec.template}' not found</div>`;
                     errorHandler(
                         new Error(`Template '${spec.template}' not found`),
                         pluginName,
