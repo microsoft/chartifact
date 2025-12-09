@@ -40,9 +40,11 @@ export const vegaLitePlugin: Plugin<TopLevelSpec> = {
                 // inspectVegaSpec returns RawFlaggableSpec<Spec> (Vega), but we store as TopLevelSpec
                 const inspected = inspectVegaSpec(vegaSpec.spec);
                 // Create a compatible flaggableSpec that uses the compiled Vega spec
-                // Note: This plugin actually stores the compiled Vega spec, not the original TopLevelSpec
+                // Note: This plugin compiles Vega-Lite to Vega and stores the compiled spec.
+                // The type assertion is needed because we're storing a Vega Spec where TopLevelSpec is expected.
+                // This is a pre-existing design decision in the vega-lite plugin architecture.
                 flaggableSpec = {
-                    spec: vegaSpec.spec as any as TopLevelSpec, // Type assertion needed due to Vega vs Vega-Lite types
+                    spec: vegaSpec.spec as any as TopLevelSpec,
                     hasFlags: inspected.hasFlags,
                     reasons: inspected.reasons
                 };
@@ -54,11 +56,12 @@ export const vegaLitePlugin: Plugin<TopLevelSpec> = {
                 };
             }
         } else {
-            // No spec (shouldn't happen)
+            // parseResult.spec is null (can happen with empty/null YAML content)
+            // This is a legitimate case handled by parseBody for empty or invalid content
             flaggableSpec = {
                 spec: null,
                 hasFlags: true,
-                reasons: ['No spec provided'],
+                reasons: parseResult.error ? [parseResult.error] : ['No spec provided'],
             };
         }
         
