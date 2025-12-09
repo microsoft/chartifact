@@ -137,9 +137,9 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
             };
         }
         
-        // If templateId specified in head, use it
+        // If templateId specified in head, set template to the string reference
         if (templateId && spec) {
-            spec.templateId = templateId;
+            spec.template = templateId;
         }
         
         if (spec) {
@@ -205,20 +205,6 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
                     container.innerHTML = `<div class="error">Template '${spec.template}' not found in resources.treebarkTemplates</div>`;
                     errorHandler(
                         new Error(`Template '${spec.template}' not found`),
-                        pluginName,
-                        index,
-                        'resolve',
-                        container
-                    );
-                    continue;
-                }
-            } else if (spec.templateId) {
-                // Head syntax: templateId specified but template is still object
-                resolvedTemplate = treebarkTemplates[spec.templateId];
-                if (!resolvedTemplate) {
-                    container.innerHTML = `<div class="error">Template '${spec.templateId}' not found in resources.treebarkTemplates</div>`;
-                    errorHandler(
-                        new Error(`Template '${spec.templateId}' not found`),
                         pluginName,
                         index,
                         'resolve',
