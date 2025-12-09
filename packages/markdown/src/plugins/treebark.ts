@@ -86,13 +86,16 @@ function inspectTreebarkSpec(spec: TreebarkSpec): RawFlaggableSpec<TreebarkSpec>
     const reasons: string[] = [];
     let hasFlags = false;
 
-    // Validate template - can be object or string (templateId reference)
-    if (!spec.template) {
+    // Validate: either template or templateId must be present
+    if (!spec.template && !spec.templateId) {
         hasFlags = true;
-        reasons.push('template is required');
-    } else if (typeof spec.template !== 'object' && typeof spec.template !== 'string') {
+        reasons.push('Either template or templateId is required');
+    }
+    
+    // If template is provided, it must be object or string
+    if (spec.template && typeof spec.template !== 'object' && typeof spec.template !== 'string') {
         hasFlags = true;
-        reasons.push('template must be an object or a string (templateId reference)');
+        reasons.push('template must be an object or a string');
     }
 
     // If both data and variableId are provided, warn but allow it
