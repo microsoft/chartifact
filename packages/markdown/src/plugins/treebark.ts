@@ -153,22 +153,8 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
                         continue;
                     }
                 }
-            } else if (typeof spec.template === 'string') {
-                // Fallback: string template without templateId = lookup by template value
-                resolvedTemplate = templateRegistry[spec.template];
-                if (!resolvedTemplate) {
-                    container.innerHTML = `<div class="error">Template '${spec.template}' not found</div>`;
-                    errorHandler(
-                        new Error(`Template '${spec.template}' not found`),
-                        pluginName,
-                        index,
-                        'resolve',
-                        container
-                    );
-                    continue;
-                }
             } else {
-                // No templateId, object template = use as-is
+                // No templateId: template is used inline (can be object or string)
                 resolvedTemplate = spec.template as object;
             }
 
