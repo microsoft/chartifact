@@ -48,7 +48,7 @@
 import { Plugin, RawFlaggableSpec, IInstance } from '../factory.js';
 import { ErrorHandler } from '../renderer.js';
 import { sanitizedHTML } from '../sanitize.js';
-import { flaggablePlugin, parseBody } from './config.js';
+import { flaggablePlugin, parseHeadAndBody } from './config.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { TemplateToken, tokenizeTemplate } from 'common';
@@ -173,19 +173,26 @@ export const mermaidPlugin: Plugin<MermaidSpec> = {
         const content = token.content.trim();
         
         // Try to parse as JSON/YAML using the helper function
-        const parseResult = parseBody<MermaidSpec>(content, info);
+        const { head, body } = parseHeadAndBody<MermaidSpec>(content, info);
         
         let spec: MermaidSpec;
         
-        if (parseResult.spec && typeof parseResult.spec === 'object') {
+        if (body.spec && typeof body.spec === 'object') {
             // Parsing succeeded and it's an object - use it as MermaidSpec
-            spec = parseResult.spec;
+            spec = body.spec;
         } else {
             // If parsing failed or result is not an object, treat as raw text
             spec = { diagramText: content };
         }
 
         const flaggableSpec = inspectMermaidSpec(spec);
+        // Add head information to the result
+        flaggableSpec.head = {
+            format: head.format,
+            pluginName: head.pluginName,
+            params: Object.fromEntries(head.params),
+            wasDefaultId: head.wasDefaultId
+        };
         const json = JSON.stringify(flaggableSpec);
 
         return sanitizedHTML('div', { class: className, id: `${pluginName}-${index}` }, json, true);

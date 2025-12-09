@@ -80,6 +80,27 @@ export function parseFenceInfo(info: string): {
 }
 
 /**
+ * Parsed fence head information
+ */
+export interface ParsedHead {
+    format: 'json' | 'yaml';
+    pluginName: string;
+    params: Map<string, string>;
+    wasDefaultId: boolean;
+}
+
+/**
+ * Combined head and body parsing result
+ */
+export interface HeadBodyResult<T> {
+    head: ParsedHead;
+    body: {
+        spec: T | null;
+        error?: string;
+    };
+}
+
+/**
  * Parse body content as JSON or YAML based on fence info.
  * @param content The fence content
  * @param info The fence info string (used to detect format)
@@ -119,6 +140,34 @@ export function parseBody<T>(content: string, info: string): {
             error: `malformed ${formatName}: ${e instanceof Error ? e.message : String(e)}`
         };
     }
+}
+
+/**
+ * Parse both head (fence info) and body (content) together.
+ * @param content The fence content
+ * @param info The fence info string
+ * @returns Combined head and body parsing result
+ */
+export function parseHeadAndBody<T>(content: string, info: string): HeadBodyResult<T> {
+    // Parse head
+    const headInfo = parseFenceInfo(info);
+    const head: ParsedHead = {
+        format: headInfo.format,
+        pluginName: headInfo.pluginName,
+        params: headInfo.params,
+        wasDefaultId: headInfo.wasDefaultId
+    };
+    
+    // Parse body
+    const bodyResult = parseBody<T>(content, info);
+    
+    return {
+        head,
+        body: {
+            spec: bodyResult.spec,
+            error: bodyResult.error
+        }
+    };
 }
 
 /*
@@ -187,30 +236,49 @@ export function flaggablePlugin<T>(pluginName: PluginNames, className: string, f
             const info = token.info.trim();
             const content = token.content.trim();
             
-            // Parse body content using the helper function
-            const parseResult = parseBody<T>(content, info);
+            // Parse both head and body using the helper function
+            const { head, body } = parseHeadAndBody<T>(content, info);
             
             let flaggableSpec: RawFlaggableSpec<T>;
-            if (parseResult.error) {
+            if (body.error) {
                 // Parsing failed
                 flaggableSpec = {
                     spec: null,
                     hasFlags: true,
-                    reasons: [parseResult.error],
+                    reasons: [body.error],
+                    head: {
+                        format: head.format,
+                        pluginName: head.pluginName,
+                        params: Object.fromEntries(head.params),
+                        wasDefaultId: head.wasDefaultId
+                    }
                 };
-            } else if (parseResult.spec) {
+            } else if (body.spec) {
                 // Parsing succeeded, apply flagger if provided
                 if (flagger) {
-                    flaggableSpec = flagger(parseResult.spec);
+                    flaggableSpec = flagger(body.spec);
                 } else {
-                    flaggableSpec = { spec: parseResult.spec };
+                    flaggableSpec = { spec: body.spec };
                 }
+                // Add head information to the result
+                flaggableSpec.head = {
+                    format: head.format,
+                    pluginName: head.pluginName,
+                    params: Object.fromEntries(head.params),
+                    wasDefaultId: head.wasDefaultId
+                };
             } else {
                 // No spec (shouldn't happen, but handle it)
                 flaggableSpec = {
                     spec: null,
                     hasFlags: true,
                     reasons: ['No spec provided'],
+                    head: {
+                        format: head.format,
+                        pluginName: head.pluginName,
+                        params: Object.fromEntries(head.params),
+                        wasDefaultId: head.wasDefaultId
+                    }
                 };
             }
             

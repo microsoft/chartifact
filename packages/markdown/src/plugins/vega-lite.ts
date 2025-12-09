@@ -5,7 +5,7 @@
 
 import { Plugin, RawFlaggableSpec } from '../factory.js';
 import { sanitizedHTML } from '../sanitize.js';
-import { flaggablePlugin, parseBody } from './config.js';
+import { flaggablePlugin, parseHeadAndBody } from './config.js';
 import { pluginClassName } from './util.js';
 import { inspectVegaSpec, vegaPlugin } from './vega.js';
 import { compile, TopLevelSpec } from 'vega-lite';
@@ -21,22 +21,28 @@ export const vegaLitePlugin: Plugin<TopLevelSpec> = {
         const info = token.info.trim();
         const content = token.content.trim();
         
-        // Parse body content using the helper function
-        const parseResult = parseBody<TopLevelSpec>(content, info);
+        // Parse both head and body using the helper function
+        const { head, body } = parseHeadAndBody<TopLevelSpec>(content, info);
         
         let flaggableSpec: RawFlaggableSpec<TopLevelSpec>;
         
-        if (parseResult.error) {
+        if (body.error) {
             // Parsing failed
             flaggableSpec = {
                 spec: null,
                 hasFlags: true,
-                reasons: [parseResult.error],
+                reasons: [body.error],
+                head: {
+                    format: head.format,
+                    pluginName: head.pluginName,
+                    params: Object.fromEntries(head.params),
+                    wasDefaultId: head.wasDefaultId
+                }
             };
-        } else if (parseResult.spec) {
+        } else if (body.spec) {
             // Parsing succeeded, try to compile to Vega
             try {
-                const vegaSpec = compile(parseResult.spec);
+                const vegaSpec = compile(body.spec);
                 // inspectVegaSpec returns RawFlaggableSpec<Spec> (Vega), but we store as TopLevelSpec
                 const inspected = inspectVegaSpec(vegaSpec.spec);
                 // Create a compatible flaggableSpec that uses the compiled Vega spec
@@ -46,22 +52,40 @@ export const vegaLitePlugin: Plugin<TopLevelSpec> = {
                 flaggableSpec = {
                     spec: vegaSpec.spec as any as TopLevelSpec,
                     hasFlags: inspected.hasFlags,
-                    reasons: inspected.reasons
+                    reasons: inspected.reasons,
+                    head: {
+                        format: head.format,
+                        pluginName: head.pluginName,
+                        params: Object.fromEntries(head.params),
+                        wasDefaultId: head.wasDefaultId
+                    }
                 };
             } catch (e) {
                 flaggableSpec = {
                     spec: null,
                     hasFlags: true,
                     reasons: [`failed to compile vega spec: ${e instanceof Error ? e.message : String(e)}`],
+                    head: {
+                        format: head.format,
+                        pluginName: head.pluginName,
+                        params: Object.fromEntries(head.params),
+                        wasDefaultId: head.wasDefaultId
+                    }
                 };
             }
         } else {
-            // parseResult.spec is null (can happen with empty/null YAML content)
-            // This is a legitimate case handled by parseBody for empty or invalid content
+            // body.spec is null (can happen with empty/null YAML content)
+            // This is a legitimate case handled by parseHeadAndBody for empty or invalid content
             flaggableSpec = {
                 spec: null,
                 hasFlags: true,
-                reasons: parseResult.error ? [parseResult.error] : ['No spec provided'],
+                reasons: body.error ? [body.error] : ['No spec provided'],
+                head: {
+                    format: head.format,
+                    pluginName: head.pluginName,
+                    params: Object.fromEntries(head.params),
+                    wasDefaultId: head.wasDefaultId
+                }
             };
         }
         
