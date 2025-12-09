@@ -350,44 +350,7 @@
                 {
                     "type": "treebark",
                     "variableId": "chatMessages",
-                    "template": {
-                        "div": {
-                            "class": "chat-container",
-                            "$bind": ".",
-                            "$children": [
-                                {
-                                    "div": {
-                                        "class": "chat-bubble bubble-{{type}}",
-                                        "$children": [
-                                            {
-                                                "div": {
-                                                    "class": "bubble-content",
-                                                    "$children": [
-                                                        {
-                                                            "div": {
-                                                                "class": "bubble-sender",
-                                                                "$children": [
-                                                                    "{{sender}}"
-                                                                ]
-                                                            }
-                                                        },
-                                                        {
-                                                            "div": {
-                                                                "class": "bubble-text",
-                                                                "$children": [
-                                                                    "{{message}}"
-                                                                ]
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        }
-                    }
+                    "template": "chatBubble"
                 },
                 "",
                 {
@@ -450,44 +413,7 @@
                 {
                     "type": "treebark",
                     "variableId": "chatMessages2",
-                    "template": {
-                        "div": {
-                            "class": "chat-container",
-                            "$bind": ".",
-                            "$children": [
-                                {
-                                    "div": {
-                                        "class": "chat-bubble bubble-{{type}}",
-                                        "$children": [
-                                            {
-                                                "div": {
-                                                    "class": "bubble-content",
-                                                    "$children": [
-                                                        {
-                                                            "div": {
-                                                                "class": "bubble-sender",
-                                                                "$children": [
-                                                                    "{{sender}}"
-                                                                ]
-                                                            }
-                                                        },
-                                                        {
-                                                            "div": {
-                                                                "class": "bubble-text",
-                                                                "$children": [
-                                                                    "{{message}}"
-                                                                ]
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        }
-                    }
+                    "template": "chatBubble"
                 },
                 "",
                 {
@@ -550,44 +476,7 @@
                 {
                     "type": "treebark",
                     "variableId": "chatMessages3",
-                    "template": {
-                        "div": {
-                            "class": "chat-container",
-                            "$bind": ".",
-                            "$children": [
-                                {
-                                    "div": {
-                                        "class": "chat-bubble bubble-{{type}}",
-                                        "$children": [
-                                            {
-                                                "div": {
-                                                    "class": "bubble-content",
-                                                    "$children": [
-                                                        {
-                                                            "div": {
-                                                                "class": "bubble-sender",
-                                                                "$children": [
-                                                                    "{{sender}}"
-                                                                ]
-                                                            }
-                                                        },
-                                                        {
-                                                            "div": {
-                                                                "class": "bubble-text",
-                                                                "$children": [
-                                                                    "{{message}}"
-                                                                ]
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        }
-                    }
+                    "template": "chatBubble"
                 },
                 "",
                 "",
@@ -665,44 +554,7 @@
                 {
                     "type": "treebark",
                     "variableId": "chatMessages4",
-                    "template": {
-                        "div": {
-                            "class": "chat-container",
-                            "$bind": ".",
-                            "$children": [
-                                {
-                                    "div": {
-                                        "class": "chat-bubble bubble-{{type}}",
-                                        "$children": [
-                                            {
-                                                "div": {
-                                                    "class": "bubble-content",
-                                                    "$children": [
-                                                        {
-                                                            "div": {
-                                                                "class": "bubble-sender",
-                                                                "$children": [
-                                                                    "{{sender}}"
-                                                                ]
-                                                            }
-                                                        },
-                                                        {
-                                                            "div": {
-                                                                "class": "bubble-text",
-                                                                "$children": [
-                                                                    "{{message}}"
-                                                                ]
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        }
-                    }
+                    "template": "chatBubble"
                 },
                 "",
                 {
@@ -903,6 +755,98 @@
                         {
                             "field": "cumulative",
                             "title": "Total Logs"
+                        }
+                    ]
+                }
+            }
+        },
+        "treebarkTemplates": {
+            "chatBubble": {
+                "div": {
+                    "class": "chat-container",
+                    "$bind": ".",
+                    "$children": [
+                        {
+                            "div": {
+                                "class": "chat-bubble bubble-{{type}}",
+                                "$children": [
+                                    {
+                                        "div": {
+                                            "class": "bubble-content",
+                                            "$children": [
+                                                {
+                                                    "div": {
+                                                        "class": "bubble-sender",
+                                                        "$children": [
+                                                            "{{sender}}"
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "div": {
+                                                        "class": "bubble-text",
+                                                        "$children": [
+                                                            "{{message}}"
+                                                        ]
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "executionLog": {
+                "div": {
+                    "class": "execution-log",
+                    "$children": [
+                        {
+                            "h3": {
+                                "$children": [
+                                    "\u2699\ufe0f Execution Phase 1: Data Loading & Validation"
+                                ]
+                            }
+                        },
+                        {
+                            "div": {
+                                "$bind": ".",
+                                "$children": [
+                                    {
+                                        "div": {
+                                            "class": "log-entry",
+                                            "$children": [
+                                                {
+                                                    "span": {
+                                                        "class": "log-timestamp",
+                                                        "$children": [
+                                                            "[{{timestamp}}]"
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "span": {
+                                                        "class": "log-level-{{level}}",
+                                                        "$children": [
+                                                            " {{level}}: "
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "span": {
+                                                        "class": "log-message",
+                                                        "$children": [
+                                                            "{{message}}"
+                                                        ]
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
                         }
                     ]
                 }

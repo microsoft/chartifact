@@ -1,57 +1,72 @@
 /**
-* Copyright (c) Microsoft Corporation.
-* Licensed under the MIT License.
-*/
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 /*
-* Treebark Plugin - Renders cards and structured HTML using Treebark templates
-*
-* USAGE EXAMPLES:
-*
-* 1. Static Data:
-* ```treebark
-* {
-*   "template": {
-*     "div": {
-*       "class": "card",
-*       "$children": ["Hello {{name}}!"]
-*     }
-*   },
-*   "data": { "name": "World" }
-* }
-* ```
-*
-* 2. Dynamic Data via Signal (data source → cards):
-* ```treebark
-* {
-*   "template": {
-*     "div": {
-*       "class": "card",
-*       "$bind": ".",
-*       "$children": [
-*         { "h3": "{{Title}}" },
-*         { "p": "{{Director}}" }
-*       ]
-*     }
-*   },
-*   "variableId": "movieData"
-* }
-* ```
-*/
+ * Treebark Plugin - Renders cards and structured HTML using Treebark templates
+ *
+ * USAGE EXAMPLES:
+ *
+ * 1. Static Data:
+ * ```treebark
+ * {
+ *   "template": {
+ *     "div": {
+ *       "class": "card",
+ *       "$children": ["Hello {{name}}!"]
+ *     }
+ *   },
+ *   "data": { "name": "World" }
+ * }
+ * ```
+ *
+ * 2. Dynamic Data via Signal (data source → cards):
+ * ```treebark
+ * {
+ *   "template": {
+ *     "div": {
+ *       "class": "card",
+ *       "$bind": ".",
+ *       "$children": [
+ *         { "h3": "{{Title}}" },
+ *         { "p": "{{Director}}" }
+ *       ]
+ *     }
+ *   },
+ *   "variableId": "movieData"
+ * }
+ * ```
+ *
+ * 3. Using Template Reference (head syntax):
+ * ```treebark{templateId=chatBubble variableId=chatMessages}
+ * ```
+ *
+ * 4. Using Template Reference (JSON with string template):
+ * ```treebark
+ * {
+ *   "template": "chatBubble",
+ *   "variableId": "chatMessages"
+ * }
+ * ```
+ */
 
 import { Plugin, RawFlaggableSpec, IInstance } from '../factory.js';
 import { ErrorHandler } from '../renderer.js';
-import { flaggablePlugin } from './config.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { TreebarkElementProps } from '@microsoft/chartifact-schema';
 import { renderToDOM } from 'treebark';
+import { sanitizedHTML } from '../sanitize.js';
+import * as yaml from 'js-yaml';
+import { SpecReview } from 'common';
 
 interface TreebarkInstance {
     id: string;
     spec: TreebarkElementProps;
     container: Element;
     lastRenderedData: string;
+    resolvedTemplate: object;
 }
 
 export interface TreebarkSpec extends TreebarkElementProps { }
@@ -59,14 +74,26 @@ export interface TreebarkSpec extends TreebarkElementProps { }
 const pluginName: PluginNames = 'treebark';
 const className = pluginClassName(pluginName);
 
+/**
+ * Parse templateId from fence info head syntax
+ * Supports: ```treebark{templateId=foo variableId=bar}
+ */
+function parseTemplateId(info: string): { templateId: string | null } {
+    const match = info.match(/templateId[=:](\S+)/);
+    return { templateId: match ? match[1] : null };
+}
+
 function inspectTreebarkSpec(spec: TreebarkSpec): RawFlaggableSpec<TreebarkSpec> {
     const reasons: string[] = [];
     let hasFlags = false;
 
-    // Validate template
-    if (!spec.template || typeof spec.template !== 'object') {
+    // Validate template - can be object or string (templateId reference)
+    if (!spec.template) {
         hasFlags = true;
-        reasons.push('template must be an object');
+        reasons.push('template is required');
+    } else if (typeof spec.template !== 'object' && typeof spec.template !== 'string') {
+        hasFlags = true;
+        reasons.push('template must be an object or a string (templateId reference)');
     }
 
     // If both data and variableId are provided, warn but allow it
@@ -82,10 +109,81 @@ function inspectTreebarkSpec(spec: TreebarkSpec): RawFlaggableSpec<TreebarkSpec>
 }
 
 export const treebarkPlugin: Plugin<TreebarkSpec> = {
-    ...flaggablePlugin<TreebarkSpec>(pluginName, className, inspectTreebarkSpec),
+    name: pluginName,
+    fence: (token, index) => {
+        const info = token.info.trim();
+        let content = token.content.trim();
+        let spec: TreebarkSpec;
+        let flaggableSpec: RawFlaggableSpec<TreebarkSpec>;
+        
+        // Check for head syntax (templateId parameter)
+        const { templateId } = parseTemplateId(info);
+        
+        // Determine format from token info
+        const isYaml = info.startsWith('yaml ');
+        const formatName = isYaml ? 'YAML' : 'JSON';
+        
+        try {
+            if (isYaml) {
+                spec = yaml.load(content) as TreebarkSpec;
+            } else {
+                spec = JSON.parse(content);
+            }
+        } catch (e) {
+            flaggableSpec = {
+                spec: null,
+                hasFlags: true,
+                reasons: [`malformed ${formatName}`],
+            };
+        }
+        
+        // If templateId specified in head, use it
+        if (templateId && spec) {
+            spec.templateId = templateId;
+        }
+        
+        if (spec) {
+            flaggableSpec = inspectTreebarkSpec(spec);
+        }
+        
+        if (flaggableSpec) {
+            content = JSON.stringify(flaggableSpec);
+        }
+        
+        return sanitizedHTML('div', { class: className, id: `${pluginName}-${index}` }, content, true);
+    },
+    hydrateSpecs: (renderer, errorHandler) => {
+        const flagged: SpecReview<TreebarkSpec>[] = [];
+        const containers = renderer.element.querySelectorAll(`.${className}`);
+        for (const [index, container] of Array.from(containers).entries()) {
+            const scriptTag = container.querySelector('script[type="application/json"]') as HTMLScriptElement;
+            if (!scriptTag) continue;
+            
+            let flaggableSpec: RawFlaggableSpec<TreebarkSpec>;
+            try {
+                flaggableSpec = JSON.parse(scriptTag.textContent || '{}');
+            } catch (e) {
+                errorHandler(e instanceof Error ? e : new Error(String(e)), pluginName, index, 'parse', container);
+                continue;
+            }
+            
+            const f: SpecReview<TreebarkSpec> = { approvedSpec: null, pluginName, containerId: container.id };
+            if (flaggableSpec.hasFlags) {
+                f.blockedSpec = flaggableSpec.spec;
+                f.reason = flaggableSpec.reasons?.join(', ') || 'Unknown reason';
+            } else {
+                f.approvedSpec = flaggableSpec.spec;
+            }
+            flagged.push(f);
+        }
+        return flagged;
+    },
     hydrateComponent: async (renderer, errorHandler, specs) => {
-        const { signalBus } = renderer;
+        const { signalBus, document } = renderer;
         const treebarkInstances: TreebarkInstance[] = [];
+        
+        // Get treebarkTemplates from document resources
+        const treebarkTemplates = (document as any)?.resources?.treebarkTemplates || {};
 
         for (let index = 0; index < specs.length; index++) {
             const specReview = specs[index];
@@ -98,6 +196,39 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
             }
 
             const spec = specReview.approvedSpec;
+            
+            // Resolve template if it's a string reference
+            let resolvedTemplate: object;
+            if (typeof spec.template === 'string') {
+                resolvedTemplate = treebarkTemplates[spec.template];
+                if (!resolvedTemplate) {
+                    container.innerHTML = `<div class="error">Template '${spec.template}' not found in resources.treebarkTemplates</div>`;
+                    errorHandler(
+                        new Error(`Template '${spec.template}' not found`),
+                        pluginName,
+                        index,
+                        'resolve',
+                        container
+                    );
+                    continue;
+                }
+            } else if (spec.templateId) {
+                // Head syntax: templateId specified but template is still object
+                resolvedTemplate = treebarkTemplates[spec.templateId];
+                if (!resolvedTemplate) {
+                    container.innerHTML = `<div class="error">Template '${spec.templateId}' not found in resources.treebarkTemplates</div>`;
+                    errorHandler(
+                        new Error(`Template '${spec.templateId}' not found`),
+                        pluginName,
+                        index,
+                        'resolve',
+                        container
+                    );
+                    continue;
+                }
+            } else {
+                resolvedTemplate = spec.template as object;
+            }
 
             // Create container for the rendered content
             container.innerHTML = `<div class="treebark-loading">Loading...</div>`;
@@ -107,6 +238,7 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
                 spec,
                 container,
                 lastRenderedData: null,
+                resolvedTemplate,
             };
             treebarkInstances.push(treebarkInstance);
 
@@ -155,7 +287,7 @@ async function renderTreebark(
     errorHandler: ErrorHandler,
     index: number
 ) {
-    const { spec, container } = instance;
+    const { container, resolvedTemplate } = instance;
 
     try {
         // Create a stable key for caching based on data content
@@ -166,9 +298,9 @@ async function renderTreebark(
             return;
         }
 
-        // Render using treebark
+        // Render using treebark with resolved template
         const html = renderToDOM({
-            template: spec.template,
+            template: resolvedTemplate,
             data: data as any,
         });
 
