@@ -101,7 +101,10 @@ export interface HeadBodyResult<T> {
 }
 
 /**
- * Convert ParsedHead to a serializable format for JSON storage
+ * Convert ParsedHead to a serializable format for JSON storage.
+ * Converts the params Map to a plain object so it can be serialized to JSON.
+ * @param head The parsed head information with params as a Map
+ * @returns Serializable object with params as a plain Record
  */
 export function convertHeadToSerializable(head: ParsedHead) {
     return {
