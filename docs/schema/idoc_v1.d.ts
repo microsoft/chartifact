@@ -215,12 +215,10 @@ interface TreebarkElement extends TreebarkElementProps {
     type: 'treebark';
 }
 interface TreebarkElementProps extends OptionalVariableControl {
-    /** Treebark template object for rendering HTML structure, or a string referencing a templateId from resources.treebarkTemplates */
-    template: TemplateElement | string;
+    /** Treebark template object for rendering HTML structure */
+    template: TemplateElement;
     /** Static data object (optional) */
     data?: object;
-    /** Template ID for markdown head syntax (e.g., ```treebark{templateId=foo}) */
-    templateId?: string;
 }
 /**
  * Presets
@@ -280,9 +278,6 @@ interface InteractiveDocument {
     resources?: {
         charts?: {
             [chartKey: string]: Vega_or_VegaLite_spec;
-        };
-        treebarkTemplates?: {
-            [templateId: string]: TemplateElement;
         };
     };
     /** Optional comments from the author */
