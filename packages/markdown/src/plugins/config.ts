@@ -113,17 +113,15 @@ export function convertHeadToSerializable(head: ParsedHead) {
 }
 
 /**
- * Parse body content as JSON or YAML based on fence info.
+ * Parse body content as JSON or YAML based on format.
  * @param content The fence content
- * @param info The fence info string (used to detect format)
- * @returns Parsed object and format metadata
+ * @param format The format ('json' or 'yaml')
+ * @returns Parsed object and error if any
  */
-export function parseBody<T>(content: string, info: string): {
+function parseBodyContent<T>(content: string, format: 'json' | 'yaml'): {
     spec: T | null;
-    format: 'json' | 'yaml';
     error?: string;
 } {
-    const { format } = parseFenceInfo(info);
     const formatName = format === 'yaml' ? 'YAML' : 'JSON';
     
     try {
@@ -138,20 +136,39 @@ export function parseBody<T>(content: string, info: string): {
         if (parsed === null || parsed === undefined) {
             return {
                 spec: null,
-                format,
                 error: `Empty or null ${formatName} content`
             };
         }
         
         // Return the parsed result - caller is responsible for validating structure
-        return { spec: parsed as T, format };
+        return { spec: parsed as T };
     } catch (e) {
         return {
             spec: null,
-            format,
             error: `malformed ${formatName}: ${e instanceof Error ? e.message : String(e)}`
         };
     }
+}
+
+/**
+ * Parse body content as JSON or YAML based on fence info.
+ * @param content The fence content
+ * @param info The fence info string (used to detect format)
+ * @returns Parsed object and format metadata
+ */
+export function parseBody<T>(content: string, info: string): {
+    spec: T | null;
+    format: 'json' | 'yaml';
+    error?: string;
+} {
+    const { format } = parseFenceInfo(info);
+    const result = parseBodyContent<T>(content, format);
+    
+    return {
+        spec: result.spec,
+        format,
+        error: result.error
+    };
 }
 
 /**
@@ -161,7 +178,7 @@ export function parseBody<T>(content: string, info: string): {
  * @returns Combined head and body parsing result
  */
 export function parseHeadAndBody<T>(content: string, info: string): HeadBodyResult<T> {
-    // Parse head
+    // Parse head once
     const headInfo = parseFenceInfo(info);
     const head: ParsedHead = {
         format: headInfo.format,
@@ -170,8 +187,8 @@ export function parseHeadAndBody<T>(content: string, info: string): HeadBodyResu
         wasDefaultId: headInfo.wasDefaultId
     };
     
-    // Parse body
-    const bodyResult = parseBody<T>(content, info);
+    // Parse body using the already-parsed format
+    const bodyResult = parseBodyContent<T>(content, headInfo.format);
     
     return {
         head,
