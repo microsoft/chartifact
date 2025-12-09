@@ -79,6 +79,37 @@ export function parseFenceInfo(info: string): {
     return { format, pluginName, params, wasDefaultId };
 }
 
+/**
+ * Parse body content as JSON or YAML based on fence info.
+ * @param content The fence content
+ * @param info The fence info string (used to detect format)
+ * @returns Parsed object and format metadata
+ */
+export function parseBody<T>(content: string, info: string): {
+    spec: T | null;
+    format: 'json' | 'yaml';
+    error?: string;
+} {
+    const { format } = parseFenceInfo(info);
+    const formatName = format === 'yaml' ? 'YAML' : 'JSON';
+    
+    try {
+        let spec: T;
+        if (format === 'yaml') {
+            spec = yaml.load(content.trim()) as T;
+        } else {
+            spec = JSON.parse(content.trim());
+        }
+        return { spec, format };
+    } catch (e) {
+        return {
+            spec: null,
+            format,
+            error: `malformed ${formatName}: ${e instanceof Error ? e.message : String(e)}`
+        };
+    }
+}
+
 /*
 //Tests for parseFenceInfo
 const tests: [string, { format: 'json' | 'yaml'; pluginName: string; variableId: string | undefined; wasDefaultId: boolean }][] = [
@@ -135,45 +166,46 @@ tests.forEach(([input, expected], i) => {
 */
 
 /**
- * Creates a plugin that can parse both JSON and YAML formats
+ * Creates a plugin that can parse both JSON and YAML formats.
+ * This handles both "head" (fence info) and "body" (content) parsing.
  */
 export function flaggablePlugin<T>(pluginName: PluginNames, className: string, flagger?: (spec: T) => RawFlaggableSpec<T>, attrs?: object) {
     const plugin: Plugin<T> = {
         name: pluginName,
         fence: (token, index) => {
-            let content = token.content.trim();
-            let spec: T;
-            let flaggableSpec: RawFlaggableSpec<T>;
-            
-            // Determine format from token info
             const info = token.info.trim();
-            const isYaml = info.startsWith('yaml ');
-            const formatName = isYaml ? 'YAML' : 'JSON';
+            const content = token.content.trim();
             
-            try {
-                if (isYaml) {
-                    spec = yaml.load(content) as T;
-                } else {
-                    spec = JSON.parse(content);
-                }
-            } catch (e) {
+            // Parse body content using the helper function
+            const parseResult = parseBody<T>(content, info);
+            
+            let flaggableSpec: RawFlaggableSpec<T>;
+            if (parseResult.error) {
+                // Parsing failed
                 flaggableSpec = {
                     spec: null,
                     hasFlags: true,
-                    reasons: [`malformed ${formatName}`],
+                    reasons: [parseResult.error],
+                };
+            } else if (parseResult.spec) {
+                // Parsing succeeded, apply flagger if provided
+                if (flagger) {
+                    flaggableSpec = flagger(parseResult.spec);
+                } else {
+                    flaggableSpec = { spec: parseResult.spec };
+                }
+            } else {
+                // No spec (shouldn't happen, but handle it)
+                flaggableSpec = {
+                    spec: null,
+                    hasFlags: true,
+                    reasons: ['No spec provided'],
                 };
             }
-            if (spec) {
-                if (flagger) {
-                    flaggableSpec = flagger(spec);
-                } else {
-                    flaggableSpec = { spec };
-                }
-            }
-            if (flaggableSpec) {
-                content = JSON.stringify(flaggableSpec);
-            }
-            return sanitizedHTML('div', { class: className, id: `${pluginName}-${index}`, ...attrs }, content, true);
+            
+            // Store the flaggable spec as JSON in the div
+            const jsonContent = JSON.stringify(flaggableSpec);
+            return sanitizedHTML('div', { class: className, id: `${pluginName}-${index}`, ...attrs }, jsonContent, true);
         },
         hydrateSpecs: (renderer, errorHandler) => {
             const flagged: SpecReview<T>[] = [];

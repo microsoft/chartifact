@@ -48,14 +48,13 @@
 import { Plugin, RawFlaggableSpec, IInstance } from '../factory.js';
 import { ErrorHandler } from '../renderer.js';
 import { sanitizedHTML } from '../sanitize.js';
-import { flaggablePlugin } from './config.js';
+import { flaggablePlugin, parseBody } from './config.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { TemplateToken, tokenizeTemplate } from 'common';
 import { MermaidConfig } from 'mermaid';
 import type Mermaid from 'mermaid';
 import { MermaidElementProps, MermaidTemplate } from '@microsoft/chartifact-schema';
-import * as yaml from 'js-yaml';
 
 interface MermaidInstance {
     id: string;
@@ -170,35 +169,23 @@ function loadMermaidFromCDN(): Promise<void> {
 export const mermaidPlugin: Plugin<MermaidSpec> = {
     ...flaggablePlugin<MermaidSpec>(pluginName, className),
     fence: (token, index) => {
-        const content = token.content.trim();
-        let spec: MermaidSpec;
-        let flaggableSpec: RawFlaggableSpec<MermaidSpec>;
-
-        // Determine format from token info (like flaggablePlugin does)
         const info = token.info.trim();
-        const isYaml = info.startsWith('yaml ');
-
-        // Try to parse as YAML or JSON based on format
-        try {
-            let parsed: any;
-            if (isYaml) {
-                parsed = yaml.load(content);
-            } else {
-                parsed = JSON.parse(content);
-            }
-
-            if (parsed && typeof parsed === 'object') {
-                spec = parsed as MermaidSpec;
-            } else {
-                // If it's valid YAML/JSON but not a proper MermaidSpec object, treat as raw text
-                spec = { diagramText: content };
-            }
-        } catch (e) {
-            // If YAML/JSON parsing fails, treat as raw text
+        const content = token.content.trim();
+        
+        // Try to parse as JSON/YAML using the helper function
+        const parseResult = parseBody<MermaidSpec>(content, info);
+        
+        let spec: MermaidSpec;
+        
+        if (parseResult.spec && typeof parseResult.spec === 'object') {
+            // Parsing succeeded and it's an object - use it as MermaidSpec
+            spec = parseResult.spec;
+        } else {
+            // If parsing failed or result is not an object, treat as raw text
             spec = { diagramText: content };
         }
 
-        flaggableSpec = inspectMermaidSpec(spec);
+        const flaggableSpec = inspectMermaidSpec(spec);
         const json = JSON.stringify(flaggableSpec);
 
         return sanitizedHTML('div', { class: className, id: `${pluginName}-${index}` }, json, true);
