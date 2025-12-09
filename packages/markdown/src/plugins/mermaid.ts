@@ -48,7 +48,7 @@
 import { Plugin, RawFlaggableSpec, IInstance } from '../factory.js';
 import { ErrorHandler } from '../renderer.js';
 import { sanitizedHTML } from '../sanitize.js';
-import { flaggablePlugin, parseHeadAndBody } from './config.js';
+import { flaggablePlugin, parseHeadAndBody, convertHeadToSerializable } from './config.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { TemplateToken, tokenizeTemplate } from 'common';
@@ -187,12 +187,7 @@ export const mermaidPlugin: Plugin<MermaidSpec> = {
 
         const flaggableSpec = inspectMermaidSpec(spec);
         // Add head information to the result
-        flaggableSpec.head = {
-            format: head.format,
-            pluginName: head.pluginName,
-            params: Object.fromEntries(head.params),
-            wasDefaultId: head.wasDefaultId
-        };
+        flaggableSpec.head = convertHeadToSerializable(head);
         const json = JSON.stringify(flaggableSpec);
 
         return sanitizedHTML('div', { class: className, id: `${pluginName}-${index}` }, json, true);

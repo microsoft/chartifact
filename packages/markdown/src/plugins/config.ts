@@ -101,6 +101,18 @@ export interface HeadBodyResult<T> {
 }
 
 /**
+ * Convert ParsedHead to a serializable format for JSON storage
+ */
+export function convertHeadToSerializable(head: ParsedHead) {
+    return {
+        format: head.format,
+        pluginName: head.pluginName,
+        params: Object.fromEntries(head.params),
+        wasDefaultId: head.wasDefaultId
+    };
+}
+
+/**
  * Parse body content as JSON or YAML based on fence info.
  * @param content The fence content
  * @param info The fence info string (used to detect format)
@@ -246,12 +258,7 @@ export function flaggablePlugin<T>(pluginName: PluginNames, className: string, f
                     spec: null,
                     hasFlags: true,
                     reasons: [body.error],
-                    head: {
-                        format: head.format,
-                        pluginName: head.pluginName,
-                        params: Object.fromEntries(head.params),
-                        wasDefaultId: head.wasDefaultId
-                    }
+                    head: convertHeadToSerializable(head)
                 };
             } else if (body.spec) {
                 // Parsing succeeded, apply flagger if provided
@@ -261,24 +268,14 @@ export function flaggablePlugin<T>(pluginName: PluginNames, className: string, f
                     flaggableSpec = { spec: body.spec };
                 }
                 // Add head information to the result
-                flaggableSpec.head = {
-                    format: head.format,
-                    pluginName: head.pluginName,
-                    params: Object.fromEntries(head.params),
-                    wasDefaultId: head.wasDefaultId
-                };
+                flaggableSpec.head = convertHeadToSerializable(head);
             } else {
                 // No spec (shouldn't happen, but handle it)
                 flaggableSpec = {
                     spec: null,
                     hasFlags: true,
                     reasons: ['No spec provided'],
-                    head: {
-                        format: head.format,
-                        pluginName: head.pluginName,
-                        params: Object.fromEntries(head.params),
-                        wasDefaultId: head.wasDefaultId
-                    }
+                    head: convertHeadToSerializable(head)
                 };
             }
             

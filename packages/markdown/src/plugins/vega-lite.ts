@@ -5,7 +5,7 @@
 
 import { Plugin, RawFlaggableSpec } from '../factory.js';
 import { sanitizedHTML } from '../sanitize.js';
-import { flaggablePlugin, parseHeadAndBody } from './config.js';
+import { flaggablePlugin, parseHeadAndBody, convertHeadToSerializable } from './config.js';
 import { pluginClassName } from './util.js';
 import { inspectVegaSpec, vegaPlugin } from './vega.js';
 import { compile, TopLevelSpec } from 'vega-lite';
@@ -32,12 +32,7 @@ export const vegaLitePlugin: Plugin<TopLevelSpec> = {
                 spec: null,
                 hasFlags: true,
                 reasons: [body.error],
-                head: {
-                    format: head.format,
-                    pluginName: head.pluginName,
-                    params: Object.fromEntries(head.params),
-                    wasDefaultId: head.wasDefaultId
-                }
+                head: convertHeadToSerializable(head)
             };
         } else if (body.spec) {
             // Parsing succeeded, try to compile to Vega
@@ -53,24 +48,14 @@ export const vegaLitePlugin: Plugin<TopLevelSpec> = {
                     spec: vegaSpec.spec as any as TopLevelSpec,
                     hasFlags: inspected.hasFlags,
                     reasons: inspected.reasons,
-                    head: {
-                        format: head.format,
-                        pluginName: head.pluginName,
-                        params: Object.fromEntries(head.params),
-                        wasDefaultId: head.wasDefaultId
-                    }
+                    head: convertHeadToSerializable(head)
                 };
             } catch (e) {
                 flaggableSpec = {
                     spec: null,
                     hasFlags: true,
                     reasons: [`failed to compile vega spec: ${e instanceof Error ? e.message : String(e)}`],
-                    head: {
-                        format: head.format,
-                        pluginName: head.pluginName,
-                        params: Object.fromEntries(head.params),
-                        wasDefaultId: head.wasDefaultId
-                    }
+                    head: convertHeadToSerializable(head)
                 };
             }
         } else {
@@ -80,12 +65,7 @@ export const vegaLitePlugin: Plugin<TopLevelSpec> = {
                 spec: null,
                 hasFlags: true,
                 reasons: body.error ? [body.error] : ['No spec provided'],
-                head: {
-                    format: head.format,
-                    pluginName: head.pluginName,
-                    params: Object.fromEntries(head.params),
-                    wasDefaultId: head.wasDefaultId
-                }
+                head: convertHeadToSerializable(head)
             };
         }
         
