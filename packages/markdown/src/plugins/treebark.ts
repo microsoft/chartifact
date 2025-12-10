@@ -3,62 +3,8 @@
  * Licensed under the MIT License.
  */
 
-/*
+/**
  * Treebark Plugin - Renders cards and structured HTML using Treebark templates
- *
- * USAGE EXAMPLES:
- *
- * 1. Static Data:
- * ```treebark
- * {
- *   "template": {
- *     "div": {
- *       "class": "card",
- *       "$children": ["Hello {{name}}!"]
- *     }
- *   },
- *   "data": { "name": "World" }
- * }
- * ```
- *
- * 2. Dynamic Data via Signal (data source → cards):
- * ```treebark
- * {
- *   "template": {
- *     "div": {
- *       "class": "card",
- *       "$bind": ".",
- *       "$children": [
- *         { "h3": "{{Title}}" },
- *         { "p": "{{Director}}" }
- *       ]
- *     }
- *   },
- *   "variableId": "movieData"
- * }
- * ```
- *
- * 3. Define and reuse templates:
- * ```treebark
- * {
- *   "templateId": "myCard",
- *   "template": {
- *     "div": {
- *       "class": "card",
- *       "$children": ["{{name}}"]
- *     }
- *   },
- *   "variableId": "users"
- * }
- * ```
- *
- * 4. Reference a template:
- * ```treebark
- * {
- *   "templateId": "myCard",
- *   "variableId": "products"
- * }
- * ```
  */
 
 import { Plugin, RawFlaggableSpec, IInstance } from '../factory.js';
