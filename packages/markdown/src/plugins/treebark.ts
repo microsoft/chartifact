@@ -67,14 +67,14 @@ import { flaggablePlugin } from './config.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { TreebarkElementProps } from '@microsoft/chartifact-schema';
-import { renderToDOM } from 'treebark';
+import { renderToDOM, TemplateElement } from 'treebark';
 
 interface TreebarkInstance {
     id: string;
     spec: TreebarkElementProps;
     container: Element;
     lastRenderedData: string;
-    resolvedTemplate: object;
+    resolvedTemplate: TemplateElement;
 }
 
 export interface TreebarkSpec extends TreebarkElementProps { }
@@ -116,10 +116,8 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
         const { signalBus, document } = renderer;
         const treebarkInstances: TreebarkInstance[] = [];
         
-        // Template registry: starts with templates from resources, then adds inline-defined ones
-        const templateRegistry: Record<string, object> = {
-            ...(document as any)?.resources?.treebarkTemplates || {}
-        };
+        // Template registry: starts empty, adds inline-defined templates during hydration
+        const templateRegistry: Record<string, TemplateElement> = {};
 
         for (let index = 0; index < specs.length; index++) {
             const specReview = specs[index];
@@ -133,14 +131,14 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
 
             const spec = specReview.approvedSpec;
             
-            let resolvedTemplate: object;
+            let resolvedTemplate: TemplateElement;
             
             // Use templateId to determine SET vs GET
             if (spec.templateId) {
                 if (spec.template) {
                     // SET: templateId + template = register the template
-                    templateRegistry[spec.templateId] = spec.template as object;
-                    resolvedTemplate = spec.template as object;
+                    templateRegistry[spec.templateId] = spec.template;
+                    resolvedTemplate = spec.template;
                 } else {
                     // GET: templateId without template = lookup the template
                     resolvedTemplate = templateRegistry[spec.templateId];
@@ -158,7 +156,7 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
                 }
             } else {
                 // No templateId: template is used inline (can be object or string)
-                resolvedTemplate = spec.template as object;
+                resolvedTemplate = spec.template;
             }
 
             // Create container for the rendered content
