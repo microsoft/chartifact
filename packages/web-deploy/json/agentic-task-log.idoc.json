@@ -60,36 +60,38 @@
         {
             "dataSourceName": "executionLogs1",
             "type": "inline",
-            "content": {
-                "phase": "⚙️ Execution Phase 1: Data Loading & Validation",
-                "logs": [
-                    {
-                        "timestamp": "2024-11-19 10:15:23",
-                        "level": "info",
-                        "message": "Starting data analysis task..."
-                    },
+            "content": [
                 {
-                    "timestamp": "2024-11-19 10:15:24",
-                    "level": "info",
-                    "message": "Loading dataset: sales_q4_2024.csv"
-                },
-                {
-                    "timestamp": "2024-11-19 10:15:26",
-                    "level": "success",
-                    "message": "Dataset loaded successfully (15,234 rows, 12 columns)"
-                },
-                {
-                    "timestamp": "2024-11-19 10:15:27",
-                    "level": "info",
-                    "message": "Performing data validation and cleaning..."
-                },
-                    {
-                        "timestamp": "2024-11-19 10:15:29",
-                        "level": "success",
-                        "message": "Data validation complete. No missing values detected."
-                    }
-                ]
-            }
+                    "phase": "⚙️ Execution Phase 1: Data Loading & Validation",
+                    "logs": [
+                        {
+                            "timestamp": "2024-11-19 10:15:23",
+                            "level": "info",
+                            "message": "Starting data analysis task..."
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:15:24",
+                            "level": "info",
+                            "message": "Loading dataset: sales_q4_2024.csv"
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:15:26",
+                            "level": "success",
+                            "message": "Dataset loaded successfully (15,234 rows, 12 columns)"
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:15:27",
+                            "level": "info",
+                            "message": "Performing data validation and cleaning..."
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:15:29",
+                            "level": "success",
+                            "message": "Data validation complete. No missing values detected."
+                        }
+                    ]
+                }
+            ]
         },
         {
             "dataSourceName": "chatMessages2",
@@ -110,46 +112,48 @@
         {
             "dataSourceName": "executionLogs2",
             "type": "inline",
-            "content": {
-                "phase": "⚙️ Execution Phase 2: Analysis & Visualization",
-                "logs": [
+            "content": [
                 {
-                    "timestamp": "2024-11-19 10:16:05",
-                    "level": "info",
-                    "message": "Computing aggregate statistics..."
-                },
-                {
-                    "timestamp": "2024-11-19 10:16:07",
-                    "level": "info",
-                    "message": "Grouping data by region: North, South, East, West"
-                },
-                {
-                    "timestamp": "2024-11-19 10:16:09",
-                    "level": "success",
-                    "message": "Regional analysis complete"
-                },
-                {
-                    "timestamp": "2024-11-19 10:16:10",
-                    "level": "info",
-                    "message": "Generating revenue trends by month..."
-                },
-                {
-                    "timestamp": "2024-11-19 10:16:13",
-                    "level": "success",
-                    "message": "Trend analysis complete"
-                },
-                {
-                    "timestamp": "2024-11-19 10:16:14",
-                    "level": "info",
-                    "message": "Creating visualizations..."
-                },
-                    {
-                        "timestamp": "2024-11-19 10:16:18",
-                        "level": "success",
-                        "message": "Generated 3 charts: revenue_by_region.png, monthly_trends.png, top_products.png"
-                    }
-                ]
-            }
+                    "phase": "⚙️ Execution Phase 2: Analysis & Visualization",
+                    "logs": [
+                        {
+                            "timestamp": "2024-11-19 10:16:05",
+                            "level": "info",
+                            "message": "Computing aggregate statistics..."
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:16:07",
+                            "level": "info",
+                            "message": "Grouping data by region: North, South, East, West"
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:16:09",
+                            "level": "success",
+                            "message": "Regional analysis complete"
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:16:10",
+                            "level": "info",
+                            "message": "Generating revenue trends by month..."
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:16:13",
+                            "level": "success",
+                            "message": "Trend analysis complete"
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:16:14",
+                            "level": "info",
+                            "message": "Creating visualizations..."
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:16:18",
+                            "level": "success",
+                            "message": "Generated 3 charts: revenue_by_region.png, monthly_trends.png, top_products.png"
+                        }
+                    ]
+                }
+            ]
         },
         {
             "dataSourceName": "chatMessages3",
@@ -170,41 +174,43 @@
         {
             "dataSourceName": "executionLogs3",
             "type": "inline",
-            "content": {
-                "phase": "⚙️ Execution Phase 3: Report Generation",
-                "logs": [
-                    {
-                        "timestamp": "2024-11-19 10:17:30",
-                        "level": "info",
-                        "message": "Initiating report generation..."
-                    },
+            "content": [
                 {
-                    "timestamp": "2024-11-19 10:17:31",
-                    "level": "info",
-                    "message": "Compiling data summaries and insights..."
-                },
-                {
-                    "timestamp": "2024-11-19 10:17:33",
-                    "level": "info",
-                    "message": "Embedding visualizations into report template..."
-                },
-                {
-                    "timestamp": "2024-11-19 10:17:38",
-                    "level": "info",
-                    "message": "Rendering report to PDF format..."
-                },
-                {
-                    "timestamp": "2024-11-19 10:17:42",
-                    "level": "success",
-                    "message": "Report generated successfully: Q4_Sales_Report_2024.pdf (2.4 MB)"
-                },
-                    {
-                        "timestamp": "2024-11-19 10:17:43",
-                        "level": "success",
-                        "message": "Task completed in 4 minutes 20 seconds"
-                    }
-                ]
-            }
+                    "phase": "⚙️ Execution Phase 3: Report Generation",
+                    "logs": [
+                        {
+                            "timestamp": "2024-11-19 10:17:30",
+                            "level": "info",
+                            "message": "Initiating report generation..."
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:17:31",
+                            "level": "info",
+                            "message": "Compiling data summaries and insights..."
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:17:33",
+                            "level": "info",
+                            "message": "Embedding visualizations into report template..."
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:17:38",
+                            "level": "info",
+                            "message": "Rendering report to PDF format..."
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:17:42",
+                            "level": "success",
+                            "message": "Report generated successfully: Q4_Sales_Report_2024.pdf (2.4 MB)"
+                        },
+                        {
+                            "timestamp": "2024-11-19 10:17:43",
+                            "level": "success",
+                            "message": "Task completed in 4 minutes 20 seconds"
+                        }
+                    ]
+                }
+            ]
         },
         {
             "dataSourceName": "chatMessages4",
@@ -397,44 +403,51 @@
                     "setTemplate": "executionLog",
                     "template": {
                         "div": {
-                            "class": "execution-log",
+                            "$bind": ".",
                             "$children": [
                                 {
-                                    "h3": {
-                                        "$children": [
-                                            "{{phase}}"
-                                        ]
-                                    }
-                                },
-                                {
                                     "div": {
-                                        "$bind": "logs",
+                                        "class": "execution-log",
                                         "$children": [
                                             {
+                                                "h3": {
+                                                    "$children": [
+                                                        "{{phase}}"
+                                                    ]
+                                                }
+                                            },
+                                            {
                                                 "div": {
-                                                    "class": "log-entry",
+                                                    "$bind": "logs",
                                                     "$children": [
                                                         {
-                                                            "span": {
-                                                                "class": "log-timestamp",
+                                                            "div": {
+                                                                "class": "log-entry",
                                                                 "$children": [
-                                                                    "[{{timestamp}}]"
-                                                                ]
-                                                            }
-                                                        },
-                                                        {
-                                                            "span": {
-                                                                "class": "log-level-{{level}}",
-                                                                "$children": [
-                                                                    " {{level}}: "
-                                                                ]
-                                                            }
-                                                        },
-                                                        {
-                                                            "span": {
-                                                                "class": "log-message",
-                                                                "$children": [
-                                                                    "{{message}}"
+                                                                    {
+                                                                        "span": {
+                                                                            "class": "log-timestamp",
+                                                                            "$children": [
+                                                                                "[{{timestamp}}]"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "span": {
+                                                                            "class": "log-level-{{level}}",
+                                                                            "$children": [
+                                                                                " {{level}}: "
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "span": {
+                                                                            "class": "log-message",
+                                                                            "$children": [
+                                                                                "{{message}}"
+                                                                            ]
+                                                                        }
+                                                                    }
                                                                 ]
                                                             }
                                                         }
