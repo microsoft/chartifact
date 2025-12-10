@@ -152,8 +152,11 @@ export interface TreebarkElementProps extends OptionalVariableControl {
   /** Static data object (optional) */
   data?: object;
 
-  /** Template ID for markdown head syntax (e.g., ```treebark{templateId=foo}) */
-  templateId?: string;
+  /** Register a template with this name for reuse (SET operation) */
+  setTemplate?: string;
+
+  /** Use a previously registered template by name (GET operation) */
+  getTemplate?: string;
 
   /** Dynamic option: variableId to intake a signal and behave as data */
 }

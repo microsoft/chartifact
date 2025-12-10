@@ -350,7 +350,7 @@
                 {
                     "type": "treebark",
                     "variableId": "chatMessages",
-                    "templateId": "chatBubble",
+                    "setTemplate": "chatBubble",
                     "template": {
                         "div": {
                             "class": "chat-container",
@@ -451,7 +451,7 @@
                 {
                     "type": "treebark",
                     "variableId": "chatMessages2",
-                    "template": "chatBubble"
+                    "getTemplate": "chatBubble"
                 },
                 "",
                 {
@@ -514,7 +514,7 @@
                 {
                     "type": "treebark",
                     "variableId": "chatMessages3",
-                    "template": "chatBubble"
+                    "getTemplate": "chatBubble"
                 },
                 "",
                 "",
@@ -592,7 +592,7 @@
                 {
                     "type": "treebark",
                     "variableId": "chatMessages4",
-                    "template": "chatBubble"
+                    "getTemplate": "chatBubble"
                 },
                 "",
                 {

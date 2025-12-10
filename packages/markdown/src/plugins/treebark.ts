@@ -32,10 +32,28 @@ function inspectTreebarkSpec(spec: TreebarkSpec): RawFlaggableSpec<TreebarkSpec>
     const reasons: string[] = [];
     let hasFlags = false;
 
-    // Validate: either template or templateId must be present
-    if (!spec.template && !spec.templateId) {
+    // Validate: either template, setTemplate, or getTemplate must be present
+    if (!spec.template && !spec.setTemplate && !spec.getTemplate) {
         hasFlags = true;
-        reasons.push('Either template or templateId is required');
+        reasons.push('Either template, setTemplate, or getTemplate is required');
+    }
+    
+    // Validate: setTemplate and getTemplate are mutually exclusive
+    if (spec.setTemplate && spec.getTemplate) {
+        hasFlags = true;
+        reasons.push('setTemplate and getTemplate cannot both be specified');
+    }
+    
+    // Validate: setTemplate requires template
+    if (spec.setTemplate && !spec.template) {
+        hasFlags = true;
+        reasons.push('setTemplate requires template to be provided');
+    }
+    
+    // Validate: getTemplate should not have template
+    if (spec.getTemplate && spec.template) {
+        hasFlags = true;
+        reasons.push('getTemplate should not have template (it references an existing template)');
     }
     
     // If template is provided, it must be object or string
@@ -79,29 +97,27 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
             
             let resolvedTemplate: TemplateElement;
             
-            // Use templateId to determine SET vs GET
-            if (spec.templateId) {
-                if (spec.template) {
-                    // SET: templateId + template = register the template
-                    templateRegistry[spec.templateId] = spec.template;
-                    resolvedTemplate = spec.template;
-                } else {
-                    // GET: templateId without template = lookup the template
-                    resolvedTemplate = templateRegistry[spec.templateId];
-                    if (!resolvedTemplate) {
-                        container.innerHTML = `<div class="error">Template '${spec.templateId}' not found</div>`;
-                        errorHandler(
-                            new Error(`Template '${spec.templateId}' not found`),
-                            pluginName,
-                            index,
-                            'resolve',
-                            container
-                        );
-                        continue;
-                    }
+            // Explicit SET/GET semantics
+            if (spec.setTemplate) {
+                // SET: Register and use the template
+                templateRegistry[spec.setTemplate] = spec.template;
+                resolvedTemplate = spec.template;
+            } else if (spec.getTemplate) {
+                // GET: Lookup the template
+                resolvedTemplate = templateRegistry[spec.getTemplate];
+                if (!resolvedTemplate) {
+                    container.innerHTML = `<div class="error">Template '${spec.getTemplate}' not found</div>`;
+                    errorHandler(
+                        new Error(`Template '${spec.getTemplate}' not found`),
+                        pluginName,
+                        index,
+                        'resolve',
+                        container
+                    );
+                    continue;
                 }
             } else {
-                // No templateId: template is used inline (can be object or string)
+                // INLINE: Use template directly (can be object or string)
                 resolvedTemplate = spec.template;
             }
 
