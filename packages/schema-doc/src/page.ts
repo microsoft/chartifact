@@ -5,7 +5,6 @@
 import { InteractiveElement } from './interactive.js';
 import { DataLoader } from './datasource.js';
 import { Variable } from './common.js';
-import { TemplateElement } from 'treebark';
 
 export interface ElementGroup {
   groupId: string;
@@ -33,7 +32,6 @@ export interface InteractiveDocument {
 
   resources?: {
     charts?: { [chartKey: string]: Vega_or_VegaLite_spec };
-    treebarkTemplates?: { [templateId: string]: TemplateElement };
   };
 
   /** Optional comments from the author */
