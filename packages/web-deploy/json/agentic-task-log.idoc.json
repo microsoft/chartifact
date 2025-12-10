@@ -42,9 +42,9 @@
     },
     "dataLoaders": [
         {
-            "dataLoaderId": "chatMessages",
-            "type": "json",
-            "data": [
+            "dataSourceName": "chatMessages",
+            "type": "inline",
+            "content": [
                 {
                     "sender": "User",
                     "type": "user",
@@ -58,9 +58,9 @@
             ]
         },
         {
-            "dataLoaderId": "executionLogs1",
-            "type": "json",
-            "data": {
+            "dataSourceName": "executionLogs1",
+            "type": "inline",
+            "content": {
                 "phase": "⚙️ Execution Phase 1: Data Loading & Validation",
                 "logs": [
                     {
@@ -92,9 +92,9 @@
             }
         },
         {
-            "dataLoaderId": "chatMessages2",
-            "type": "json",
-            "data": [
+            "dataSourceName": "chatMessages2",
+            "type": "inline",
+            "content": [
                 {
                     "sender": "Assistant",
                     "type": "assistant",
@@ -108,9 +108,9 @@
             ]
         },
         {
-            "dataLoaderId": "executionLogs2",
-            "type": "json",
-            "data": {
+            "dataSourceName": "executionLogs2",
+            "type": "inline",
+            "content": {
                 "phase": "⚙️ Execution Phase 2: Analysis & Visualization",
                 "logs": [
                 {
@@ -152,9 +152,9 @@
             }
         },
         {
-            "dataLoaderId": "chatMessages3",
-            "type": "json",
-            "data": [
+            "dataSourceName": "chatMessages3",
+            "type": "inline",
+            "content": [
                 {
                     "sender": "Assistant",
                     "type": "assistant",
@@ -168,9 +168,9 @@
             ]
         },
         {
-            "dataLoaderId": "executionLogs3",
-            "type": "json",
-            "data": {
+            "dataSourceName": "executionLogs3",
+            "type": "inline",
+            "content": {
                 "phase": "⚙️ Execution Phase 3: Report Generation",
                 "logs": [
                     {
@@ -207,9 +207,9 @@
             }
         },
         {
-            "dataLoaderId": "chatMessages4",
-            "type": "json",
-            "data": [
+            "dataSourceName": "chatMessages4",
+            "type": "inline",
+            "content": [
                 {
                     "sender": "Assistant",
                     "type": "assistant",
@@ -223,9 +223,9 @@
             ]
         },
         {
-            "variableId": "executionTimeByPhase",
-            "type": "json",
-            "data": [
+            "dataSourceName": "executionTimeByPhase",
+            "type": "inline",
+            "content": [
                 {
                     "phase": "Data Loading",
                     "duration_seconds": 6,
@@ -244,9 +244,9 @@
             ]
         },
         {
-            "variableId": "logActivityOverTime",
-            "type": "json",
-            "data": [
+            "dataSourceName": "logActivityOverTime",
+            "type": "inline",
+            "content": [
                 {
                     "timestamp": "10:15:23",
                     "log_count": 1,
@@ -393,7 +393,7 @@
                 "",
                 {
                     "type": "treebark",
-                    "dataLoaderId": "executionLogs1",
+                    "variableId": "executionLogs1",
                     "setTemplate": "executionLog",
                     "template": {
                         "div": {
@@ -451,19 +451,19 @@
                 "",
                 {
                     "type": "treebark",
-                    "dataLoaderId": "chatMessages2",
+                    "variableId": "chatMessages2",
                     "getTemplate": "chatBubble"
                 },
                 "",
                 {
                     "type": "treebark",
-                    "dataLoaderId": "executionLogs2",
+                    "variableId": "executionLogs2",
                     "getTemplate": "executionLog"
                 },
                 "",
                 {
                     "type": "treebark",
-                    "dataLoaderId": "chatMessages3",
+                    "variableId": "chatMessages3",
                     "getTemplate": "chatBubble"
                 },
                 "",
@@ -484,13 +484,13 @@
                 "",
                 {
                     "type": "treebark",
-                    "dataLoaderId": "executionLogs3",
+                    "variableId": "executionLogs3",
                     "getTemplate": "executionLog"
                 },
                 "",
                 {
                     "type": "treebark",
-                    "dataLoaderId": "chatMessages4",
+                    "variableId": "chatMessages4",
                     "getTemplate": "chatBubble"
                 },
                 "",
