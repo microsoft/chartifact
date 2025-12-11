@@ -142,11 +142,6 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                         errors.push('Treebark element cannot have both setTemplate and getTemplate');
                     }
                     
-                    // Validate: at least one of template, setTemplate, or getTemplate must be present
-                    if (!treebarkElement.template && !treebarkElement.setTemplate && !treebarkElement.getTemplate) {
-                        errors.push('Treebark element must have at least one of: template, setTemplate, or getTemplate');
-                    }
-                    
                     // Validate: setTemplate requires template
                     if (treebarkElement.setTemplate && !treebarkElement.template) {
                         errors.push('Treebark element with setTemplate must have a template property');
@@ -155,6 +150,12 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                     // Validate: getTemplate should not have template
                     if (treebarkElement.getTemplate && treebarkElement.template) {
                         errors.push('Treebark element with getTemplate should not have a template property (it references an existing template)');
+                    }
+                    
+                    // Validate: at least one of template, setTemplate, or getTemplate must be present
+                    // (Check this after setTemplate/getTemplate-specific validations to avoid confusing messages)
+                    if (!treebarkElement.template && !treebarkElement.setTemplate && !treebarkElement.getTemplate) {
+                        errors.push('Treebark element must have at least one of: template, setTemplate, or getTemplate');
                     }
                     
                     // Validate template if present - can be object or string
