@@ -137,14 +137,14 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                 case 'treebark': {
                     const treebarkElement = element as TreebarkElement;
 
-                    // Validate: either template, setTemplate, or getTemplate must be present
-                    if (!treebarkElement.template && !treebarkElement.setTemplate && !treebarkElement.getTemplate) {
-                        errors.push('Treebark element must have either template, setTemplate, or getTemplate');
-                    }
-                    
-                    // Validate: setTemplate and getTemplate are mutually exclusive
+                    // Validate: setTemplate and getTemplate are mutually exclusive (check first)
                     if (treebarkElement.setTemplate && treebarkElement.getTemplate) {
                         errors.push('Treebark element cannot have both setTemplate and getTemplate');
+                    }
+                    
+                    // Validate: at least one of template, setTemplate, or getTemplate must be present
+                    if (!treebarkElement.template && !treebarkElement.setTemplate && !treebarkElement.getTemplate) {
+                        errors.push('Treebark element must have at least one of: template, setTemplate, or getTemplate');
                     }
                     
                     // Validate: setTemplate requires template
