@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/microsoft/chartifact/discussions
+    about: Ask questions, share ideas, and engage with the community
+  - name: 📖 Documentation
+    url: https://microsoft.github.io/chartifact/
+    about: Browse the official Chartifact documentation and examples
+  - name: 🔒 Security Vulnerability
+    url: https://github.com/microsoft/chartifact/security/advisories/new
+    about: Report security vulnerabilities privately (do not use public issues)
