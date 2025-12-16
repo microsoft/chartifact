@@ -1,0 +1,106 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior in Chartifact
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out this form as completely as possible.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of what the bug is.
+      placeholder: What went wrong?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: Describe what you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: Describe what actually happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: document
+    attributes:
+      label: Sample Document (if applicable)
+      description: If the bug relates to a specific document, please provide a minimal example (JSON or Markdown)
+      placeholder: Paste your .idoc.json or .idoc.md content here
+      render: json
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Please provide information about your environment
+      value: |
+        - OS: [e.g., Windows 11, macOS 14, Ubuntu 22.04]
+        - Browser: [e.g., Chrome 120, Firefox 121, Safari 17]
+        - Node.js version: [e.g., 20.10.0]
+        - Chartifact version: [e.g., 1.0.0]
+        - VS Code version (if applicable): [e.g., 1.85.0]
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or Screen Recording
+      description: If applicable, add screenshots or a screen recording to help explain the problem
+      placeholder: Drag and drop images or paste links here
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console Logs or Error Messages
+      description: Please include any relevant console logs or error messages
+      placeholder: Paste console output here
+      render: shell
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here
+      placeholder: Any additional information that might be helpful
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please verify the following before submitting
+      options:
+        - label: I have searched for existing issues to avoid duplicates
+          required: true
+        - label: I have provided all the required information above
+          required: true
+        - label: I can reproduce this issue consistently
+          required: false
