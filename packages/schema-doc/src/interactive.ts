@@ -147,10 +147,16 @@ export interface TreebarkElement extends TreebarkElementProps {
 
 export interface TreebarkElementProps extends OptionalVariableControl {
   /** Treebark template object for rendering HTML structure */
-  template: TemplateElement ;
+  template?: TemplateElement;
 
   /** Static data object (optional) */
   data?: object;
+
+  /** Register a template with this name for reuse (SET operation) */
+  setTemplate?: string;
+
+  /** Use a previously registered template by name (GET operation) */
+  getTemplate?: string;
 
   /** Dynamic option: variableId to intake a signal and behave as data */
 }

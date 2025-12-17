@@ -1,43 +1,11 @@
 /**
-* Copyright (c) Microsoft Corporation.
-* Licensed under the MIT License.
-*/
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-/*
-* Treebark Plugin - Renders cards and structured HTML using Treebark templates
-*
-* USAGE EXAMPLES:
-*
-* 1. Static Data:
-* ```treebark
-* {
-*   "template": {
-*     "div": {
-*       "class": "card",
-*       "$children": ["Hello {{name}}!"]
-*     }
-*   },
-*   "data": { "name": "World" }
-* }
-* ```
-*
-* 2. Dynamic Data via Signal (data source → cards):
-* ```treebark
-* {
-*   "template": {
-*     "div": {
-*       "class": "card",
-*       "$bind": ".",
-*       "$children": [
-*         { "h3": "{{Title}}" },
-*         { "p": "{{Director}}" }
-*       ]
-*     }
-*   },
-*   "variableId": "movieData"
-* }
-* ```
-*/
+/**
+ * Treebark Plugin - Renders cards and structured HTML using Treebark templates
+ */
 
 import { Plugin, RawFlaggableSpec, IInstance } from '../factory.js';
 import { ErrorHandler } from '../renderer.js';
@@ -45,13 +13,14 @@ import { flaggablePlugin } from './config.js';
 import { pluginClassName } from './util.js';
 import { PluginNames } from './interfaces.js';
 import { TreebarkElementProps } from '@microsoft/chartifact-schema';
-import { renderToDOM } from 'treebark';
+import { renderToDOM, TemplateElement } from 'treebark';
 
 interface TreebarkInstance {
     id: string;
     spec: TreebarkElementProps;
     container: Element;
     lastRenderedData: string;
+    resolvedTemplate: TemplateElement;
 }
 
 export interface TreebarkSpec extends TreebarkElementProps { }
@@ -63,10 +32,34 @@ function inspectTreebarkSpec(spec: TreebarkSpec): RawFlaggableSpec<TreebarkSpec>
     const reasons: string[] = [];
     let hasFlags = false;
 
-    // Validate template
-    if (!spec.template || typeof spec.template !== 'object') {
+    // Validate: either template, setTemplate, or getTemplate must be present
+    if (!spec.template && !spec.setTemplate && !spec.getTemplate) {
         hasFlags = true;
-        reasons.push('template must be an object');
+        reasons.push('Either template, setTemplate, or getTemplate is required');
+    }
+    
+    // Validate: setTemplate and getTemplate are mutually exclusive
+    if (spec.setTemplate && spec.getTemplate) {
+        hasFlags = true;
+        reasons.push('setTemplate and getTemplate cannot both be specified');
+    }
+    
+    // Validate: setTemplate requires template
+    if (spec.setTemplate && !spec.template) {
+        hasFlags = true;
+        reasons.push('setTemplate requires template to be provided');
+    }
+    
+    // Validate: getTemplate should not have template
+    if (spec.getTemplate && spec.template) {
+        hasFlags = true;
+        reasons.push('getTemplate should not have template (it references an existing template)');
+    }
+    
+    // If template is provided, it must be object or string
+    if (spec.template && typeof spec.template !== 'object' && typeof spec.template !== 'string') {
+        hasFlags = true;
+        reasons.push('template must be an object or a string');
     }
 
     // If both data and variableId are provided, warn but allow it
@@ -84,8 +77,11 @@ function inspectTreebarkSpec(spec: TreebarkSpec): RawFlaggableSpec<TreebarkSpec>
 export const treebarkPlugin: Plugin<TreebarkSpec> = {
     ...flaggablePlugin<TreebarkSpec>(pluginName, className, inspectTreebarkSpec),
     hydrateComponent: async (renderer, errorHandler, specs) => {
-        const { signalBus } = renderer;
+        const { signalBus, document } = renderer;
         const treebarkInstances: TreebarkInstance[] = [];
+        
+        // Template registry: starts empty, adds inline-defined templates during hydration
+        const templateRegistry: Record<string, TemplateElement> = {};
 
         for (let index = 0; index < specs.length; index++) {
             const specReview = specs[index];
@@ -98,6 +94,32 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
             }
 
             const spec = specReview.approvedSpec;
+            
+            let resolvedTemplate: TemplateElement;
+            
+            // Explicit SET/GET semantics
+            if (spec.setTemplate) {
+                // SET: Register and use the template
+                templateRegistry[spec.setTemplate] = spec.template;
+                resolvedTemplate = spec.template;
+            } else if (spec.getTemplate) {
+                // GET: Lookup the template
+                resolvedTemplate = templateRegistry[spec.getTemplate];
+                if (!resolvedTemplate) {
+                    container.innerHTML = `<div class="error">Template '${spec.getTemplate}' not found</div>`;
+                    errorHandler(
+                        new Error(`Template '${spec.getTemplate}' not found`),
+                        pluginName,
+                        index,
+                        'resolve',
+                        container
+                    );
+                    continue;
+                }
+            } else {
+                // INLINE: Use template directly (can be object or string)
+                resolvedTemplate = spec.template;
+            }
 
             // Create container for the rendered content
             container.innerHTML = `<div class="treebark-loading">Loading...</div>`;
@@ -107,6 +129,7 @@ export const treebarkPlugin: Plugin<TreebarkSpec> = {
                 spec,
                 container,
                 lastRenderedData: null,
+                resolvedTemplate,
             };
             treebarkInstances.push(treebarkInstance);
 
@@ -155,7 +178,7 @@ async function renderTreebark(
     errorHandler: ErrorHandler,
     index: number
 ) {
-    const { spec, container } = instance;
+    const { container, resolvedTemplate } = instance;
 
     try {
         // Create a stable key for caching based on data content
@@ -166,9 +189,9 @@ async function renderTreebark(
             return;
         }
 
-        // Render using treebark
+        // Render using treebark with resolved template
         const html = renderToDOM({
-            template: spec.template,
+            template: resolvedTemplate,
             data: data as any,
         });
 

@@ -306,7 +306,7 @@ function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: Ve
                     break;
                 }
                 case 'treebark': {
-                    const { template, data, variableId } = element;
+                    const { template, data, variableId, setTemplate, getTemplate } = element;
                     const treebarkSpec: Plugins.TreebarkSpec = {
                         template,
                     };
@@ -315,6 +315,12 @@ function groupMarkdown(group: ElementGroup, variables: Variable[], vegaScope: Ve
                     }
                     if (variableId) {
                         treebarkSpec.variableId = variableId;
+                    }
+                    if (setTemplate) {
+                        treebarkSpec.setTemplate = setTemplate;
+                    }
+                    if (getTemplate) {
+                        treebarkSpec.getTemplate = getTemplate;
                     }
                     addSpec('treebark', treebarkSpec);
                     break;
