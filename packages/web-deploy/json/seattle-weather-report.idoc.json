@@ -1,0 +1,617 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Seattle Weather Annual Report",
+    "style": {
+        "css": [
+            "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }",
+            ".container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }",
+            ".group { padding: 30px; }",
+            "#header { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; text-align: center; padding: 40px 30px; margin: 0; }",
+            "#summary { background: #f8fbff; border-left: 4px solid #4facfe; }",
+            "#overview { background: white; }",
+            "#temperature { background: #fff5f5; border-left: 4px solid #ff6b6b; }",
+            "#precipitation { background: #f0f8ff; border-left: 4px solid #4fc3f7; }",
+            "#seasonal { background: #f8fffe; border-left: 4px solid #26c6da; }",
+            "#data { background: #fafafa; border-top: 2px solid #e0e6ed; }",
+            "h1 { margin: 0; font-size: 2.8em; font-weight: 300; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }",
+            "h2 { color: #2c3e50; font-size: 1.8em; margin: 0 0 20px 0; font-weight: 400; }",
+            "h3 { color: #34495e; font-size: 1.4em; margin: 20px 0 15px 0; font-weight: 500; }",
+            "h4 { color: #7f8c8d; font-size: 1.1em; margin: 15px 0 10px 0; text-transform: uppercase; letter-spacing: 1px; }",
+            ".stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 25px 0; }",
+            ".stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; border-top: 3px solid #4facfe; }",
+            ".stat-number { font-size: 2.2em; font-weight: bold; color: #2c3e50; margin: 0; }",
+            ".stat-label { color: #7f8c8d; margin: 5px 0 0 0; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }",
+            "p { line-height: 1.7; color: #555; margin: 15px 0; }",
+            ".insight { background: #e8f4fd; padding: 20px; border-radius: 8px; border-left: 4px solid #3498db; margin: 20px 0; }",
+            ".insight p { margin: 0; color: #2c3e50; font-style: italic; }",
+            ".chart-container { margin: 25px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }",
+            "table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }",
+            "th { background: #34495e; color: white; padding: 15px; text-align: left; font-weight: 500; }",
+            "td { padding: 12px 15px; border-bottom: 1px solid #ecf0f1; }",
+            "tr:hover { background: #f8f9fa; }"
+        ]
+    },
+    "dataLoaders": [
+        {
+            "type": "url",
+            "url": "https://vega.github.io/editor/data/seattle-weather.csv",
+            "dataSourceName": "weather_data",
+            "format": "csv"
+        }
+    ],
+    "variables": [
+        {
+            "variableId": "totalDays",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "length(data('weather_data'))"
+            }
+        },
+        {
+            "variableId": "avgTempMax",
+            "type": "string",
+            "initialValue": "0°C",
+            "calculation": {
+                "vegaExpression": "format(data('avgTemperature')[0] ? data('avgTemperature')[0].avg_temp_max : 0, '.1f') + '°C'"
+            }
+        },
+        {
+            "variableId": "avgTempMin",
+            "type": "string",
+            "initialValue": "0°C",
+            "calculation": {
+                "vegaExpression": "format(data('avgTemperature')[0] ? data('avgTemperature')[0].avg_temp_min : 0, '.1f') + '°C'"
+            }
+        },
+        {
+            "variableId": "totalPrecipitation",
+            "type": "string",
+            "initialValue": "0mm",
+            "calculation": {
+                "vegaExpression": "format(data('precipitationStats')[0] ? data('precipitationStats')[0].total_precip : 0, '.0f') + 'mm'"
+            }
+        },
+        {
+            "variableId": "rainyDays",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "data('rainyDaysCount')[0] ? data('rainyDaysCount')[0].rainy_days : 0"
+            }
+        },
+        {
+            "variableId": "sunnyDays",
+            "type": "number",
+            "initialValue": 0,
+            "calculation": {
+                "vegaExpression": "data('sunnyDaysCount')[0] ? data('sunnyDaysCount')[0].sunny_days : 0"
+            }
+        },
+        {
+            "variableId": "avgTemperature",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["weather_data"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "ops": ["mean", "mean"],
+                        "fields": ["temp_max", "temp_min"],
+                        "as": ["avg_temp_max", "avg_temp_min"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "precipitationStats",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["weather_data"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "ops": ["sum"],
+                        "fields": ["precipitation"],
+                        "as": ["total_precip"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "rainyDaysCount",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["weather_data"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.precipitation > 0"
+                    },
+                    {
+                        "type": "aggregate",
+                        "ops": ["count"],
+                        "as": ["rainy_days"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "sunnyDaysCount",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["weather_data"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "filter",
+                        "expr": "datum.weather == 'sun'"
+                    },
+                    {
+                        "type": "aggregate",
+                        "ops": ["count"],
+                        "as": ["sunny_days"]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "monthlyStats",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": ["weather_data"],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "expr": "month(datum.date)",
+                        "as": "month"
+                    },
+                    {
+                        "type": "aggregate",
+                        "groupby": ["month"],
+                        "ops": ["mean", "mean", "sum", "count"],
+                        "fields": ["temp_max", "temp_min", "precipitation", "*"],
+                        "as": ["avg_temp_max", "avg_temp_min", "total_precip", "days"]
+                    }
+                ]
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "container",
+            "elements": [
+                {
+                    "groupId": "header"
+                },
+                {
+                    "groupId": "summary"
+                },
+                {
+                    "groupId": "overview"
+                },
+                {
+                    "groupId": "temperature"
+                },
+                {
+                    "groupId": "precipitation"
+                },
+                {
+                    "groupId": "seasonal"
+                },
+                {
+                    "groupId": "data"
+                }
+            ]
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "header",
+            "elements": [
+                "# 🌦️ Seattle Weather Annual Report",
+                "### Comprehensive Climate Analysis & Weather Patterns"
+            ]
+        },
+        {
+            "groupId": "summary",
+            "elements": [
+                "## Executive Summary",
+                "",
+                "This comprehensive weather report analyzes **{{totalDays}} days** of meteorological data from Seattle, Washington. Our analysis reveals the distinctive Pacific Northwest climate patterns that define this vibrant city.",
+                "",
+                "**Key Weather Statistics:**",
+                "",
+                "- **Average High Temperature:** {{avgTempMax}}",
+                "- **Average Low Temperature:** {{avgTempMin}}",
+                "- **Total Precipitation:** {{totalPrecipitation}}",
+                "- **Sunny Days:** {{sunnyDays}}"
+            ]
+        },
+        {
+            "groupId": "overview",
+            "elements": [
+                "## Weather Distribution Overview",
+                "",
+                "Seattle's weather patterns show the characteristic variability of the Pacific Northwest climate. The chart below illustrates the distribution of different weather conditions throughout the year:",
+                "",
+                "<div class=\"chart-container\">",
+                {
+                    "type": "chart",
+                    "chartKey": "weatherDistribution"
+                },
+                "</div>",
+                "",
+                "<div class=\"insight\">",
+                "<p><strong>Key Insight:</strong> Seattle experiences {{rainyDays}} days with precipitation out of {{totalDays}} total days analyzed, representing the city's reputation for frequent rainfall while also showing significant periods of clear weather.</p>",
+                "</div>"
+            ]
+        },
+        {
+            "groupId": "temperature",
+            "elements": [
+                "## Temperature Analysis",
+                "",
+                "### Annual Temperature Trends",
+                "",
+                "The temperature patterns in Seattle demonstrate the moderate maritime climate influence from the Pacific Ocean:",
+                "",
+                "<div class=\"chart-container\">",
+                {
+                    "type": "chart",
+                    "chartKey": "temperatureTrends"
+                },
+                "</div>",
+                "",
+                "### Daily Temperature Distribution",
+                "",
+                "This heatmap visualization shows the daily maximum temperature patterns throughout the year:",
+                "",
+                "<div class=\"chart-container\">",
+                {
+                    "type": "chart",
+                    "chartKey": "temperatureHeatmap"
+                },
+                "</div>"
+            ]
+        },
+        {
+            "groupId": "precipitation",
+            "elements": [
+                "## Precipitation Patterns",
+                "",
+                "### Monthly Precipitation Analysis",
+                "",
+                "Seattle's precipitation follows distinct seasonal patterns, with the wettest months typically occurring during the Pacific Northwest's rainy season:",
+                "",
+                "<div class=\"chart-container\">",
+                {
+                    "type": "chart",
+                    "chartKey": "precipitationByMonth"
+                },
+                "</div>",
+                "",
+                "### Daily Precipitation Timeline",
+                "",
+                "The following chart shows the daily precipitation levels throughout the year:",
+                "",
+                "<div class=\"chart-container\">",
+                {
+                    "type": "chart",
+                    "chartKey": "precipitationTimeline"
+                },
+                "</div>"
+            ]
+        },
+        {
+            "groupId": "seasonal",
+            "elements": [
+                "## Seasonal Weather Patterns",
+                "",
+                "### Monthly Weather Condition Summary",
+                "",
+                "This visualization breaks down the frequency of different weather conditions by month:",
+                "",
+                "<div class=\"chart-container\">",
+                {
+                    "type": "chart",
+                    "chartKey": "seasonalPatterns"
+                },
+                "</div>",
+                "",
+                "### Monthly Statistics Summary",
+                "",
+                "The table below provides detailed monthly weather statistics:",
+                "",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "monthlyStats"
+                }
+            ]
+        },
+        {
+            "groupId": "data",
+            "elements": [
+                "## Detailed Weather Data",
+                "",
+                "### Complete Daily Weather Records",
+                "",
+                "The following table contains the complete dataset used for this analysis:",
+                "",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "weather_data"
+                },
+                "",
+                "---",
+                "",
+                "*This report was generated using interactive data analysis with Chartifact. All statistics and visualizations are calculated dynamically from the Seattle weather dataset.*"
+            ]
+        }
+    ],
+    "resources": {
+        "charts": {
+            "weatherDistribution": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "data": {
+                    "name": "weather_data"
+                },
+                "mark": {
+                    "type": "bar",
+                    "cornerRadiusTopLeft": 3,
+                    "cornerRadiusTopRight": 3
+                },
+                "width": "container",
+                "height": 300,
+                "encoding": {
+                    "x": {
+                        "timeUnit": "month",
+                        "field": "date",
+                        "type": "ordinal",
+                        "title": "Month",
+                        "axis": {
+                            "labelAngle": -45
+                        }
+                    },
+                    "y": {
+                        "aggregate": "count",
+                        "type": "quantitative",
+                        "title": "Number of Days"
+                    },
+                    "color": {
+                        "field": "weather",
+                        "type": "nominal",
+                        "scale": {
+                            "domain": ["sun", "fog", "drizzle", "rain", "snow"],
+                            "range": ["#FFD700", "#B0C4DE", "#87CEEB", "#4682B4", "#E6E6FA"]
+                        },
+                        "title": "Weather Condition"
+                    }
+                },
+                "title": {
+                    "text": "Seattle Weather Distribution by Month",
+                    "anchor": "start",
+                    "fontSize": 16,
+                    "fontWeight": "normal"
+                }
+            },
+            "temperatureTrends": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "data": {
+                    "name": "weather_data"
+                },
+                "width": "container",
+                "height": 300,
+                "layer": [
+                    {
+                        "mark": {
+                            "type": "line",
+                            "strokeWidth": 2,
+                            "color": "#ff6b6b"
+                        },
+                        "encoding": {
+                            "x": {
+                                "field": "date",
+                                "type": "temporal",
+                                "title": "Date"
+                            },
+                            "y": {
+                                "field": "temp_max",
+                                "type": "quantitative",
+                                "title": "Temperature (°C)"
+                            }
+                        }
+                    },
+                    {
+                        "mark": {
+                            "type": "line",
+                            "strokeWidth": 2,
+                            "color": "#4fc3f7"
+                        },
+                        "encoding": {
+                            "x": {
+                                "field": "date",
+                                "type": "temporal"
+                            },
+                            "y": {
+                                "field": "temp_min",
+                                "type": "quantitative"
+                            }
+                        }
+                    }
+                ],
+                "resolve": {
+                    "scale": {
+                        "color": "independent"
+                    }
+                },
+                "title": {
+                    "text": "Daily Temperature Trends (High and Low)",
+                    "anchor": "start",
+                    "fontSize": 16,
+                    "fontWeight": "normal"
+                }
+            },
+            "temperatureHeatmap": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "data": {
+                    "name": "weather_data"
+                },
+                "mark": "rect",
+                "width": "container",
+                "height": 200,
+                "encoding": {
+                    "x": {
+                        "field": "date",
+                        "timeUnit": "date",
+                        "type": "ordinal",
+                        "title": "Day of Month",
+                        "axis": {
+                            "labelAngle": 0,
+                            "format": "%e"
+                        }
+                    },
+                    "y": {
+                        "field": "date",
+                        "timeUnit": "month",
+                        "type": "ordinal",
+                        "title": "Month"
+                    },
+                    "color": {
+                        "field": "temp_max",
+                        "type": "quantitative",
+                        "scale": {
+                            "scheme": "viridis"
+                        },
+                        "title": "Max Temp (°C)"
+                    }
+                },
+                "config": {
+                    "view": {
+                        "strokeWidth": 0,
+                        "step": 13
+                    },
+                    "axis": {
+                        "domain": false
+                    }
+                },
+                "title": {
+                    "text": "Daily Maximum Temperature Heatmap",
+                    "anchor": "start",
+                    "fontSize": 16,
+                    "fontWeight": "normal"
+                }
+            },
+            "precipitationByMonth": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "data": {
+                    "name": "weather_data"
+                },
+                "mark": {
+                    "type": "bar",
+                    "color": "#4fc3f7",
+                    "cornerRadiusTopLeft": 3,
+                    "cornerRadiusTopRight": 3
+                },
+                "width": "container",
+                "height": 300,
+                "encoding": {
+                    "x": {
+                        "timeUnit": "month",
+                        "field": "date",
+                        "type": "ordinal",
+                        "title": "Month",
+                        "axis": {
+                            "labelAngle": -45
+                        }
+                    },
+                    "y": {
+                        "aggregate": "sum",
+                        "field": "precipitation",
+                        "type": "quantitative",
+                        "title": "Total Precipitation (mm)"
+                    }
+                },
+                "title": {
+                    "text": "Monthly Precipitation Totals",
+                    "anchor": "start",
+                    "fontSize": 16,
+                    "fontWeight": "normal"
+                }
+            },
+            "precipitationTimeline": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "data": {
+                    "name": "weather_data"
+                },
+                "mark": {
+                    "type": "bar",
+                    "color": "#26c6da",
+                    "width": 2
+                },
+                "width": "container",
+                "height": 250,
+                "encoding": {
+                    "x": {
+                        "field": "date",
+                        "type": "temporal",
+                        "title": "Date"
+                    },
+                    "y": {
+                        "field": "precipitation",
+                        "type": "quantitative",
+                        "title": "Precipitation (mm)"
+                    }
+                },
+                "title": {
+                    "text": "Daily Precipitation Timeline",
+                    "anchor": "start",
+                    "fontSize": 16,
+                    "fontWeight": "normal"
+                }
+            },
+            "seasonalPatterns": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "data": {
+                    "name": "weather_data"
+                },
+                "mark": "arc",
+                "width": "container",
+                "height": 300,
+                "encoding": {
+                    "theta": {
+                        "aggregate": "count",
+                        "type": "quantitative"
+                    },
+                    "color": {
+                        "field": "weather",
+                        "type": "nominal",
+                        "scale": {
+                            "domain": ["sun", "fog", "drizzle", "rain", "snow"],
+                            "range": ["#FFD700", "#B0C4DE", "#87CEEB", "#4682B4", "#E6E6FA"]
+                        },
+                        "title": "Weather Type"
+                    }
+                },
+                "view": {
+                    "stroke": null
+                },
+                "title": {
+                    "text": "Weather Condition Distribution (Annual)",
+                    "anchor": "start",
+                    "fontSize": 16,
+                    "fontWeight": "normal"
+                }
+            }
+        }
+    }
+}
