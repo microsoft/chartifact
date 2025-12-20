@@ -6,6 +6,7 @@ import { InteractiveDocument } from '@microsoft/chartifact-schema';
 import { SandboxDocumentPreview } from "./sandbox.js";
 import { Sandbox } from '@microsoft/chartifact-sandbox';
 import { EditorPageMessage, EditorReadyMessage, SpecReview, SandboxedPreHydrateMessage } from "common";
+import { TreeView } from './components/TreeView.js';
 
 export interface EditorProps {
     postMessageTarget?: Window;
@@ -97,32 +98,6 @@ export function EditorView(props: EditorViewProps) {
         postMessageTarget.postMessage(pageMessage, '*');
     };
 
-    const deleteElement = (groupIndex: number, elementIndex) => {
-        const newPage = {
-            ...page,
-            groups: page.groups.map((group, gIdx) => {
-                if (gIdx === groupIndex) {
-                    return {
-                        ...group,
-                        elements: group.elements.filter((_, eIdx) => eIdx !== elementIndex)
-                    };
-                }
-                return group;
-            })
-        };
-
-        sendEditToApp(newPage);
-    };
-
-    const deleteGroup = (groupIndex) => {
-        const newPage = {
-            ...page,
-            groups: page.groups.filter((_, gIdx) => gIdx !== groupIndex)
-        };
-
-        sendEditToApp(newPage);
-    };
-
     return (
         <div style={{
             display: 'grid',
@@ -131,65 +106,15 @@ export function EditorView(props: EditorViewProps) {
             overflow: 'hidden'
         }}>
             <div style={{
-                padding: '10px',
-                borderRight: '1px solid #ccc',
-                overflowY: 'auto'
+                borderRight: '1px solid #e1e5e9',
+                overflowY: 'auto',
+                background: '#fafbfc',
+                padding: '20px'
             }}>
-                <h3>Tree View</h3>
-                <div>
-                    <div>📄 {page.title}</div>
-                    <div style={{ marginLeft: '20px' }}>
-                        {page.groups.map((group, groupIndex) => (
-                            <div key={groupIndex} style={{ marginBottom: '10px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                    📁 {group.groupId}
-                                    <button
-                                        onClick={() => deleteGroup(groupIndex)}
-                                        style={{
-                                            background: '#ff4444',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '3px',
-                                            padding: '2px 6px',
-                                            fontSize: '10px',
-                                            cursor: 'pointer'
-                                        }}
-                                        title="Delete group"
-                                    >
-                                        ✕
-                                    </button>
-                                </div>
-                                <div style={{ marginLeft: '20px' }}>
-                                    {group.elements.map((element, elementIndex) => (
-                                        <div key={elementIndex} style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '2px' }}>
-                                            <span>
-                                                {typeof element === 'string'
-                                                    ? `📝 ${element.slice(0, 30)}${element.length > 30 ? '...' : ''}`
-                                                    : `🎨 ${element.type}`
-                                                }
-                                            </span>
-                                            <button
-                                                onClick={() => deleteElement(groupIndex, elementIndex)}
-                                                style={{
-                                                    background: '#ff4444',
-                                                    color: 'white',
-                                                    border: 'none',
-                                                    borderRadius: '3px',
-                                                    padding: '2px 6px',
-                                                    fontSize: '10px',
-                                                    cursor: 'pointer'
-                                                }}
-                                                title="Delete element"
-                                            >
-                                                ✕
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                <TreeView 
+                    page={page} 
+                    onPageChange={sendEditToApp} 
+                />
             </div>
             <div style={{
                 display: 'grid',
