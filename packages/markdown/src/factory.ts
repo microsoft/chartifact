@@ -65,6 +65,12 @@ export interface RawFlaggableSpec<T> {
     spec: T;
     hasFlags?: boolean;
     reasons?: string[];
+    head?: {
+        format?: 'json' | 'yaml';
+        pluginName?: string;
+        params?: Record<string, string>; // Serializable version of Map
+        wasDefaultId?: boolean;
+    };
 }
 
 export interface SpecContainer<T> {
