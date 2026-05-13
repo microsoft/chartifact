@@ -10,6 +10,7 @@ import { setupFileUpload } from './upload.js';
 import { checkUrlForFile } from './url.js';
 import { setupPostMessageHandling } from './post-receive.js';
 import { setupMcpServer } from './mcp-server.js';
+import { setupWebMcp } from './webmcp-server.js';
 import { InteractiveDocument } from '@microsoft/chartifact-schema';
 import { postStatus } from './post-send.js';
 import { ListenOptions } from './types.js';
@@ -48,6 +49,7 @@ const defaultOptions: ListenOptions = {
   dragDrop: true,
   fileUpload: true,
   mcp: true,
+  webmcp: true,
   postMessage: true,
   postMessageTarget: window.opener || window.parent || window,
   url: true,
@@ -114,6 +116,13 @@ export class Listener {
     }
     if (this.options.mcp) {
       setupMcpServer(this).catch(err => console.error('MCP server setup failed', err));
+    }
+    if (this.options.webmcp) {
+      try {
+        setupWebMcp(this);
+      } catch (err) {
+        console.error('WebMCP setup failed', err);
+      }
     }
 
     // Check URL parameters for file to load

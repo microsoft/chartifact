@@ -4,8 +4,8 @@
 */
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { TabServerTransport } from '@mcp-b/transports';
-import { z } from 'zod';
 import { Listener } from './listener.js';
+import { tools } from './tools.js';
 
 export async function setupMcpServer(host: Listener): Promise<McpServer> {
     const server = new McpServer({
@@ -13,20 +13,17 @@ export async function setupMcpServer(host: Listener): Promise<McpServer> {
         version: '1.0.0',
     });
 
-    server.tool(
-        'render',
-        'Render an interactive Chartifact document from markdown',
-        {
-            title: z.string().describe('Document title shown in the toolbar'),
-            markdown: z.string().describe('Chartifact-flavored markdown to render'),
-        },
-        async ({ title, markdown }) => {
-            await host.render(title, markdown, undefined, false);
-            return {
-                content: [{ type: 'text', text: `Rendered "${title}"` }],
-            };
-        }
-    );
+    for (const tool of tools) {
+        server.tool(
+            tool.name,
+            tool.description,
+            tool.zodShape,
+            async (args) => {
+                const text = await tool.handler(args as Record<string, unknown>, host);
+                return { content: [{ type: 'text', text }] };
+            }
+        );
+    }
 
     const transport = new TabServerTransport({ allowedOrigins: ['*'] });
     await server.connect(transport);

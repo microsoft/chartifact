@@ -10,6 +10,7 @@ export interface ListenOptions {
   dragDrop?: boolean;
   fileUpload?: boolean;
   mcp?: boolean;
+  webmcp?: boolean;
   postMessage?: boolean;
   postMessageTarget?: any; // Using any to avoid Window DOM dependency in VS Code extensions
   url?: boolean;
