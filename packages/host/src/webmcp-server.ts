@@ -4,7 +4,7 @@
 */
 import { z } from 'zod';
 import { Listener } from './listener.js';
-import { tools } from './tools.js';
+import { tools } from './mcp-tools.js';
 
 // Minimal typing of the WebMCP navigator extension. The W3C draft (CG-DRAFT, editors at
 // Microsoft and Google) defines navigator.modelContext.registerTool(tool, options?). See

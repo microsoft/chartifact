@@ -5,7 +5,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { TabServerTransport } from '@mcp-b/transports';
 import { Listener } from './listener.js';
-import { tools } from './tools.js';
+import { tools } from './mcp-tools.js';
 
 export async function setupMcpServer(host: Listener): Promise<McpServer> {
     const server = new McpServer({
