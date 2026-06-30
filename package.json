@@ -36,7 +36,7 @@
     "@types/vscode": "^1.101.0",
     "@typescript-eslint/eslint-plugin": "^8.31.1",
     "@typescript-eslint/parser": "^8.31.1",
-    "@vitejs/plugin-react": "^4.6.0",
+    "@vitejs/plugin-react": "^6.0.3",
     "@vscode/test-web": "^0.0.69",
     "assert": "^2.1.0",
     "concurrently": "^9.2.0",
@@ -55,7 +55,7 @@
     "tsx-create-element": "^2.3.0",
     "typescript": "^5.8.3",
     "vega-typings": "^2.0.1",
-    "vite": "^6.4.1"
+    "vite": "^8.1.2"
   },
   "dependencies": {
     "@mdit/plugin-attrs": "^0.22.0",
