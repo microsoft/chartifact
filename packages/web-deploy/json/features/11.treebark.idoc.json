@@ -302,6 +302,100 @@
             ]
         },
         {
+            "groupId": "reusable-templates",
+            "elements": [
+                "## Reusable Templates",
+                "Templates can be defined once and reused multiple times with different data sources. Use `setTemplate` to register a template and `getTemplate` to reference it:",
+                {
+                    "type": "treebark",
+                    "setTemplate": "memberCard",
+                    "template": {
+                        "div": {
+                            "class": "card",
+                            "$children": [
+                                {
+                                    "div": {
+                                        "class": "card-header",
+                                        "$children": [
+                                            "{{name}}"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "div": {
+                                        "class": "card-body",
+                                        "$children": [
+                                            {
+                                                "p": {
+                                                    "$children": [
+                                                        {
+                                                            "strong": {
+                                                                "$children": [
+                                                                    "Role: "
+                                                                ]
+                                                            }
+                                                        },
+                                                        "{{role}}"
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "p": {
+                                                    "$children": [
+                                                        {
+                                                            "strong": {
+                                                                "$children": [
+                                                                    "Score: "
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "span": {
+                                                                "class": "score-{{status}}",
+                                                                "$children": [
+                                                                    "{{score}}"
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "p": {
+                                                    "$children": [
+                                                        {
+                                                            "span": {
+                                                                "class": "badge badge-{{status}}",
+                                                                "$children": [
+                                                                    "{{status}}"
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "variableId": "teamMembers"
+                },
+                "The same template can be reused with `getTemplate` for different data sources (templates are pure presentation and don't carry data bindings):",
+                {
+                    "type": "treebark",
+                    "getTemplate": "memberCard",
+                    "variableId": "teamMembers"
+                },
+                "### Benefits of Reusable Templates",
+                "- **DRY Principle**: Define once, use many times",
+                "- **Maintainability**: Update the template in one place",
+                "- **Pure Presentation**: Templates don't carry data, only structure",
+                "- **Clear Intent**: `setTemplate` and `getTemplate` make template usage explicit"
+            ]
+        },
+        {
             "groupId": "learn-more",
             "elements": [
                 "## Learn More",

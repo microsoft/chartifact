@@ -31,7 +31,7 @@ export interface InteractiveDocument {
   style?: PageStyle;
 
   resources?: {
-    charts?: { [chartKey: string]: Vega_or_VegaLite_spec }
+    charts?: { [chartKey: string]: Vega_or_VegaLite_spec };
   };
 
   /** Optional comments from the author */
