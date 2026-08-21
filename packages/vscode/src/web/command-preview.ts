@@ -93,6 +93,7 @@ export class PreviewManager {
 						sender: 'vscode',
 						offlineDeps:
 							style(getResourceContent('chartifact-reset.css')) +
+							style(getResourceContent('chartifact-toolbar.css')) +
 							style(getResourceContent('tabulator.min.css')) +
 							script(getResourceContent('markdown-it.min.js')) +
 							script(getResourceContent('csstree.js')) +
@@ -101,7 +102,8 @@ export class PreviewManager {
 							script(getResourceContent('vega-lite.min.js')) +
 							script(getResourceContent('tabulator.min.js')) +
 							script(getResourceContent('mermaid.min.js')) +
-							script(getResourceContent('chartifact.markdown.umd.js'))
+							script(getResourceContent('chartifact.markdown.umd.js')) +
+							script(getResourceContent('chartifact.toolbar.umd.js'))
 					};
 					this.current.panel.webview.postMessage(setOfflineDependenciesMessage);
 				}
@@ -218,6 +220,7 @@ function getWebviewContent(webView: vscode.Webview, context: vscode.ExtensionCon
 	const resourceLinks = [
 		script(resourceUrl('vega.min.js')),
 		script(resourceUrl('chartifact.host.umd.js')),
+		script(resourceUrl('chartifact.toolbar.umd.js')),
 		script(resourceUrl('preview.js')),
 	].join('\n    ');
 

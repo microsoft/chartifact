@@ -25,9 +25,18 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
+            // Initialize toolbar for the VSCode webview (read-only mode)
+            const toolbar = new Chartifact.toolbar.Toolbar('.chartifact-toolbar', {
+                tweakButton: false,  // Disable tweak button since no textarea editing
+                downloadButton: true,
+                restartButton: false,  // Disable restart button in VSCode
+                filename: 'document'
+            });
+
             const host = new Chartifact.host.Listener({
                 preview: '#preview',
                 loading: '#loading',
+                toolbar: toolbar,
                 options,
                 onApprove: (message: Chartifact.common.SandboxedPreHydrateMessage) => {
                     // TODO look through each and override policy to approve unapproved

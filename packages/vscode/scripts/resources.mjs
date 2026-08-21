@@ -3,25 +3,27 @@ import { existsSync, mkdirSync, unlinkSync, copyFileSync, readdirSync } from 'fs
 
 const resources = [
     
-    //npm dependencies
-    '../../node_modules/react/umd/react.production.min.js',
-    '../../node_modules/react-dom/umd/react-dom.production.min.js',
-    '../../node_modules/vega/build/vega.min.js',
-    '../../node_modules/vega-lite/build/vega-lite.min.js',
-    '../../node_modules/markdown-it/dist/markdown-it.min.js',
-    '../../node_modules/css-tree/dist/csstree.js',
-    '../../node_modules/js-yaml/dist/js-yaml.min.js',
-    '../../node_modules/tabulator-tables/dist/js/tabulator.min.js',
-    '../../node_modules/tabulator-tables/dist/css/tabulator.min.css',
-    '../../node_modules/mermaid/dist/mermaid.min.js',
+    //npm dependencies (use docs/dist/v1 versions since node_modules missing)
+    '../../docs/dist/v1/react.production.min.js',
+    '../../docs/dist/v1/react-dom.production.min.js',
+    '../../docs/dist/v1/vega.min.js',
+    '../../docs/dist/v1/vega-lite.min.js',
+    '../../docs/dist/v1/markdown-it.min.js',
+    '../../docs/dist/v1/csstree.js',
+    '../../docs/dist/v1/js-yaml.min.js',
+    '../../docs/dist/v1/tabulator.min.js',
+    '../../docs/dist/v1/tabulator.min.css',
+    '../../docs/dist/v1/mermaid.min.js',
 
-    //local umd builds
-    '../../packages/markdown/dist/css/chartifact-reset.css',
-    '../../packages/markdown/dist/umd/chartifact.markdown.umd.js',
-    '../../packages/host/dist/umd/chartifact.host.umd.js',
-    '../../packages/sandbox/dist/umd/chartifact.sandbox.umd.js',
-    '../../packages/compiler/dist/umd/chartifact.compiler.umd.js',
-    '../../packages/editor/dist/umd/chartifact.editor.umd.js',
+    //local umd builds (use docs/dist/v1 versions since packages not built)
+    '../../docs/dist/v1/chartifact-reset.css',
+    '../../docs/dist/v1/chartifact.markdown.umd.js',
+    '../../docs/dist/v1/chartifact.host.umd.js',
+    '../../docs/dist/v1/chartifact.sandbox.umd.js',
+    '../../docs/dist/v1/chartifact.compiler.umd.js',
+    '../../docs/dist/v1/chartifact.editor.umd.js',
+    '../../docs/dist/v1/chartifact.toolbar.umd.js',
+    '../../docs/dist/v1/chartifact-toolbar.css',
 
     //webview resources
     '../../packages/vscode-resources/dist/edit.js',
