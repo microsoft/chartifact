@@ -1,0 +1,751 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Month View Events Calendar",
+    "dataLoaders": [
+        {
+            "dataSourceName": "eventsRaw",
+            "type": "inline",
+            "format": "json",
+            "content": [
+                {
+                    "date": "2025-01-01",
+                    "time": "All Day",
+                    "title": "New Year's Day",
+                    "category": "holiday"
+                },
+                {
+                    "date": "2025-01-06",
+                    "time": "09:00",
+                    "title": "Team Standup",
+                    "category": "meeting"
+                },
+                {
+                    "date": "2025-01-06",
+                    "time": "14:00",
+                    "title": "Project Review",
+                    "category": "work"
+                },
+                {
+                    "date": "2025-01-08",
+                    "time": "10:30",
+                    "title": "Client Meeting",
+                    "category": "meeting"
+                },
+                {
+                    "date": "2025-01-10",
+                    "time": "15:00",
+                    "title": "Dentist",
+                    "category": "personal"
+                },
+                {
+                    "date": "2025-01-13",
+                    "time": "09:00",
+                    "title": "Standup",
+                    "category": "meeting"
+                },
+                {
+                    "date": "2025-01-13",
+                    "time": "11:00",
+                    "title": "Design Review",
+                    "category": "work"
+                },
+                {
+                    "date": "2025-01-15",
+                    "time": "13:00",
+                    "title": "Lunch w/ Sarah",
+                    "category": "personal"
+                },
+                {
+                    "date": "2025-01-17",
+                    "time": "16:00",
+                    "title": "Code Review",
+                    "category": "work"
+                },
+                {
+                    "date": "2025-01-20",
+                    "time": "All Day",
+                    "title": "MLK Jr. Day",
+                    "category": "holiday"
+                },
+                {
+                    "date": "2025-01-20",
+                    "time": "09:00",
+                    "title": "Standup",
+                    "category": "meeting"
+                },
+                {
+                    "date": "2025-01-22",
+                    "time": "10:00",
+                    "title": "Sprint Planning",
+                    "category": "meeting"
+                },
+                {
+                    "date": "2025-01-22",
+                    "time": "14:00",
+                    "title": "Feature Demo",
+                    "category": "work"
+                },
+                {
+                    "date": "2025-01-24",
+                    "time": "18:00",
+                    "title": "Gym",
+                    "category": "personal"
+                },
+                {
+                    "date": "2025-01-27",
+                    "time": "09:00",
+                    "title": "Standup",
+                    "category": "meeting"
+                },
+                {
+                    "date": "2025-01-27",
+                    "time": "13:00",
+                    "title": "Budget Review",
+                    "category": "work"
+                },
+                {
+                    "date": "2025-01-29",
+                    "time": "11:00",
+                    "title": "1-on-1",
+                    "category": "meeting"
+                },
+                {
+                    "date": "2025-01-31",
+                    "time": "15:00",
+                    "title": "Month End",
+                    "category": "work"
+                },
+                {
+                    "date": "2025-02-03",
+                    "time": "09:00",
+                    "title": "Standup",
+                    "category": "meeting"
+                },
+                {
+                    "date": "2025-02-05",
+                    "time": "10:00",
+                    "title": "Q1 Planning",
+                    "category": "meeting"
+                },
+                {
+                    "date": "2025-02-07",
+                    "time": "14:00",
+                    "title": "Training",
+                    "category": "work"
+                },
+                {
+                    "date": "2025-02-10",
+                    "time": "09:00",
+                    "title": "Standup",
+                    "category": "meeting"
+                },
+                {
+                    "date": "2025-02-12",
+                    "time": "12:00",
+                    "title": "Team Lunch",
+                    "category": "personal"
+                },
+                {
+                    "date": "2025-02-14",
+                    "time": "All Day",
+                    "title": "Valentine's Day",
+                    "category": "holiday"
+                },
+                {
+                    "date": "2025-02-14",
+                    "time": "19:00",
+                    "title": "Dinner Date",
+                    "category": "personal"
+                },
+                {
+                    "date": "2025-02-17",
+                    "time": "All Day",
+                    "title": "Presidents' Day",
+                    "category": "holiday"
+                },
+                {
+                    "date": "2025-02-17",
+                    "time": "09:00",
+                    "title": "Standup",
+                    "category": "meeting"
+                },
+                {
+                    "date": "2025-02-19",
+                    "time": "10:30",
+                    "title": "Arch Review",
+                    "category": "work"
+                },
+                {
+                    "date": "2025-02-21",
+                    "time": "15:00",
+                    "title": "Doctor Appt",
+                    "category": "personal"
+                },
+                {
+                    "date": "2025-02-24",
+                    "time": "09:00",
+                    "title": "Standup",
+                    "category": "meeting"
+                },
+                {
+                    "date": "2025-02-26",
+                    "time": "11:00",
+                    "title": "Product Launch",
+                    "category": "work"
+                },
+                {
+                    "date": "2025-02-28",
+                    "time": "14:00",
+                    "title": "Sprint Retro",
+                    "category": "meeting"
+                }
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "variableId": "selectedYear",
+            "type": "number",
+            "initialValue": 2025
+        },
+        {
+            "variableId": "selectedMonth",
+            "type": "number",
+            "initialValue": 1
+        },
+        {
+            "variableId": "monthName",
+            "type": "string",
+            "initialValue": "January",
+            "calculation": {
+                "vegaExpression": "selectedMonth === 1 ? 'January' : selectedMonth === 2 ? 'February' : selectedMonth === 3 ? 'March' : selectedMonth === 4 ? 'April' : selectedMonth === 5 ? 'May' : selectedMonth === 6 ? 'June' : selectedMonth === 7 ? 'July' : selectedMonth === 8 ? 'August' : selectedMonth === 9 ? 'September' : selectedMonth === 10 ? 'October' : selectedMonth === 11 ? 'November' : 'December'"
+            }
+        },
+        {
+            "variableId": "eventsGrouped",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": [
+                    "eventsRaw"
+                ],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "groupby": [
+                            "date"
+                        ],
+                        "ops": [
+                            "values",
+                            "values",
+                            "values"
+                        ],
+                        "fields": [
+                            "time",
+                            "title",
+                            "category"
+                        ],
+                        "as": [
+                            "times",
+                            "titles",
+                            "categories"
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "allDaysOfMonth",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": [
+                    "eventsRaw"
+                ],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "ops": [
+                            "count"
+                        ],
+                        "as": [
+                            "count"
+                        ]
+                    },
+                    {
+                        "type": "sequence",
+                        "start": -7,
+                        "stop": 39,
+                        "as": "dayOffset"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "date",
+                        "expr": "datetime(selectedYear, selectedMonth - 1, datum.dayOffset)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "dayOfMonth",
+                        "expr": "date(datum.date)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "month",
+                        "expr": "month(datum.date) + 1"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "year",
+                        "expr": "year(datum.date)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "dateKey",
+                        "expr": "datum.year + '-' + (datum.month < 10 ? '0' + datum.month : datum.month) + '-' + (datum.dayOfMonth < 10 ? '0' + datum.dayOfMonth : datum.dayOfMonth)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "weekday",
+                        "expr": "day(datum.date)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "dayName",
+                        "expr": "datum.weekday === 0 ? 'sun' : datum.weekday === 1 ? 'mon' : datum.weekday === 2 ? 'tue' : datum.weekday === 3 ? 'wed' : datum.weekday === 4 ? 'thu' : datum.weekday === 5 ? 'fri' : 'sat'"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "firstDayWeekday",
+                        "expr": "day(datetime(selectedYear, selectedMonth - 1, 1))"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "week",
+                        "expr": "floor((datum.dayOffset + datum.firstDayWeekday + 7) / 7)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "isCurrentMonth",
+                        "expr": "datum.month === selectedMonth"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "daysWithEvents",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": [
+                    "allDaysOfMonth",
+                    "eventsGrouped"
+                ],
+                "dataFrameTransformations": [
+                    {
+                        "type": "lookup",
+                        "from": "eventsGrouped",
+                        "key": "date",
+                        "fields": [
+                            "dateKey"
+                        ],
+                        "values": [
+                            "times",
+                            "titles",
+                            "categories"
+                        ],
+                        "as": [
+                            "eventTimes",
+                            "eventTitles",
+                            "eventCategories"
+                        ]
+                    },
+                    {
+                        "type": "formula",
+                        "as": "events",
+                        "expr": "datum.eventTimes == null ? [] : datum.eventTimes"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "eventCount",
+                        "expr": "datum.events.length"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "paddedDays",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": [
+                    "daysWithEvents"
+                ],
+                "dataFrameTransformations": [
+                    {
+                        "type": "aggregate",
+                        "ops": [
+                            "count"
+                        ],
+                        "as": [
+                            "count"
+                        ]
+                    },
+                    {
+                        "type": "sequence",
+                        "start": 0,
+                        "stop": 42,
+                        "as": "cellIdx"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "firstDayWeekday",
+                        "expr": "day(datetime(selectedYear, selectedMonth - 1, 1))"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "daysInMonth",
+                        "expr": "selectedMonth === 2 ? (selectedYear % 4 === 0 && (selectedYear % 100 !== 0 || selectedYear % 400 === 0) ? 29 : 28) : (selectedMonth === 4 || selectedMonth === 6 || selectedMonth === 9 || selectedMonth === 11) ? 30 : 31"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "prevMonth",
+                        "expr": "selectedMonth === 1 ? 12 : selectedMonth - 1"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "prevMonthYear",
+                        "expr": "selectedMonth === 1 ? selectedYear - 1 : selectedYear"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "prevMonthDays",
+                        "expr": "datum.prevMonth === 2 ? (datum.prevMonthYear % 4 === 0 && (datum.prevMonthYear % 100 !== 0 || datum.prevMonthYear % 400 === 0) ? 29 : 28) : (datum.prevMonth === 4 || datum.prevMonth === 6 || datum.prevMonth === 9 || datum.prevMonth === 11) ? 30 : 31"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "cellDay",
+                        "expr": "datum.cellIdx < datum.firstDayWeekday ? datum.prevMonthDays - datum.firstDayWeekday + datum.cellIdx + 1 : datum.cellIdx >= datum.firstDayWeekday + datum.daysInMonth ? datum.cellIdx - datum.firstDayWeekday - datum.daysInMonth + 1 : datum.cellIdx - datum.firstDayWeekday + 1"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "isCurrentMonth",
+                        "expr": "datum.cellIdx >= datum.firstDayWeekday && datum.cellIdx < datum.firstDayWeekday + datum.daysInMonth"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "isWeekend",
+                        "expr": "datum.cellIdx % 7 === 0 || datum.cellIdx % 7 === 6"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "lookupKey",
+                        "expr": "datum.isCurrentMonth ? (selectedYear + '-' + (selectedMonth < 10 ? '0' + selectedMonth : selectedMonth) + '-' + (datum.cellDay < 10 ? '0' + datum.cellDay : datum.cellDay)) : null"
+                    },
+                    {
+                        "type": "lookup",
+                        "from": "daysWithEvents",
+                        "key": "dateKey",
+                        "fields": [
+                            "lookupKey"
+                        ],
+                        "values": [
+                            "eventTimes",
+                            "eventTitles",
+                            "eventCategories",
+                            "eventCount"
+                        ],
+                        "as": [
+                            "cellEventTimes",
+                            "cellEventTitles",
+                            "cellEventCats",
+                            "cellEventCount"
+                        ]
+                    },
+                    {
+                        "type": "formula",
+                        "as": "event1",
+                        "expr": "datum.cellEventTimes && datum.cellEventTimes.length > 0 ? datum.cellEventTimes[0] + ' ' + datum.cellEventTitles[0] : null"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "event1Cat",
+                        "expr": "datum.cellEventCats && datum.cellEventCats.length > 0 ? datum.cellEventCats[0] : null"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "event2",
+                        "expr": "datum.cellEventTimes && datum.cellEventTimes.length > 1 ? datum.cellEventTimes[1] + ' ' + datum.cellEventTitles[1] : null"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "event2Cat",
+                        "expr": "datum.cellEventCats && datum.cellEventCats.length > 1 ? datum.cellEventCats[1] : null"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "event3",
+                        "expr": "datum.cellEventTimes && datum.cellEventTimes.length > 2 ? datum.cellEventTimes[2] + ' ' + datum.cellEventTitles[2] : null"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "event3Cat",
+                        "expr": "datum.cellEventCats && datum.cellEventCats.length > 2 ? datum.cellEventCats[2] : null"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "moreEvents",
+                        "expr": "datum.cellEventCount && datum.cellEventCount > 3 ? '+' + (datum.cellEventCount - 3) + ' more' : null"
+                    },
+                    {
+                        "type": "filter",
+                        "expr": "datum.cellIdx < 42"
+                    }
+                ]
+            }
+        },
+        {
+            "variableId": "calendarWeeks",
+            "type": "object",
+            "isArray": true,
+            "initialValue": [],
+            "calculation": {
+                "dataSourceNames": [
+                    "paddedDays"
+                ],
+                "dataFrameTransformations": [
+                    {
+                        "type": "formula",
+                        "as": "weekNum",
+                        "expr": "floor(datum.cellIdx / 7)"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "dayOfWeek",
+                        "expr": "datum.cellIdx % 7"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "dayName",
+                        "expr": "datum.dayOfWeek === 0 ? 'sun' : datum.dayOfWeek === 1 ? 'mon' : datum.dayOfWeek === 2 ? 'tue' : datum.dayOfWeek === 3 ? 'wed' : datum.dayOfWeek === 4 ? 'thu' : datum.dayOfWeek === 5 ? 'fri' : 'sat'"
+                    },
+                    {
+                        "type": "formula",
+                        "as": "cellDayStr",
+                        "expr": "'' + datum.cellDay"
+                    },
+                    {
+                        "type": "pivot",
+                        "groupby": [
+                            "weekNum"
+                        ],
+                        "field": "dayName",
+                        "value": "cellDayStr"
+                    }
+                ]
+            }
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "header",
+            "elements": [
+                "# \ud83d\udcc5 Month View Events Calendar",
+                "Track your events, meetings, and important dates",
+                "",
+                "This example demonstrates how to shape data for a calendar view using Vega transforms. Scroll down to see each step of the data transformation pipeline.",
+                {
+                    "type": "dropdown",
+                    "variableId": "selectedMonth",
+                    "label": "Month:",
+                    "options": [
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "6",
+                        "7",
+                        "8",
+                        "9",
+                        "10",
+                        "11",
+                        "12"
+                    ]
+                },
+                {
+                    "type": "dropdown",
+                    "variableId": "selectedYear",
+                    "label": "Year:",
+                    "options": [
+                        "2024",
+                        "2025",
+                        "2026"
+                    ]
+                }
+            ]
+        },
+        {
+            "groupId": "step1",
+            "elements": [
+                "## Step 1: Raw Events Data",
+                "This is the source data - a flat list of events with dates, times, titles, and categories.",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "eventsRaw"
+                }
+            ]
+        },
+        {
+            "groupId": "step2",
+            "elements": [
+                "## Step 2: Events Grouped by Date",
+                "Using `aggregate` transform to group multiple events per day into arrays. Each row now represents one date with arrays of times, titles, and categories.",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "eventsGrouped"
+                }
+            ]
+        },
+        {
+            "groupId": "step3",
+            "elements": [
+                "## Step 3: All Days of Month",
+                "Using `sequence` transform to generate all days in the selected month (not just days with events). Computed weekday and week for calendar positioning.",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "allDaysOfMonth"
+                }
+            ]
+        },
+        {
+            "groupId": "step4",
+            "elements": [
+                "## Step 4: Days with Events Joined",
+                "Using `lookup` transform to join events arrays to each day. Days without events have empty arrays.",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "daysWithEvents"
+                }
+            ]
+        },
+        {
+            "groupId": "step4b",
+            "elements": [
+                "## Step 4b: Padded 42-Cell Grid",
+                "Expanded to 42 cells (6 weeks \u00d7 7 days) including previous/next month days for padding. Each cell has its day number, events, and metadata.",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "paddedDays"
+                }
+            ]
+        },
+        {
+            "groupId": "step5",
+            "elements": [
+                "## Step 5: Calendar Grid by Week",
+                "Final step groups the 42 cells into 6 weeks with 7 columns (Sun-Sat). Each row represents one week of the calendar.",
+                {
+                    "type": "tabulator",
+                    "dataSourceName": "calendarWeeks"
+                }
+            ]
+        },
+        {
+            "groupId": "calendar",
+            "elements": [
+                "## {{monthName}} {{selectedYear}} - Final Calendar View",
+                {
+                    "type": "treebark",
+                    "variableId": "calendarWeeks",
+                    "template": {
+                        "div": {
+                            "class": "calendar-wrapper",
+                            "$children": [
+                                {
+                                    "table": {
+                                        "class": "calendar-table",
+                                        "$children": [
+                                            {
+                                                "thead": {
+                                                    "$children": [
+                                                        {
+                                                            "tr": {
+                                                                "$children": [
+                                                                    {
+                                                                        "th": "Sun"
+                                                                    },
+                                                                    {
+                                                                        "th": "Mon"
+                                                                    },
+                                                                    {
+                                                                        "th": "Tue"
+                                                                    },
+                                                                    {
+                                                                        "th": "Wed"
+                                                                    },
+                                                                    {
+                                                                        "th": "Thu"
+                                                                    },
+                                                                    {
+                                                                        "th": "Fri"
+                                                                    },
+                                                                    {
+                                                                        "th": "Sat"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "tbody": {
+                                                    "$bind": ".",
+                                                    "$children": [
+                                                        {
+                                                            "tr": [
+                                                                {
+                                                                    "td": "{{sun}}"
+                                                                },
+                                                                {
+                                                                    "td": "{{mon}}"
+                                                                },
+                                                                {
+                                                                    "td": "{{tue}}"
+                                                                },
+                                                                {
+                                                                    "td": "{{wed}}"
+                                                                },
+                                                                {
+                                                                    "td": "{{thu}}"
+                                                                },
+                                                                {
+                                                                    "td": "{{fri}}"
+                                                                },
+                                                                {
+                                                                    "td": "{{sat}}"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                "### Event Legend",
+                "\ud83d\udfe0 **Meeting** \u2022 \ud83d\udd34 **Work** \u2022 \ud83d\udfe3 **Personal** \u2022 \ud83d\udfe2 **Holiday**",
+                "",
+                "**Data Shaping:** This calendar uses Vega transforms to create a complete calendar grid (42 cells) and join events onto it. Each cell can display up to 3 events, with an indicator for additional events."
+            ]
+        }
+    ]
+}
