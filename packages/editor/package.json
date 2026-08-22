@@ -6,9 +6,12 @@
   "main": "dist/esnext/index.js",
   "types": "dist/esnext/index.d.ts",
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf dist && rimraf public/chartifact",
+    "copy-assets": "node scripts/copy-assets.js",
     "dev": "vite --config vite.config.js",
     "tsc": "tsc -p .",
+    "predev": "npm run copy-assets",
+    "postbundle": "npm run copy-assets",
     "bundle": "vite build --config vite.bundle.config.js",
     "build": "npm run tsc",
     "build:06": "npm run build"
