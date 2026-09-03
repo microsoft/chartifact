@@ -79,6 +79,129 @@ export function parseFenceInfo(info: string): {
     return { format, pluginName, params, wasDefaultId };
 }
 
+/**
+ * Parsed fence head information
+ */
+export interface ParsedHead {
+    format: 'json' | 'yaml';
+    pluginName: string;
+    params: Map<string, string>;
+    wasDefaultId: boolean;
+}
+
+/**
+ * Combined head and body parsing result
+ */
+export interface HeadBodyResult<T> {
+    head: ParsedHead;
+    body: {
+        spec: T | null;
+        error?: string;
+    };
+}
+
+/**
+ * Convert ParsedHead to a serializable format for JSON storage.
+ * Converts the params Map to a plain object so it can be serialized to JSON.
+ * @param head The parsed head information with params as a Map
+ * @returns Serializable object with params as a plain Record
+ */
+export function convertHeadToSerializable(head: ParsedHead) {
+    return {
+        format: head.format,
+        pluginName: head.pluginName,
+        params: Object.fromEntries(head.params),
+        wasDefaultId: head.wasDefaultId
+    };
+}
+
+/**
+ * Parse body content as JSON or YAML based on format.
+ * @param content The fence content
+ * @param format The format ('json' or 'yaml')
+ * @returns Parsed object and error if any
+ */
+function parseBodyContent<T>(content: string, format: 'json' | 'yaml'): {
+    spec: T | null;
+    error?: string;
+} {
+    const formatName = format === 'yaml' ? 'YAML' : 'JSON';
+    
+    try {
+        let parsed: unknown;
+        if (format === 'yaml') {
+            parsed = yaml.load(content.trim());
+        } else {
+            parsed = JSON.parse(content.trim());
+        }
+        
+        // Handle null/undefined results from YAML parsing (empty content)
+        if (parsed === null || parsed === undefined) {
+            return {
+                spec: null,
+                error: `Empty or null ${formatName} content`
+            };
+        }
+        
+        // Return the parsed result - caller is responsible for validating structure
+        return { spec: parsed as T };
+    } catch (e) {
+        return {
+            spec: null,
+            error: `malformed ${formatName}: ${e instanceof Error ? e.message : String(e)}`
+        };
+    }
+}
+
+/**
+ * Parse body content as JSON or YAML based on fence info.
+ * @param content The fence content
+ * @param info The fence info string (used to detect format)
+ * @returns Parsed object and format metadata
+ */
+export function parseBody<T>(content: string, info: string): {
+    spec: T | null;
+    format: 'json' | 'yaml';
+    error?: string;
+} {
+    const { format } = parseFenceInfo(info);
+    const result = parseBodyContent<T>(content, format);
+    
+    return {
+        spec: result.spec,
+        format,
+        error: result.error
+    };
+}
+
+/**
+ * Parse both head (fence info) and body (content) together.
+ * @param content The fence content
+ * @param info The fence info string
+ * @returns Combined head and body parsing result
+ */
+export function parseHeadAndBody<T>(content: string, info: string): HeadBodyResult<T> {
+    // Parse head once
+    const headInfo = parseFenceInfo(info);
+    const head: ParsedHead = {
+        format: headInfo.format,
+        pluginName: headInfo.pluginName,
+        params: headInfo.params,
+        wasDefaultId: headInfo.wasDefaultId
+    };
+    
+    // Parse body using the already-parsed format
+    const bodyResult = parseBodyContent<T>(content, headInfo.format);
+    
+    return {
+        head,
+        body: {
+            spec: bodyResult.spec,
+            error: bodyResult.error
+        }
+    };
+}
+
 /*
 //Tests for parseFenceInfo
 const tests: [string, { format: 'json' | 'yaml'; pluginName: string; variableId: string | undefined; wasDefaultId: boolean }][] = [
@@ -135,45 +258,50 @@ tests.forEach(([input, expected], i) => {
 */
 
 /**
- * Creates a plugin that can parse both JSON and YAML formats
+ * Creates a plugin that can parse both JSON and YAML formats.
+ * This handles both "head" (fence info) and "body" (content) parsing.
  */
 export function flaggablePlugin<T>(pluginName: PluginNames, className: string, flagger?: (spec: T) => RawFlaggableSpec<T>, attrs?: object) {
     const plugin: Plugin<T> = {
         name: pluginName,
         fence: (token, index) => {
-            let content = token.content.trim();
-            let spec: T;
-            let flaggableSpec: RawFlaggableSpec<T>;
-            
-            // Determine format from token info
             const info = token.info.trim();
-            const isYaml = info.startsWith('yaml ');
-            const formatName = isYaml ? 'YAML' : 'JSON';
+            const content = token.content.trim();
             
-            try {
-                if (isYaml) {
-                    spec = yaml.load(content) as T;
-                } else {
-                    spec = JSON.parse(content);
-                }
-            } catch (e) {
+            // Parse both head and body using the helper function
+            const { head, body } = parseHeadAndBody<T>(content, info);
+            
+            let flaggableSpec: RawFlaggableSpec<T>;
+            if (body.error) {
+                // Parsing failed
                 flaggableSpec = {
                     spec: null,
                     hasFlags: true,
-                    reasons: [`malformed ${formatName}`],
+                    reasons: [body.error],
+                    head: convertHeadToSerializable(head)
+                };
+            } else if (body.spec) {
+                // Parsing succeeded, apply flagger if provided
+                if (flagger) {
+                    flaggableSpec = flagger(body.spec);
+                } else {
+                    flaggableSpec = { spec: body.spec };
+                }
+                // Add head information to the result
+                flaggableSpec.head = convertHeadToSerializable(head);
+            } else {
+                // No spec (shouldn't happen, but handle it)
+                flaggableSpec = {
+                    spec: null,
+                    hasFlags: true,
+                    reasons: ['No spec provided'],
+                    head: convertHeadToSerializable(head)
                 };
             }
-            if (spec) {
-                if (flagger) {
-                    flaggableSpec = flagger(spec);
-                } else {
-                    flaggableSpec = { spec };
-                }
-            }
-            if (flaggableSpec) {
-                content = JSON.stringify(flaggableSpec);
-            }
-            return sanitizedHTML('div', { class: className, id: `${pluginName}-${index}`, ...attrs }, content, true);
+            
+            // Store the flaggable spec as JSON in the div
+            const jsonContent = JSON.stringify(flaggableSpec);
+            return sanitizedHTML('div', { class: className, id: `${pluginName}-${index}`, ...attrs }, jsonContent, true);
         },
         hydrateSpecs: (renderer, errorHandler) => {
             const flagged: SpecReview<T>[] = [];
