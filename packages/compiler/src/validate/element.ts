@@ -137,11 +137,34 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                 case 'treebark': {
                     const treebarkElement = element as TreebarkElement;
 
-                    // Template is required
-                    if (!treebarkElement.template) {
-                        errors.push('Treebark element must have a template property');
-                    } else {
-                        errors.push(...validateOptionalObject(treebarkElement.template, 'template', 'Treebark'));
+                    // Validate: setTemplate and getTemplate are mutually exclusive (check first)
+                    if (treebarkElement.setTemplate && treebarkElement.getTemplate) {
+                        errors.push('Treebark element cannot have both setTemplate and getTemplate');
+                    }
+                    
+                    // Validate: setTemplate requires template
+                    if (treebarkElement.setTemplate && !treebarkElement.template) {
+                        errors.push('Treebark element with setTemplate must have a template property');
+                    }
+                    
+                    // Validate: getTemplate should not have template
+                    if (treebarkElement.getTemplate && treebarkElement.template) {
+                        errors.push('Treebark element with getTemplate should not have a template property (it references an existing template)');
+                    }
+                    
+                    // Validate: at least one of template, setTemplate, or getTemplate must be present
+                    // (Check this after setTemplate/getTemplate-specific validations to avoid confusing messages)
+                    if (!treebarkElement.template && !treebarkElement.setTemplate && !treebarkElement.getTemplate) {
+                        errors.push('Treebark element must have at least one of: template, setTemplate, or getTemplate');
+                    }
+                    
+                    // Validate template if present - can be object or string
+                    if (treebarkElement.template !== undefined) {
+                        if (typeof treebarkElement.template !== 'object' && typeof treebarkElement.template !== 'string') {
+                            errors.push('Treebark element template must be an object or a string');
+                        } else if (typeof treebarkElement.template === 'object' && treebarkElement.template !== null) {
+                            errors.push(...validateOptionalObject(treebarkElement.template, 'template', 'Treebark'));
+                        }
                     }
 
                     // Validate data if present
@@ -152,6 +175,16 @@ export async function validateElement(element: PageElement, groupIndex: number, 
                     // Validate variableId if present (follows OptionalVariableControl)
                     if (treebarkElement.variableId) {
                         errors.push(...validateVariableID(treebarkElement.variableId));
+                    }
+                    
+                    // Validate setTemplate if present
+                    if (treebarkElement.setTemplate) {
+                        errors.push(...validateRequiredString(treebarkElement.setTemplate, 'setTemplate', 'Treebark'));
+                    }
+                    
+                    // Validate getTemplate if present
+                    if (treebarkElement.getTemplate) {
+                        errors.push(...validateRequiredString(treebarkElement.getTemplate, 'getTemplate', 'Treebark'));
                     }
 
                     break;

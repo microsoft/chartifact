@@ -1,0 +1,772 @@
+{
+    "$schema": "../../../docs/schema/idoc_v1.json",
+    "title": "Agentic Task Execution Log",
+    "style": {
+        "css": [
+            "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f5f7fa; max-width: 900px; margin: 0 auto; }",
+            "h1 { color: #2c3e50; margin-bottom: 30px; text-align: center; }",
+            ".chat-container { margin: 20px 0; }",
+            ".chat-bubble { display: flex; margin: 15px 0; animation: fadeIn 0.3s ease-in; }",
+            "@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }",
+            ".bubble-user { justify-content: flex-end; }",
+            ".bubble-assistant { justify-content: flex-start; }",
+            ".bubble-content { max-width: 70%; padding: 12px 18px; border-radius: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative; }",
+            ".bubble-user .bubble-content { background: #007bff; color: white; border-bottom-right-radius: 4px; }",
+            ".bubble-assistant .bubble-content { background: #e9ecef; color: #333; border-bottom-left-radius: 4px; }",
+            ".bubble-sender { font-size: 0.75em; font-weight: 600; margin-bottom: 4px; opacity: 0.8; }",
+            ".bubble-user .bubble-sender { text-align: right; color: rgba(255,255,255,0.9); }",
+            ".bubble-assistant .bubble-sender { text-align: left; color: #6c757d; }",
+            ".bubble-text { margin: 0; line-height: 1.4; word-wrap: break-word; }",
+            ".execution-log { background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; margin: 25px 0; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.9em; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }",
+            ".execution-log h3 { color: #4fc3f7; margin: 0 0 15px 0; font-size: 1.1em; font-weight: 600; border-bottom: 1px solid #333; padding-bottom: 8px; }",
+            ".log-entry { margin: 8px 0; padding: 6px 0; }",
+            ".log-timestamp { color: #858585; font-size: 0.85em; }",
+            ".log-level-info { color: #4fc3f7; }",
+            ".log-level-success { color: #66bb6a; }",
+            ".log-level-warning { color: #ffa726; }",
+            ".log-level-error { color: #ef5350; }",
+            ".log-message { margin-left: 12px; }",
+            ".phase-indicator { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; border-radius: 8px; margin: 30px 0; text-align: center; font-weight: 600; box-shadow: 0 3px 6px rgba(0,0,0,0.15); }",
+            ".status-badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.85em; font-weight: 600; margin-left: 10px; }",
+            ".status-running { background: #fff3cd; color: #856404; }",
+            ".status-completed { background: #d4edda; color: #155724; }",
+            ".summary-box { background: white; border-left: 4px solid #667eea; padding: 20px; margin: 25px 0; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }",
+            ".summary-box h3 { margin: 0 0 15px 0; color: #667eea; }",
+            ".summary-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }",
+            ".stat-item { text-align: center; padding: 10px; background: #f8f9fa; border-radius: 4px; }",
+            ".stat-value { font-size: 1.8em; font-weight: bold; color: #667eea; }",
+            ".stat-label { font-size: 0.9em; color: #6c757d; margin-top: 5px; }",
+            ".chart-section { background: white; padding: 20px; margin: 25px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }",
+            ".chart-section h3 { margin: 0 0 15px 0; color: #2c3e50; font-size: 1.1em; }"
+        ]
+    },
+    "dataLoaders": [
+        {
+            "dataSourceName": "chatMessages",
+            "type": "inline",
+            "content": [
+                {
+                    "sender": "User",
+                    "type": "user",
+                    "message": "Please analyze the sales data from Q4 and generate a summary report with visualizations."
+                },
+                {
+                    "sender": "Assistant",
+                    "type": "assistant",
+                    "message": "I'll help you analyze the Q4 sales data. Let me start by loading and examining the data structure."
+                }
+            ]
+        },
+        {
+            "dataSourceName": "executionLogs1",
+            "type": "inline",
+            "content": [
+                {
+                    "timestamp": "2024-11-19 10:15:23",
+                    "level": "info",
+                    "message": "Starting data analysis task..."
+                },
+                {
+                    "timestamp": "2024-11-19 10:15:24",
+                    "level": "info",
+                    "message": "Loading dataset: sales_q4_2024.csv"
+                },
+                {
+                    "timestamp": "2024-11-19 10:15:26",
+                    "level": "success",
+                    "message": "Dataset loaded successfully (15,234 rows, 12 columns)"
+                },
+                {
+                    "timestamp": "2024-11-19 10:15:27",
+                    "level": "info",
+                    "message": "Performing data validation and cleaning..."
+                },
+                {
+                    "timestamp": "2024-11-19 10:15:29",
+                    "level": "success",
+                    "message": "Data validation complete. No missing values detected."
+                }
+            ]
+        },
+        {
+            "dataSourceName": "executionLogs2",
+            "type": "inline",
+            "content": [
+                {
+                    "timestamp": "2024-11-19 10:16:05",
+                    "level": "info",
+                    "message": "Computing aggregate statistics..."
+                },
+                {
+                    "timestamp": "2024-11-19 10:16:07",
+                    "level": "info",
+                    "message": "Grouping data by region: North, South, East, West"
+                },
+                {
+                    "timestamp": "2024-11-19 10:16:09",
+                    "level": "success",
+                    "message": "Regional analysis complete"
+                },
+                {
+                    "timestamp": "2024-11-19 10:16:10",
+                    "level": "info",
+                    "message": "Generating revenue trends by month..."
+                },
+                {
+                    "timestamp": "2024-11-19 10:16:13",
+                    "level": "success",
+                    "message": "Trend analysis complete"
+                },
+                {
+                    "timestamp": "2024-11-19 10:16:14",
+                    "level": "info",
+                    "message": "Creating visualizations..."
+                },
+                {
+                    "timestamp": "2024-11-19 10:16:18",
+                    "level": "success",
+                    "message": "Generated 3 charts: revenue_by_region.png, monthly_trends.png, top_products.png"
+                }
+            ]
+        },
+        {
+            "dataSourceName": "executionLogs3",
+            "type": "inline",
+            "content": [
+                {
+                    "timestamp": "2024-11-19 10:17:30",
+                    "level": "info",
+                    "message": "Initiating report generation..."
+                },
+                {
+                    "timestamp": "2024-11-19 10:17:31",
+                    "level": "info",
+                    "message": "Compiling data summaries and insights..."
+                },
+                {
+                    "timestamp": "2024-11-19 10:17:33",
+                    "level": "info",
+                    "message": "Embedding visualizations into report template..."
+                },
+                {
+                    "timestamp": "2024-11-19 10:17:38",
+                    "level": "info",
+                    "message": "Rendering report to PDF format..."
+                },
+                {
+                    "timestamp": "2024-11-19 10:17:42",
+                    "level": "success",
+                    "message": "Report generated successfully: Q4_Sales_Report_2024.pdf (2.4 MB)"
+                },
+                {
+                    "timestamp": "2024-11-19 10:17:43",
+                    "level": "success",
+                    "message": "Task completed in 4 minutes 20 seconds"
+                }
+            ]
+        },
+        {
+            "dataSourceName": "chatMessages2",
+            "type": "inline",
+            "content": [
+                {
+                    "sender": "Assistant",
+                    "type": "assistant",
+                    "message": "I've successfully loaded the Q4 sales data. The dataset contains 15,234 transactions across 12 columns. Now I'll perform statistical analysis and identify key trends."
+                },
+                {
+                    "sender": "User",
+                    "type": "user",
+                    "message": "Great! Can you also break down the performance by region?"
+                }
+            ]
+        },
+        {
+            "dataSourceName": "chatMessages3",
+            "type": "inline",
+            "content": [
+                {
+                    "sender": "Assistant",
+                    "type": "assistant",
+                    "message": "Analysis complete! Here are the key findings:\n\n\u2022 Total Q4 Revenue: $4.2M (+18% vs Q3)\n\u2022 Best performing region: West ($1.3M)\n\u2022 Top product category: Electronics (42% of sales)\n\u2022 Peak sales month: December\n\nBelow you can see charts showing my execution metrics - time spent per phase and log activity over time. Would you like me to create the summary report now?"
+                },
+                {
+                    "sender": "User",
+                    "type": "user",
+                    "message": "Yes, please generate the report in PDF format."
+                }
+            ]
+        },
+        {
+            "dataSourceName": "chatMessages4",
+            "type": "inline",
+            "content": [
+                {
+                    "sender": "Assistant",
+                    "type": "assistant",
+                    "message": "Perfect! I've generated the comprehensive Q4 Sales Report in PDF format. The report includes all the visualizations, regional breakdowns, and trend analysis. The file is ready for download: Q4_Sales_Report_2024.pdf"
+                },
+                {
+                    "sender": "User",
+                    "type": "user",
+                    "message": "Excellent work! Thank you."
+                }
+            ]
+        },
+        {
+            "dataSourceName": "executionTimeByPhase",
+            "type": "inline",
+            "content": [
+                {
+                    "phase": "Data Loading",
+                    "duration_seconds": 6,
+                    "operations": 5
+                },
+                {
+                    "phase": "Analysis",
+                    "duration_seconds": 13,
+                    "operations": 7
+                },
+                {
+                    "phase": "Report Generation",
+                    "duration_seconds": 13,
+                    "operations": 6
+                }
+            ]
+        },
+        {
+            "dataSourceName": "logActivityOverTime",
+            "type": "inline",
+            "content": [
+                {
+                    "timestamp": "10:15:23",
+                    "log_count": 1,
+                    "cumulative": 1
+                },
+                {
+                    "timestamp": "10:15:24",
+                    "log_count": 1,
+                    "cumulative": 2
+                },
+                {
+                    "timestamp": "10:15:26",
+                    "log_count": 1,
+                    "cumulative": 3
+                },
+                {
+                    "timestamp": "10:15:27",
+                    "log_count": 1,
+                    "cumulative": 4
+                },
+                {
+                    "timestamp": "10:15:29",
+                    "log_count": 1,
+                    "cumulative": 5
+                },
+                {
+                    "timestamp": "10:16:05",
+                    "log_count": 1,
+                    "cumulative": 6
+                },
+                {
+                    "timestamp": "10:16:07",
+                    "log_count": 1,
+                    "cumulative": 7
+                },
+                {
+                    "timestamp": "10:16:09",
+                    "log_count": 1,
+                    "cumulative": 8
+                },
+                {
+                    "timestamp": "10:16:10",
+                    "log_count": 1,
+                    "cumulative": 9
+                },
+                {
+                    "timestamp": "10:16:13",
+                    "log_count": 1,
+                    "cumulative": 10
+                },
+                {
+                    "timestamp": "10:16:14",
+                    "log_count": 1,
+                    "cumulative": 11
+                },
+                {
+                    "timestamp": "10:16:18",
+                    "log_count": 1,
+                    "cumulative": 12
+                },
+                {
+                    "timestamp": "10:17:30",
+                    "log_count": 1,
+                    "cumulative": 13
+                },
+                {
+                    "timestamp": "10:17:31",
+                    "log_count": 1,
+                    "cumulative": 14
+                },
+                {
+                    "timestamp": "10:17:33",
+                    "log_count": 1,
+                    "cumulative": 15
+                },
+                {
+                    "timestamp": "10:17:38",
+                    "log_count": 1,
+                    "cumulative": 16
+                },
+                {
+                    "timestamp": "10:17:42",
+                    "log_count": 1,
+                    "cumulative": 17
+                },
+                {
+                    "timestamp": "10:17:43",
+                    "log_count": 1,
+                    "cumulative": 18
+                }
+            ]
+        }
+    ],
+    "groups": [
+        {
+            "groupId": "main",
+            "elements": [
+                "# Agentic Task Execution Log",
+                "",
+                "This demo shows the log output from an agentic AI task, including alternating phases of conversation and code execution.",
+                {
+                    "type": "treebark",
+                    "variableId": "chatMessages",
+                    "setTemplate": "chatBubble",
+                    "template": {
+                        "div": {
+                            "class": "chat-container",
+                            "$bind": ".",
+                            "$children": [
+                                {
+                                    "div": {
+                                        "class": "chat-bubble bubble-{{type}}",
+                                        "$children": [
+                                            {
+                                                "div": {
+                                                    "class": "bubble-content",
+                                                    "$children": [
+                                                        {
+                                                            "div": {
+                                                                "class": "bubble-sender",
+                                                                "$children": [
+                                                                    "{{sender}}"
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "div": {
+                                                                "class": "bubble-text",
+                                                                "$children": [
+                                                                    "{{message}}"
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                "",
+                {
+                    "type": "text",
+                    "value": "<div class=\"phase-indicator\">⚙️ Execution Phase 1: Data Loading & Validation</div>"
+                },
+                {
+                    "type": "treebark",
+                    "variableId": "executionLogs1",
+                    "template": {
+                        "div": {
+                            "class": "execution-log",
+                            "$bind": ".",
+                            "$children": [
+                                {
+                                    "div": {
+                                        "class": "log-entry",
+                                        "$children": [
+                                            {
+                                                "span": {
+                                                    "class": "log-timestamp",
+                                                    "$children": [
+                                                        "[{{timestamp}}]"
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "span": {
+                                                    "class": "log-level-{{level}}",
+                                                    "$children": [
+                                                        " {{level}}: "
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "span": {
+                                                    "class": "log-message",
+                                                    "$children": [
+                                                        "{{message}}"
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                "",
+                {
+                    "type": "treebark",
+                    "variableId": "chatMessages2",
+                    "getTemplate": "chatBubble"
+                },
+                "",
+                {
+                    "type": "text",
+                    "value": "<div class=\"phase-indicator\">⚙️ Execution Phase 2: Analysis & Visualization</div>"
+                },
+                {
+                    "type": "treebark",
+                    "variableId": "executionLogs2",
+                    "template": {
+                        "div": {
+                            "class": "execution-log",
+                            "$bind": ".",
+                            "$children": [
+                                {
+                                    "div": {
+                                        "class": "log-entry",
+                                        "$children": [
+                                            {
+                                                "span": {
+                                                    "class": "log-timestamp",
+                                                    "$children": [
+                                                        "[{{timestamp}}]"
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "span": {
+                                                    "class": "log-level-{{level}}",
+                                                    "$children": [
+                                                        " {{level}}: "
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "span": {
+                                                    "class": "log-message",
+                                                    "$children": [
+                                                        "{{message}}"
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                "",
+                {
+                    "type": "treebark",
+                    "variableId": "chatMessages3",
+                    "getTemplate": "chatBubble"
+                },
+                "",
+                {
+                    "type": "text",
+                    "value": "<div class=\"phase-indicator\">⚙️ Execution Phase 3: Report Generation</div>"
+                },
+                {
+                    "type": "treebark",
+                    "variableId": "executionLogs3",
+                    "template": {
+                        "div": {
+                            "class": "execution-log",
+                            "$bind": ".",
+                            "$children": [
+                                {
+                                    "div": {
+                                        "class": "log-entry",
+                                        "$children": [
+                                            {
+                                                "span": {
+                                                    "class": "log-timestamp",
+                                                    "$children": [
+                                                        "[{{timestamp}}]"
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "span": {
+                                                    "class": "log-level-{{level}}",
+                                                    "$children": [
+                                                        " {{level}}: "
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "span": {
+                                                    "class": "log-message",
+                                                    "$children": [
+                                                        "{{message}}"
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                "",
+                {
+                    "type": "treebark",
+                    "variableId": "chatMessages4",
+                    "getTemplate": "chatBubble"
+                },
+                "",
+                "",
+                "### \ud83e\udd16 Agent Execution Metrics",
+                "",
+                "#### Execution Time by Phase",
+                {
+                    "type": "chart",
+                    "chartKey": "executionTimeChart"
+                },
+                "",
+                "#### Log Activity Over Time",
+                {
+                    "type": "chart",
+                    "chartKey": "logActivityChart"
+                },
+                "",
+                {
+                    "type": "treebark",
+                    "variableId": "chatMessages4",
+                    "getTemplate": "chatBubble"
+                },
+                "",
+                {
+                    "type": "treebark",
+                    "template": {
+                        "div": {
+                            "class": "summary-box",
+                            "$children": [
+                                {
+                                    "h3": {
+                                        "$children": [
+                                            "\ud83d\udcca Task Summary"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "div": {
+                                        "class": "summary-stats",
+                                        "$children": [
+                                            {
+                                                "div": {
+                                                    "class": "stat-item",
+                                                    "$children": [
+                                                        {
+                                                            "div": {
+                                                                "class": "stat-value",
+                                                                "$children": [
+                                                                    "4:20"
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "div": {
+                                                                "class": "stat-label",
+                                                                "$children": [
+                                                                    "Total Time"
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "div": {
+                                                    "class": "stat-item",
+                                                    "$children": [
+                                                        {
+                                                            "div": {
+                                                                "class": "stat-value",
+                                                                "$children": [
+                                                                    "3"
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "div": {
+                                                                "class": "stat-label",
+                                                                "$children": [
+                                                                    "Execution Phases"
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "div": {
+                                                    "class": "stat-item",
+                                                    "$children": [
+                                                        {
+                                                            "div": {
+                                                                "class": "stat-value",
+                                                                "$children": [
+                                                                    "15.2K"
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "div": {
+                                                                "class": "stat-label",
+                                                                "$children": [
+                                                                    "Rows Processed"
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "div": {
+                                                    "class": "stat-item",
+                                                    "$children": [
+                                                        {
+                                                            "div": {
+                                                                "class": "stat-value",
+                                                                "$children": [
+                                                                    "\u2713"
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "div": {
+                                                                "class": "stat-label",
+                                                                "$children": [
+                                                                    "Status: Complete"
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "data": {}
+                }
+            ]
+        }
+    ],
+    "resources": {
+        "charts": {
+            "executionTimeChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "executionTimeByPhase"
+                },
+                "mark": {
+                    "type": "bar",
+                    "color": "#667eea"
+                },
+                "encoding": {
+                    "x": {
+                        "field": "phase",
+                        "type": "nominal",
+                        "title": "Execution Phase",
+                        "axis": {
+                            "labelAngle": 0
+                        }
+                    },
+                    "y": {
+                        "field": "duration_seconds",
+                        "type": "quantitative",
+                        "title": "Duration (seconds)"
+                    },
+                    "tooltip": [
+                        {
+                            "field": "phase",
+                            "title": "Phase"
+                        },
+                        {
+                            "field": "duration_seconds",
+                            "title": "Duration (sec)"
+                        },
+                        {
+                            "field": "operations",
+                            "title": "Operations"
+                        }
+                    ]
+                }
+            },
+            "logActivityChart": {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "width": "container",
+                "height": 300,
+                "data": {
+                    "name": "logActivityOverTime"
+                },
+                "mark": {
+                    "type": "line",
+                    "point": true,
+                    "color": "#764ba2",
+                    "strokeWidth": 3
+                },
+                "encoding": {
+                    "x": {
+                        "field": "timestamp",
+                        "type": "nominal",
+                        "title": "Time",
+                        "axis": {
+                            "labelAngle": -45
+                        }
+                    },
+                    "y": {
+                        "field": "cumulative",
+                        "type": "quantitative",
+                        "title": "Cumulative Log Entries"
+                    },
+                    "tooltip": [
+                        {
+                            "field": "timestamp",
+                            "title": "Time"
+                        },
+                        {
+                            "field": "cumulative",
+                            "title": "Total Logs"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
