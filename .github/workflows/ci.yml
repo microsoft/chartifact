@@ -22,7 +22,12 @@ jobs:
           node-version: '22'
 
       - name: Install dependencies
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
         run: npm install
 
       - name: Build
         run: npm run build
+
+      - name: Check bundles
+        run: npm run test:bundle
