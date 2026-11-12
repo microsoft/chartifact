@@ -1,6 +1,4 @@
 import { defineConfig } from 'vite';
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
 import react from '@vitejs/plugin-react';
 
 const commonOutputConfig = {
@@ -39,10 +37,6 @@ export default defineConfig({
           ...commonOutputConfig,
           dir: '../../docs/dist/v1',
         },
-      ],
-      plugins: [
-        resolve(),   // Resolves Node modules
-        commonjs(),  // Converts CommonJS to ES6
       ],
     },
   },
